@@ -7,16 +7,11 @@ if ctrl.navtop.shown
   data-transition=ctrl.navtop.transition,
   data-transition-target=ctrl.navtop.transitionTarget)
     //-a.navbar-brand.text-dark(href="/") Battle Dash
-    a.navbar-brand.text-dark(href="/") 公民科技獎助金
+    a.navbar-brand.text-dark(href="/") Grant Dash
     button.navbar-toggler(type="button",data-toggle="collapse",
     data-target="#nav-top-content"): span.navbar-toggler-icon
     ul.navbar-nav.mr-auto
-      li.nav-item: a.nav-link(href="#") 活動辦法
-      li.nav-item: a.nav-link(href="#") 關於我們
-      li.nav-item: a.nav-link(href="#") 常見問題
-      li.nav-item: a.nav-link(href="#") 相關報導
-      li.nav-item: a.nav-link(href="#") 成果報告
-      li.nav-item: a.nav-link(href="#") 歷屆活動
+      li.nav-item: a.nav-link(href="#") 常用功能
     +scope("nav-top")#nav-top-content.collapse.navbar-collapse
       ul.navbar-nav.ml-auto
         li.nav-item.d-none(ld="signup"): a.nav-link 註冊

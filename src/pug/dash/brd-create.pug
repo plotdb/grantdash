@@ -1,0 +1,110 @@
+extends /base.pug
+block vars
+  - ctrl.navtop.placeholder = true;
+  - ctrl.navtop.shown = true;
+  - ctrl.navtop.className = "navbar-light"
+  // include /design/data/sample.pug
+block head
+  +css("https://cdn.jsdelivr.net/npm/tail.datetime@0.4.13/css/tail.datetime-harx-light.min.css")
+block body
+  //include /activity/mixins/index.pug
+  //include /design/mixins/index.pug
+  style(type="text/css"): :stylus
+    body { background: radial-gradient(#f1f2f3,#999) fixed top center; background-size: cover }
+  +nbr(2)
+  .w-640.mx-auto
+    +scope("brd-basic").card.mb-4.shadow-lg: .card-body: .p-4
+      h3 建立活動
+      p.text-sm.text-muted 在我們進行下一步之前，先填妥活動的基本資訊吧
+      hr
+      .row.align-items-center.mb-4
+        .col-md-3.text-right 活動名稱
+        .col-md
+          .form-group.mb-0.ld-ext-right
+            .ld.ld-spin.ld-spinner.text-primary
+            input.form-control.border-bottom.rounded-0(name="name",style="border:0")
+            .invalid-feedback.position-absolute 活動必須要有名字
+      .row.align-items-center.mb-4
+        .col-md-3.text-right
+          span 活動代碼
+          p.text-muted.text-sm 用於網址的短代碼
+        .col-md
+          .form-group.mb-0.ld-ext-right
+            .ld.ld-spin.ld-spinner.text-primary
+            input.form-control.border-bottom.rounded-0(name="slug",placeholder="僅接受英文字母、數字或連字符號",style="border:0")
+            .invalid-feedback.position-absolute 已經有其它活動使用這個代碼了，請換一個
+      .row.align-items-start.mb-4
+        .col-md-3.text-right 活動摘要
+        .col-md: textarea.form-control(name="description",rows="4",placeholder="20個字以上")
+
+      .row.align-items-center.mb-4
+        .col-md-3.text-right 開始時間
+        .col-md: input.form-control.border-bottom.rounded-0(type="text",name="starttime",style="border:0")
+
+      .row.align-items-center.mb-4
+        .col-md-3.text-right 結束時間
+        .col-md: input.form-control.border-bottom.rounded-0(type="text",name="endtime",style="border:0")
+
+      //-.row.align-items-center.mb-4
+        .col-md-3.text-right 起迄時間
+        .col-md
+          .d-flex.align-items-center
+            input.form-control.border-bottom.rounded-0(type="datetime-local",name="starttime",style="border:0;width:180px")
+            .text-sm.mx-2 至
+            input.form-control.border-bottom.rounded-0(type="datetime-local",name="endtime",style="border:0;width:180px")
+      .row.align-items-start.mb-4
+        .col-md-3.text-right 活動主圖
+        .col-md: .w-100: .aspect-ratio.ratio-2by1.bg-secondary.rounded.overflow-hidden
+          .vertical-center.bg-semi-dark.bg.bg-cover.bg-portrait: .w-100.text-center: .btn.btn-outline-light.btn-upload 上傳 #[input(name="thumbnail",type="file")]
+      .row.align-items-center.mb-4
+        .col-md-3.text-right 所屬組織
+        .col-md
+          select.form-control(name="org")
+            option(value="") 無
+          .my-2.text-sm 您可稍後再設定組織。或者，#[a(href="#") 在此建立新組織]
+      //-.row.align-items-center.mb-4
+        .col-md-3.text-right 連絡信箱
+        .col-md
+          input.form-control.border-bottom.rounded-0(name="email",style="border:0")
+      .row.align-items-center.mb-4.pt-4
+        .col-md-3
+        .col-md: .btn.btn-lg.btn-primary.disabled(ld="submit") 立刻建立
+  +script("https://cdn.jsdelivr.net/npm/tail.datetime@0.4.13/js/tail.datetime-full.min.js")
+
+block script
+  script: :lsc
+    slugs = {}
+    tail.DateTime("input[name=starttime]")
+    tail.DateTime("input[name=endtime]")
+    form = new ldForm do
+      root: "[ld-scope='brd-basic']"
+      submit: "[ld='submit']"
+      afterCheck: (s, f) ->
+        if f.thumbnail.value =>
+          if !( p = ld$.parent(f.thumbnail, '.bg') ) => return
+          ldFile.fromFile f.thumbnail.files.0, \dataurl
+            .then (r) -> p.style.backgroundImage = "url(#{r.result})"
+        s.all = if <[name slug description]>.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
+      verify: (n,v,e) ->
+        if n in <[slug]> =>
+          if slugs[v]? => return if slugs[v] => 2 else 0
+          p = ld$.parent(@fields[n], '.form-group')
+          p.classList.add \running
+          ld$.fetch '/d/board/slug-check', {method: \POST}, {json: {slug: v}, type: \json}
+            .finally -> debounce 1000 .then -> p.classList.remove \running
+            .then (r = {}) ->
+              slugs[v] = (if r.result == \free => false else true)
+            .catch -> slugs[v] = true
+            .then -> form.check {n: 'slug'}
+          return 1
+        return if !!v => 0 else 2
+    ldld = new ldLoader root: document.body
+    view = new ldView do
+      root: "[ld-scope='brd-basic']"
+      action: click: submit: ({node}) ->
+        ldld.on!
+        fd = form.getfd!
+        ld$.fetch \/d/board/, {method: \POST, body: fd}, {type: \json}
+          .then (r) -> #window.location.href = "/b/#{r.key}"
+          .catch ->
+            debounce 1000 .then -> ldld.off!

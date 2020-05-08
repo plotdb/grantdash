@@ -1,0 +1,37 @@
+//- module
+doctype html
+include /../../static/assets/lib/ldui/pug/ldui.pug
+-
+  var ctrl = {
+    cover: {authpanel: false},
+    navtop: {placeholder: true, shown: true},
+    foot: {shown: true},
+    carbon: {}
+  }
+- var vars = {root: ""}
+block vars
+html
+  head
+    meta(charset="utf-8")
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
+    +css("/assets/lib/ldui/ldui.min.css")
+    +css("/css/index.css")
+    block head
+  body(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
+    //-+script("/js/pack/base.min.js")
+    include modules/widget/navtop.pug
+    .ldNotify
+    block body
+    if ctrl.cover.authpanel
+      include /modules/widget/authpanel.pug
+      .w-640.mx-auto: +authpanel
+    if ctrl.foot.shown
+      include /modules/widget/foot.pug
+
+    +script("/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
+    +script("/assets/lib/ldui/ldui.min.js")
+    +script("/assets/lib/ldc/ldc.min.js")
+    +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
+    block script
+    +script("/js/site.js")

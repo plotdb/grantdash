@@ -29,6 +29,10 @@ body,
 p {
   font-family: Roboto, 'Noto Sans TC', sans-serif !important;
 }
+::placeholder {
+  color: rgba(0,0,0,0.4) !important;
+  font-weight: 200;
+}
 .authpanel,
 .ldcv > .base > .inner.authpanel {
   background: none;
