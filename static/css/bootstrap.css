@@ -1,3 +1,7 @@
+/*
+  此檔放置 overwrite bootstrap 的設定.
+  等大致上都填妥後，再直接到 bootstrap source 去做一個 custom build 出來。
+*/
 .dropdown-item {
   font-weight: 300;
 }
