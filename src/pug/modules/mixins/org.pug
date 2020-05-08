@@ -1,0 +1,17 @@
+//- module
+mixin org-card-sm(opt)
+  a.card.shadow.text-dark(href="#",
+  style="text-decoration:none;width:250px")&attributes(attributes)
+    .card-img-top.bg-dark(style="height:200px")
+    .card-body
+      h5.text-truncate #{opt.name || '未命名的組織'}
+      .text-muted.text-sm #{(opt.description || '').substring(0,50) + " ..."}
+
+mixin org-card(opt)
+  a.card.shadow.text-dark(href="#",
+  style="text-decoration:none;width:300px")&attributes(attributes)
+    .card-img-top.bg-dark(style="height:300px")
+    .card-body
+      h5.text-truncate #{opt.name || '未命名的組織'}
+      .text-muted.text-sm #{(opt.description || '').substring(0,50) + " ..."}
+

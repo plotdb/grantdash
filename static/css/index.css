@@ -113,3 +113,6 @@ p {
 .authpanel.login *[data-show="signup"] {
   display: none;
 }
+.dropdown-item {
+  font-weight: 300;
+}

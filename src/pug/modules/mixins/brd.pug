@@ -1,0 +1,44 @@
+//- module
+
+mixin brd-list(opt)
+  .w-640&attributes(attributes)
+    a.text-dark.text-no-deco(href=`/b/${opt.id}`)
+      .d-flex.align-items-center
+        .rounded.bg-dark.bg-cover.bg-portrait.mr-1(style=`width:3em;height:3em;background-image:url(${opt.thumb});flex:0 0 auto`)
+        .text-truncate
+          .d-flex.align-items-end.mb-1
+            h5.mb-0.mr-1.text-truncate #{opt.name || '未命名的活動'}
+          .text-sm.text-muted.w-100.text-truncate  #{(opt.description || '').substring(0,100)} ...
+
+mixin brd-local-info(opt)
+  .text-sm.text-muted
+    if opt.starttime
+      span #{opt.starttime}
+    if opt.endtime
+      span ~ #{opt.endtime}
+    if !(opt.starttime && opt.endtime)
+      span 時間未定
+    if opt.location
+      div #{opt.location}
+
+mixin brd-card-sm(opt)
+  a.card.shadow.text-dark(href="#",
+  style="text-decoration:none;width:250px")&attributes(attributes)
+    .card-img-top.bg-dark.bg-cover.bg-portrait(
+    style=`height:200px;background-image:url(/assets/uploads/board/${opt.slug}.png)`)
+    .card-body
+      h5.mb-0.text-truncate #{opt.name || '未命名的活動'}
+      if opt.orgName
+        .text-sm.text-muted.mb-2 #{opt.orgName}
+      +brd-local-info(opt)
+
+mixin brd-card(opt)
+  a.card.shadow.text-dark(href="#",
+  style="text-decoration:none;width:300px")&attributes(attributes)
+    .card-img-top.bg-dark(style="height:300px")
+    .card-body
+      h5.mb-0.text-truncate #{opt.name || '未命名的活動'}
+      if opt.orgName
+        .text-sm.text-muted.mb-2 #{opt.orgName}
+      +brd-local-info(opt)
+
