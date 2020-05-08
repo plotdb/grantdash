@@ -13,7 +13,7 @@
   position: absolute
   display: none
   transition: height .25s ease-in-out
-.folder.show .folder-menu
+.folder.show > .folder-menu
   position: relative
   display: block
   overflow: hidden
@@ -36,8 +36,12 @@
   visibility: visible
 .folder.show > .folder-item.folder-toggle:before
   transform: rotate(90deg)
-.folder-menu
-  padding-left: 1em
+.folder-menu > .folder-item
+  padding-left: 2em
+.folder-menu .folder-item
+  padding-left: 2em
+.folder-menu .folder-menu .folder-item
+  padding-left: 3em
 
 
 .folder-divider

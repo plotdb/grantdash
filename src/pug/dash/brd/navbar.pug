@@ -1,0 +1,48 @@
+//- module
+style(type="text/css"): :stylus
+  .sortable
+    .item
+      padding: 1em 2em
+      margin: 1em 0
+      border: 1px solid #ddd
+      border-radius: .25em
+      box-shadow: 0 1px 3px rgba(0,0,0,.1)
+    .wrap .host .item
+      margin: .5em 0 .5em 2em
+    .wrap .host .i-plus
+      display: none
+
+mixin item(opt)
+  .item.d-flex.align-items-center
+    i.i-bars.mr-4
+    .name.flex-grow-1 #{opt.name}
+    i.i-link.ml-4
+    i.i-plus.ml-4
+    i.i-close.ml-4
+
+
+.p-4.sortable
+  h3 導覽列客製化
+  p.text-muted 您可以在這裡調配您所需的導覽列元件
+  hr
+  .host
+    +item({name: "活動辦法"})
+      +item({name: "關於我們"})
+    .wrap
+      +item({name: "歷屆活動"})
+      .host
+        +item({name: "2018 春季"})
+        +item({name: "2018 秋季"})
+        +item({name: "2019 春季"})
+    +item({name: "成果報告"})
+  //#items.list-group
+    .list-group-item item1
+    .list-group-item item2
+    .list-group-item item3
++script("https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js")
+script: :lsc
+  pend \brd-navbar, ->
+    ld$.find \.host .map ->
+      sortable = new Sortable it, do
+        group: 'name'
+        sort: true

@@ -21,6 +21,7 @@ html
   body.bg-secondary(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
     //-+script("/js/pack/base.min.js")
     include /dash/modules/navtop.pug
+    include /modules/misc/misc.pug
     .ldNotify
 
     .d-flex.flex-column.h-100.position-relative.z-float
@@ -28,7 +29,8 @@ html
       .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4(style="overflow:hidden")
         include sidemenu.pug
         .flex-grow-1.bg-white(style="overflow:scroll")
-          h1 Hello World!
+          .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
+            include brd/config.pug
         //-.flex-grow-1.bg-white(style="overflow:scroll")
           .p-4(ld="tabbar-panel",data-tabbar="main",data-name="prj-detail")
             include prj/detail.pug
@@ -45,3 +47,4 @@ html
     +script("/assets/lib/ldui/ldui.min.js")
     +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
     +script("/js/site.js")
+    +script("/js/modules/nav.js")

@@ -1,0 +1,51 @@
+//- module
+mixin sort-item(opt)
+  .sort-item.d-flex.align-items-center
+    i.i-bars.mr-4
+    .name.flex-grow-1 #{opt.name}
+    i.i-link.ml-4
+    i.i-plus.ml-4
+    i.i-close.ml-4
+
+mixin sort-panel
+
+  style(type="text/css"): :stylus
+    .sort-item
+      padding: 1em 2em
+      margin: 1em 0
+      border: 1px solid #ddd
+      border-radius: .25em
+      box-shadow: 0 1px 3px rgba(0,0,0,.1)
+    .wrap .sort-host .sort-item
+      margin: .5em 0 .5em 2em
+    .wrap .sort-host .i-plus
+      display: none
+
+  .card.mb-4.shadow-sm.ld.ld-float-btt-in.xhalf.d-none(ld="tabbar-panel",data-name="navbar"): .card-body: .p-4
+    +scope("activity-navbar")
+      h4 導覽列客製化
+      p.text-muted.text-sm 您可以在這裡調配您所需的導覽列元件
+
+      .sort-host
+        +sort-item({name: "活動辦法"})
+          +sort-item({name: "關於我們"})
+        .wrap
+          +sort-item({name: "歷屆活動"})
+          .sort-host
+            +sort-item({name: "2018 春季"})
+            +sort-item({name: "2018 秋季"})
+            +sort-item({name: "2019 春季"})
+        +sort-item({name: "成果報告"})
+      hr
+      .d-flex
+        .flex-grow-1
+          .btn.btn-outline-secondary 還原
+        div: .btn.btn-primary 儲存變更
+
+
+  +script("https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js")
+  script: :lsc
+    ld$.find \.sort-host .map ->
+      sortable = new Sortable it, do
+        group: 'name'
+        sort: true

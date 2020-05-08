@@ -1,0 +1,42 @@
+//- module
++scope("config-panel")
+  h4 階段設定
+  .text-muted.text-sm.mb-4 活動設定讓您針對不同時間設定不同的活動狀態。例如，您可以設定在活動發表的 60 天後才開放提案，同時設定 90 天後進入評審階段。
+  ul.nav.nav-tabs.mb-4(ld="periods")
+    li.nav-item(ld-each="period"): a.nav-link 預設
+    li.nav-item(ld-each="period"): a.nav-link.active 提案
+    li.nav-item(ld-each="period"): a.nav-link 審查
+    li.nav-item.flex-grow-1
+    li.nav-item.flex-grow-1.text-right: a.nav-link.text-muted.border-0(data-type="new-period") 新增 +
+  .alert.alert-light.border(ld="default-view") 在提案期間一般用戶可自由建立提案並修改提案。提案審查員會視情況檢視提案，並提醒提案者在提案期結束前做提案內容的調整與補充。
+  div(ld="custom-view"): .row.mt-2.mb-3.pb-1
+    .col-md
+      label 起始時段
+      .d-flex
+        .input-group
+          input.form-control(ld="time",type="date",data-name="start",value="2020-05-01")
+    .col-md
+      label 結束時段
+      .d-flex
+        .input-group
+          input.form-control(ld="time",type="date",data-name="end",value="2020-05-31")
+
+  .row.form
+    .col-md
+      +switch("活動公開", "一般人都可以看到這個活動")
+      +switch("提案功能", "註冊使用者可以自由提案")
+      +switch("評論功能", "註冊使用者可以針對不同提案進行評論")
+    .col-md
+      +switch("修改提案", "提案人可以修改自己的提案")
+      +switch("修改評論", "留言用戶可以修改自己的評論")
+      +switch("評審功能", "被標註為評審的使用者可以針對提案進行評論")
+
+  hr
+  .d-flex.mt-4
+    .flex-grow-1: .btn.btn-outline-danger(ld="delete-period custom-view") 刪除
+    .d-none(ld="custom-view"): .d-flex
+      .btn.btn-text.mr-2 階段名稱
+      .form-group.mb-0
+        input.form-control(ld="period-name")
+        .invalid-feedback 不能用這個名稱
+    .btn.btn-primary.disabled(ld="submit") 更新資料

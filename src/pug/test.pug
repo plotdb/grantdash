@@ -8,52 +8,16 @@ html
     +script("/assets/lib/ldui/ldui.min.js")
   body
     .w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
-      div(ld="tabbar",data-name="group"): ul.nav.nav-pills
-        li.nav-item: a.nav-link(href="#",ld="tabbar-tab",data-name="panel1",data-group="group") Item 1
-        li.nav-item: a.nav-link(href="#",ld="tabbar-tab",data-name="panel2",data-group="group") Item 2
-        li.nav-item: a.nav-link(href="#",ld="tabbar-tab",data-name="panel3",data-group="group") Item 3
-        li.nav-item: a.nav-link(href="#",ld="tabbar-tab",data-name="panel4",data-group="group") Item 4
+      div(ld="nav",data-nav="group"): ul.nav.nav-pills
+        li.nav-item: a.nav-link(href="#",ld="default nav-tab",data-name="panel1",data-nav="group") Item 1
+        li.nav-item: a.nav-link(href="#",ld="nav-tab",data-name="panel2",data-nav="group") Item 2
+        li.nav-item: a.nav-link(href="#",ld="nav-tab",data-name="panel3",data-nav="group") Item 3
+        li.nav-item: a.nav-link(href="#",ld="nav-tab",data-name="panel4",data-nav="group") Item 4
       .flex-grow-1: .p-4
-        div(ld="tabbar-panel",data-name="panel1",data-tabbar="group") hi 1
-        div(ld="tabbar-panel",data-name="panel2",data-tabbar="group") hi 2
-        div(ld="tabbar-panel",data-name="panel3",data-tabbar="group") hi 3
-        div(ld="tabbar-panel",data-name="panel4",data-tabbar="group") hi 4
+        div(ld="default nav-panel",data-name="panel1",data-nav="group") hi 1
+        div(ld="nav-panel",data-name="panel2",data-nav="group") hi 2
+        div(ld="nav-panel",data-name="panel3",data-nav="group") hi 3
+        div(ld="nav-panel",data-name="panel4",data-nav="group") hi 4
 
 
-    script: :lsc
-      pends = {}
-
-      group = {}
-      view = new ldView do
-        root: document.body
-        action: click: do
-          "tabbar": ({node, evt}) ->
-            if !evt.target.getAttribute(\ld) => return
-            tab = evt.target.getAttribute(\data-name)
-            nav = node.getAttribute(\data-name)
-            group[nav] = tab
-            view.render!
-            setTimeout (->
-              o = pends{}[nav][tab]
-              if o and !(o.inited) =>
-                o.func!
-                o.inited = true
-            ), 10
-        handler: do
-          "tabbar": ({node}) -> console.log 1
-          "tabbar-tab": ({node}) ->
-            n = ld$.parent node, '[ld=tabbar]', document.body
-            if !n => return
-            tabbar = n.getAttribute("data-name")
-            name = node.getAttribute(\data-name)
-            node.classList.toggle \active, (
-              group[tabbar] == name or
-              !group[tabbar] and /default/.exec(node.getAttribute(\ld))
-            )
-          "tabbar-panel": ({node}) ->
-            tabbar = node.getAttribute(\data-tabbar)
-            node.classList.toggle \d-none, (
-              (group[tabbar] and group[tabbar] != node.getAttribute(\data-name)) or
-              (!group[tabbar] and !/default/.exec(node.getAttribute(\ld)))
-            )
-
+    +script("/js/modules/nav.js")

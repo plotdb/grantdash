@@ -1,0 +1,16 @@
+//- module
+mixin switch-sm(name)
+  .form-group.mr-2.flex-grow-1
+    label #{name}
+    .btn-group.d-block.d-flex
+      .btn.btn-outline-secondary ON
+      .btn.btn-outline-secondary OFF
+
+mixin switch(name,desc)
+  .d-flex.mb-2.pt-2.align-items-center.border-top.border-light
+    .flex-grow-1
+      label.mb-0 #{name}
+      .text-sm.text-muted #{desc}
+    .ml-2
+      .switch(ld="switch",data-name=name)
+
