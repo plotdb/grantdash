@@ -5,41 +5,55 @@ html
     +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
     +css("/assets/lib/ldui/ldui.min.css")
     +css("/css/index.css")
-    style(type="text/css"): :stylus
-      .folder .folder-menu
-        position: absolute
-        display: none
-        transition: height 0.35s ease-in-out
-      .folder.show .folder-menu
-        position: relative
-        display: block
-        overflow: hidden
-        transition: height 0.35s ease-in-out
-
-.folder
-  .folder-toggle
-  .folder-menu
-
+    +script("/assets/lib/ldui/ldui.min.js")
   body
-    .w-640.mx-auto.text-lg
-      .folder
-        .folder-toggle.p-2.bg-dark.text-light(onclick="blah(this)") dropdown
-        .folder-menu
-          each i in [1,2,3,4,5,6,7,8,9]
-            .p-2.bg-light.border hi
-    script: :lsc
-      toggle-folder = (node)->
-        root = node.parentNode
-        ison = root.classList.contains \show
-        if !ison => root.classList.toggle \show
-        menu = node.parentNode.childNodes.1
-        dbox = menu.getBoundingClientRect!
-        if !ison => menu.style.height = "0px"
-        setTimeout (-> menu.style.height = "#{if ison => 0 else dbox.height}px"), 0
-        if ison => setTimeout (->
-          root.classList.toggle \show
-          menu.style.height = ""
-        ), 350
+    .w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
+      div(ld="tabbar",data-name="group"): ul.nav.nav-pills
+        li.nav-item: a.nav-link(href="#",ld="tabbar-tab",data-name="panel1",data-group="group") Item 1
+        li.nav-item: a.nav-link(href="#",ld="tabbar-tab",data-name="panel2",data-group="group") Item 2
+        li.nav-item: a.nav-link(href="#",ld="tabbar-tab",data-name="panel3",data-group="group") Item 3
+        li.nav-item: a.nav-link(href="#",ld="tabbar-tab",data-name="panel4",data-group="group") Item 4
+      .flex-grow-1: .p-4
+        div(ld="tabbar-panel",data-name="panel1",data-tabbar="group") hi 1
+        div(ld="tabbar-panel",data-name="panel2",data-tabbar="group") hi 2
+        div(ld="tabbar-panel",data-name="panel3",data-tabbar="group") hi 3
+        div(ld="tabbar-panel",data-name="panel4",data-tabbar="group") hi 4
 
-    .folder
-        
+
+    script: :lsc
+      pends = {}
+
+      group = {}
+      view = new ldView do
+        root: document.body
+        action: click: do
+          "tabbar": ({node, evt}) ->
+            if !evt.target.getAttribute(\ld) => return
+            tab = evt.target.getAttribute(\data-name)
+            nav = node.getAttribute(\data-name)
+            group[nav] = tab
+            view.render!
+            setTimeout (->
+              o = pends{}[nav][tab]
+              if o and !(o.inited) =>
+                o.func!
+                o.inited = true
+            ), 10
+        handler: do
+          "tabbar": ({node}) -> console.log 1
+          "tabbar-tab": ({node}) ->
+            n = ld$.parent node, '[ld=tabbar]', document.body
+            if !n => return
+            tabbar = n.getAttribute("data-name")
+            name = node.getAttribute(\data-name)
+            node.classList.toggle \active, (
+              group[tabbar] == name or
+              !group[tabbar] and /default/.exec(node.getAttribute(\ld))
+            )
+          "tabbar-panel": ({node}) ->
+            tabbar = node.getAttribute(\data-tabbar)
+            node.classList.toggle \d-none, (
+              (group[tabbar] and group[tabbar] != node.getAttribute(\data-name)) or
+              (!group[tabbar] and !/default/.exec(node.getAttribute(\ld)))
+            )
+
