@@ -1,0 +1,120 @@
+//- module
+style(type="text/css"): :stylus
+  th
+    background: #f9fafb
+    vertical-align: middle!important
+  td.head
+    background: #f9fafb
+    vertical-align: middle!important
+    text-align: center
+  td.value
+    text-align: right
+
+//-.w-1024.mx-auto.rwd.typeset.heading-contrast
+  table.table.table-bordered.text-center
+    tr
+      th(rowspan="2") 分類
+      th(rowspan="2",style="width:250px") 項目
+      th(colspan="3") 預估
+      th(colspan="3") 實際
+      th(rowspan="2") 執行率
+    tr
+      th 自籌
+      th 補助
+      th 總計
+      th 自籌
+      th 補助
+      th 總計
+    tr
+      td
+      td 材料費
+      td 100
+      td 100
+      td 200
+      td
+      td
+      td
+      td 0%
+    tr
+      td
+      td 總計
+      td 100
+      td 100
+      td 200
+      td 
+      td
+      td
+      td 0%
+  .text-sm 單位：元 ( 新台幣 )
+#prj-budget
+
+//-script: :lsc
+  pend \prj-detail, \budget, ->
+    dom = ld$.find document, '#prj-budget', 0
+    data = [
+      ['分類', '項目', '預估', '', '', '實際', '', '', '執行率']
+      ['', '', '自籌', '補助', '總計', '自籌', '補助', '總計', '']
+      ['', '材料費', 100, 100, 200, '','','','0%']
+      ['', '總計', 100, 100, 200, '','','','0%']
+    ]
+
+    Handsontable.renderers.registerRenderer \myrenderer, (instance, td, row, col, prop, value, cellProperties) -> 
+      Handsontable.renderers.TextRenderer.apply @, arguments
+      #if row < 2 or col in [4,7,8] => cellProperties.readOnly = true
+      if row < 2 => return td.classList.add \head
+      if col > 1 => return td.classList.add \value
+
+    hot = new Handsontable dom, {
+      data: data
+      rowHeaders: true
+      colHeaders: true
+      filters: true
+      dropdownMenu: true
+      stretchH: \all
+      rowHeights: 25
+      minRows: 10
+      minCols: 10
+      fixedRowsTop: 2,
+      mergeCells: [
+        {row: 0, col: 0, colspan: 1, rowspan: 2}
+        {row: 0, col: 1, colspan: 1, rowspan: 2}
+        {row: 0, col: 2, colspan: 3, rowspan: 1}
+        {row: 0, col: 5, colspan: 3, rowspan: 1}
+        {row: 0, col: 8, colspan: 1, rowspan: 2}
+      ]
+      cells: (row, col) ->
+        cellProperties = {}
+        cellProperties.renderer = \myrenderer
+        return cellProperties
+      colWidths: [50,150,50,50,50,50,50,50]
+      customBorders: [
+        {
+          range: { from : {row: 1, col: 4}, to: {row: 1, col: 4}},
+          right: { width: 2, color: \#000}, bottom: {width: 2, color: \#000}
+        }
+        {
+          range: { from : {row: 1, col: 7}, to: {row: 1, col: 7}},
+          right: { width: 2, color: \#000}, bottom: {width: 2, color: \#000}
+        }
+        { range: { from : {row: 1, col: 0}, to: {row: 1, col: 10}}, bottom: {width: 2, color: \#000}}
+        { range: { from : {row: 0, col: 1}, to: {row: 99, col: 1}}, right: {width: 2, color: \#000}}
+        { range: { from : {row: 0, col: 4}, to: {row: 99, col: 4}}, right: {width: 2, color: \#000}}
+        { range: { from : {row: 0, col: 7}, to: {row: 99, col: 7}}, right: {width: 2, color: \#000}}
+      ]
+    }
+
+    hot.updateSettings do
+      contextMenu:
+        items:
+          "add_row_above":
+            name: "在上方新增一列"
+            callback: (k,o) -> hot.alter \insert_row, (hot.getSelected!0), 1
+          "add_row_below":
+            name: "在下方新增一列"
+            callback: (k,o) -> hot.alter \insert_row, (hot.getSelected!0 + 1), 1
+          "del_row":
+            name: "刪除列"
+            callback: (k,o) ->
+              console.log hot.getSelected!0
+              hot.alter \remove_row, (hot.getSelected!0 - 1), 1
+  

@@ -1,0 +1,74 @@
+//- module
+.my-2.pb-2.text-center
+  .btn.btn-outline-secondary 增加項目 #[i.i-plus]
+
+.check.d-flex
+  .info
+    .text-lg.font-weight-bold 附註
+    .text-muted 2020/04/20
+    .mt-4.text-danger #[i.i-close.mr-1] 刪除
+  .detail.flex-grow-1
+    .d-flex.mb-3.align-items-center
+      input.form-control(value="團隊面談")
+    textarea.form-control(rows="5")
+    .mt-2
+      .d-flex.align-items-center.flex-wrap.justify-content-between
+        each i in [1,2]
+          .btn-group.mb-2.mr-2.flex-grow-1.d-flex
+            .btn.btn-sm.btn-secondary.flex-grow-1 #[i.i-link] demo.pdf #[span.text-sm ( 168KB )]
+            .btn.btn-sm.btn-dark(style="flex:0 1 auto"): i.i-close
+        .btn.btn-sm.btn-outline-secondary.mb-2 附件 #[i.i-plus]
+
+.check.d-flex
+  .info
+    .text-lg.font-weight-bold 查核
+    .text-muted 2020/04/20
+  .detail.flex-grow-1
+    .d-flex.mb-3.align-items-center
+      input.form-control(value="期中查核")
+      .ml-2
+        .dropdown
+          .btn.btn-outline-dark.dropdown-toggle(data-toggle="dropdown") 結果..
+          .dropdown-menu.dropdown-menu-right
+            a.dropdown-item.d-flex.justify-content-between(href="#") #[span 通過] #[i.i-check.text-success]
+            a.dropdown-item.d-flex.justify-content-between(href="#") #[span 有條件驗收] #[i.i-circle.text-warning]
+            a.dropdown-item.d-flex.justify-content-between(href="#") #[span 未通過] #[i.i-close.text-danger]
+    textarea.form-control(rows="5")
+    .mt-2
+      .d-flex.align-items-center.flex-wrap.justify-content-between
+        each i in [1,2]
+          .btn-group.mb-2.mr-2.flex-grow-1.d-flex
+            .btn.btn-sm.btn-secondary.flex-grow-1 #[i.i-link] demo.pdf #[span.text-sm ( 168KB )]
+            .btn.btn-sm.btn-dark(style="flex:0 1 auto"): i.i-close
+        .btn.btn-sm.btn-outline-secondary.mb-2 附件 #[i.i-plus]
+
+.check.d-flex
+  .info
+    .text-lg.font-weight-bold 核銷
+    .text-muted 2020/04/20
+  .detail.flex-grow-1
+    .d-flex.mb-3.align-items-center
+      input.form-control(value="期中經費核銷")
+    hr
+
+    .d-flex.justify-content-between.align-items-center
+      .form-group.mr-2
+        div 金額
+        input.form-control.form-control-sm
+      span.mx-2 &#x2264;
+      .form-group.mx-2
+        div 餘額
+        input.form-control.form-control-sm(readonly,value="150")
+      span.mx-2 =
+      .form-group.mx-2
+        div 執行預算
+        input.form-control.form-control-sm(readonly,value="500")
+      span.mx-2 &times;
+      .form-group.mx-2
+        div 補助率
+        input.form-control.form-control-sm(readonly,value="50%")
+      span.mx-2 &#x2212;
+      .form-group.ml-2
+        div 已核銷
+        input.form-control.form-control-sm(readonly,value="100")
+    .text-danger 依您所填入的金額計算，總核銷金額將超出計劃總補助 20 元。

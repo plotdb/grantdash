@@ -1,0 +1,45 @@
+doctype html
+include /../../static/assets/lib/ldui/pug/ldui.pug
+-
+  var ctrl = {
+    cover: {authpanel: false},
+    navtop: {placeholder: false, shown: true},
+    foot: {shown: true},
+    carbon: {}
+  }
+- var vars = {root: ""}
+block vars
+html
+  head
+    meta(charset="utf-8")
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
+    +css("/assets/lib/ldui/ldui.min.css")
+    +css("/css/index.css")
+    +script("/assets/lib/ldc/ldc.min.js")
+    block head
+  body.bg-secondary(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
+    //-+script("/js/pack/base.min.js")
+    include /dash/modules/navtop.pug
+    .ldNotify
+
+    .d-flex.flex-column.h-100.position-relative.z-float
+      .w-1024(style="height:2.75em")
+      .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4(style="overflow:hidden")
+        include sidemenu.pug
+        .flex-grow-1.bg-white(style="overflow:scroll")
+          .p-4(ld="tabbar-panel",data-tabbar="main",data-name="prj-detail")
+            include prj/detail.pug
+
+    if ctrl.cover.authpanel
+      include /modules/widget/authpanel.pug
+      .w-640.mx-auto: +authpanel
+
+    if ctrl.foot.shown
+      include /modules/widget/foot.pug
+
+    block script
+    +script("/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
+    +script("/assets/lib/ldui/ldui.min.js")
+    +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
+    +script("/js/site.js")

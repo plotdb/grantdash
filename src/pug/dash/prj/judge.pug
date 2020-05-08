@@ -1,0 +1,66 @@
+//- module
+//-
+  extends /ui/base.pug
+  block body
+    include /ui/mixins/index.pug
+    include /ui/data/sample.pug
+
++css("/assets/lib/ldbar/loading-bar.css")
++script("/assets/lib/ldbar/loading-bar.js")
+//-.w-640.rwd.mx-auto.typeset.heading-contrast.card.card-body
+
+.navbar.navbar-expand-lg.navbar-light.mb-4.border.shadow-sm.rounded.sticky.z-fixed.bg-white(style="top:15px")
+  .collapse.navbar-collapse
+    ul.nav.nav-pills.mr-auto(ld="tabbar")
+      li.nav-item: a.nav-link.active(ld="tabbar-tab default",data-name="basic") 資格審查 #[span.text-sm ( 100% )]
+      li.nav-item: a.nav-link(ld="tabbar-tab",data-name="config") 初選 #[span.text-sm ( 20% )]
+      li.nav-item: a.nav-link(ld="tabbar-tab",data-name="perm") 決選 #[span.text-sm ( 0% )]
+
+.px-4
+  h5.mt-0.mb-2 評選進度
+  p.text-muted.text-sm.mb-0 整體評選進度。點選各項目連結查看個人審查表或是審查總表。
+  .my-4: hr
+  .p-4: .row
+    .col-md-5
+      .w-100.px-4
+        style(type="text/css"): :stylus
+          svg path { stroke-width: 9 }
+          svg path.mainline { stroke: #09f }
+          .ldBar-label {
+            font-size: 1.5em;
+            text-align: center
+          }
+          .ldBar-label:after {
+            font-size: .5em;
+          }
+          .ldBar-label:before {
+            font-size: .6em;
+            content: "整體進度";
+            display: block
+          }
+
+        .aspect-ratio.ratio-1by1
+          .ldBar.w-100.h-100.label-center(data-value="75",data-preset="circle")
+        .text-center.mt-4
+          a(href="#") 總表 #[i.i-link]
+    .col-md-7: .vertical-center: .w-100: .d-flex.flex-column
+      each i in data.criteriaJudges
+        .d-flex.align-items-center.mb-3
+          a.mx-2(href="#") #{i}
+          - var p1 = Math.round(Math.random() * 40)
+          - var p2 = Math.round(Math.random() * 30)
+          - var p3 = Math.round(Math.random() * 20)
+          .progress.my-1.flex-grow-1
+            .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(style=`width:${p1}%`)
+            .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(style=`width:${p2}%`)
+            .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(style=`width:${p3}%`)
+          .ml-2.text-muted.text-sm #{p1 + p2 + p3}%
+      .d-flex.justify-content-center.align-items-center.mt-4
+        .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+        span.mr-3 推薦
+        .bg-warning.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+        span.mr-3 面議
+        .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+        span 汰除
+  .my-4.py-2: hr
+  include ../brd/perm.pug

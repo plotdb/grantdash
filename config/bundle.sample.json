@@ -1,0 +1,26 @@
+{
+  "js": {
+    "base": [
+      "/assets/lib/ldui/ldui.min.js",
+      "/assets/lib/ldui-ext/index.js",
+      "/js/modules/core/base.js",
+      "/js/modules/core/ldcvmgr.js"
+    ],
+    "core": [
+      "/js/modules/util.js",
+      "/js/modules/core/loader.js",
+      "/js/modules/core/auth.js",
+      "/js/modules/core/base.js",
+      "/js/modules/core/notify.js",
+      "/js/modules/core/error.js",
+      "/js/modules/core/navtop.js"
+    ],
+    "vendor": [
+      "/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js",
+      "/assets/lib/bootstrap.native/2.0.27/polyfill.min.js",
+      "/assets/lib/moment.js/moment.min.js",
+      "/assets/lib/moment.js/moment-timezone.min.js",
+      "/assets/lib/clipboard.js/2.0.4/clipboard.min.js"
+    ]
+  }
+}

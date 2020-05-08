@@ -1,0 +1,66 @@
+//- module
+mixin authpanel
+  .inner.card.p-0.border-0.authpanel.signup: .card-body.p-0
+    .closebtn(data-ldcv-set="")
+    .vertical-center.p-4.info.position-absolute.h-100.w-50.text-light(style="background: #455667 center center no-repeat;background-size:cover;")
+      .position-absolute.w-100.h-100.bg-semi-dark(style="top:0;left:0")
+      .text-left.position-relative.z-float.text-shadow
+        .d-none(data-info="failed")
+          h2.mb-4.font-weight-bold 登入失敗。
+          p 您之前可能用的是別組帳號或密碼，或者使用不同的登入方式。您可以試著：
+          ul
+            li 換一組帳號、密碼或登入方式
+            li 確認您的 email 或密碼沒有打錯
+            li #[a(href="/auth/reset/",style="color:#0ff",target="_blank") 重設密碼]
+            li #[a(href="#",onclick="lda.ldcvmgr.toggle('contact');",style="color:#0ff") 與我們聯絡]
+
+        div(data-info="default")
+          if block
+            block
+          else
+            h3.mb-4.font-weight-bold(style="line-height:1em")
+              | 登入您的#[br]Grant Dash 帳號
+            p.text-sm 公民科技獎助金提案系統由 Grant Dash 提供。登入 Grant Dash 以建立提案。
+
+      //-.position-absolute.text-sm(style="bottom:20px;right:20px")
+        span Service Provided by Grant Dash
+        img(src="/assets/img/c/logo/battledash.svg",style="height:1.3em;vertical-align:-.2em")
+    .form.bg-white.w-50.h-100.d-flex.flex-column(style="margin-left:50%")
+      ul.nav.nav-tabs.pt-2.bg-light(
+      onclick="this.parentNode.classList.toggle('login');this.parentNode.classList.toggle('signup')")
+        li.nav-item.ml-2: a.nav-link(data-action="signup") 註冊
+        li.nav-item: a.nav-link(data-action="login") 登入  
+      .px-3.pb-4.pt-3.text-left.d-flex.flex-column.h-100
+        .flex-grow-1: .vertical-center: .w-100
+          .form-group
+            label 電子郵件
+            input.form-control.form-control-sm(name="email",placeholder="電子郵件即您的帳號名稱")
+            .invalid-feedback 無效的電子郵件
+          .form-group(data-show="signup")
+            label 顯示名稱
+            input.form-control.form-control-sm(name="displayname",placeholder="例如：王小明")
+            .invalid-feedback 不能留白
+          .form-group
+            label 密碼
+            input.form-control.form-control-sm(name="passwd",placeholder="密碼，至少八個字元",type="password")
+            .invalid-feedback 不合格的密碼
+          .form-group
+            .text-center.form-text.text-muted.small
+              | 登入即表示您同意我們的 #[a(href="/tos/",target="_blank") 用戶條款] 與 #[a(href="/privacy/",target="_blank") 隱私權政策]
+          .btn.btn-success.btn-block.disabled.ld-ext-right(data-action="submit")
+            span(data-show="login") 登入
+            span(data-show="signup") 註冊
+            .ld.ldld.bare.em-1
+          .d-flex.justify-content-between.mt-1
+            .small
+              .form-check(data-show="signup")
+                input.form-check-input(name="newsletter",type="checkbox")
+                label.form-check-label 訂閱電子報
+            .small: a(href="/auth/reset/") 忘記密碼？»
+        div
+          .sep.sep-text.my-4: span.text-sm 或者用下列登入
+          .row
+            .col-sm: .btn.btn-primary.btn-block.btn-sm(onclick="lda.auth.fb()") #[i.i-fb] Facebook
+            .col-sm: .btn.btn-outline-dark.btn-block.btn-sm(onclick="lda.auth.google()") #[i.i-google] Google
+
+  //-+script("/js/modules/core/auth.js")

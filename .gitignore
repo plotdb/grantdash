@@ -1,0 +1,7 @@
+node_modules
+.*.swp
+secret.ls
+work
+src/pug/project/data.pug
+server.log
+static/assets/uploads

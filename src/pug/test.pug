@@ -1,0 +1,45 @@
+doctype html
+include /../../static/assets/lib/ldui/pug/ldui.pug
+html
+  head
+    +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
+    +css("/assets/lib/ldui/ldui.min.css")
+    +css("/css/index.css")
+    style(type="text/css"): :stylus
+      .folder .folder-menu
+        position: absolute
+        display: none
+        transition: height 0.35s ease-in-out
+      .folder.show .folder-menu
+        position: relative
+        display: block
+        overflow: hidden
+        transition: height 0.35s ease-in-out
+
+.folder
+  .folder-toggle
+  .folder-menu
+
+  body
+    .w-640.mx-auto.text-lg
+      .folder
+        .folder-toggle.p-2.bg-dark.text-light(onclick="blah(this)") dropdown
+        .folder-menu
+          each i in [1,2,3,4,5,6,7,8,9]
+            .p-2.bg-light.border hi
+    script: :lsc
+      toggle-folder = (node)->
+        root = node.parentNode
+        ison = root.classList.contains \show
+        if !ison => root.classList.toggle \show
+        menu = node.parentNode.childNodes.1
+        dbox = menu.getBoundingClientRect!
+        if !ison => menu.style.height = "0px"
+        setTimeout (-> menu.style.height = "#{if ison => 0 else dbox.height}px"), 0
+        if ison => setTimeout (->
+          root.classList.toggle \show
+          menu.style.height = ""
+        ), 350
+
+    .folder
+        

@@ -1,0 +1,97 @@
+//- module
++css("/css/modules/folder.css")
+
+style(style="text/css"): :stylus
+  [ld=brd-head] [ld=cart] { transform: rotate(0deg); transition: all .25s ease-in-out }
+  [ld=brd-head].on [ld=cart] { transform: rotate(180deg) }
+
+.bg-dark.text-white.text-left(style="width:200px;overflow:scroll;flex:0 0 auto")
+  #brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(style="top:0;transition:height .25s ease-in-out")
+    div(ld="brd-head")
+      .d-flex.text-sm.align-items-center.border-bottom.border-secondary.p-3.w-100
+        .mr-1: .bg-light.rounded(style="width:1.35em;height:1.35em")
+        .flex-grow-1.text-truncate 文化內容策進院
+        .ml-1 #[i.i-bars]
+      .clickable(style="box-shadow:0 2px 3px rgba(0,0,0,1)")
+        .d-flex.align-items-center.p-3.w-100
+          .flex-grow-1.text-truncate
+            .text-sm.text-muted.d-flex
+              .flex-grow-1
+                span 活動
+                span.ml-2.text-success #[i.i-radio] 進行中
+            .text-truncate 沉浸式內容國際合資合製補助案
+          .ml-2(ld="cart") #[i.i-dart-down]
+
+    .border-top.border-secondary(ld="brd-list",
+    style="overflow:scroll;height:0;transition:height .5s cubic-bezier(0,1,0,1)"): .py-2
+      .px-3.py-2.text-sm: b 活動列表
+      .px-3.pb-2: input.form-control.form-control-sm.bg-secondary.border-secondary.border.text-white
+      each i in ["一","二","三","四","五","六","七","八","九","十"]
+        .px-3.py-2
+          span 第#{i}次沉浸式內容國際合資合製補助案
+          .text-muted.text-sm 2020/04/22 ~ 2020/07/22
+
+  .pt-2(ld="tabbar",data-name="main")
+
+    .folder-item(ld="tabbar-tab",data-name="brd-config") 活動設定
+    .folder.show
+      .folder-toggle.folder-item 客製頁面
+      .folder-menu
+        .folder-item(ld="tabbar-tab",data-name="brd-navbar") 選單列
+        .folder-item(ld="tabbar-tab",data-name="project-list"): a.text-white(href="edit.html") 頁面編輯器
+
+    .border-bottom.border-secondary.my-2
+
+    .folder
+      .folder-toggle.d-flex.align-items-center.folder-item
+        .flex-grow-1 專案組 A
+        div: i.i-plus
+      .folder-menu
+        .folder-item(ld="tabbar-tab",data-name="prj-list") 專案列表
+        .folder-item(ld="tabbar-tab",data-name="prj-judge") 評選資訊
+        .folder-item(ld="tabbar-tab",data-name="prj-config") 設定
+        .folder-item(ld="tabbar-tab",data-name="prj-form") 提案表
+
+    .folder
+      .folder-toggle.d-flex.align-items-center.folder-item
+        .flex-grow-1 專案組 B
+        div: i.i-plus
+      .folder-menu
+        .folder-item(ld="tabbar-tab",data-name="prj-list") 專案列表
+        .folder-item(ld="tabbar-tab",data-name="prj-judge") 評選資訊
+        .folder-item(ld="tabbar-tab",data-name="prj-config") 設定
+        .folder-item(ld="tabbar-tab",data-name="prj-form") 提案表
+
+    .my-4
+
+  script: :lsc
+    ldc.register \brd, <[]>, ->
+      view = new ldView do
+        root: '#brd-info'
+        action: click: do
+          'brd-head': ({node}) ->
+            ison = node.classList.contains \on
+            hbox = node.getBoundingClientRect!
+            pbox = node.parentNode.parentNode.getBoundingClientRect!
+            view.get('brd-list').style.height = "#{if ison => 0 else pbox.height - hbox.height}px"
+            node.classList.toggle \on
+    ldc.app \brd
+
+  script: :lsc
+    ldc.register \test, <[]>, ->
+      toggle-folder = (node)->
+        root = node.parentNode
+        ison = root.classList.contains \show
+        if !ison => root.classList.toggle \show
+        menu = node.parentNode.childNodes.1
+        dbox = menu.getBoundingClientRect!
+        #if !ison => menu.style.height = "0px"
+        menu.style.height = "#{if ison => dbox.height else 0}px"
+        setTimeout (-> menu.style.height = "#{if ison => 0 else dbox.height}px"), 0
+        if ison => setTimeout (->
+          root.classList.toggle \show
+          menu.style.height = ""
+        ), 250
+      ld$.find(document, '.folder-toggle').map -> it.addEventListener \click, -> toggle-folder(this)
+
+    ldc.app \test
