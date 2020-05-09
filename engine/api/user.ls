@@ -158,3 +158,8 @@ api.post \/me/config/, (req, res) ->
   io.query "update users set config = $2 where key = $1", [req.user.key, req.user.config]
     .then -> res.send!
     .catch aux.error-handler res
+
+api.get \/me/blah, (req, res) ->
+  host = req.get('host')
+  origin = req.get('origin')
+  res.send {host, origin}

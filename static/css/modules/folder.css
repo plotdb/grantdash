@@ -21,6 +21,10 @@
 .folder-item {
   padding: 0.375em 1em;
   cursor: pointer;
+  color: #fff;
+}
+.folder-item:hover {
+  color: #fff;
 }
 .folder-item:before {
   font-family: "ldi";

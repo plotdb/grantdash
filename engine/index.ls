@@ -134,7 +134,7 @@ backend = do
         path: \/
         httpOnly: true
         maxAge: 86400000 * 30 * 12 #  1 year
-        domain: ".#{config.domain}"
+        #domain: ".#{config.domain}"
     app.use passport.initialize!
     app.use passport.session!
 

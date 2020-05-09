@@ -34,11 +34,16 @@ style(style="text/css"): :stylus
   .pt-2(ld="nav",data-nav="main")
 
     .folder-item(ld="nav-tab",data-name="brd-config") 活動設定
+    a.folder-item.d-flex(href="#")
+      .flex-grow-1 入口頁面
+      div: i.i-link
     .folder.show
       .folder-toggle.folder-item 客製頁面
       .folder-menu
         .folder-item(ld="nav-tab",data-name="brd-navbar") 選單列
-        .folder-item(ld="nav-tab",data-name="project-list"): a.text-white(href="edit.html") 頁面編輯器
+        a.folder-item.d-flex(href="edit.html")
+          .flex-grow-1 頁面編輯器
+          div: i.i-link
 
     .border-bottom.border-secondary.my-2
 
