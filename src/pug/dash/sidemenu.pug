@@ -8,10 +8,18 @@ style(style="text/css"): :stylus
 .bg-dark.text-white.text-left(style="width:200px;overflow:scroll;flex:0 0 auto")
   #brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(style="top:0;transition:height .25s ease-in-out")
     div(ld="brd-head")
-      .d-flex.text-sm.align-items-center.border-bottom.border-secondary.p-3.w-100
-        .mr-1: .bg-light.rounded(style="width:1.35em;height:1.35em")
-        .flex-grow-1.text-truncate 文化內容策進院
-        .ml-1 #[i.i-bars]
+      .folder.border-bottom.border-secondary.text-sm.no-dart(ld="nav",data-nav="main")
+        .folder-item.folder-toggle.d-flex.align-items-center.py-3.pr-3.pl-0
+          .mr-1: .bg-light.rounded(style="width:1.35em;height:1.35em")
+          .flex-grow-1.text-truncate 文化內容策進院
+          .ml-1 #[i.i-bars]
+        .folder-menu.pb-3
+          .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 組織設定
+          .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 選單列
+          .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 頁面編輯器
+          //-.folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 其它組織 ...
+
+
       .clickable(style="box-shadow:0 2px 3px rgba(0,0,0,1)")
         .d-flex.align-items-center.p-3.w-100
           .flex-grow-1.text-truncate
@@ -74,7 +82,8 @@ style(style="text/css"): :stylus
       view = new ldView do
         root: '#brd-info'
         action: click: do
-          'brd-head': ({node}) ->
+          'brd-head': ({node, evt}) ->
+            if !(p = ld$.parent evt.target, '.clickable', document) => return
             ison = node.classList.contains \on
             hbox = node.getBoundingClientRect!
             pbox = node.parentNode.parentNode.getBoundingClientRect!

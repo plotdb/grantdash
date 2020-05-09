@@ -47,7 +47,7 @@ create index if not exists sessions_detail_key on sessions (((detail->'passport'
 
 create type state as enum ('active','pending','deleted','canceled','suspended','invalid');
 
-create table if not exists organization (
+create table if not exists org (
   key serial primary key,
   owner int references users(key) not null,
   slug text not null,
@@ -62,7 +62,7 @@ create table if not exists organization (
 create table if not exists board (
   key serial primary key,
   owner int references users(key) not null,
-  org int references organization(key),
+  org int references org(key),
   slug text not null,
   name text not null constraint name_len check (char_length(name) <= 100),
   description text constraint description_len check (char_length(description) <= 500),

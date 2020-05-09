@@ -13,7 +13,7 @@ block body
     body { background: radial-gradient(#f1f2f3,#999) fixed top center; background-size: cover }
   +nbr(2)
   .w-640.mx-auto
-    +scope("brd-basic").card.mb-4.shadow-lg: .card-body: .p-4
+    +scope("org-basic").card.mb-4.shadow-lg: .card-body: .p-4
       h3 建立組織
       p.text-sm.text-muted 在我們進行下一步之前，先填妥組織的基本資訊吧
       hr
@@ -40,7 +40,9 @@ block body
       .row.align-items-start.mb-4
         .col-md-3.text-right 組織主圖
         .col-md: .w-100: .aspect-ratio.ratio-2by1.bg-secondary.rounded.overflow-hidden
-          .vertical-center.bg-semi-dark.bg.bg-cover.bg-portrait: .w-100.text-center: .btn.btn-outline-light.btn-upload 上傳 #[input(name="thumbnail",type="file")]
+          .bg-semi-dark.bg.bg-cover.bg-portrait
+            .w-100.h-100.bg-semi-dark.vertical-center
+              .w-100.text-center: .btn.btn-outline-light.btn-upload 上傳 #[input(name="thumbnail",type="file")]
 
       //-.row.align-items-center.mb-4
         .col-md-3.text-right 連絡信箱
@@ -53,11 +55,23 @@ block body
 
 block script
   script: :lsc
+    ldld = new ldLoader className: "ldld full"
+    notify = new ldNotify root: '.ldNotify', classIn: <[ld-fall-ttb-in]>
     slugs = {}
     tail.DateTime("input[name=starttime]")
     tail.DateTime("input[name=endtime]")
+    slug-check = debounce 500, (n,v,e) -> 
+      p = ld$.parent(form.fields[n], '.form-group')
+      p.classList.add \running
+      ld$.fetch '/d/o/slug-check', {method: \POST}, {json: {slug: v}, type: \json}
+        .finally -> debounce 1000 .then -> p.classList.remove \running
+        .then (r = {}) -> slugs[v] = (if r.result == \free => false else true)
+        .catch -> slugs[v] = true
+        .then -> form.check {n: 'slug'}
+
+
     form = new ldForm do
-      root: "[ld-scope='brd-basic']"
+      root: "[ld-scope='org-basic']"
       submit: "[ld='submit']"
       afterCheck: (s, f) ->
         if f.thumbnail.value =>
@@ -68,23 +82,18 @@ block script
       verify: (n,v,e) ->
         if n in <[slug]> =>
           if slugs[v]? => return if slugs[v] => 2 else 0
-          p = ld$.parent(@fields[n], '.form-group')
-          p.classList.add \running
-          ld$.fetch '/d/board/slug-check', {method: \POST}, {json: {slug: v}, type: \json}
-            .finally -> debounce 1000 .then -> p.classList.remove \running
-            .then (r = {}) ->
-              slugs[v] = (if r.result == \free => false else true)
-            .catch -> slugs[v] = true
-            .then -> form.check {n: 'slug'}
+          slug-check n,v,e
+
           return 1
         return if !!v => 0 else 2
-    ldld = new ldLoader root: document.body
     view = new ldView do
-      root: "[ld-scope='brd-basic']"
+      root: "[ld-scope='org-basic']"
       action: click: submit: ({node}) ->
         ldld.on!
         fd = form.getfd!
-        ld$.fetch \/d/board/, {method: \POST, body: fd}, {type: \json}
-          .then (r) -> #window.location.href = "/b/#{r.key}"
+        ld$.fetch \/d/o/, {method: \POST, body: fd}, {type: \json}
+          .then (r) -> 
+            notify.send \success, '建立完成，將您導向組織主控台 ...'
+            debounce 1000 .then -> window.location.href = "/o/#{r.key}/admin"
           .catch ->
             debounce 1000 .then -> ldld.off!

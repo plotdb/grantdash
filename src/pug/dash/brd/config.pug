@@ -6,6 +6,7 @@
       li.nav-item: .nav-link.active(ld="nav-tab default",data-name="basic") 基本資訊
       li.nav-item: .nav-link(ld="nav-tab",data-name="stage") 階段
       li.nav-item: .nav-link(ld="nav-tab",data-name="perm") 權限
+      li.nav-item: .nav-link(ld="nav-tab",data-name="version") 版本控制
       //-
         li.nav-item: .nav-link(ld="tabbar-tab",data-name="form") 提案表
         li.nav-item: .nav-link(ld="tabbar-tab",data-name="judge") 資格
@@ -19,3 +20,5 @@
     include stage.pug
   div(ld="nav-panel",data-nav="brd-config",data-name="perm")
     include perm.pug
+  div(ld="nav-panel",data-nav="brd-config",data-name="version")
+    include version.pug

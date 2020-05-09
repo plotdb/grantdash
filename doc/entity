@@ -1,0 +1,47 @@
+organization, board, project
+
+ * corresponding table
+ * sharedb doc
+
+
+## board
+
+ db table
+  - key, owner, createdtime, deleted
+  - questinos:
+    - 如果所有東西都以 json 型態存在 snapshot 中, 那我們還需要各別 table 嗎？
+    - 如果要, 那怎麼做 table <-> snapshot 間的 sync?
+    - 如果存 snapshot 中, 是否就必須要做 collaborative, 用 sharedb 來維護?
+    - 感覺起來:
+      1. 以 table 為主, table 可存 config, 裡面放 json.
+      2. 在前端, config 本身透過 operational transformation 來維護.
+        - 因此可以簡單實作 undo / redo
+        - 若需要接上 collaborative 也容易.
+      3. 若有接上 sharedb, 那麼 snapshot 則會被更新. 若沒有, 則需要用戶明確 "save", 將資料存進 table.
+        - 可以這樣: snapshot 視為最新編輯狀況, table.config 視為 release 版本.
+        - 接下來的 policy 就是: 
+          - 完全無 snapshot - 不做 collaborative. 靠 save 跟 table.config 運作
+          v 編輯狀態靠 snapshot, 但運作靠 table.config, 提醒用戶做 save/commit. 容易讓用戶混淆.
+          - 只靠 snapshot - 會有編到一半的問題.
+
+ json:
+ {
+   info: {}
+   stage: {}
+   permission: {}
+   page: {
+     navbar: {}
+     files: {}
+   }
+   group: [
+     {
+       id: xx, 
+       name: '...'
+       criteria: {}
+       score: {}
+       form: {}
+       permission: {}
+       stage: {}
+     }
+   ]
+ }

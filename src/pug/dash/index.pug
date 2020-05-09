@@ -24,11 +24,22 @@ html
     include /modules/misc/misc.pug
     .ldNotify
 
+    .position-fixed.alert.alert-warning.border.border-warning.shadow.mx-auto.z-fixed.p-2.d-flex.align-items-center.justify-content-center(style="left:0;right:0;top:.675em;width:500px")
+      span.mr-2 您目前修改中的設定尚未儲存至系統中。
+      strong.clickable.text-underline.mr-4 立刻儲存
+      strong.clickable.text-underline 取消變更
+
+    //-.position-fixed.alert.alert-warning.border.border-warning.shadow.mx-auto.z-fixed.p-2.d-flex.align-items-center.justify-content-center(style="left:0;right:0;top:.675em;width:480px")
+      span.mr-2 您目前正在瀏覽的是過往版本的設定。
+      strong.clickable.text-underline 回到最新設定
+
     .d-flex.flex-column.h-100.position-relative.z-float
       div(style="height:2.75em")
       .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4(style="overflow:hidden")
         include sidemenu.pug
         .flex-grow-1.bg-white(style="overflow:scroll")
+          .p-4(ld="default nav-panel",data-nav="main",data-name="org-config")
+            include org/config.pug
           .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
             include brd/config.pug
         //-.flex-grow-1.bg-white(style="overflow:scroll")

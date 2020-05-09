@@ -1,0 +1,16 @@
+//- module
+
+.navbar.navbar-expand-lg.navbar-light.border.shadow-sm.rounded.sticky.z-fixed.bg-white(style="top:1em")
+  .collapse.navbar-collapse
+    ul.nav.nav-pills.mr-auto(ld="nav",data-nav="org-config")
+      li.nav-item: .nav-link.active(ld="nav-tab default",data-name="basic") 基本資訊
+      li.nav-item: .nav-link(ld="nav-tab",data-name="perm") 權限
+      li.nav-item: .nav-link(ld="nav-tab",data-name="version") 版本控制
+
+.p-4
+  div(ld="default nav-panel",data-nav="org-config",data-name="basic")
+    include basic.pug
+  div(ld="nav-panel",data-nav="org-config",data-name="perm")
+    include perm.pug
+  div(ld="nav-panel",data-nav="org-config",data-name="version")
+    include version.pug
