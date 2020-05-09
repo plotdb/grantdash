@@ -1,5 +1,5 @@
 doctype html
-include /../../static/assets/lib/ldui/pug/ldui.pug
+include /modules/common.pug
 -
   var ctrl = {
     cover: {authpanel: false},
@@ -13,6 +13,7 @@ html
   head
     meta(charset="utf-8")
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    +css("https://cdn.jsdelivr.net/npm/tail.datetime@0.4.13/css/tail.datetime-harx-light.min.css")
     +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
     +css("/assets/lib/ldui/ldui.min.css")
     +css("/css/index.css")
@@ -20,7 +21,7 @@ html
     block head
   body.bg-secondary(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
     //-+script("/js/pack/base.min.js")
-    include /dash/modules/navtop.pug
+    include /admin/modules/navtop.pug
     include /modules/misc/misc.pug
     .ldNotify
 
@@ -53,9 +54,13 @@ html
     if ctrl.foot.shown
       include /modules/widget/foot.pug
 
-    block script
+    +register-locals("org")
+    +script("https://cdn.jsdelivr.net/npm/tail.datetime@0.4.13/js/tail.datetime-full.min.js")
     +script("/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
     +script("/assets/lib/ldui/ldui.min.js")
     +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
+    +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
     +script("/js/site.js")
     +script("/js/modules/nav.js")
+    +script("/js/admin/index.js")
+    block script

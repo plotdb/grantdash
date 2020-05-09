@@ -6,7 +6,7 @@ api = engine.router.api
 app = engine.app
 
 app.get \/o/:key/admin, aux.signed, (req, res) ->
-  res.render \/org/admin.pug
+  res.render \admin/index.pug, {org: {key: req.param.key}}
 
 api.post \/o/, aux.signed, express-formidable!, (req, res) ->
   lc = {}

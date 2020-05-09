@@ -1,0 +1,53 @@
+extends /base.pug
+block vars
+  - ctrl.navtop.placeholder = true;
+  - ctrl.navtop.shown = true;
+  - ctrl.navtop.className = "navbar-light"
+  // include /design/data/sample.pug
+block head
+block body
+  //include /activity/mixins/index.pug
+  //include /design/mixins/index.pug
+  style(type="text/css"): :stylus
+    body { background: radial-gradient(#f1f2f3,#999) fixed top center; background-size: cover }
+  +nbr(2)
+  .w-640.mx-auto
+    +scope("org-basic").card.mb-4.shadow-lg: .card-body: .p-4
+      h3 建立組織
+      p.text-sm.text-muted 在我們進行下一步之前，先填妥組織的基本資訊吧
+      hr
+      .row.align-items-center.mb-4
+        .col-md-3.text-right 組織名稱
+        .col-md
+          .form-group.mb-0.ld-ext-right
+            .ld.ld-spin.ld-spinner.text-primary
+            input.form-control(name="name")
+            .invalid-feedback.position-absolute 組織必須要有名字
+      .row.align-items-center.mb-4
+        .col-md-3.text-right
+          span 組織代碼
+          p.text-muted.text-sm 用於網址的短代碼
+        .col-md
+          .form-group.mb-0.ld-ext-right
+            .ld.ld-spin.ld-spinner.text-primary
+            input.form-control(name="slug",placeholder="僅接受英文字母、數字或連字符號")
+            .invalid-feedback.position-absolute 已經有其它組織使用這個代碼了，請換一個
+      .row.align-items-start.mb-4
+        .col-md-3.text-right 組織摘要
+        .col-md: .form-group.mb-0
+          textarea.form-control(name="description",rows="4",placeholder="20個字以上")
+          .invalid-feedback.position-absolute 請寫得稍微充實一點。
+
+      .row.align-items-start.mb-4
+        .col-md-3.text-right 組織主圖
+        .col-md: .w-100: .aspect-ratio.ratio-2by1.bg-secondary.rounded.overflow-hidden
+          .bg-semi-dark.bg.bg-cover.bg-portrait
+            .w-100.h-100.bg-semi-dark.vertical-center
+              .w-100.text-center: .btn.btn-outline-light.btn-upload 上傳 #[input(name="thumbnail",type="file")]
+
+      .row.align-items-center.mb-4.pt-4
+        .col-md-3
+        .col-md: .btn.btn-lg.btn-primary.disabled(ld="submit") 立刻建立
+
+block script
+  +script("/js/admin/org-basic.js")

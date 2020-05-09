@@ -23,9 +23,12 @@ organization, board, project
           - 完全無 snapshot - 不做 collaborative. 靠 save 跟 table.config 運作
           v 編輯狀態靠 snapshot, 但運作靠 table.config, 提醒用戶做 save/commit. 容易讓用戶混淆.
           - 只靠 snapshot - 會有編到一半的問題.
+      4. 即時編輯可能會碰到 validation failed 的問題 - 這時要阻止 commit/save.
+      5. 上傳檔案怎麼辦？
 
  json:
  {
+   valid: ..?
    info: {}
    stage: {}
    permission: {}

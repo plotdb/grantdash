@@ -116,3 +116,7 @@ p {
 .dropdown-item {
   font-weight: 300;
 }
+input.form-control {
+  border-radius: 0;
+  border-width: 0 0 1px 0;
+}

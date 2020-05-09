@@ -1,2 +1,10 @@
 //- module
-include /../../static/assets/lib/ldui/pug/ldui.pug
+if(!blockLoader || !blockLoader["common"])
+  include /../../static/assets/lib/ldui/pug/ldui.pug
+  mixin register-locals(name = "exports")
+    if locals
+      script.
+        ldc.register("viewLocals", [], function() {
+          return !{escjson(locals[name] || null)};
+        });
+

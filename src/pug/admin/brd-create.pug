@@ -22,7 +22,7 @@ block body
         .col-md
           .form-group.mb-0.ld-ext-right
             .ld.ld-spin.ld-spinner.text-primary
-            input.form-control.border-bottom.rounded-0(name="name",style="border:0")
+            input.form-control(name="name")
             .invalid-feedback.position-absolute 活動必須要有名字
       .row.align-items-center.mb-4
         .col-md-3.text-right
@@ -31,7 +31,7 @@ block body
         .col-md
           .form-group.mb-0.ld-ext-right
             .ld.ld-spin.ld-spinner.text-primary
-            input.form-control.border-bottom.rounded-0(name="slug",placeholder="僅接受英文字母、數字或連字符號",style="border:0")
+            input.form-control(name="slug",placeholder="僅接受英文字母、數字或連字符號")
             .invalid-feedback.position-absolute 已經有其它活動使用這個代碼了，請換一個
       .row.align-items-start.mb-4
         .col-md-3.text-right 活動摘要
@@ -39,19 +39,19 @@ block body
 
       .row.align-items-center.mb-4
         .col-md-3.text-right 開始時間
-        .col-md: input.form-control.border-bottom.rounded-0(type="text",name="starttime",style="border:0")
+        .col-md: input.form-control(type="text",name="starttime")
 
       .row.align-items-center.mb-4
         .col-md-3.text-right 結束時間
-        .col-md: input.form-control.border-bottom.rounded-0(type="text",name="endtime",style="border:0")
+        .col-md: input.form-control(type="text",name="endtime")
 
       //-.row.align-items-center.mb-4
         .col-md-3.text-right 起迄時間
         .col-md
           .d-flex.align-items-center
-            input.form-control.border-bottom.rounded-0(type="datetime-local",name="starttime",style="border:0;width:180px")
+            input.form-control(type="datetime-local",name="starttime",style="width:180px")
             .text-sm.mx-2 至
-            input.form-control.border-bottom.rounded-0(type="datetime-local",name="endtime",style="border:0;width:180px")
+            input.form-control(type="datetime-local",name="endtime",style="width:180px")
       .row.align-items-start.mb-4
         .col-md-3.text-right 活動主圖
         .col-md: .w-100: .aspect-ratio.ratio-2by1.bg-secondary.rounded.overflow-hidden
@@ -65,7 +65,7 @@ block body
       //-.row.align-items-center.mb-4
         .col-md-3.text-right 連絡信箱
         .col-md
-          input.form-control.border-bottom.rounded-0(name="email",style="border:0")
+          input.form-control(name="email")
       .row.align-items-center.mb-4.pt-4
         .col-md-3
         .col-md: .btn.btn-lg.btn-primary.disabled(ld="submit") 立刻建立

@@ -53,7 +53,6 @@
         var node, g;
         node = arg$.node;
         g = node.getAttribute('data-nav');
-        console.log(lc.active[g], node.getAttribute('ld'));
         return node.classList.toggle('d-none', (lc.active[g] && lc.active[g].name !== node.getAttribute('data-name')) || (!lc.active[g] && !/default/.exec(node.getAttribute('ld'))));
       }
     }

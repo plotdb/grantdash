@@ -29,7 +29,6 @@
         )
       "nav-panel": ({node}) ->
         g = node.getAttribute(\data-nav)
-        console.log lc.active[g], node.getAttribute(\ld)
         node.classList.toggle \d-none, (
           (lc.active[g] and lc.active[g].name != node.getAttribute(\data-name)) or
           (!lc.active[g] and !/default/.exec(node.getAttribute(\ld)))
