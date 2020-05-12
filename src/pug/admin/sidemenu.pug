@@ -5,7 +5,7 @@ style(style="text/css").
   [ld=brd-head] [ld=cart] { transform: rotate(0deg); transition: all .25s ease-in-out }
   [ld=brd-head].on [ld=cart] { transform: rotate(180deg) }
 
-.bg-dark.text-white.text-left(style="width:200px;overflow:scroll;flex:0 0 auto")
+.bg-dark.text-white.text-left(style="width:200px;overflow-y:scroll;flex:0 0 auto")
   #brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(style="top:0;transition:height .25s ease-in-out")
     div(ld="brd-head")
       .folder.border-bottom.border-secondary.text-sm.no-dart(ld="nav",data-nav="main")
@@ -15,7 +15,7 @@ style(style="text/css").
           .ml-1 #[i.i-bars]
         .folder-menu.pb-3
           .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 組織設定
-          .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 選單列
+          .folder-item(ld="nav-tab",data-name="org-navbar",data-nav="main") 選單列
           .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 頁面編輯器
           //-.folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 其它組織 ...
 

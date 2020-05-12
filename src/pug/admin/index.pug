@@ -37,9 +37,13 @@ html
       div(style="height:2.75em")
       .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4(style="overflow:hidden")
         include sidemenu.pug
-        .flex-grow-1.bg-white(style="overflow:scroll")
+        .flex-grow-1.bg-white(style="overflow-y:scroll")
           .p-4(ld="default nav-panel",data-nav="main",data-name="org-config")
             include org/config.pug
+
+          .p-4(ld="nav-panel",data-nav="main",data-name="org-navbar")
+            include org/navbar.pug
+
           .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
             include brd/config.pug
         //-.flex-grow-1.bg-white(style="overflow:scroll")
