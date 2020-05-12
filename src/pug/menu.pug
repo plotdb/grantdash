@@ -1,0 +1,38 @@
+doctype html
+include /../../static/assets/lib/ldui/pug/ldui.pug
+html
+  head
+    +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
+    +css("/assets/lib/ldui/ldui.min.css")
+    +css("/assets/lib/ldui/ext/folder.min.css")
+    +css("/css/index.css")
+    +script("/assets/lib/ldui/ldui.min.js")
+    style(type="text/css"): :stylus
+      .folder-item
+        display: flex
+        align-items: center
+      .folder-item .inner
+        flex: 1
+        display: inline-block
+        border: 1px solid #ddd
+        border-radius: .25em
+        box-shadow: 0 1px 1px rgba(0,0,0,.1)
+        padding: .5em
+
+  body
+    .w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
+      #root: .folder-root
+        .folder-item(draggable="true"): .inner 活動辦法
+        .folder-item(draggable="true"): .inner 關於我們
+        .folder(draggable="true")
+          .folder-item.folder-toggle: .inner 歷屆活動
+          .folder-menu
+            .folder-item(draggable="true"): .inner 2018 春季
+            .folder-item(draggable="true"): .inner 2018 秋季
+        .folder-item(draggable="true"): .inner 成果報告
+
+
+    +script("/js/modules/nav.js")
+    +script("/assets/lib/ldui/ext/folder.min.js")
+    +script("/js/admin/reblock.js")
+    +script("/js/admin/folder-dynamics.js")
