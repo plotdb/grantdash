@@ -5,9 +5,7 @@
 
   ul.nav.nav-tabs.mb-4(ld="roles")
     li.nav-item: a.nav-link(ld="role-all",data-type="all",data-name="") 清單
-    li.nav-item(ld-each="role"): a.nav-link.active 評審
-    li.nav-item(ld-each="role"): a.nav-link 資格審
-    //li.nav-item(ld-each="role"): a.nav-link
+    li.nav-item(ld-each="role"): a.nav-link
     li.nav-item.flex-grow-1
     li.nav-item.text-right: a.nav-link.text-muted.border-0(ld="new-role") 新增 +
 
@@ -16,9 +14,9 @@
     .invalid-feedback 不能用這個名稱
   .alert.alert-light.px-2.mb-4.border
     //-.text-muted(ld="role-desc-all",data-name="") 此列表列出所有出現在權限設定中的用戶，以及他們所擔任角色。
-    .ttext-muted 可以進行初選、決選，擁有存取評選表與總表的權限。
+    //-.text-muted 可以進行初選、決選，擁有存取評選表與總表的權限。
     div(ld="roles-desc")
-      .text-muted.d-none(ld-each="role-desc",contenteditable="true")
+      .text-muted.d-none(ld-each="role-desc",contenteditable="true") 角色的簡單描述 ... 
 
   div
     .py-3.px-3(ld="newuser"): .d-inline-block.clickable.text-primary(ld="newuser-toggle") 新增使用者權限 ...
@@ -38,13 +36,10 @@
 
   .px-0(ld="list-view")
     .row.no-gutters
-      each i in [["王小明","管理員"],["張大千","評審"],["陳小春", "資格審"]]
-        .col-md-6(ld-each="user"): .border.rounded.d-flex.p-2.m-2.align-items-center.shadow-sm
-          .mr-2(style="width:2.75em"): .aspect-ratio.ratio-1by1.bg-dark.rounded
-          .flex-grow-1
-            b #{i[0]}
-            .text-sm.text-muted #{i[1]}
-          .pr-2: i.i-close.clickable
+      .col-md-6(ld-each="user"): .border.rounded.d-flex.p-2.m-2.align-items-center.shadow-sm
+        .mr-2(style="width:2.75em"): .aspect-ratio.ratio-1by1.bg-dark.rounded
+        .flex-grow-1 #[b]#[.text-sm.text-muted]
+        .pr-2: i.i-close.clickable
 
   .px-0.d-none(ld="role-view")
     .row.no-gutters
@@ -71,3 +66,4 @@
   .d-flex.justify-content-between
     .flex-grow-1: .btn.btn-outline-danger(ld="role-view delete-role") 刪除角色
     .btn.btn-primary.disabled(ld="submit") 更新資料
+  +script("/js/admin/org-perm.js")

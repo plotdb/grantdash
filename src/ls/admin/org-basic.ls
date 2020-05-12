@@ -1,6 +1,7 @@
 (->
+
   ldc.register \orgBasic, [], ->
-    share = {name: "布拉國", description: "告訴你一個神秘的地方..."}
+    lc = {}
     ldld = new ldLoader className: "ldld full"
     notify = new ldNotify root: '.ldNotify', classIn: <[ld-fall-ttb-in]>
     slugs = {}
@@ -26,7 +27,7 @@
             .then (r) -> p.style.backgroundImage = "url(#{r.result})"
         s.all = if <[name slug description]>.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
       verify: (n,v,e) ->
-        adopter.update n, v
+        adopter.update-field n, v
         if n in <[slug]> =>
           if slugs[v]? => return if slugs[v] => 2 else 0
           slug-check n,v,e
@@ -44,25 +45,11 @@
             debounce 1000 .then -> window.location.href = "/o/#{r.key}/admin"
           .catch ->
             debounce 1000 .then -> ldld.off!
-    for k,v of share =>
-      form.fields[k].value = v
 
-    return adopter = do
-      install: ->
-        @ <<< it{sdb, doc}
-        share := JSON.parse(JSON.stringify(@doc.data))
-        @watch share
-      update: (n, v) ->
-        cur = JSON.parse(JSON.stringify(share))
-        cur[n] = v
-        console.log share, cur
-        op = @sdb.json.diff(share, cur)
-        # TODO compare relative to subtree, restore to absolute path when submit 
-        if op and op.length => @doc.submitOp op
-      watch: (data) ->
-        share <<< data
-        for k,v of share =>
-          form.fields[k].value = v
+    adopter = new Adopter!
+    adopter.on \change, ->
+      for k,v of @data => form.fields[k].value = v
+    return adopter
 
 
   ldc.app \orgBasic

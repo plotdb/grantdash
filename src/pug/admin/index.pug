@@ -20,7 +20,6 @@ html
     +script("/assets/lib/ldc/ldc.min.js")
     block head
   body.bg-secondary(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
-    //-+script("/js/pack/base.min.js")
     include /admin/modules/navtop.pug
     include /modules/misc/misc.pug
     .ldNotify
@@ -60,7 +59,9 @@ html
     +script("/assets/lib/ldui/ldui.min.js")
     +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
     +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
+    +script("/assets/lib/ctrlz/ctrlz.bundle.min.js")
     +script("/js/site.js")
     +script("/js/modules/nav.js")
+    +script("/js/admin/adopter.js")
     +script("/js/admin/index.js")
     block script

@@ -6,7 +6,7 @@ api = engine.router.api
 app = engine.app
 
 app.get \/o/:key/admin, aux.signed, (req, res) ->
-  res.render \admin/index.pug, {org: {key: req.param.key}}
+  res.render \admin/index.pug, {org: {key: req.params.key}}
 
 api.post \/o/, aux.signed, express-formidable!, (req, res) ->
   lc = {}
@@ -32,10 +32,8 @@ api.post \/o/, aux.signed, express-formidable!, (req, res) ->
     .catch aux.error-handler res
 
 api.post \/o/slug-check, (req, res) ->
-  console.log 1
   io.query "select key from org where slug = $1", [req.body.slug]
     .then (r = {}) ->
-      console.log 2
       res.send {result: if (r.rows or []).length => 'used' else 'free'}
     .catch ->
       console.log it
