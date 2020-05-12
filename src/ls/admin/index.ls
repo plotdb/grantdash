@@ -1,5 +1,5 @@
 (->
-  ldc.register \admin, <[viewLocals orgBasic loader]>, ({viewLocals, orgBasic, loader}) ->
+  ldc.register \admin, <[viewLocals orgInfo orgPerm loader]>, ({viewLocals, orgInfo, orgPerm, loader}) ->
     loader.on!
     lc = {}
 
@@ -23,7 +23,8 @@
         .then -> loader.off!
 
     watch = (ops, source) ->
-      orgBasic.watch {ops}
+      orgInfo.watch {ops, source}
+      orgPerm.watch {ops, source}
 
     update = ->
 
@@ -35,7 +36,9 @@
       sdb.get {id, watch}
         .then (doc) ->
           lc.doc = doc
-          orgBasic.install {doc, sdb}
+          console.log doc.data
+          orgInfo.install {doc, sdb}
+          orgPerm.install {doc, sdb}
           loader.off!
     init!
     loader.off!

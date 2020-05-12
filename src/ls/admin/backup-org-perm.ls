@@ -3,8 +3,18 @@
     lc = {type: \list}
     obj = do
       idx: -1
-      cfg: {roles: [
-      ]}
+      cfg: do
+        roles: [
+          {
+            name: "管理員",
+            desc: "擁有管理此活動的所有權限，包含設定權限、更改任何設定等。",
+            list: [ {name: "Kirby Wu"}, {name: "David Jones"}, {name: "Beetle Juice"}]
+          }, {
+            name: "評審",
+            desc: "活動的提案評審，擁有個人的評審頁面，其評分表並會匯入評選大表中。",
+            list: [ {name: "clkao"}, {name: "ipa chiu"} ]
+          }
+        ]
 
     toggle-role = ->
       role = obj.cfg.roles[idx = obj.idx]
@@ -16,11 +26,18 @@
       toggle-role!
       view.render!
 
+    update-history = (do-debounce) ->
+      if do-debounce => update-history-debounced!
+      else history.update obj
+    update-history-debounced = debounce ->
+      history.update obj
+
+    history = new ctrlz {obj: JSON.parse(JSON.stringify(obj))}
     view-config = { root: '[ld-scope=permission-panel]', action: {click: {}, keyup: {}}, handler: {}}
     view-config.action.click <<< do
       roles: ({node, evt}) ->
         obj.idx = obj.cfg.roles.map(->it.name).indexOf(evt.target.getAttribute(\data-name))
-        update-data!
+        update-history!
         update-view!
 
       "new-role": ({node, evt}) ->
@@ -29,7 +46,7 @@
         name = "角色#{if i < 100 => i else Math.round(Math.random! * 100) + 100}"
         obj.cfg.roles.push { name: name, desc: "自訂角色", list: [] }
         obj.idx = obj.cfg.roles.length - 1
-        update-data!
+        update-history!
         update-view!
         evt.stopPropagation!
 
@@ -38,7 +55,7 @@
         else if ~obj.idx =>
           obj.cfg.roles.splice(obj.idx,1)
           obj.idx = -1
-          update-data!
+          update-history!
           update-view!
     view-config.action.keyup <<< do
       "role-name": ({node}) -> if lc.role =>
@@ -47,7 +64,7 @@
         node.classList.toggle \is-invalid, invalid
         if invalid => return
         lc.role.name = node.value
-        update-data!
+        update-history!
         update-view!
 
     view-config.handler <<< do
@@ -71,7 +88,7 @@
         list: -> obj.cfg.roles
         action: keyup: ({node, data}) ->
           data.desc = node.innerText
-          update-data true
+          update-history true
         handler: ({node, data}) ->
           node.innerText = data.desc or ''
           node.setAttribute \data-name, data.name
@@ -87,7 +104,7 @@
         c = obj.cfg.roles[obj.idx].{}config
         if !c => return
         c[node.getAttribute(\data-name)] = node.classList.contains(\on)
-        update-data!
+        update-history!
 
     view-config.handler <<< do
       switch: ({node}) ->
@@ -112,7 +129,7 @@
           list = obj.cfg.roles[idx].list
           if !~list.indexOf(data) => return
           list.splice list.indexOf(data), 1
-          update-data!
+          update-history!
           update-view!
     view-config.action.click <<< do
       "newuser-toggle": ({node}) -> view.getAll(\newuser).map -> it.classList.toggle \d-none
@@ -127,13 +144,13 @@
         if ~idx => return alert("user already exist")
         role.list.push {name: user, perm: role.name}
         view.get(\newuser-name).value = ''
-        update-data!
+        update-history!
         update-view!
 
     view-config.handler <<< do
       "newuser-role-picked": ({node}) ->
         if !lc.picked-role => lc.picked-role = obj.cfg.roles[0]
-        if lc.picked-role => node.innerText = lc.picked-role.name
+        node.innerText = lc.picked-role.name
       "newuser-role-option": do
         list: -> obj.cfg.roles
         action: click: ({node, data}) ->
@@ -144,18 +161,14 @@
 
     view = new ldView view-config
 
-    adopter = new Adopter path: ['perm']
-    adopter.on \change, ({ops, source}) ->
-      if source => return
-      obj.cfg = if adopter.data => JSON.parse(JSON.stringify(adopter.data)) else {}
-      if !obj.cfg.roles => obj.cfg.roles = []
-      update-view!
-    update-data-debounced = debounce 500, -> update-data!
-    update-data = (deb) ->
-      if deb => update-data-debounced!
-      else adopter.update -> JSON.parse(JSON.stringify(obj.cfg))
-
-    return adopter
+    document.addEventListener \keydown, (e) ->
+      if e.keyCode == 90 and (e.metaKey or e.ctrlKey) =>
+        if e.shiftKey => history.redo!
+        else history.undo!
+        payload = JSON.parse(JSON.stringify(history.get!))
+        obj.idx = payload.idx
+        obj.cfg = payload.cfg
+        update-view!
 
   ldc.app \orgPerm
 )!

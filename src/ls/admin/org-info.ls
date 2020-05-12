@@ -1,8 +1,7 @@
 (->
 
-  ldc.register \orgBasic, [], ->
+  ldc.register \orgInfo, <[loader]>, ({loader}) ->
     lc = {}
-    ldld = new ldLoader className: "ldld full"
     notify = new ldNotify root: '.ldNotify', classIn: <[ld-fall-ttb-in]>
     slugs = {}
     tail.DateTime("input[name=starttime]")
@@ -18,7 +17,7 @@
 
 
     form = new ldForm do
-      root: "[ld-scope='org-basic']"
+      root: "[ld-scope='org-info']"
       submit: "[ld='submit']"
       afterCheck: (s, f) ->
         if f.thumbnail.value =>
@@ -27,7 +26,7 @@
             .then (r) -> p.style.backgroundImage = "url(#{r.result})"
         s.all = if <[name slug description]>.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
       verify: (n,v,e) ->
-        adopter.update-field n, v
+        adopter.update -> it[n] = v; it
         if n in <[slug]> =>
           if slugs[v]? => return if slugs[v] => 2 else 0
           slug-check n,v,e
@@ -35,22 +34,22 @@
           return 1
         return if !!v => 0 else 2
     view = new ldView do
-      root: "[ld-scope='org-basic']"
+      root: "[ld-scope='org-info']"
       action: click: submit: ({node}) ->
-        ldld.on!
+        loader.on!
         fd = form.getfd!
         ld$.fetch \/d/o/, {method: \POST, body: fd}, {type: \json}
           .then (r) -> 
             notify.send \success, '建立完成，將您導向組織主控台 ...'
             debounce 1000 .then -> window.location.href = "/o/#{r.key}/admin"
           .catch ->
-            debounce 1000 .then -> ldld.off!
+            debounce 1000 .then -> loader.off!
 
-    adopter = new Adopter!
+    adopter = new Adopter path: <[info]>
     adopter.on \change, ->
       for k,v of @data => form.fields[k].value = v
     return adopter
 
 
-  ldc.app \orgBasic
+  ldc.app \orgInfo
 )!

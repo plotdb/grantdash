@@ -2,11 +2,13 @@
 var slice$ = [].slice;
 (function(){
   var Adopter;
-  window.Adopter = Adopter = function(){
+  window.Adopter = Adopter = function(opt){
+    opt == null && (opt = {});
     this.doc = null;
     this.sdb = null;
     this.data = null;
-    this.evtHandler = {};
+    this.evtHandler = JSON.parse(JSON.stringify({}));
+    this.path = opt.path || [];
     return this;
   };
   return Adopter.prototype = import$(Object.create(Object.prototype), {
@@ -24,35 +26,54 @@ var slice$ = [].slice;
       return results$;
     },
     install: function(it){
+      var o, i$, ref$, len$, n;
       this.sdb = it.sdb;
       this.doc = it.doc;
-      this.data = this.doc.data;
+      o = this.doc.data;
+      for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
+        n = ref$[i$];
+        o = o[n];
+      }
       return this.watch({
-        data: this.data
+        data: o
       });
     },
-    updateField: function(n, v){
-      var cur, ops;
-      cur = JSON.parse(JSON.stringify(this.data));
-      cur[n] = v;
-      ops = this.sdb.json.diff(this.data, cur);
-      this.update(ops);
-      return this.data[n] = v;
-    },
     update: function(ops){
-      if (ops && ops.length) {
+      var cur, this$ = this;
+      if (typeof ops === 'function') {
+        cur = ops(JSON.parse(JSON.stringify(this.data || {})));
+        ops = !this.data
+          ? [{
+            p: [],
+            oi: {}
+          }]
+          : [];
+        ops = ops.concat(this.sdb.json.diff(this.data || {}, cur));
+        return this.update(ops);
+      } else if (Array.isArray(ops) && ops.length) {
+        ops.map(function(it){
+          return it.p = this$.path.concat(it.p);
+        });
         return this.doc.submitOp(ops);
       }
     },
     watch: function(arg$){
-      var ops, data;
-      ops = arg$.ops, data = arg$.data;
+      var ops, data, source, o, i$, ref$, len$, n;
+      ops = arg$.ops, data = arg$.data, source = arg$.source;
       if (data) {
         this.data = data;
+      } else {
+        o = this.doc.data;
+        for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
+          n = ref$[i$];
+          o = o[n];
+        }
+        this.data = o;
       }
       return this.fire('change', {
         ops: ops,
-        data: data
+        data: data,
+        source: source
       });
     }
   });
