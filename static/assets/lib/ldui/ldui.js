@@ -10116,6 +10116,9 @@ var slice$ = [].slice;
         if (n !== e) {
           return null;
         }
+        if (!s) {
+          return this;
+        }
         n = this;
         while (n && n !== e && (!n.matches || (n.matches && !n.matches(s)))) {
           n = n.parentNode;

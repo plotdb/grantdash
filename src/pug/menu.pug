@@ -20,8 +20,41 @@ html
         padding: .5em
 
   body
+    mixin folder(opt)
+      .folder(draggable="true")
+        +item(opt.item)
+        .folder-menu
+          each item in opt.children
+            +item(item)
+
+    style(type="text/css"): :stylus
+      .folder > .folder-item .url { display: none }
+             
+    mixin item(opt)
+      .folder-item(class=opt.toggle ? "folder-toggle" : "",draggable=opt.toggle ? "" : "true")
+        .inner.d-flex.align-items-center
+          i.i-bars.mr-4
+          .name.flex-grow-1.mr-2: input.form-control(value=opt.name)
+          .url.flex-grow-1: input.form-control(placeholder="URL",value=opt.url || '')
+          i.i-radio.ml-4
+          i.i-clone.ml-4
+          i.i-close.ml-4.mr-4
+    -
+      var tree = [
+        {name: "活動辦法"},
+        {name: "關於我們"},
+        {item: {name: "歷屆活動", toggle: true}, children: [ {name: "2018春季"}, {name: "2018秋季"} ]}, 
+        {name: "成果報告"}
+      ];
+
     .w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
       #root: .folder-root
+        each item in tree
+          if item.item
+            +folder(item)
+          else
+            +item(item)
+      //-#root: .folder-root
         .folder-item(draggable="true"): .inner 活動辦法
         .folder-item(draggable="true"): .inner 關於我們
         .folder(draggable="true")

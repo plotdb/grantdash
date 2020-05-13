@@ -6,7 +6,6 @@
     this.root = root = typeof root === 'string'
       ? document.querySelector(root)
       : root ? root : null;
-    console.log(root);
     toggler = ld$.find(root, '.folder-toggle', 0);
     menu = ld$.find(root, '.folder-menu', 0);
     toggler.addEventListener('click', function(){

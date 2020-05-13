@@ -51,6 +51,12 @@
 .folder-menu .folder-menu .folder-item {
   padding-left: 3em;
 }
+.folder-menu .folder-menu .folder-menu .folder-item {
+  padding-left: 4em;
+}
+.folder-menu .folder-menu .folder-menu .folder-menu .folder-item {
+  padding-left: 5em;
+}
 .folder-divider {
   margin: 0.5em 0;
 }
