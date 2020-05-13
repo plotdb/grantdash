@@ -133,16 +133,6 @@ api.put \/me/passwd/, (req, res) ->
     .then -> req.login(req.user, -> res.send!); return null
     .catch aux.error-handler res
 
-api.put \/me/su/:id, (req, res) ->
-  if !req.user or req.user.username != \tkirby@gmail.com => return aux.r403 res
-  io.query "select * from users where key = $1", [+req.params.id]
-    .then (r={})->
-      if !r.rows or !r.rows.0 => return aux.reject 404
-      req.user <<< r.rows.0
-      req.logIn r.rows.0, -> res.send!
-      return null
-    .catch aux.error-handler res
-
 # should be replaced by /me/config/
 api.post \/me/legal/, (req, res) ->
   if !(req.user and req.user.key) => return aux.r400 res
@@ -158,8 +148,3 @@ api.post \/me/config/, (req, res) ->
   io.query "update users set config = $2 where key = $1", [req.user.key, req.user.config]
     .then -> res.send!
     .catch aux.error-handler res
-
-api.get \/me/blah, (req, res) ->
-  host = req.get('host')
-  origin = req.get('origin')
-  res.send {host, origin}

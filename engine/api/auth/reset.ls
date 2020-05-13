@@ -53,6 +53,12 @@ engine.router.api.post \/me/passwd/reset, throttling.send, (req, res) ->
       obj <<< {key: r.rows.0.key, hex: "#{r.rows.0.key}" + (crypto.randomBytes(30).toString \hex), time: time }
       io.query "delete from pwresettoken where owner=$1", [obj.key]
     .then -> io.query "insert into pwresettoken (owner,token,time) values ($1,$2,$3)", [obj.key, obj.hex, obj.time]
-    .then -> mail.by-template \reset-password, email, {token: obj.hex}, {now: true}
+    .then ->
+      mail.by-template(
+        \reset-password
+        email
+        {token: obj.hex, domain: 'grantdash.io', displayname: 'Grant Dash'}
+        {now: true}
+      )
     .then -> res.send ''
     .catch aux.error-handler res, true
