@@ -1,7 +1,7 @@
 (->
   ldc.register \admin,
-  <[viewLocals orgInfo orgPerm brdInfo loader]>,
-  ({viewLocals, orgInfo, orgPerm, brdInfo, loader}) ->
+  <[viewLocals orgInfo orgPerm brdInfo prjInfo loader]>,
+  ({viewLocals, orgInfo, orgPerm, brdInfo, prjInfo, loader}) ->
     loader.on!
     lc = {}
 
@@ -31,8 +31,32 @@
             loader.off!
       init!
 
+
+    prjg-view = new ldView do
+      init-render: false
+      root: ".project-groups"
+      action: click: do
+        "project-group-add": ({node}) ->
+          data = JSON.parse(JSON.stringify(lc.docbrd.data))
+          data.[]group.push do
+            key: data.[]group.length + 1
+            name: "新分組"
+          ops = sdb.json.diff lc.docbrd.data, data
+          lc.docbrd.submitOp ops
+          prjg-view.render!
+      handler: do
+        "project-group": do
+          list: -> lc.docbrd.data.group or []
+          handler: ({node, data}) ->
+            n = ld$.find(node, '[ld=name]', 0)
+            n.innerText = data.name
+            new ldui.Folder root: node
+            new ldui.Nav node
+          
+
     watch-board = (ops, source) ->
       brdInfo.watch {ops, source}
+      prjInfo.watch {ops, source}
 
     ret = /b\/([0-9]+)/.exec(window.location.pathname)
     if ret => 
@@ -41,9 +65,10 @@
         loader.on!
         sdb.get {id, watch: watch-board}
           .then (doc) ->
-            lc.doc = doc
-            console.log doc.data
-            brdInfo.init {doc, sdb}
+            lc.docbrd = doc
+            brdInfo.init {doc: lc.docbrd, sdb}
+            prjInfo.init {doc: lc.docbrd, sdb}
+            prjg-view.render!
             loader.off!
       init-board!
 

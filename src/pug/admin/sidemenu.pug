@@ -76,20 +76,18 @@ style(style="text/css").
 
     .border-bottom.border-secondary.my-2
 
-    .folder
-      .folder-toggle.d-flex.align-items-center.folder-item
-        .flex-grow-1 專案組 A
-        div: i.i-plus
-      .folder-menu
-        .folder-item(ld="nav-tab",data-name="prj-config") 設定
-        .folder-item(ld="nav-tab",data-name="prj-list") 專案列表
-        .folder-item(ld="nav-tab",data-name="prj-judge") 評選資訊
-        .folder-item(ld="nav-tab",data-name="prj-form") 提案表
+    .project-groups
+      .folder(ld-each="project-group")
+        .folder-toggle.folder-item(ld="name") 分組
+        .folder-menu
+          .folder-item(ld="nav-tab",data-name="prj-config") 設定
+          .folder-item(ld="nav-tab",data-name="prj-list") 專案列表
+          .folder-item(ld="nav-tab",data-name="prj-judge") 評選資訊
+          .folder-item(ld="nav-tab",data-name="prj-form") 提案表
+      .folder-item(ld="project-group-add") 新增分組 ...
 
-    .folder
-      .folder-toggle.d-flex.align-items-center.folder-item
-        .flex-grow-1 專案組 B
-        div: i.i-plus
+    //-.folder
+      .folder-toggle.folder-item 專案組 B
       .folder-menu
         .folder-item(ld="nav-tab",data-name="prj-config") 設定
         .folder-item(ld="nav-tab",data-name="prj-list") 專案列表

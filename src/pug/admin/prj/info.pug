@@ -1,0 +1,24 @@
+//- module
++scope("prj-info")
+  h4 基本資訊
+  p.text-sm.text-muted 專案分組您可以在這裡為這個專案分組設定基本資訊，例如名稱、簡介、主視覺、活動時間等等。
+  hr.my-4
+  .row.align-items-center.mb-4
+    .col-md-2.text-right 分組名稱
+    .col-md
+      .form-group.mb-0.ld-ext-right
+        input.form-control(name="name")
+        .invalid-feedback.position-absolute 分組必須要有名字
+
+  .row.align-items-start.mb-4
+    .col-md-2.text-right 分組摘要
+    .col-md: textarea.form-control(name="description",rows="4")
+
+  .row.align-items-start.mb-4
+    .col-md-2.text-right 分組代碼
+    .col-md: input.form-control(name="key",readonly)
+
+  hr.my-4
+  .d-flex.justify-content-end
+    div: .btn.btn-primary.disabled(ld="submit") 更新資料
++script("/js/admin/prj-info.js")
