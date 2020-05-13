@@ -44,8 +44,7 @@
             debounce 1000 .then -> loader.off!
 
     adopter = new Adopter path: <[info]>
-    adopter.on \change, ->
-      for k,v of @data => form.fields[k].value = v
+    adopter.on \change, -> for k,v of @data => form.fields[k].value = v
     return adopter
 
 

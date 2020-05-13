@@ -21,44 +21,38 @@
             return node.classList.toggle('on');
           }
         }
+      },
+      handler: {
+        boards: {
+          list: function(){
+            return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function(it){
+              return {
+                key: it,
+                name: "測試" + it,
+                description: "隨意的描述",
+                starttime: '2020-05-10',
+                endtime: '2020-08-10'
+              };
+            });
+          },
+          action: {
+            click: function(arg$){
+              var node, key;
+              node = arg$.node;
+              key = node.getAttribute('data-key');
+              return window.location.href = "/b/" + key + "/admin";
+            }
+          },
+          handler: function(arg$){
+            var node, data;
+            node = arg$.node, data = arg$.data;
+            ld$.find(node, 'span', 0).innerText = data.name;
+            ld$.find(node, '.text-muted', 0).innerText = data.starttime + " - " + data.endtime;
+            return node.setAttribute('data-key', data.key);
+          }
+        }
       }
     });
   });
-  ldc.app('brd');
-  ldc.register('test', [], function(){
-    var toggleFolder;
-    toggleFolder = function(node){
-      var root, ison, menu, dbox;
-      root = node.parentNode;
-      ison = root.classList.contains('show');
-      if (!ison) {
-        root.classList.toggle('show');
-      }
-      menu = node.parentNode.childNodes[1];
-      dbox = menu.getBoundingClientRect();
-      menu.style.height = (ison ? dbox.height : 0) + "px";
-      setTimeout(function(){
-        return menu.style.height = (ison
-          ? 0
-          : dbox.height) + "px";
-      }, 0);
-      if (ison) {
-        setTimeout(function(){
-          root.classList.toggle('show');
-          return menu.style.height = "";
-        }, 250);
-      }
-      if (!ison) {
-        return setTimeout(function(){
-          return menu.style.height = "";
-        }, 250);
-      }
-    };
-    return ld$.find(document, '.folder-toggle').map(function(it){
-      return it.addEventListener('click', function(){
-        return toggleFolder(this);
-      });
-    });
-  });
-  return ldc.app('test');
+  return ldc.app('brd');
 })();

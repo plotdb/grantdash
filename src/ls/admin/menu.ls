@@ -10,8 +10,24 @@
           pbox = node.parentNode.parentNode.getBoundingClientRect!
           view.get('brd-list').style.height = "#{if ison => 0 else pbox.height - hbox.height}px"
           node.classList.toggle \on
+      handler: do
+        boards: do
+          list: ->
+            [0 to 10].map -> do
+              key: it, name: "測試#{it}"
+              description: "隨意的描述"
+              starttime: '2020-05-10', endtime: '2020-08-10'
+          action: click: ({node}) ->
+            key = node.getAttribute(\data-key)
+            window.location.href = "/b/#{key}/admin"
+
+          handler: ({node,data}) ->
+            ld$.find(node, \span, 0).innerText = data.name
+            ld$.find(node, \.text-muted, 0).innerText = "#{data.starttime} - #{data.endtime}"
+            node.setAttribute \data-key, data.key
   ldc.app \brd
 
+  /*
   ldc.register \test, <[]>, ->
     toggle-folder = (node)->
       root = node.parentNode
@@ -27,8 +43,7 @@
           menu.style.height = ""
         ), 250
       if !ison => setTimeout (-> menu.style.height = ""), 250
-
     ld$.find(document, '.folder-toggle').map -> it.addEventListener \click, -> toggle-folder(this)
-
   ldc.app \test
+  */
 )!

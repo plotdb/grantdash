@@ -11,10 +11,10 @@
 
 .navbar.navbar-expand-lg.navbar-light.mb-4.border.shadow-sm.rounded.sticky.z-fixed.bg-white(style="top:15px")
   .collapse.navbar-collapse
-    ul.nav.nav-pills.mr-auto(ld="tabbar")
-      li.nav-item: a.nav-link.active(ld="tabbar-tab default",data-name="basic") 資格審查 #[span.text-sm ( 100% )]
-      li.nav-item: a.nav-link(ld="tabbar-tab",data-name="config") 初選 #[span.text-sm ( 20% )]
-      li.nav-item: a.nav-link(ld="tabbar-tab",data-name="perm") 決選 #[span.text-sm ( 0% )]
+    ul.nav.nav-pills.mr-auto(ld="nav",data-nav="prj-judge")
+      li.nav-item: a.nav-link.active(ld="nav-tab default",data-name="basic") 資格審查 #[span.text-sm ( 100% )]
+      li.nav-item: a.nav-link(ld="nav-tab",data-name="config") 初選 #[span.text-sm ( 20% )]
+      li.nav-item: a.nav-link(ld="nav-tab",data-name="perm") 決選 #[span.text-sm ( 0% )]
 
 .px-4
   h5.mt-0.mb-2 評選進度
@@ -23,7 +23,7 @@
   .p-4: .row
     .col-md-5
       .w-100.px-4
-        style(type="text/css"): :stylus
+        style(type="text/css").
           svg path { stroke-width: 9 }
           svg path.mainline { stroke: #09f }
           .ldBar-label {

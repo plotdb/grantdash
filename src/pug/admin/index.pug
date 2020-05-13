@@ -8,6 +8,8 @@ include /modules/common.pug
     carbon: {}
   }
 - var vars = {root: ""}
+//- use for importing from report. remove this once we are done.
+include /ui/data/sample.pug
 block vars
 html
   head
@@ -46,6 +48,11 @@ html
 
           .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
             include brd/config.pug
+
+          .p-4(ld="nav-panel",data-nav="main",data-name="prj-config")
+            include prj/config.pug
+
+          include prj/panels.pug
         //-.flex-grow-1.bg-white(style="overflow:scroll")
           .p-4(ld="tabbar-panel",data-tabbar="main",data-name="prj-detail")
             include prj/detail.pug
@@ -61,6 +68,7 @@ html
     +script("https://cdn.jsdelivr.net/npm/tail.datetime@0.4.13/js/tail.datetime-full.min.js")
     +script("/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
     +script("/assets/lib/ldui/ldui.min.js")
+    +script("/assets/lib/ldui/ext/folder.min.js")
     +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
     +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
     +script("/assets/lib/ctrlz/ctrlz.bundle.min.js")

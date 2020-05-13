@@ -6,7 +6,8 @@ style(style="text/css").
   [ld=brd-head].on [ld=cart] { transform: rotate(180deg) }
 
 .bg-dark.text-white.text-left(style="width:200px;overflow-y:scroll;overflow-x:hidden;flex:0 0 auto")
-  #brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(style="top:0;transition:height .25s ease-in-out")
+  +scope("sidemenu-brd-info")#brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(
+  style="top:0;transition:height .25s ease-in-out")
     div(ld="brd-head")
       if org
         .folder.border-bottom.border-secondary.text-sm.no-dart(ld="nav",data-nav="main")
@@ -44,19 +45,19 @@ style(style="text/css").
     //- 但這樣就讓 content 無法捲動.  TODO 試著把 brd list 移到 sticky 之外看看.
     .border-top.border-secondary(ld="brd-list",
     style="overflow:hidden;height:0;transition:height .5s cubic-bezier(0,1,0,1)"): .py-2
-      .px-3.py-2
-        div 您的組織中目前尚沒有任何活動可供選擇。
+      //-.px-3.py-2
+        div 目前尚沒有任何活動可供您做選擇。
         .py-4.px-2.text-center
           .btn.btn-primary(href="#") 立刻建立活動
-      //-
-        .px-3.py-2.text-sm.d-flex
-          b.flex-grow-1 活動列表
-          a.text-underline(href="#") 新建 #[i.i-plus]
-        .px-3.pb-2: input.form-control.form-control-sm.bg-secondary.border-secondary.border.text-white
-        each i in ["一","二","三","四","五","六","七","八","九","十"]
-          .px-3.py-2
-            span 第#{i}次沉浸式內容國際合資合製補助案
-            .text-muted.text-sm 2020/04/22 ~ 2020/07/22
+      .px-3.py-2.text-sm.d-flex
+        b.flex-grow-1 活動列表
+        .text-underline.text-white(href="#") 建立新活動
+      .px-3.pb-2: input.form-control.form-control-sm.rounded(placeholder="搜尋...")
+      .px-3.py-2.clickable(ld-each="boards") #[span]#[.text-muted.text-sm]
+      //-each i in ["一","二","三","四","五","六","七","八","九","十"]
+        .px-3.py-2
+          span 第#{i}次沉浸式內容國際合資合製補助案
+          .text-muted.text-sm 2020/04/22 ~ 2020/07/22
 
   .pt-2(ld="nav",data-nav="main")
 
@@ -71,7 +72,7 @@ style(style="text/css").
         a.folder-item.d-flex(href="edit.html")
           .flex-grow-1 頁面編輯器
           div: i.i-link
-    .folder-item(ld="nav-tab",data-name="brd-config") 建立複本
+    .folder-item 建立複本
 
     .border-bottom.border-secondary.my-2
 
@@ -80,9 +81,9 @@ style(style="text/css").
         .flex-grow-1 專案組 A
         div: i.i-plus
       .folder-menu
+        .folder-item(ld="nav-tab",data-name="prj-config") 設定
         .folder-item(ld="nav-tab",data-name="prj-list") 專案列表
         .folder-item(ld="nav-tab",data-name="prj-judge") 評選資訊
-        .folder-item(ld="nav-tab",data-name="prj-config") 設定
         .folder-item(ld="nav-tab",data-name="prj-form") 提案表
 
     .folder
@@ -90,9 +91,9 @@ style(style="text/css").
         .flex-grow-1 專案組 B
         div: i.i-plus
       .folder-menu
+        .folder-item(ld="nav-tab",data-name="prj-config") 設定
         .folder-item(ld="nav-tab",data-name="prj-list") 專案列表
         .folder-item(ld="nav-tab",data-name="prj-judge") 評選資訊
-        .folder-item(ld="nav-tab",data-name="prj-config") 設定
         .folder-item(ld="nav-tab",data-name="prj-form") 提案表
 
     .my-4
