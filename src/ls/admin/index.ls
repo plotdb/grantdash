@@ -1,18 +1,9 @@
 (->
-  ldc.register \admin, <[viewLocals orgInfo orgPerm loader]>, ({viewLocals, orgInfo, orgPerm, loader}) ->
+  ldc.register \admin,
+  <[viewLocals orgInfo orgPerm brdInfo loader]>,
+  ({viewLocals, orgInfo, orgPerm, brdInfo, loader}) ->
     loader.on!
     lc = {}
-
-    /*
-    history = new ctrlz {obj: JSON.parse(JSON.stringify(obj))}
-    document.addEventListener \keydown, (e) ->
-      if e.keyCode == 90 and (e.metaKey or e.ctrlKey) =>
-        if e.shiftKey => history.redo!
-        else history.undo!
-        payload = JSON.parse(JSON.stringify(history.get!))
-        obj.idx = payload.idx
-        obj.cfg = payload.cfg
-    */
 
     sdb = new sharedb-wrapper do
       url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
@@ -25,8 +16,6 @@
     watch = (ops, source) ->
       orgInfo.watch {ops, source}
       orgPerm.watch {ops, source}
-
-    update = ->
 
     ret = /o\/([0-9]+)/.exec(window.location.pathname)
     if ret => 
@@ -41,6 +30,23 @@
             orgPerm.init {doc, sdb}
             loader.off!
       init!
+
+    watch-board = (ops, source) ->
+      brdInfo.watch {ops, source}
+
+    ret = /b\/([0-9]+)/.exec(window.location.pathname)
+    if ret => 
+      id = "board-#{if ret => ret.1 else \demo}"
+      init-board = ->
+        loader.on!
+        sdb.get {id, watch: watch-board}
+          .then (doc) ->
+            lc.doc = doc
+            console.log doc.data
+            brdInfo.init {doc, sdb}
+            loader.off!
+      init-board!
+
     loader.off!
 
   ldc.app \admin

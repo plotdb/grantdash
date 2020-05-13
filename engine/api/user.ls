@@ -148,3 +148,10 @@ api.post \/me/config/, (req, res) ->
   io.query "update users set config = $2 where key = $1", [req.user.key, req.user.config]
     .then -> res.send!
     .catch aux.error-handler res
+
+api.post \/me/o/list, aux.signed, (req, res) ->
+  offset = req.query.offset or 0
+  limit = req.query.limit or 30
+  io.query "select key,name,description from org where owner = $1 offset $2 limit $3", [req.user.key, offset, limit]
+    .then (r={}) -> res.send r
+    .catch aux.error-handler res

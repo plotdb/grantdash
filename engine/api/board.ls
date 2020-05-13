@@ -18,15 +18,6 @@ app.get \/b/:key, aux.signed, (req, res) ->
       res.render \b/index.pug, lc{board, projects}
     .catch aux.error-handler res
 
-app.get \/b/:key/admin, aux.signed, (req, res) ->
-  io.query "select * from board where key = $1", [req.params.key]
-    .then (r={}) ->
-      if !(board = r.[]rows.0) => return aux.reject 404
-      if board.owner != req.user.key => return aux.reject 403
-      res.render \admin/index.pug, {board}
-      return null
-    .catch aux.error-handler res
-
 api.post \/b, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {name,description,slug,starttime,endtime,org} = req.fields
@@ -50,7 +41,25 @@ api.post \/b, aux.signed, express-formidable!, (req, res) ->
     .then -> res.send lc.ret
     .catch aux.error-handler res
 
-# for board and org. place it in board.ls temporarily
+# following routes are for both board and org. put it here in board.ls temporarily.
+
+app.get \/o/:key/admin, aux.signed, (req, res) ->
+  res.render \admin/index.pug, {org: {key: req.params.key}}
+
+app.get \/b/:key/admin, aux.signed, (req, res) ->
+  lc = {}
+  io.query "select * from board where key = $1", [req.params.key]
+    .then (r={}) ->
+      if !(board = r.[]rows.0) => return aux.reject 404
+      if board.owner != req.user.key => return aux.reject 403
+      lc.board = board
+      return if !board.org => Promise.resolve! else io.query "select * from org where key = $1", [board.org]
+    .then (r={}) ->
+      org = r.{}rows.0
+      res.render \admin/index.pug, {org, board: lc.board}
+      return null
+    .catch aux.error-handler res
+
 api.post \/slug-check/:type, (req, res) ->
   type = {o: \org, b: \board}[req.params.type] 
   if !type => return aux.r404!

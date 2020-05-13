@@ -5,8 +5,13 @@ require! <[../aux]>
 api = engine.router.api
 app = engine.app
 
-app.get \/o/:key/admin, aux.signed, (req, res) ->
-  res.render \admin/index.pug, {org: {key: req.params.key}}
+api.post \/o/:key/board/list, (req, res) ->
+  if isNaN(key = +req.params.key) => return aux.r400 res
+  offset = req.query.offset or 0
+  limit = req.query.limit or 30
+  io.query "select key,name,description from board where org = $1 offset $2 limit $3", [key, offset, limit]
+    .then (r={}) -> res.send r
+    .catch aux.error-handler res
 
 api.post \/o, aux.signed, express-formidable!, (req, res) ->
   lc = {}

@@ -8,27 +8,37 @@ style(style="text/css").
 .bg-dark.text-white.text-left(style="width:200px;overflow-y:scroll;overflow-x:hidden;flex:0 0 auto")
   #brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(style="top:0;transition:height .25s ease-in-out")
     div(ld="brd-head")
-      //-.folder.border-bottom.border-secondary.text-sm.no-dart(ld="nav",data-nav="main")
-        .folder-item.folder-toggle.d-flex.align-items-center.py-3.pr-3.pl-0
-          .mr-1: .bg-light.rounded(style="width:1.35em;height:1.35em")
-          .flex-grow-1.text-truncate 文化內容策進院
-          .ml-1 #[i.i-bars]
-        .folder-menu.pb-3
-          .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 組織設定
-          .folder-item(ld="nav-tab",data-name="org-navbar",data-nav="main") 選單列
-          .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 頁面編輯器
-          //-.folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 其它組織 ...
+      if org
+        .folder.border-bottom.border-secondary.text-sm.no-dart(ld="nav",data-nav="main")
+          .folder-item.folder-toggle.d-flex.align-items-center.py-3.pr-3.pl-0
+            .mr-1: .bg-light.rounded(style="width:1.35em;height:1.35em")
+            .flex-grow-1.text-truncate.text-capitalize #{org.name || '未命名的組織'}
+            .ml-1 #[i.i-bars]
+          .folder-menu.pb-3
+            .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 組織設定
+            .folder-item(ld="nav-tab",data-name="org-navbar",data-nav="main") 選單列
+            .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 頁面編輯器
+            //-.folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 其它組織 ...
 
 
       .clickable(style="box-shadow:0 2px 3px rgba(0,0,0,1)")
         .d-flex.align-items-center.p-3.w-100
-          .flex-grow-1.text-truncate 請選擇活動 ...
-          //-.flex-grow-1.text-truncate
-            .text-sm.text-muted
-              span 活動
-              span.ml-2.text-success #[i.i-radio] 進行中
-            .text-truncate 沉浸式內容國際合資合製補助案
-          //.ml-2(ld="cart") #[i.i-dart-down]
+          if board
+            .flex-grow-1.text-truncate
+              .text-sm.text-muted
+                span 活動
+                - st = new Date(board.starttime)
+                - now = new Date()
+                - et = new Date(board.endtime)
+                - progress = (!st || now < st) ? 0 : (et && now > et ? 2 : st ? 1 : 0)
+
+                span.ml-2(class=["text-warning", "text-success", "text-secondary"][progress])
+                  i.i-radio
+                  | #{["尚未開始", "進行中", "已結束"][progress]}
+              .text-truncate.text-capitalize #{board.name || '未命名的活動'}
+            .ml-2(ld="cart") #[i.i-dart-down]
+          else
+            .flex-grow-1.text-truncate 請選擇活動 ...
 
     //- overflow: hidden - 讓 windows chrome 不會出現兩個 scrollbar
     //- 但這樣就讓 content 無法捲動.  TODO 試著把 brd list 移到 sticky 之外看看.
