@@ -273,6 +273,7 @@ backend = do
         # ignore some errors that we don't need to take care.
         if (err instanceof URIError) and "#{err.stack}".startsWith('URIError: Failed to decode param') =>
           return res.status 400 .send!
+        else if err.name == \ldError and (err.id in [1000]) => return res.status 404 .send!
         else if err.message.startsWith \TokenError =>
           console.error(
             colors.red.underline("[#{moment!format 'YY/MM/DD HH:mm:ss'}]"),
