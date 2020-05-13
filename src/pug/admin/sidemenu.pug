@@ -5,10 +5,10 @@ style(style="text/css").
   [ld=brd-head] [ld=cart] { transform: rotate(0deg); transition: all .25s ease-in-out }
   [ld=brd-head].on [ld=cart] { transform: rotate(180deg) }
 
-.bg-dark.text-white.text-left(style="width:200px;overflow-y:scroll;flex:0 0 auto")
+.bg-dark.text-white.text-left(style="width:200px;overflow-y:scroll;overflow-x:hidden;flex:0 0 auto")
   #brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(style="top:0;transition:height .25s ease-in-out")
     div(ld="brd-head")
-      .folder.border-bottom.border-secondary.text-sm.no-dart(ld="nav",data-nav="main")
+      //-.folder.border-bottom.border-secondary.text-sm.no-dart(ld="nav",data-nav="main")
         .folder-item.folder-toggle.d-flex.align-items-center.py-3.pr-3.pl-0
           .mr-1: .bg-light.rounded(style="width:1.35em;height:1.35em")
           .flex-grow-1.text-truncate 文化內容策進院

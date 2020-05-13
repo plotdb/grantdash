@@ -13,7 +13,7 @@ block body
     body { background: radial-gradient(#f1f2f3,#999) fixed top center; background-size: cover }
   +nbr(2)
   .w-640.mx-auto
-    +scope("brd-basic").card.mb-4.shadow-lg: .card-body: .p-4
+    +scope("brd-info").card.mb-4.shadow-lg: .card-body: .p-4
       h3 建立活動
       p.text-sm.text-muted 在我們進行下一步之前，先填妥活動的基本資訊吧
       hr
@@ -72,7 +72,9 @@ block body
   +script("https://cdn.jsdelivr.net/npm/tail.datetime@0.4.13/js/tail.datetime-full.min.js")
 
 block script
-  script: :lsc
+  +script("/js/admin/adopter.js")
+  +script("/js/admin/brd-info.js")
+  //-script: :lsc
     slugs = {}
     tail.DateTime("input[name=starttime]")
     tail.DateTime("input[name=endtime]")

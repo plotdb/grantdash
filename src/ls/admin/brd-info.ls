@@ -1,6 +1,6 @@
 (->
 
-  ldc.register \orgInfo, <[loader notify]>, ({loader, notify}) ->
+  ldc.register \brdInfo, <[loader notify]>, ({loader, notify}) ->
     lc = {}
     slugs = {}
     tail.DateTime("input[name=starttime]")
@@ -8,15 +8,14 @@
     slug-check = debounce 500, (n,v,e) -> 
       p = ld$.parent(form.fields[n], '.form-group')
       p.classList.add \running
-      ld$.fetch '/d/slug-check/o', {method: \POST}, {json: {slug: v}, type: \json}
+      ld$.fetch '/d/slug-check/b', {method: \POST}, {json: {slug: v}, type: \json}
         .finally -> debounce 1000 .then -> p.classList.remove \running
         .then (r = {}) -> slugs[v] = (if r.result == \free => false else true)
         .catch -> slugs[v] = true
         .then -> form.check {n: 'slug'}
 
-
     form = new ldForm do
-      root: "[ld-scope='org-info']"
+      root: "[ld-scope='brd-info']"
       submit: "[ld='submit']"
       afterCheck: (s, f) ->
         if f.thumbnail.value =>
@@ -33,14 +32,14 @@
           return 1
         return if !!v => 0 else 2
     view = new ldView do
-      root: "[ld-scope='org-info']"
+      root: "[ld-scope='brd-info']"
       action: click: submit: ({node}) ->
         loader.on!
         fd = form.getfd!
-        ld$.fetch \/d/o/, {method: \POST, body: fd}, {type: \json}
+        ld$.fetch \/d/b/, {method: \POST, body: fd}, {type: \json}
           .then (r) -> 
-            notify.send \success, '建立完成，將您導向組織主控台 ...'
-            debounce 1000 .then -> window.location.href = "/o/#{r.key}/admin"
+            notify.send \success, '建立完成，將您導向活動主控台 ...'
+            debounce 1000 .then -> window.location.href = "/b/#{r.key}/admin"
           .catch ->
             debounce 1000 .then -> loader.off!
 
@@ -50,5 +49,5 @@
     return adopter
 
 
-  ldc.app \orgInfo
+  ldc.app \brdInfo
 )!

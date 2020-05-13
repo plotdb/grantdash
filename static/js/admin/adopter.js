@@ -25,7 +25,7 @@ var slice$ = [].slice;
       }
       return results$;
     },
-    install: function(it){
+    init: function(it){
       var o, i$, ref$, len$, n;
       this.sdb = it.sdb;
       this.doc = it.doc;
@@ -40,6 +40,9 @@ var slice$ = [].slice;
     },
     update: function(ops){
       var cur, this$ = this;
+      if (!this.sdb) {
+        return;
+      }
       if (typeof ops === 'function') {
         cur = ops(JSON.parse(JSON.stringify(this.data || {})));
         ops = !this.data

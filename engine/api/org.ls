@@ -8,9 +8,9 @@ app = engine.app
 app.get \/o/:key/admin, aux.signed, (req, res) ->
   res.render \admin/index.pug, {org: {key: req.params.key}}
 
-api.post \/o/, aux.signed, express-formidable!, (req, res) ->
+api.post \/o, aux.signed, express-formidable!, (req, res) ->
   lc = {}
-  {name,slug,description} = req.fields
+  {name,description,slug} = req.fields
   thumb = (req.files["thumbnail[]"] or {}).path
   io.query "select key from org where slug = $1", [slug]
     .then (r={}) ->
@@ -30,12 +30,3 @@ api.post \/o/, aux.signed, express-formidable!, (req, res) ->
         if e => rej(e) else res!
     .then -> res.send lc.ret
     .catch aux.error-handler res
-
-api.post \/o/slug-check, (req, res) ->
-  io.query "select key from org where slug = $1", [req.body.slug]
-    .then (r = {}) ->
-      res.send {result: if (r.rows or []).length => 'used' else 'free'}
-    .catch ->
-      console.log it
-      aux.error-handler(res)(it)
-

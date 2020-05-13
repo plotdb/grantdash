@@ -7,12 +7,13 @@
   Adopter.prototype = Object.create(Object.prototype) <<< do
     on: (n, cb) -> @evt-handler.[][n].push cb
     fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
-    install: ->
+    init: ->
       @ <<< it{sdb, doc}
       o = @doc.data
       for n in @path => o = o[n]
       @watch {data: o}
     update: (ops) ->
+      if !@sdb => return
       if typeof(ops) == \function => 
         cur = ops(JSON.parse(JSON.stringify(@data or {})))
         ops = if !@data => [{p: [], oi: {}}] else []

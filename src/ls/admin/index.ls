@@ -29,18 +29,18 @@
     update = ->
 
     ret = /o\/([0-9]+)/.exec(window.location.pathname)
-    id = "org-#{if ret => ret.1 else \demo}"
-
-    init = ->
-      loader.on!
-      sdb.get {id, watch}
-        .then (doc) ->
-          lc.doc = doc
-          console.log doc.data
-          orgInfo.install {doc, sdb}
-          orgPerm.install {doc, sdb}
-          loader.off!
-    init!
+    if ret => 
+      id = "org-#{if ret => ret.1 else \demo}"
+      init = ->
+        loader.on!
+        sdb.get {id, watch}
+          .then (doc) ->
+            lc.doc = doc
+            console.log doc.data
+            orgInfo.init {doc, sdb}
+            orgPerm.init {doc, sdb}
+            loader.off!
+      init!
     loader.off!
 
   ldc.app \admin

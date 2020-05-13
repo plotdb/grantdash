@@ -41,27 +41,29 @@
     };
     update = function(){};
     ret = /o\/([0-9]+)/.exec(window.location.pathname);
-    id = "org-" + (ret ? ret[1] : 'demo');
-    init = function(){
-      loader.on();
-      return sdb.get({
-        id: id,
-        watch: watch
-      }).then(function(doc){
-        lc.doc = doc;
-        console.log(doc.data);
-        orgInfo.install({
-          doc: doc,
-          sdb: sdb
+    if (ret) {
+      id = "org-" + (ret ? ret[1] : 'demo');
+      init = function(){
+        loader.on();
+        return sdb.get({
+          id: id,
+          watch: watch
+        }).then(function(doc){
+          lc.doc = doc;
+          console.log(doc.data);
+          orgInfo.init({
+            doc: doc,
+            sdb: sdb
+          });
+          orgPerm.init({
+            doc: doc,
+            sdb: sdb
+          });
+          return loader.off();
         });
-        orgPerm.install({
-          doc: doc,
-          sdb: sdb
-        });
-        return loader.off();
-      });
-    };
-    init();
+      };
+      init();
+    }
     return loader.off();
   });
   return ldc.app('admin');

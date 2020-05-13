@@ -18,16 +18,16 @@ app.get \/b/:key, aux.signed, (req, res) ->
       res.render \b/index.pug, lc{board, projects}
     .catch aux.error-handler res
 
-app.get \/b/:key/dashboard, aux.signed, (req, res) ->
-  if !req.user => return aux.r403 res
+app.get \/b/:key/admin, aux.signed, (req, res) ->
   io.query "select * from board where key = $1", [req.params.key]
     .then (r={}) ->
       if !(board = r.[]rows.0) => return aux.reject 404
       if board.owner != req.user.key => return aux.reject 403
-      res.render \b/dashboard/index.pug, {board}
+      res.render \admin/index.pug, {board}
+      return null
     .catch aux.error-handler res
 
-api.post \/board, aux.signed, express-formidable!, (req, res) ->
+api.post \/b, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {name,description,slug,starttime,endtime,org} = req.fields
   thumb = (req.files["thumbnail[]"] or {}).path
@@ -37,23 +37,23 @@ api.post \/board, aux.signed, express-formidable!, (req, res) ->
       io.query """
       insert into board (name,description,slug,starttime,endtime,org,owner)
       values ($1,$2,$3,$4,$5,$6,$7) returning key
-      """, [name,description,slug,starttime or null, endtime or null, org or null, req.user.key]
+      """, [name, description, slug, (starttime or null), (endtime or null), (org or null), req.user.key]
     .then (r = {}) ->
       lc.ret = (r.[]rows or []).0
       if !thumb => return
       new Promise (res, rej) ->
-        root = "static/assets/uploads/board"
+        root = "static/assets/uploads/b/#slug"
         (e) <- fs-extra.ensure-dir root, _
         if e => return rej(e)
-        (e,i) <- sharp(thumb).toFile path.join(root, "#slug.png"), _
+        (e,i) <- sharp(thumb).toFile path.join(root, "thumb.png"), _
         if e => rej(e) else res!
     .then -> res.send lc.ret
     .catch aux.error-handler res
 
-api.post \/board/slug-check, (req, res) ->
-  io.query "select key from board where slug = $1", [req.body.slug]
+# for board and org. place it in board.ls temporarily
+api.post \/slug-check/:type, (req, res) ->
+  type = {o: \org, b: \board}[req.params.type] 
+  if !type => return aux.r404!
+  io.query "select key from #type where slug = $1", [req.body.slug]
     .then (r = {}) -> res.send {result: if (r.rows or []).length => 'used' else 'free'}
-    .catch ->
-      console.log it
-      aux.error-handler(res)(it)
-
+    .catch -> aux.error-handler(res)(it)
