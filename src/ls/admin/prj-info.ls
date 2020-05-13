@@ -13,7 +13,11 @@
         return if !!v => 0 else 2
     view = new ldView do
       root: "[ld-scope='prj-info']"
-      action: click: submit: ({node}) ->
+      action: click:
+        submit: ({node}) ->
+        delete: ({node}) ->
+          ops = [{p: ['group', 0], ld: adopter.data}]
+          adopter.doc.submitOp ops
 
     adopter = new Adopter path: ['group', 0]
     adopter.on \change, ->

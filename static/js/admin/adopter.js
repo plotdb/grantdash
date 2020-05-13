@@ -38,6 +38,19 @@ var slice$ = [].slice;
         data: o
       });
     },
+    set: function(arg$){
+      var path, o, i$, ref$, len$, n;
+      path = arg$.path;
+      this.path = path;
+      o = this.doc.data;
+      for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
+        n = ref$[i$];
+        o = o[n];
+      }
+      return this.watch({
+        data: o
+      });
+    },
     update: function(ops){
       var cur, this$ = this;
       if (!this.sdb) {

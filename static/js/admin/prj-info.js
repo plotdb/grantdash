@@ -27,6 +27,15 @@
           submit: function(arg$){
             var node;
             node = arg$.node;
+          },
+          'delete': function(arg$){
+            var node, ops;
+            node = arg$.node;
+            ops = [{
+              p: ['group', 0],
+              ld: adopter.data
+            }];
+            return adopter.doc.submitOp(ops);
           }
         }
       }

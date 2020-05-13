@@ -12,6 +12,11 @@
       o = @doc.data
       for n in @path => o = o[n]
       @watch {data: o}
+    set: ({path}) ->
+      @path = path
+      o = @doc.data
+      for n in @path => o = o[n]
+      @watch {data: o}
     update: (ops) ->
       if !@sdb => return
       if typeof(ops) == \function => 

@@ -31,32 +31,48 @@
             loader.off!
       init!
 
-
     prjg-view = new ldView do
       init-render: false
       root: ".project-groups"
-      action: click: do
-        "project-group-add": ({node}) ->
-          data = JSON.parse(JSON.stringify(lc.docbrd.data))
-          data.[]group.push do
-            key: data.[]group.length + 1
-            name: "新分組"
-          ops = sdb.json.diff lc.docbrd.data, data
-          lc.docbrd.submitOp ops
-          prjg-view.render!
+      action:
+        click: do
+          "project-group-add": ({node}) ->
+            data = JSON.parse(JSON.stringify(lc.docbrd.data))
+            data.[]group.push do
+              key: data.[]group.length + 1
+              name: "新分組"
+            ops = sdb.json.diff lc.docbrd.data, data
+            lc.docbrd.submitOp ops
+            prjg-view.render!
+
       handler: do
+        "nav-tab": ({node}) ->
         "project-group": do
           list: -> lc.docbrd.data.group or []
+          init: ({node}) ->
+            view = new ldView do
+              root: node
+              action: click: do
+                "nav-tab": ({node}) ->
+                  if !(p = ld$.parent(node, '.folder', @root)) => return
+                  key = p.getAttribute \data-key
+                  idx = 0
+                  lc.docbrd.data.group.map (d,i) -> if d.key == +key => idx := i
+                  console.log ">", idx
+                  prjInfo.set path: ['group', idx]
+
           handler: ({node, data}) ->
             n = ld$.find(node, '[ld=name]', 0)
+            node.setAttribute \data-key, data.key
             n.innerText = data.name
-            new ldui.Folder root: node
-            new ldui.Nav node
-          
+            if !node.folder => node.folder = new ldui.Folder root: node
+            if !node.nav => node.nav = new ldui.Nav node
+
 
     watch-board = (ops, source) ->
       brdInfo.watch {ops, source}
       prjInfo.watch {ops, source}
+      prjg-view.render!
 
     ret = /b\/([0-9]+)/.exec(window.location.pathname)
     if ret => 

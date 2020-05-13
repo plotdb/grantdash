@@ -73,19 +73,57 @@
         }
       },
       handler: {
+        "nav-tab": function(arg$){
+          var node;
+          node = arg$.node;
+        },
         "project-group": {
           list: function(){
             return lc.docbrd.data.group || [];
+          },
+          init: function(arg$){
+            var node, view;
+            node = arg$.node;
+            return view = new ldView({
+              root: node,
+              action: {
+                click: {
+                  "nav-tab": function(arg$){
+                    var node, p, key, idx;
+                    node = arg$.node;
+                    if (!(p = ld$.parent(node, '.folder', this.root))) {
+                      return;
+                    }
+                    key = p.getAttribute('data-key');
+                    idx = 0;
+                    lc.docbrd.data.group.map(function(d, i){
+                      if (d.key === +key) {
+                        return idx = i;
+                      }
+                    });
+                    console.log(">", idx);
+                    return prjInfo.set({
+                      path: ['group', idx]
+                    });
+                  }
+                }
+              }
+            });
           },
           handler: function(arg$){
             var node, data, n;
             node = arg$.node, data = arg$.data;
             n = ld$.find(node, '[ld=name]', 0);
+            node.setAttribute('data-key', data.key);
             n.innerText = data.name;
-            new ldui.Folder({
-              root: node
-            });
-            return new ldui.Nav(node);
+            if (!node.folder) {
+              node.folder = new ldui.Folder({
+                root: node
+              });
+            }
+            if (!node.nav) {
+              return node.nav = new ldui.Nav(node);
+            }
           }
         }
       }
@@ -95,10 +133,11 @@
         ops: ops,
         source: source
       });
-      return prjInfo.watch({
+      prjInfo.watch({
         ops: ops,
         source: source
       });
+      return prjgView.render();
     };
     ret = /b\/([0-9]+)/.exec(window.location.pathname);
     if (ret) {
