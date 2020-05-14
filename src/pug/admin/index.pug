@@ -1,5 +1,6 @@
 doctype html
 include /modules/common.pug
+include /modules/mixins/index.pug
 -
   var ctrl = {
     cover: {authpanel: false},
@@ -53,9 +54,6 @@ html
             include prj/config.pug
 
           include prj/panels.pug
-        //-.flex-grow-1.bg-white(style="overflow:scroll")
-          .p-4(ld="tabbar-panel",data-tabbar="main",data-name="prj-detail")
-            include prj/detail.pug
 
     if ctrl.cover.authpanel
       include /modules/widget/authpanel.pug
