@@ -1,4 +1,5 @@
 require! <[fs path pug]>
+pug-extapi = require("./watch/build/pug").extapi
 reload = require("require-reload")(require)
 
 pug-cached = {}
@@ -13,9 +14,12 @@ engine = (f, opt, cb) ->
   pc = path.join(viewdir, f.replace(basedir, '').replace(/\.pug$/, '.js'))
   try
     t1 = Date.now!
-    ret = if !lc.cache => reload(pc)
-    else (if pug-cached[pc] => that else pug-cached[pc] = require(pc))
-    ret = ret(opt)
+    mtime = fs.stat-sync(pc).mtime
+    ret = if !lc.cache => {js: reload(pc), mtime}
+    else if pug-cached[pc] => that else pug-cached[pc] = {js: require(pc), mtime}
+    # if precompiled js is newer than the one we cached - flush the cache.
+    if mtime - ret.mtime > 0 => pug-cached[pc] = {js: reload(pc), mtime}
+    ret = ret.js(opt)
     t2 = Date.now!
     if lc.dev => log f, opt, t2 - t1, \precompiled, lc.cache
     cb null, ret
@@ -24,7 +28,7 @@ engine = (f, opt, cb) ->
       t1 = Date.now!
       (e, b) <- fs.read-file f, _
       if e => throw new Error(e)
-      ret = (pug.render b, ({} <<< opt <<< {filename: f, cache: lc.cache, basedir}))
+      ret = (pug.render(b, ({} <<< opt <<< {filename: f, cache: lc.cache, basedir}) <<< pug-extapi))
       t2 = Date.now!
       if lc.dev => log f, opt, t2 - t1, 'from pug', lc.cache
       cb null, ret
