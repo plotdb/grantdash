@@ -75,7 +75,9 @@ var slice$ = [].slice;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
+    this.binding = {};
     this.blockmgr = opt.blockManager;
+    this.init();
     return this;
   };
   reblock.prototype = import$(Object.create(Object.prototype), {
@@ -288,16 +290,19 @@ var slice$ = [].slice;
         return (c.block || (c.block = {})).data[v] = n.innerText;
       });
     },
-    edit: function(n){
-      if (!(n && n.hasAttribute && n.hasAttribute('editable'))) {
-        return;
+    find: function(id){
+      return this.bind[id];
+    },
+    bind: function(arg$){
+      var dom, data;
+      dom = arg$.dom, data = arg$.data;
+      if (!data.id) {
+        data.id = Math.random().toString(36).substring(2);
       }
-      if (this.node.editing) {
-        this.node.editing.setAttribute('contenteditable', false);
-      }
-      this.node.editing = n;
-      n.setAttribute('contenteditable', true);
-      return n.focus();
+      return this.binding[data.id] = {
+        dom: dom,
+        data: data
+      };
     },
     select: function(n, append){
       append == null && (append = false);
@@ -317,6 +322,17 @@ var slice$ = [].slice;
       return n.map(function(it){
         return it.setAttribute('selected', true);
       });
+    },
+    edit: function(n){
+      if (!(n && n.hasAttribute && n.hasAttribute('editable'))) {
+        return;
+      }
+      if (this.node.editing) {
+        this.node.editing.setAttribute('contenteditable', false);
+      }
+      this.node.editing = n;
+      n.setAttribute('contenteditable', true);
+      return n.focus();
     },
     clone: function(){
       return this.select(this.selected.map(function(n){
@@ -349,88 +365,220 @@ var slice$ = [].slice;
           return des.parentNode.insertBefore(src, ib);
         }
       });
-    },
+    }
+    /*
+    inject: ({node, name, force}) -> new Promise (res, rej) ~>
+      n = node
+      # force injection to node, regardless of hostable attribute
+      if force => t = n
+      else # can only drop on hostable elements. t = hostable target, n = element to insert before; 
+        while n and (p = n.parentNode) =>
+          if p.hasAttribute and p.hasAttribute(\hostable) => t = p; break
+          if n.hasAttribute and n.hasAttribute(\hostable) => t = n; break else n = p
+        if !t => return rej new Error("")
+    
+      if t == n => n = null
+      # -- fetch block content
+      if !name => return rej(new Error("reblock: inject block but name is not provided"))
+      if !@blockmgr => return rej(new Error("reblock: inject block without providing blockManager"))
+      @blockmgr.get(name)
+        .then (content) ~>
+          # -- insert block
+          div = document.createElement("div")
+          div.innerHTML = content
+          ps = for i from 0 til div.childNodes.length => Promise.resolve(div.childNodes[0]).then (c) ~>
+            c.parentNode.removeChild c
+            t.insertBefore c, n
+            if c.nodeType != 1 => return
+            # TODO this is not always true if list grows horizontally.
+            s = window.getComputedStyle(c)
+            h = s.height
+            c.style.height = "0px"
+            c.style.transition = "height .15s ease-in-out"
+            setTimeout (-> c.style.height = h), 0
+    
+            # - block data - TODO dom tree / data spec
+            #c.block = {data: {}, dom: {list: [], node: c}}
+            #p = t
+            #while p => if p.block => break else p = p.parentNode
+            #if p and p.block => p.block.dom.list.push c.block.dom
+            #else @block.dom.list.push c.block.dom
+            debounce 150 .then -> c.style.transition = ""; c.style.height = ""
+          Promise.all ps
+        .then -> res!
+        .catch -> rej it
+    */,
     inject: function(arg$){
-      var node, name, force, this$ = this;
-      node = arg$.node, name = arg$.name, force = arg$.force;
+      var host, node, name, data, dir, force, lc, ns, this$ = this;
+      host = arg$.host, node = arg$.node, name = arg$.name, data = arg$.data, dir = arg$.dir, force = arg$.force;
+      lc = {};
+      if (!data) {
+        data = {
+          type: 'block',
+          name: name,
+          data: {}
+        };
+      }
+      if (!name) {
+        name = data.name;
+      }
+      if (node) {
+        if (!host) {
+          host = ld$.parent(node, '[hostable]');
+        }
+        ns = ld$.parent(node, '[hostable] > *');
+      }
       return new Promise(function(res, rej){
-        var n, t, p;
-        n = node;
-        if (force) {
-          t = n;
-        } else {
-          while (n && (p = n.parentNode)) {
-            if (p.hasAttribute && p.hasAttribute('hostable')) {
-              t = p;
-              break;
-            }
-            if (n.hasAttribute && n.hasAttribute('hostable')) {
-              t = n;
-              break;
-            } else {
-              n = p;
-            }
-          }
-          if (!t) {
-            return rej(new Error(""));
-          }
-        }
-        if (t === n) {
-          n = null;
-        }
-        if (!name || !this$.blockmgr) {
-          return new Error("inject block: no name, or no blockmgr");
+        if (!name || data.type !== 'block') {
+          return rej();
         }
         return this$.blockmgr.get(name).then(function(content){
-          var div, i$, to$, i, results$ = [];
-          div = document.createElement("div");
+          var div, s, h;
+          lc.div = div = document.createElement("div");
           div.innerHTML = content;
-          for (i$ = 0, to$ = div.childNodes.length; i$ < to$; ++i$) {
-            i = i$;
-            results$.push(Promise.resolve(div.childNodes[0]).then(fn$));
+          if (div.childNodes.length === 0) {
+            div = div.childNodes[0];
+            div.parentNode.removeChild(div);
           }
-          return results$;
-          function fn$(c){
-            var s, h, p;
-            c.parentNode.removeChild(c);
-            t.insertBefore(c, n);
-            s = window.getComputedStyle(c);
-            h = s.height;
-            c.style.height = "0px";
-            c.style.transition = "height .15s ease-in-out";
-            setTimeout(function(){
-              return c.style.height = h;
-            }, 0);
-            c.block = {
-              data: {},
-              dom: {
-                list: [],
-                node: c
-              }
-            };
-            p = t;
-            while (p) {
-              if (p.block) {
-                break;
-              } else {
-                p = p.parentNode;
-              }
-            }
-            if (p && p.block) {
-              p.block.dom.list.push(c.block.dom);
-            } else {
-              this$.block.dom.list.push(c.block.dom);
-            }
-            return debounce(150).then(function(){
-              c.style.transition = "";
-              return c.style.height = "";
-            });
+          if (host) {
+            host.insertBefore(div, ns);
           }
+          s = window.getComputedStyle(div);
+          h = s.height;
+          div.style.height = "0px";
+          div.style.transition = "height .15s ease-in-out";
+          setTimeout(function(){
+            return div.style.height = h;
+          }, 0);
+          debounce(150).then(function(){
+            div.style.transition = "";
+            return div.style.height = "";
+          });
+          return this$.construct({
+            node: div,
+            data: data
+          });
         }).then(function(){
-          return res();
+          return res(lc.div);
         })['catch'](function(it){
           return rej(it);
         });
+      });
+    }
+    /*update: (ops) ->
+      for each op in ops 
+        find corresponding node and data by op.path
+        render node, data
+    */,
+    construct: function(arg$){
+      var node, data, partial, this$ = this;
+      node = arg$.node, data = arg$.data, partial = arg$.partial;
+      return new Promise(function(res, rej){
+        var nodes, dhash;
+        nodes = ld$.find(node, '[editable],[repeatable],[hostable]');
+        this$.bind({
+          node: node,
+          data: data
+        });
+        dhash = partial
+          ? data
+          : data.data;
+        return Promise.all(nodes.map(function(node){
+          var name, d, ns, p, ds;
+          console.log(node);
+          if (name = node.getAttribute('editable')) {
+            if (!(d = dhash[name])) {} else if (!d.type) {
+              node.innerText = d;
+            } else if (d.type === 'value') {
+              node.innerText = d.value;
+              this$.bind({
+                node: node,
+                data: d
+              });
+            } else if (d.type === 'tag') {
+              this$.dom({
+                data: d
+              }).then(function(it){
+                return node.appendChild(it);
+              });
+            } else if (d.type === 'html') {
+              node.innerHTML = d.value;
+              this$.bind({
+                node: node,
+                data: d
+              });
+            }
+            return Promise.resolve();
+          } else if (name = node.getAttribute('repeatable')) {
+            ns = node.nextSibling;
+            p = node.parentNode;
+            p.removeChild(node);
+            node.removeAttribute('repeatable');
+            ds = dhash[name] || [];
+            return Promise.all(ds.map(function(d){
+              var n;
+              n = node.cloneNode(true);
+              p.insertBefore(n, ns);
+              return this$.construct({
+                node: n,
+                data: d,
+                partial: true
+              });
+            }));
+          } else if (name = node.getAttribute('hostable')) {
+            ds = (dhash[name] || []).filter(function(it){
+              return it.type === 'block';
+            });
+            return Promise.all(ds.map(function(d){
+              return this$.inject({
+                host: node,
+                data: d
+              });
+            }));
+          }
+        })).then(function(){
+          return res();
+        }).then(function(){
+          return rej();
+        });
+      });
+    },
+    dom: function(arg$){
+      var data, this$ = this;
+      data = arg$.data;
+      return new Promise(function(res, rej){
+        var n, that;
+        if (!data.type) {
+          return document.createTextNode(data);
+        } else if (data.type === 'tag') {
+          n = ld$.create({
+            name: data.name,
+            attr: data.attr,
+            style: data.style
+          });
+          this$.bind({
+            node: n,
+            data: data,
+            id: data.id
+          });
+          return res((that = data.text)
+            ? (n.innerText = that, n)
+            : Promise.all((d.child || []).map(function(it){
+              return Promise.resolve(this.dom({
+                data: it
+              }));
+            })).then(function(it){
+              return it.map(function(it){
+                return n.appendChild(it);
+              });
+            }).then(function(){
+              return n;
+            }));
+        } else if (data.type === 'value') {
+          return document.createTextNode(data.value);
+        } else {
+          return null;
+        }
       });
     }
   });

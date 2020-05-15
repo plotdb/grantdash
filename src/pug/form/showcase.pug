@@ -1,0 +1,181 @@
+extends /base.pug
+block body
+  include /ui/data/sample.pug
+  include /modules/mixins/index.pug
+  style(type="text/css"): :stylus
+    .card { margin-bottom: 3em }
+
+    .timeline-list
+      .item
+        border-left: 1px solid #ccc
+        //- prevent margin collapsing
+        border-top: 1px solid transparent
+        padding: 0 0 30px 20px
+        position: relative
+        .title
+          font-size: 1.2em
+          font-weight: 600
+          margin: -10px 0 5px 0
+        &:after
+          content: " "
+          display: block
+          position: absolute
+          top: 0
+          left: -5px
+          border-radius: 50%
+          width: 10px
+          height: 10px
+          background: #ccc
+      .item:last-child
+        border-left: 0px solid transparent
+
+
+
+  mixin criteria-all
+
+    .dropdown.mr-2
+      .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 數值
+      .dropdown-menu
+        a.dropdown-item(data-type="number") 數值
+        a.dropdown-item(data-type="string") 文字
+        a.dropdown-item(data-type="length") 長度
+        a.dropdown-item(data-type="regex") 正規式
+        a.dropdown-item(data-type="count") 選項數
+        a.dropdown-item(data-type="file-size") 檔案大小
+        a.dropdown-item(data-type="file-format") 檔案格式
+        a.dropdown-item(data-type="file-count") 檔案數量
+
+    div
+      .d-none(data-type="smaller")
+        .btn.btn-light.text-nowrap.mr-2 小於
+      .d-none(data-type="extension")
+        .btn.btn-light.text-nowrap.mr-2 副檔名
+      .d-none(data-type="match")
+        .dropdown.mr-2
+        .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 符合
+        .dropdown-menu
+          a.dropdown-item 符合
+          a.dropdown-item 不符
+      .d-none(data-type="count")
+        .dropdown.mr-2
+          .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 介於
+          .dropdown-menu
+            a.dropdown-item #[.s.mr-2 &#x2265;] 大於
+            a.dropdown-item #[.s.mr-2 &#x2264;] 小於
+            a.dropdown-item(data-field-count="2") #[.s.mr-2 &#x223c;] 介於
+      .d-none(data-type="string")
+        .dropdown.mr-2
+          .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 包含
+          .dropdown-menu
+            a.dropdown-item 包含
+            a.dropdown-item 不包含
+            a.dropdown-item 電子郵件位置
+            a.dropdown-item 網址
+      .d-inline-block(data-type="number")
+        .dropdown.mr-2
+          .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 大於
+          .dropdown-menu
+            a.dropdown-item #[.s.mr-2 &#x2265;] 大於或等於
+            a.dropdown-item #[.s.mr-2 &#x2264;] 小於或等於
+            a.dropdown-item #[.s.mr-2 &gt;] 大於
+            a.dropdown-item #[.s.mr-2 &lt;] 小於
+            a.dropdown-item #[.s.mr-2 =] 等於
+            a.dropdown-item #[.s.mr-2 &#x2260;] 不等於
+            a.dropdown-item(data-field-count="2") #[.s.mr-2 &#x223c;] 介於
+
+    .mr-2.flex-grow-1(ld="in1"): input.form-control(placeholder="值 1")
+    .mr-2.flex-grow-1(ld="in2"): input.form-control(placeholder="值 2")
+    .flex-grow-1: input.form-control(placeholder="不通過時的錯誤訊息")
+
+
+  .w-768.mx-auto.rwd.typeset.heading-contrast
+
+    h4 提案表
+    p.text-sm.text-muted 您可以在這裡設定提案 / 報名時，提案人所需要提交的表格。
+    hr.my-4
+
+    include subblock.pug
+
+
+  +css("/assets/lib/handsontable/handsontable.min.css")
+  +script("/assets/lib/handsontable/handsontable.min.js")
+  +script("/assets/lib/ldui/ldui.min.js")
+
+  script: :lsc
+    dom = ld$.find document, '#prj-budget', 0
+    data = [
+      ['分類', '項目', '預估', '', '', '實際', '', '', '執行率']
+      ['', '', '自籌', '補助', '總計', '自籌', '補助', '總計', '']
+      ['', '材料費', 100, 100, 200, '','','','0%']
+      ['', '總計', 100, 100, 200, '','','','0%']
+    ]
+
+    Handsontable.renderers.registerRenderer \myrenderer, (instance, td, row, col, prop, value, cellProperties) -> 
+      Handsontable.renderers.TextRenderer.apply @, arguments
+      #if row < 2 or col in [4,7,8] => cellProperties.readOnly = true
+      if row < 2 => return td.classList.add \head
+      if col > 1 => return td.classList.add \value
+
+    hot = new Handsontable dom, {
+      data: data
+      rowHeaders: true
+      colHeaders: true
+      filters: true
+      dropdownMenu: true
+      stretchH: \all
+      rowHeights: 25
+      minRows: 10
+      minCols: 10
+      fixedRowsTop: 2,
+      mergeCells: [
+        {row: 0, col: 0, colspan: 1, rowspan: 2}
+        {row: 0, col: 1, colspan: 1, rowspan: 2}
+        {row: 0, col: 2, colspan: 3, rowspan: 1}
+        {row: 0, col: 5, colspan: 3, rowspan: 1}
+        {row: 0, col: 8, colspan: 1, rowspan: 2}
+      ]
+      cells: (row, col) ->
+        cellProperties = {}
+        cellProperties.renderer = \myrenderer
+        return cellProperties
+      colWidths: [50,150,50,50,50,50,50,50]
+      customBorders: [
+        {
+          range: { from : {row: 1, col: 4}, to: {row: 1, col: 4}},
+          right: { width: 2, color: \#000}, bottom: {width: 2, color: \#000}
+        }
+        {
+          range: { from : {row: 1, col: 7}, to: {row: 1, col: 7}},
+          right: { width: 2, color: \#000}, bottom: {width: 2, color: \#000}
+        }
+        { range: { from : {row: 1, col: 0}, to: {row: 1, col: 10}}, bottom: {width: 2, color: \#000}}
+        { range: { from : {row: 0, col: 1}, to: {row: 99, col: 1}}, right: {width: 2, color: \#000}}
+        { range: { from : {row: 0, col: 4}, to: {row: 99, col: 4}}, right: {width: 2, color: \#000}}
+        { range: { from : {row: 0, col: 7}, to: {row: 99, col: 7}}, right: {width: 2, color: \#000}}
+      ]
+    }
+
+    hot.updateSettings do
+      contextMenu:
+        items:
+          "add_row_above":
+            name: "在上方新增一列"
+            callback: (k,o) -> hot.alter \insert_row, (hot.getSelected!0), 1
+          "add_row_below":
+            name: "在下方新增一列"
+            callback: (k,o) -> hot.alter \insert_row, (hot.getSelected!0 + 1), 1
+          "del_row":
+            name: "刪除列"
+            callback: (k,o) ->
+              console.log hot.getSelected!0
+              hot.alter \remove_row, (hot.getSelected!0 - 1), 1
+
+  script: :lsc
+    ld$.find \.dropdown .map (node) ->
+      if !(menu = ld$.find(node, \.dropdown-menu, 0)) => return
+      menu.addEventListener \click, (evt) ->
+        @previousSibling.innerText = evt.target.innerText
+        fc = +(evt.target.getAttribute(\data-field-count)) or 1
+        ld$.find("[ld=in2]").map -> it.classList.toggle \d-none, (+fc <= 1)
+        ld$.find("[ld=in1]").map -> it.classList.toggle \d-none, (+fc <= 0)
+

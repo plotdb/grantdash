@@ -66,3 +66,56 @@ mixin prj-card-noframe(opt)
     //-
       hr.my-2
       .btn.btn-sm.btn-outline-secondary #{opt.category || '開放政府'}
+
+//- 列表標頭
+
+//- 置中式
+mixin prj-list-head-center
+  .w-100.text-light.bg-dark.mb-4.rounded(style="height:300px;background:url(/assets/img/dev/bk-minimal.png) center center no-repeat;background-size:cover"): .vertical-center: .w-100.text-center
+    h3.font-weight-light 2019 公民科技創新獎助金
+    p.text-muted.text-sm.mb-4 g0v 公民科技創新獎助金 - 8 個月、每個專案 30 - 50 萬，2019/1/13 提案截止。
+    a.btn.btn-outline-light(href="/activity/landing.html") 關於此計畫
+    .btn.btn-outline-light.ml-2(onclick="lda.ldcvmgr.toggle('propose')") 我要提案
+  +prj-list-ctrl
+
+//- 靠左式
+mixin prj-list-head-side
+  .w-100.text-light.bg-dark.mb-4.rounded(style="height:300px;background:url(/assets/img/dev/landing.jpg) center center no-repeat;background-size:cover")
+    .vertical-center: .w-50.text-left.ml-4.pl-4
+      h3.font-weight-light 2019 公民科技創新獎助金
+      p.text-sm.mb-4(style="opacity:.65") g0v 公民科技創新獎助金 - 8 個月、每個專案 30 - 50 萬，2019/1/13 提案截止。
+      a.btn.btn-outline-light(href="/activity/landing.html") 關於此計畫
+      .btn.btn-outline-light.ml-2(onclick="lda.ldcvmgr.toggle('propose')") 我要提案
+  +prj-list-ctrl
+
+//- 操作面板
+mixin prj-list-ctrl
+  .d-flex.w-100.justify-content-between.py-2
+    div
+      .btn-group
+        .btn.btn-outline-secondary 許願池
+        .btn.btn-outline-secondary 得獎提案
+        .btn.btn-outline-primary.active 全部提案 #[i.i-check]
+    div
+      .input-group
+        input.form-control(placeholder="搜尋提案...")
+        .input-group-append
+          .btn.btn-outline-secondary 搜尋 #[i.i-search]
+
+//- 簡式標頭
+mixin prj-list-head-simple
+  .d-flex.align-items-end
+    .flex-grow-1
+      h3.font-weight-light 2019 公民科技創新獎助金
+      p.text-muted.text-sm.mb-0 g0v 公民科技創新獎助金 - 8 個月、每個專案 30 - 50 萬，2019/1/13 提案截止。 #[a(href="/activity/landing.html") 了解更多...]
+    div: .input-group
+      input.form-control(placeholder="搜尋提案...")
+      .input-group-append
+        .btn.btn-outline-secondary 搜尋 #[i.i-search]
+  hr.mb-0
+  .text-center.p-4
+    .btn-group
+      .btn.btn-sm.btn-outline-secondary 許願池
+      .btn.btn-sm.btn-outline-secondary 得獎提案
+      .btn.btn-sm.btn-outline-primary.active 全部提案 #[i.i-check]
+    .btn.btn-sm.btn-outline-secondary.ml-2(onclick="lda.ldcvmgr.toggle('propose')") 我要提案

@@ -59,7 +59,11 @@
     @evt-handler = {}
     @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
 
+    # BIND - Attempt: use hash + id to bind DOM and Data. lookup use @find function
+    @binding = {}
+
     @blockmgr = opt.block-manager
+    @init!
 
     @
 
@@ -165,12 +169,11 @@
         # - block data -
         c.{}block.data[v] = n.innerText
 
-    edit: (n) ->
-      if !(n and n.hasAttribute and n.hasAttribute(\editable)) => return
-      if @node.editing => @node.editing.setAttribute \contenteditable, false
-      @node.editing = n
-      n.setAttribute \contenteditable, true
-      n.focus!
+    # BIND - find corresponding DOM and Data via id
+    find: (id) -> @bind[id]
+    bind: ({dom, data}) ->
+      if !data.id => data.id = Math.random!toString(36).substring(2) # TODO use uuid?
+      @binding[data.id] = {dom, data}
 
     select: (n, append = false) ->
       @selected.map -> it.removeAttribute \selected
@@ -179,6 +182,13 @@
       if !Array.isArray(n) => n = [n]
       @selected ++= n
       n.map -> it.setAttribute \selected, true
+
+    edit: (n) ->
+      if !(n and n.hasAttribute and n.hasAttribute(\editable)) => return
+      if @node.editing => @node.editing.setAttribute \contenteditable, false
+      @node.editing = n
+      n.setAttribute \contenteditable, true
+      n.focus!
 
     clone: ->
       @select @selected.map (n) ->
@@ -199,6 +209,7 @@
           src.parentNode.removeChild src
           des.parentNode.insertBefore src, ib
 
+    /*
     inject: ({node, name, force}) -> new Promise (res, rej) ~>
       n = node
       # force injection to node, regardless of hostable attribute
@@ -211,16 +222,17 @@
 
       if t == n => n = null
       # -- fetch block content
-      if !name or !@blockmgr => return new Error("inject block: no name, or no blockmgr")
+      if !name => return rej(new Error("reblock: inject block but name is not provided"))
+      if !@blockmgr => return rej(new Error("reblock: inject block without providing blockManager"))
       @blockmgr.get(name)
         .then (content) ~>
           # -- insert block
           div = document.createElement("div")
           div.innerHTML = content
-          for i from 0 til div.childNodes.length => Promise.resolve(div.childNodes[0]).then (c) ~>
+          ps = for i from 0 til div.childNodes.length => Promise.resolve(div.childNodes[0]).then (c) ~>
             c.parentNode.removeChild c
             t.insertBefore c, n
-
+            if c.nodeType != 1 => return
             # TODO this is not always true if list grows horizontally.
             s = window.getComputedStyle(c)
             h = s.height
@@ -229,14 +241,112 @@
             setTimeout (-> c.style.height = h), 0
 
             # - block data - TODO dom tree / data spec
-            c.block = {data: {}, dom: {list: [], node: c}}
-            p = t
-            while p => if p.block => break else p = p.parentNode
-            if p and p.block => p.block.dom.list.push c.block.dom
-            else @block.dom.list.push c.block.dom
+            #c.block = {data: {}, dom: {list: [], node: c}}
+            #p = t
+            #while p => if p.block => break else p = p.parentNode
+            #if p and p.block => p.block.dom.list.push c.block.dom
+            #else @block.dom.list.push c.block.dom
             debounce 150 .then -> c.style.transition = ""; c.style.height = ""
+          Promise.all ps
         .then -> res!
         .catch -> rej it
+    */
+
+    inject: ({host, node, name, data, dir, force}) ->
+      lc = {}
+      if !data => data = {type: \block, name: name, data: {}}
+      if !name => name = data.name
+      if node =>
+        if !host => host = ld$.parent(node, '[hostable]')
+        ns = ld$.parent(node, '[hostable] > *')
+      new Promise (res, rej) ~>
+        if !name or data.type != \block => return rej!
+        @blockmgr.get(name)
+          .then (content) ~>
+            lc.div = div = document.createElement("div")
+            div.innerHTML = content
+            # we wrap block only if it contains multiple elements.
+            if div.childNodes.length == 0 => div = div.childNodes.0; div.parentNode.removeChild div
+            if host => host.insertBefore div, ns
+            s = window.getComputedStyle(div)
+            h = s.height
+            div.style.height = "0px"
+            div.style.transition = "height .15s ease-in-out"
+            setTimeout (-> div.style.height = h), 0
+            debounce 150 .then -> div.style.transition = ""; div.style.height = ""
+            @construct {node: div, data: data}
+          .then -> res lc.div
+          .catch -> rej it
+
+    # update DOM for partially updated data
+    /*update: (ops) ->
+      for each op in ops 
+        find corresponding node and data by op.path
+        render node, data
+    */
+
+    # render DOM, given a root node and corresponding data.
+    construct: ({node, data, partial}) -> new Promise (res, rej) ~>
+      nodes = ld$.find(node, '[editable],[repeatable],[hostable]')
+      # TODO escape sth
+      #excludes = ld$.find(root, '[repeatable] [editable], [repeatable] [hostable], [repeatable] [hostable]')
+      #nodes = nodes.filter -> !(it in excludes)
+      @bind({node, data})
+      # construct also accept object inside a redata when loop into repeatable,
+      # so dhash might be data that passed in. in this case, partial should be true
+      dhash = if partial => data else data.data
+      Promise.all(nodes.map (node) ~>
+        console.log node
+        if (name = node.getAttribute('editable')) =>
+          if !(d = dhash[name]) =>
+          else if !d.type => node.innerText = d
+          else if d.type == \value =>
+            node.innerText = d.value
+            @bind({node: node, data: d})
+          else if d.type == \tag =>
+            @dom({data: d})
+              .then -> node.appendChild it
+          else if d.type == \html =>
+            node.innerHTML = d.value
+            @bind({node: node, data: d})
+          Promise.resolve!
+        else if (name = node.getAttribute('repeatable')) =>
+          ns = node.nextSibling
+          p = node.parentNode
+          p.removeChild node
+          # TODO how do we know it's a repeatable and can be cloned if we remove this attribute?
+          node.removeAttribute \repeatable
+          ds = dhash[name] or []
+          Promise.all ds.map (d) ~>
+            n = node.cloneNode true
+            p.insertBefore n, ns
+            @construct {node: n, data: d, partial: true}
+        else if (name = node.getAttribute('hostable')) =>
+          ds = (dhash[name] or []).filter -> it.type == \block
+          Promise.all ds.map (d) ~>
+            @inject {host: node, data: d}
+      )
+        .then -> res!
+        .then -> rej!
+
+    # convert tag redata to DOM. return root node.
+    dom: ({data}) -> new Promise (res, rej) ~>
+      if !data.type => return document.createTextNode(data)
+      else if data.type == \tag =>
+        n = ld$.create data{name, attr, style}
+        @bind {node: n, data: data, id: data.id}
+        return res(
+          if data.text => n.innerText = that; n
+          else
+            Promise.all (d.child or []).map -> Promise.resolve(@dom({data:it}))
+              .then -> it.map -> n.appendChild(it)
+              .then -> n
+        )
+      else if data.type == \value => return document.createTextNode(data.value)
+      # since tag redata is mainly used under editable, it should not contain block ... ?
+      # otherwise user will be able to edit block directly and cause issue.
+      # else if data.type == \block => return @inject({data})
+      else null# inconvertable
 
 
   reblock.ghost = ghost = new Image!
