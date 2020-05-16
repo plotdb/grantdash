@@ -1,60 +1,114 @@
 //- module
-mixin criteria
-  .card-body.border-top: .p-2
-    .d-flex hi
 
 mixin form-block(opt)
   .card.shadow-sm(data-name=opt.name)
     .card-body: .p-2
       .flex-grow-1
-        h4.mb-1(editable="title") 提問的標題
-        p.text-muted.mb-2(editable="description") 提問的簡短描述 ...
+        h4.mb-1(ld="title",contenteditable="true",editable="title") 提問的標題
+        p.text-muted.mb-2(ld="description",contenteditable="true",editable="description") 提問的簡短描述 ...
       block
     +criteria
     +footer
-
 mixin footer
   .card-body.border-top: .p-2
     .d-flex.align-items-center
       .flex-grow-1
-        .btn.btn-sm.btn-outline-danger.mr-2 刪除 #[i.i-close]
+        .btn.btn-sm.btn-outline-danger.mr-2(ld="delete") 刪除 #[i.i-close]
       .d-flex.align-items-center.mr-4
         .mr-2 必填
-        .switch
+        .switch(ld="switch",data-name="required")
       .d-flex.align-items-center.mr-4
         .mr-2 顯示描述
-        .switch
-      .btn.btn-sm.btn-outline-dark 複製 #[i.i-clone]
+        .switch(ld="switch",data-name="show-description")
+      .btn.btn-sm.btn-outline-dark(ld="clone") 複製 #[i.i-clone]
+mixin criteria
+  .card-body.border-top: .p-2.d-flex.criteria
+    .d-flex.mb-2(ld-each="criteria")
+      .dropdown.mr-2
+        .btn.btn-light.dropdown-toggle(ld="type",data-toggle="dropdown")
+        .dropdown-menu
+          a.dropdown-item(ld-each="types")
+      .dropdown.mr-2
+        .btn.btn-light.dropdown-toggle(ld="op",data-toggle="dropdown")
+        .dropdown-menu
+          a.dropdown-item(ld-each="ops")
+      .mr-2.flex-grow-1(ld="input1"): input.form-control(placeholder="值 1")
+      .mr-2.flex-grow-1(ld="input2"): input.form-control(placeholder="值 2")
+      .flex-grow-1: input.form-control(ld="invalid",placeholder="不通過時的錯誤訊息")
+    //-.btn.btn-outline-dark(ld="add") 增加條件...
+
+
+
+
+//-
+  mixin criteria
+    .card-body.border-top: .p-2.d-flex
+      .mr-2.dropdown.mr-2(ld="criteria-type")
+        .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 數值
+        .dropdown-menu
+          a.dropdown-item(data-criteria-type="number") 數值
+          a.dropdown-item(data-criteria-type="string") 文字
+          a.dropdown-item(data-criteria-type="length",data-ops="range") 長度
+          a.dropdown-item(data-criteria-type="regex",data-ops="regex") 正規式
+          a.dropdown-item(data-criteria-type="count",data-ops="range") 選項數
+          a.dropdown-item(data-criteria-type="file-size",data-ops="smaller") 檔案大小
+          a.dropdown-item(data-criteria-type="extension",data-ops="extension") 檔案格式
+          a.dropdown-item(data-criteria-type="file-count",data-ops="range") 檔案數量
+      .mr-2(ld="criteria-op")
+      .mr-2.flex-grow-1(ld="in1"): input.form-control(placeholder="值 1", editable="criteria1")
+      .mr-2.flex-grow-1(ld="in2"): input.form-control(placeholder="值 2", editable="criteria2")
+      .flex-grow-1: input.form-control(placeholder="不通過時的錯誤訊息", editable="errmsg")
+  mixin form-block(opt)
+    .card.shadow-sm(data-name=opt.name)
+      .card-body: .p-2
+        .flex-grow-1
+          h4.mb-1(editable="title") 提問的標題
+          p.text-muted.mb-2(editable="description") 提問的簡短描述 ...
+        block
+      +criteria
+      +footer
+  mixin footer
+    .card-body.border-top: .p-2
+      .d-flex.align-items-center
+        .flex-grow-1
+          .btn.btn-sm.btn-outline-danger.mr-2(data-action="delete") 刪除 #[i.i-close]
+        .d-flex.align-items-center.mr-4
+          .mr-2 必填
+          .switch(ld="switch",data-name="required")
+        .d-flex.align-items-center.mr-4
+          .mr-2 顯示描述
+          .switch(ld="switch",data-name="show-description")
+        .btn.btn-sm.btn-outline-dark(data-action="clone") 複製 #[i.i-clone]
 
 div(data-name="form-root")
-  div(hostable="blocks")
+  div(editable="blocks",edit-type="block")
 
 +form-block({name: "form-budget"})
   #prj-budget.w-100
 
 +form-block({name: "form-checkpoint"})
   .pt-4.px-4
-    .timeline-list
-      .item
-        .title 第一個檢查點
-        p 關於第一個點的詳細項目 ...
-      .item
-        .title 第一個檢查點
-        p 關於第一個點的詳細項目 ...
+    .timeline-list(hostable)
+      .item(draggable="true")
+        .title(editable="checktitle") 第一個檢查點
+        p(editable="checkdesc") 關於第一個點的詳細項目 ...
+      .item(draggable="true")
+        .title(editable="checktitle") 第一個檢查點
+        p(editable="checkdesc") 關於第一個點的詳細項目 ...
     .btn.btn-sm.btn-outline-dark 增加項目 #[i.i-plus]
 
 
 +form-block({name: "form-radio"})
-  .px-4.py-3.border.rounded
+  .px-4.py-3.border.rounded(editable="option",edit-type="block")
     each item in (["選項1","選項2","選項3"])
-      .d-flex.align-items-center.my-1
-        input.w-100.z-float(type="radio",style="height:1.5em;margin-top:-2px")
-        .position-absolute(style="margin-left:1.5em") #{item}
+      .d-flex.align-items-center.my-1(draggable="true")
+        input.w-100(type="radio",style="height:1.5em;margin-top:-2px")
+        .position-absolute(editable="name",style="margin-left:1.5em") #{item}
 
 +form-block({name: "form-checkbox"})
   .px-4.py-3.border.rounded
     each i in [1,2,3,4,5]
-      .form-check.my-1.clickable
+      .form-check.my-1.clickable(draggable="true")
         input.form-check-input(type="checkbox",name="checkbox")
         label.form-check-label 選項 #{i}
 
@@ -74,3 +128,36 @@ div(data-name="form-root")
 
 +form-block({name: "form-short-answer"})
   input.form-control(placeholder="請在這裡輸入 ...")
+
+
+.btn.btn-light.text-nowrap.mr-2(data-criteria-ops="smaller") 小於
+.btn.btn-light.text-nowrap.mr-2(data-criteria-ops="extension") 副檔名
+.dropdown.mr-2(data-criteria-ops="regex")
+  .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 符合
+  .dropdown-menu
+    a.dropdown-item(data-op="match") 符合
+    a.dropdown-item(data-op="not-match") 不符
+.dropdown.mr-2(data-criteria-ops="range")
+  .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 介於
+  .dropdown-menu
+    a.dropdown-item(data-op="gte") #[.s.mr-2 &#x2265;] 大於
+    a.dropdown-item(data-op="lte") #[.s.mr-2 &#x2264;] 小於
+    a.dropdown-item(data-op="eq") #[.s.mr-2 &#x2264;] 等於
+    a.dropdown-item(data-op="between",data-field-count="2") #[.s.mr-2 &#x223c;] 介於
+.dropdown.mr-2(data-criteria-ops="string")
+  .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 包含
+  .dropdown-menu
+    a.dropdown-item(data-op="include") 包含
+    a.dropdown-item(data-op="exclude") 不包含
+    a.dropdown-item(data-op="email") 電子郵件位置
+    a.dropdown-item(data-op="url") 網址
+.dropdown.mr-2(data-criteria-ops="number")
+  .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 大於
+  .dropdown-menu
+    a.dropdown-item(data-op="gte") #[.s.mr-2 &#x2265;] 大於或等於
+    a.dropdown-item(data-op="lte") #[.s.mr-2 &#x2264;] 小於或等於
+    a.dropdown-item(data-op="ge") #[.s.mr-2 &gt;] 大於
+    a.dropdown-item(data-op="le") #[.s.mr-2 &lt;] 小於
+    a.dropdown-item(data-op="eq") #[.s.mr-2 =] 等於
+    a.dropdown-item(data-op="ne") #[.s.mr-2 &#x2260;] 不等於
+    a.dropdown-item(data-op="between",data-field-count="2") #[.s.mr-2 &#x223c;] 介於
