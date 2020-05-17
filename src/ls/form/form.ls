@@ -176,22 +176,36 @@
     }
   ]
 
+  bmgr = do
+    get: (name) -> new Promise (res, rej) ->
+      n = ld$.find("[data-name=#{name}]", 0)
+      console.log name, n
+      if !n => rej new Error("block not found")
+      div = ld$.create name: "div", attr: {draggable: true}
+      div.appendChild n.cloneNode(true)
+      res div
+
   blocks-view = new ldView do
     root: '#form'
     handler:
       block: do
         list: -> blocks
         init: ({node, data}) ->
-          sample = ld$.find("[data-name=#{data.name}]", 0).cloneNode(true)
-          node.innerHTML = ""
-          node.appendChild sample
-          block-renderer {node, data}
-          criteria-render {node, data: data}
-          if form-modules[data.name] => that({node, data})
+          bmgr.get(data.name).then (n) ->
+            n = n.childNodes.0
+            n.parentNode.removeChild n
+            node.innerHTML = ""
+            node.appendChild n
+            block-renderer {node, data}
+            criteria-render {node, data: data}
+            if form-modules[data.name] => that({node, data})
+
+  view-blocksrc = new ldView do
+    root: '[ld-scope=blocksrc]'
+    action: dragstart: block: ({node, evt}) ->
+      evt.dataTransfer.setData('text/plain',"#{node.getAttribute(\data-name)}")
 
 
-  bmgr = do
-    get: -> 
   reb = new reblock do
     root: '#form'
     block-manager: bmgr
