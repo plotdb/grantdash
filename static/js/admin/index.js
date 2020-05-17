@@ -42,7 +42,6 @@
           watch: watch
         }).then(function(doc){
           lc.doc = doc;
-          console.log(doc.data);
           orgInfo.init({
             doc: doc,
             sdb: sdb
@@ -97,14 +96,13 @@
                     if (!(p = ld$.parent(node, '.folder', this.root))) {
                       return;
                     }
-                    key = p.getAttribute('data-key');
+                    key = p.getAttribute('data-prj-key');
                     idx = 0;
                     lc.docbrd.data.group.map(function(d, i){
                       if (d.key === +key) {
                         return idx = i;
                       }
                     });
-                    console.log(">", idx);
                     return prjInfo.set({
                       path: ['group', idx]
                     });
@@ -117,7 +115,7 @@
             var node, data, n;
             node = arg$.node, data = arg$.data;
             n = ld$.find(node, '[ld=name]', 0);
-            node.setAttribute('data-key', data.key);
+            node.setAttribute('data-prj-key', data.key);
             n.innerText = data.name;
             if (!node.folder) {
               return node.folder = new ldui.Folder({

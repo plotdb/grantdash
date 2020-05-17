@@ -27,7 +27,6 @@
         sdb.get {id, watch}
           .then (doc) ->
             lc.doc = doc
-            console.log doc.data
             orgInfo.init {doc, sdb}
             orgPerm.init {doc, sdb}
             loader.off!
@@ -57,15 +56,14 @@
               action: click: do
                 "nav-tab": ({node}) ->
                   if !(p = ld$.parent(node, '.folder', @root)) => return
-                  key = p.getAttribute \data-key
+                  key = p.getAttribute \data-prj-key
                   idx = 0
                   lc.docbrd.data.group.map (d,i) -> if d.key == +key => idx := i
-                  console.log ">", idx
                   prjInfo.set path: ['group', idx]
 
           handler: ({node, data}) ->
             n = ld$.find(node, '[ld=name]', 0)
-            node.setAttribute \data-key, data.key
+            node.setAttribute \data-prj-key, data.key
             n.innerText = data.name
             if !node.folder => node.folder = new ldui.Folder root: node
             #if !node.nav => node.nav = new ldui.Nav node

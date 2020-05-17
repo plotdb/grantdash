@@ -4,8 +4,11 @@
 style(style="text/css").
   [ld=brd-head] [ld=cart] { transform: rotate(0deg); transition: all .25s ease-in-out }
   [ld=brd-head].on [ld=cart] { transform: rotate(180deg) }
+  .admin-sidemenu::-webkit-scrollbar {
+    background-color: #fff!important;
+  }
 
-.bg-dark.text-white.text-left(style="width:200px;overflow-y:scroll;overflow-x:hidden;flex:0 0 auto")
+.admin-sidemenu.bg-dark.text-white.text-left(style="width:200px;overflow-y:scroll;overflow-x:hidden;flex:0 0 auto")
   +scope("sidemenu-brd-info")#brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(
   style="top:0;transition:height .25s ease-in-out")
     div(ld="brd-head")
@@ -85,14 +88,6 @@ style(style="text/css").
           .folder-item(ld="nav-tab",data-name="prj-judge") 評選資訊
           .folder-item(ld="nav-tab",data-name="prj-form") 提案表
       .folder-item(ld="project-group-add") 新增分組 ...
-
-    //-.folder
-      .folder-toggle.folder-item 專案組 B
-      .folder-menu
-        .folder-item(ld="nav-tab",data-name="prj-config") 設定
-        .folder-item(ld="nav-tab",data-name="prj-list") 專案列表
-        .folder-item(ld="nav-tab",data-name="prj-judge") 評選資訊
-        .folder-item(ld="nav-tab",data-name="prj-form") 提案表
 
     .my-4
 

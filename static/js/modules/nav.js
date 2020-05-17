@@ -2,7 +2,9 @@
 (function(){
   var lc;
   lc = {
-    nav: {}
+    nav: {},
+    cur: {},
+    tab: {}
   };
   ld$.find('[ld~=nav-panel]').map(function(it){
     var isDefault, nav, ref$;
@@ -24,11 +26,12 @@
     }
     it.classList.toggle('active', isDefault);
     if (isDefault) {
-      return ((ref$ = lc.nav)[nav] || (ref$[nav] = {})).tab = it;
+      ((ref$ = lc.nav)[nav] || (ref$[nav] = {})).tab = it;
+      return lc.tab[nav] = it.getAttribute('data-name');
     }
   });
   document.body.addEventListener('click', function(e){
-    var n, tab, nav, p, name, that, ref$, panel;
+    var n, tab, nav, p, name, that, ref$, panel, key;
     if (!((n = e.target) && n.getAttribute)) {
       return;
     }
@@ -51,7 +54,19 @@
     ((ref$ = lc.nav)[nav] || (ref$[nav] = {})).panel = panel;
     tab.classList.toggle('active', true);
     if (panel) {
-      return panel.classList.toggle('d-none', false);
+      panel.classList.toggle('d-none', false);
+    }
+    n = tab;
+    while (n) {
+      if (n.getAttribute && (key = n.getAttribute('data-prj-key'))) {
+        break;
+      }
+      n = n.parentNode;
+    }
+    if (nav === 'main') {
+      return ref$ = lc.cur, ref$.nav = nav, ref$.name = name, ref$.key = key, ref$.func = lc.tab[lc.cur.name], ref$;
+    } else {
+      return ref$ = lc.cur, ref$.func = lc.tab[lc.cur.name] = name, ref$;
     }
   });
   return ld$.find('.folder').map(function(it){
