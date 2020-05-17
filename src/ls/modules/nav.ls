@@ -1,37 +1,29 @@
 (->
-  lc = {active: {}, pends: {}}
 
-  view = new ldView do
-    root: document.body
-    action: click: do
-      "nav": ({node, evt}) ->
-        if !evt.target.getAttribute(\ld) => return
-        n = evt.target.getAttribute(\data-name)
-        g = node.getAttribute(\data-nav)
-        lc.active[g] = {name: n, node: evt.target}
-        view.render!
-        setTimeout (->
-          if (o = lc.pends{}[g][n]) and !(o.inited) =>
-            o.func!
-            o.inited = true
-        ), 10
-    handler: do
-      "nav-tab": ({node}) ->
-        g = node.getAttribute \data-nav
-        if !g =>
-          if !(p = ld$.parent(node, '[ld=nav]', document)) => return
-          if !(g = p.getAttribute \data-nav) => return
-        n = node.getAttribute \data-name
-        active = lc.active[g] or {}
-        node.classList.toggle \active, (
-          active.node == node or
-          (!lc.active[g] and /default/.exec(node.getAttribute(\ld))) 
-        )
-      "nav-panel": ({node}) ->
-        g = node.getAttribute(\data-nav)
-        node.classList.toggle \d-none, (
-          (lc.active[g] and lc.active[g].name != node.getAttribute(\data-name)) or
-          (!lc.active[g] and !/default/.exec(node.getAttribute(\ld)))
-        )
+  lc = {nav: {}}
+  ld$.find('[ld~=nav-panel]').map ->
+    is-default = \default in (it.getAttribute(\ld) or '').split(' ')
+    nav = it.getAttribute(\data-nav)
+    it.classList.toggle \d-none, !is-default
+    if is-default => lc.nav{}[nav].panel = it
+  ld$.find('[ld~=nav-tab]').map ->
+    is-default = \default in (it.getAttribute(\ld) or '').split(' ')
+    nav = it.getAttribute(\data-nav)
+    if !nav and (p = ld$.parent(it, '[data-nav]')) => nav = p.getAttribute(\data-nav)
+    it.classList.toggle \active, is-default
+    if is-default => lc.nav{}[nav].tab = it
 
+  document.body.addEventListener \click, (e) ->
+    if !((n = e.target) and n.getAttribute) => return
+    if !(tab = ld$.parent(n, '[ld~=nav-tab]')) => return
+    nav = tab.getAttribute(\data-nav)
+    if !nav and (p = ld$.parent(tab, '[data-nav]')) => nav = p.getAttribute(\data-nav)
+    name = tab.getAttribute(\data-name)
+    if lc.nav{}[nav].tab => that.classList.toggle \active, false
+    if lc.nav{}[nav].panel => that.classList.toggle \d-none, true
+    panel = ld$.find("[ld~=nav-panel][data-nav=#nav][data-name=#name]",0)
+    lc.nav{}[nav].tab = tab
+    lc.nav{}[nav].panel = panel
+    tab.classList.toggle \active, true
+    if panel => panel.classList.toggle \d-none, false
 )!
