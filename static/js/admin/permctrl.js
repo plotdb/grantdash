@@ -126,9 +126,7 @@
           var node, name;
           node = arg$.node;
           node.classList.toggle('d-none', !~obj.idx);
-          if (lc.role) {
-            node.value = lc.name;
-          }
+          node.value = lc.role ? node.value = lc.name : '';
           name = node.value;
           return node.classList.toggle('is-invalid', ~obj.cfg.roles.map(function(it){
             return it.name;

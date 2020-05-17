@@ -62,7 +62,7 @@
             n.innerText = data.name
         "role-name": ({node}) ->
           node.classList.toggle \d-none, !~(obj.idx)
-          if lc.role => node.value = lc.name
+          node.value = if lc.role => node.value = lc.name else ''
           name = node.value
           node.classList.toggle \is-invalid, (~obj.cfg.roles.map(->it.name).indexOf(name) and lc.name != name)
 
