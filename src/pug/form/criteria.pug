@@ -10,52 +10,7 @@ block body
   +script("/js/reblock/form-reblock.js")
   +script("/assets/lib/ctrlz/ot-json0.js")
 
-  mixin form-block(opt)
-    .card.shadow-sm(data-name=opt.name)
-      .card-body: .p-2
-        .flex-grow-1
-          h4.mb-1(ld="title",contenteditable="true",editable="title") 提問的標題
-          p.text-muted.mb-2(ld="description",contenteditable="true",editable="description") 提問的簡短描述 ...
-        block
-      +criteria
-      +footer
-  mixin footer
-    .card-body.border-top: .p-2
-      .d-flex.align-items-center
-        .flex-grow-1
-          .btn.btn-sm.btn-outline-danger.mr-2(ld="delete") 刪除 #[i.i-close]
-        .d-flex.align-items-center.mr-4
-          .mr-2 必填
-          .switch(ld="switch",data-name="required")
-        .d-flex.align-items-center.mr-4
-          .mr-2 顯示描述
-          .switch(ld="switch",data-name="show-description")
-        .btn.btn-sm.btn-outline-dark(ld="clone") 複製 #[i.i-clone]
-  mixin criteria
-    .card-body.border-top: .p-2.d-flex.criteria
-      .d-flex.mb-2(ld-each="criteria")
-        .dropdown.mr-2
-          .btn.btn-light.dropdown-toggle(ld="type",data-toggle="dropdown")
-          .dropdown-menu
-            a.dropdown-item(ld-each="types")
-        .dropdown.mr-2
-          .btn.btn-light.dropdown-toggle(ld="op",data-toggle="dropdown")
-          .dropdown-menu
-            a.dropdown-item(ld-each="ops")
-        .mr-2.flex-grow-1(ld="input1"): input.form-control(placeholder="值 1")
-        .mr-2.flex-grow-1(ld="input2"): input.form-control(placeholder="值 2")
-        .flex-grow-1: input.form-control(ld="invalid",placeholder="不通過時的錯誤訊息")
-      //-.btn.btn-outline-dark(ld="add") 增加條件...
-
-
-  .w-768.mx-auto.rwd.typeset.heading-contrast
-    +form-block({name: "form-checkpoint"})
-      .pt-4.px-4
-        .timeline-list(hostable)
-          .item(draggable="true",ld-each="checkpoint")
-            .title(ld="timeline-title",editable="checktitle",contenteditable="true") 第一個檢查點
-            p(ld="timeline-description",editable="checkdesc",contenteditable="true") 關於第一個點的詳細項目 ...
-        .btn.btn-sm.btn-outline-dark(ld="add") 增加項目 #[i.i-plus]
+  .w-768.mx-auto.rwd.typeset.heading-contrast(style="height:20000px")
     #form(hostable): div(ld-each="block",draggable="true")
 
 

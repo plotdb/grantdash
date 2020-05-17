@@ -13,7 +13,7 @@
   # block animation when reordering or inserting
   animate = do
     running: false
-    alpha: 4, dur: 150
+    alpha: 4, dur: 250
     box: {}
     init: ({src, des, cb}) ->
       if @running => return

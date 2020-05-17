@@ -5,7 +5,7 @@ var slice$ = [].slice;
   animate = {
     running: false,
     alpha: 4,
-    dur: 150,
+    dur: 250,
     box: {},
     init: function(arg$){
       var src, des, cb, ref$, ref1$;
@@ -100,7 +100,7 @@ var slice$ = [].slice;
       document.addEventListener('click', function(e){
         var n, t;
         n = t = e.target;
-        while (t && t !== root) {
+        while (t && t !== this$.root) {
           t = t.parentNode;
         }
         if (!t) {
@@ -151,16 +151,20 @@ var slice$ = [].slice;
         return e.preventDefault();
       });
       document.addEventListener('drop', function(e){
-        var that;
+        var that, name;
         if (this$.node.injecting) {
           if (that = this$.node.injecting.parentNode) {
             that.removeChild(this$.node.injecting);
           }
           this$.node.injecting = null;
         }
+        name = e.dataTransfer.getData('text/plain');
+        if (!name) {
+          return;
+        }
         return this$.inject({
           node: e.target,
-          name: e.dataTransfer.getData('text/plain')
+          name: name
         }).then(function(){
           e.preventDefault();
           return e.stopPropagation();
@@ -269,7 +273,14 @@ var slice$ = [].slice;
       });
       return this.root.addEventListener('input', function(e){
         var n, name;
-        if (!((n = e.target) && n.hasAttribute && (name = n.getAttribute('editable')))) {}
+        if (!((n = e.target) && n.hasAttribute && (name = n.getAttribute('editable')))) {
+          return;
+        }
+        if (this$.action.input) {
+          return this$.action.input({
+            node: n
+          });
+        }
       });
     },
     select: function(n, append){
@@ -308,72 +319,106 @@ var slice$ = [].slice;
       return n.focus();
     },
     clone: function(){
+      var this$ = this;
       return this.select(this.selected.map(function(n){
         var m;
         n.parentNode.insertBefore(m = n.cloneNode(true), n.nextSibling);
+        if (this$.action.clone) {
+          this$.action.clone({
+            node: m,
+            src: n
+          });
+        }
         return m;
       }));
     },
     'delete': function(){
-      var n, ref$;
+      var n, ref$, this$ = this;
       if (!(n = (ref$ = this.selected)[ref$.length - 1])) {
         return;
       }
       n = n.nextSibling || n.previousSibling;
       this.selected.map(function(it){
+        if (this$.action['delete']) {
+          this$.action['delete']({
+            node: it
+          });
+        }
         return it.parentNode.removeChild(it);
       });
       return this.select(n);
     },
     move: function(src, des, after){
-      var ib;
+      var ib, ref$, p, ns, this$ = this;
       if (src === (ib = after ? des.nextSibling : des)) {
         return;
       }
+      ref$ = [src.parentNode, src.nextSibling], p = ref$[0], ns = ref$[1];
       return animate.init({
         src: src,
         des: des,
         cb: function(){
+          if (this$.action.beforeMoveNode) {
+            this$.action.beforeMoveNode({
+              src: src,
+              des: des,
+              ib: ib
+            });
+          }
           src.parentNode.removeChild(src);
-          return des.parentNode.insertBefore(src, ib);
+          des.parentNode.insertBefore(src, ib);
+          if (this$.action.afterMoveNode) {
+            return this$.action.afterMoveNode({
+              src: src,
+              des: des,
+              ib: ib
+            });
+          }
         }
       });
     },
     inject: function(arg$){
-      var node, name, force, this$ = this;
-      node = arg$.node, name = arg$.name, force = arg$.force;
+      var node, name, data, force, n, t, p, this$ = this;
+      node = arg$.node, name = arg$.name, data = arg$.data, force = arg$.force;
+      n = node;
+      if (force) {
+        t = n;
+      } else {
+        while (n && (p = n.parentNode)) {
+          if (p.hasAttribute && p.hasAttribute('hostable')) {
+            t = p;
+            break;
+          }
+          if (n.hasAttribute && n.hasAttribute('hostable')) {
+            t = n;
+            break;
+          } else {
+            n = p;
+          }
+        }
+        if (!t) {
+          return rej(new Error(""));
+        }
+      }
+      if (t === n) {
+        n = null;
+      }
+      if (data && !name) {
+        name = data.name;
+      }
       return new Promise(function(res, rej){
-        var n, t, p;
-        n = node;
-        if (force) {
-          t = n;
-        } else {
-          while (n && (p = n.parentNode)) {
-            if (p.hasAttribute && p.hasAttribute('hostable')) {
-              t = p;
-              break;
-            }
-            if (n.hasAttribute && n.hasAttribute('hostable')) {
-              t = n;
-              break;
-            } else {
-              n = p;
-            }
-          }
-          if (!t) {
-            return rej(new Error(""));
-          }
-        }
-        if (t === n) {
-          n = null;
-        }
-        if (!name || !this$.blockmgr) {
-          return rej(new Error("inject block: no name, or no blockmgr"));
-        }
         return this$.blockmgr.get(name).then(function(newNode){
           var s, h;
           t.insertBefore(newNode, n);
-          Array.from(t.childNodes).indexOf(n);
+          if (this$.action.inject) {
+            this$.action.inject({
+              parent: t,
+              node: newNode,
+              sibling: n,
+              data: data,
+              name: name
+            });
+          }
           s = window.getComputedStyle(newNode);
           h = s.height;
           newNode.style.height = "0px";

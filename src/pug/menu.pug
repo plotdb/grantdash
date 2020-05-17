@@ -21,7 +21,7 @@ html
 
   body
     mixin folder(opt)
-      .folder(draggable="true")
+      .folder.show(draggable="true")
         +item(opt.item)
         .folder-menu
           each item in opt.children
@@ -31,11 +31,11 @@ html
       .folder > .folder-item .url { display: none }
              
     mixin item(opt)
-      .folder-item(class=opt.toggle ? "folder-toggle" : "",draggable=opt.toggle ? "" : "true")
+      .folder-item(class=opt.toggle ? "folder-toggle" : "",draggable=opt.toggle ? "" : "true")&attributes(attributes)
         .inner.d-flex.align-items-center
           i.i-bars.mr-4
-          .name.flex-grow-1.mr-2: input.form-control(value=opt.name)
-          .url.flex-grow-1: input.form-control(placeholder="URL",value=opt.url || '')
+          .name.flex-grow-1.mr-2: input.form-control(name="name",value=opt.name,placeholder="選單文字")
+          .url.flex-grow-1: input.form-control(name="url",placeholder="URL",value=opt.url || '')
           i.i-radio.ml-4
           i.i-clone.ml-4
           i.i-close.ml-4.mr-4
@@ -48,8 +48,12 @@ html
       ];
 
     .w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
-      #root: .folder-root
-        each item in tree
+      .d-none
+        +item({})#item-sample
+        #folder-sample.folder.show(draggable="true")
+          .folder-menu
+      #root.folder-root
+        //-each item in tree
           if item.item
             +folder(item)
           else
@@ -66,6 +70,10 @@ html
 
 
     +script("/js/modules/nav.js")
+    +script("/assets/lib/ctrlz/ctrlz.bundle.min.js")
+    script: :lsc
+      json0OtDiff = require("json0-ot-diff")
+      otJson0 = require("ot-json0")
     +script("/assets/lib/ldui/ext/folder.min.js")
-    +script("/js/admin/reblock.js")
+    +script("/js/reblock/form-reblock.js")
     +script("/js/admin/folder-dynamics.js")

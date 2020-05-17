@@ -1,136 +1,151 @@
 (->
-  data = do
-    type: \block
-    name: \form-root
-    data: do
-      blocks: [
-        {
-          type: \block
-          name: \form-short-answer
-          config: do
-            required: true
-            show-description: true
-            validation: [{ type: 'obj', value: { type: 'number', condition: 'between', value: '30', value2: '50' }}]
-          data: do
-            title: "你需要多少錢?"
-            description: "請寫出你到底需要多少錢"
-        }
-        {
-          type: \block
-          name: \form-short-answer
-          config: 
-            required: true
-            show-description: true
-            validation: [{ type: 'obj', value: { type: 'number', condition: 'between', value: '30', value2: '50' }}]
-          data: do
-            title: "你需要多少時間?"
-            description: "請寫出你到底需要多少時間"
-        }
-      ]
-  root = ld$.find \#root, 0
-  bmgr = do
-    get: (name) ->
-      sample = ld$.find("[data-name=#name]",0)
-      Promise.resolve(sample.outerHTML)
-  reb = new reblock root: root, block-manager: bmgr
+  form-data = {blocks: []}
+  view = new ldView do
+    root: '#menu'
+    action: dragstart: blocksrc: ({node, evt}) -> 
+      evt.dataTransfer.setData('text/plain',"form-#{node.getAttribute(\data-name)}")
+    init: blocksrc: ->
 
-  #reb.inject {host: root, name: 'form-short-answer', force: true}
-  reb.inject {host: root, data: data, force: true}
-    .then ->
-      console.log \ok
-      console.log data
-    .catch -> console.log \failed, it
+  root = ld$.find('#root',0)
+  container = ld$.find(root, '.inner',0)
+
+  bmgr = get: (name) ->
+    ret = ld$.find(root, ".sample [data-name=#{name}]", 0).cloneNode(true)
+    ret.setAttribute \draggable, true
+    type = ld$.find(ret, "[ld=criteria-type]", 0)
+    new Dropdown(type)
+    op = ld$.find(ret, "[criteria-op]", 0)
+    Promise.resolve ret
+  reb = new reblock do
+    root: root, block-manager: bmgr, data: form-data
+    action: do
+      inject: ({parent, node, name, data}) ->
+        idx = Array.from(parent.childNodes).indexOf(node)
+        form-data.blocks.splice idx, 0, (data = (data or {name}))
+        node.block-data = data
+        render-criteria node
+      input: ({node}) ->
+        n = node
+        while n =>
+          if n.block-data => break
+          n = n.parentNode
+        if !(data = n.block-data) => return
+        name = node.getAttribute(\editable)
+        data.{}data[name] = (node.innerText or node.value or '')
+        console.log data
+      clone: ({node}) ->
+        if node.previousSibling.block-data =>
+          idx = Array.from(node.parentNode).indexOf(node)
+          form-data.blocks.splice idx, 0, JSON.parse(JSON.stringify(node.previousSibling.block-data))
+        console.log form-data
+      delete: ({node}) ->
+        if node.block-data =>
+          form-data.blocks.splice Array.from(node.parentNode).indexOf(node), 1
+        console.log form-data
+
+      move: ({src, des, origin}) ->
+
+  criteria-config = do
+    types: 
+      'form-short-answer': <[number string length regex]>
+      'form-long-answer': <[string length regex]>
+      'form-radio': []
+      'form-checkbox': <[count]>
+      'form-file': <[file-size file-formt file-count]>
+      'budget': <[count]>
+      'checkpoint': <[count]>
+
+  render-criteria = (block) ->
+    data = block.block-data
+    type = data.{}config.{}criteria.type
+    available-types = criteria-config.types[data.name]
+    if !(type in available-types) => type = available-types.0
+    type-node = ld$.find(block, '[ld=criteria-type]', 0)
+    type-toggler = ld$.find(type-node, '.dropdown-toggle', 0)
+    ld$.find(type-node, '.dropdown-item').map ->
+      it.classList.toggle \d-none, !(it.getAttribute(\data-criteria-type) in available-types)
+    item = ld$.find(type-node, ".dropdown-item[data-criteria-type=#{type}]",0)
+    type-toggler.innerText = item.innerText
+    ops-node = ld$.find(block, '[ld=criteria-op]', 0)
+    ops-type = (item.getAttribute(\data-ops) or type)
+    console.log ops-type
+    ops-dropdown = ld$.find(ops-node, '.dropdown',0)
+    if !ops-dropdown or (ops-dropdown.getAttribute("data-criteria-ops") != ops-type) => 
+      ops-dropdown = ld$.find(root, "[data-criteria-ops=#ops-type]",0)
+      ops-node.innerHTML = ""
+      ops-node.appendChild(ops-dropdown = ops-dropdown.cloneNode(true))
+      new Dropdown(ops-dropdown)
+    console.log ops-dropdown
+    op = data.{}config.{}criteria.op or ld$.find(ops-dropdown, '.dropdown-item', 0).getAttribute(\data-op)
+    item = ld$.find(ops-node, ".dropdown-item[data-op=#{op}]",0)
+    if !item =>
+      op = ld$.find(ops-dropdown, '.dropdown-item', 0).getAttribute(\data-op)
+      item = ld$.find(ops-node, ".dropdown-item[data-op=#{op}]",0)
+    op-toggler = ld$.find(ops-dropdown, '.dropdown-toggle', 0)
+    op-toggler.innerText = item.innerText
+    data.config.criteria <<< {op, type}
+
+  get-block = (node) ->
+    while node =>
+      if node.block-data => break
+      node = node.parentNode
+    if !(node and node.block-data) => return
+    return node
+
+
+  root.addEventListener \click, (e) ->
+    if !(node = e.target) or !node.getAttribute or !node.classList => return
+    if !(block = get-block node) => return
+    block-data = block.block-data
+    if node.classList.contains \switch =>
+      node.classList.toggle \on
+      name = node.getAttribute(\data-name)
+      block-data.{}config[name] = node.classList.contains(\on)
+    if node.getAttribute(\data-action) == \delete => reb.select block; reb.delete!
+    if node.getAttribute(\data-action) == \clone =>
+      reb.inject node: node, data: JSON.parse(JSON.stringify(block-data))
+
+    if node.classList.contains(\dropdown-item) =>
+      dropdown = ld$.parent(node, '[ld]') 
+      toggler = ld$.find(dropdown, '.dropdown-toggle', 0)
+      name = dropdown.getAttribute(\ld)
+      console.log name
+      if name == \criteria-type
+        type = node.getAttribute(\data-criteria-type)
+        block.block-data.{}config.{}criteria.type = type
+        render-criteria block
+      else if name == \criteria-op
+        op = node.getAttribute(\data-op)
+        block.block-data.{}config.{}criteria.op = op
+        console.log 123, op
+        render-criteria block
 
   /*
-  bs = []
-  ld$.find(root, '[repeat-item]').map (node) ->
-    name = node.getAttribute('repeat-item')
-    list = data.data[name]
-    console.log name, list
-    ns = node.nextSibling
-    p = node.parentNode
-    p.removeChild node
-    ps = list
-      .map (data) ->
-        n = node.cloneNode true
-        p.insertBefore n, ns
-        ns = n
-        return {opt: {node: n, name: data.name, force: true}, data: data, node: n}
-      .map (o) -> reb.inject o.opt .then -> bs.push {node: o.node, data: o.data}
-    Promise.all ps .then -> update-all!
+    if (type = node.getAttribute(\data-criteria-type)) =>
+      optype = node.getAttribute(\data-ops) or type
+      op = ld$.find(p, '[ld=criteria-op]',0)
+      node = ld$.find(root, "[data-criteria-ops=#{optype}]", 0)
+      if !node => return
+      node = node.cloneNode(true)
+      console.log node
+      op.innerHTML = ""
+      op.appendChild node
+      new Dropdown(node)
 
-  update-all = -> bs.map -> update it
-  update = (bd) ->
-    ld$.find(bd.node, '[editable]').map ->
-      name = it.getAttribute(\editable)
-      it.innerText = bd.data.data[name]
-
-  setTimeout (->
-    data.data.blocks.0.data.title = "不不不"
-    update bs.0
-  ), 1000
+  set-criteria = ({root, type, optype, op})->
+    node = do
+      type: ld$.find(root, '[ld=criteria-type]', 0)
+      op: ld$.find(root, '[ld=criteria-op]', 0)
+    node = ld$.find(root, "[data-criteria-ops=#{optype}]", 0).cloneNode(true)
+    node.op.innerHTML = ""
+    node.op.appendChild node
+    toggle = do
+      type: ld$.find(node.type, ".dropdown-toggle", 0)
+      op: ld$.find(node.op, ".dropdown-toggle", 0)
+    toggle.type.innerText = ld$.find(node.type, "[data-criteria-type=#{type}]", 0).innerText
+    toggle.op.innerText = ld$.find(node.op, "[data-op=#{op}]", 0).innerText
   */
 
-  /*
-  update = (block-data) ->
-    {root,data} = block-data
-    ld$.find(root, '[repeat-item]').map (node) ->
-      name = node.getAttribute('repeat-item')
-      list = data.data[name]
-      ns = node.nextSibling
-      p = node.parentNode
-      p.removeChild node
-      ps = list
-        .map (data) ->
-          n = node.cloneNode true
-          p.insertBefore n, ns
-          ns = n
-          return {opt: {node: n, name: data.name, force: true}, data: data, node: n}
-        .map (o) -> reb.inject o.opt .then -> bs.push {node: o.node, data: o.data}
-      Promise.all ps .then -> update-all!
-  */
-
-  /*
-  convert-tag = ({rd}) ->
-    if !rd.type => return document.createTextNode(rd)
-    else if rd.type == \tag =>
-      n = ld$.create rd{name, attr, style}
-      if rd.text => n.innerText = that
-      else (d.child or []).map -> if convert({rd:it}) => n.appendChild that
-      return n
-    else if rd.type == \value => return document.createTextNode(rd.value)
-    else null# inconvertable
-
-
-  # 在指定的位置 ( root + next-sibling ) 中, 插入以 data 所代表的 block
-  inject = (root, ns, data) ->
-
-  # 將 reData 所對應的 DOM Tree 建構出來
-  init = (root, data) ->
-    nodes = ld$.find(root, '[editable],[repeatable],[hostable]')
-    excludes = ld$.find(root, '[repeatable] [editable], [repeatable] [hostable], [repeatable] [hostable]')
-    nodes = nodes.filter -> !(it in excludes)
-    nodes.map (node) -> 
-      if (name = node.getAttribute('editable')) =>
-        d = data[name]
-        if !d.type => node.innerText = d
-        else if d.type == \value => node.innerText = d.value
-        else if d.type == \tag => node.appendChild(convert-tag({d}))
-        else if d.type == \html => node.innerHTML = d.value
-      else if (name = node.getAttribute('repeatable')) =>
-        ns = node.nextSibling
-        p = node.parentNode
-        p.removeChild node
-        node.removeAttribute \ld-each
-        ds = data[name]
-        ds.map (d) ->
-          n = node.cloneNode true
-          p.insertBefore n, ns
-          init n,d
-      else if (name = node.getAttribute('hostable')) =>
-        ds = data[name].filter -> it.type == \block
-        ds.map (d) ->
-          inject node, d
-  */
+  get-criteria = ->
 
 )!

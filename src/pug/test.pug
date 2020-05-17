@@ -7,34 +7,18 @@ html
     +css("/css/index.css")
     +script("/assets/lib/ldui/ldui.min.js")
   body
-    .w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
-      div(ld="nav",data-nav="group"): ul.nav.nav-pills
-        li.nav-item: a.nav-link(href="#",ld="default nav-tab",data-name="panel1",data-nav="group") Item 1
-        li.nav-item: a.nav-link(href="#",ld="nav-tab",data-name="panel2",data-nav="group") Item 2
-        li.nav-item: a.nav-link(href="#",ld="nav-tab",data-name="panel3",data-nav="group") Item 3
-        li.nav-item: a.nav-link(href="#",ld="nav-tab",data-name="panel4",data-nav="group") Item 4
-      .flex-grow-1: .p-4
-        div(ld="default nav-panel",data-name="panel1",data-nav="group") hi 1
-        div(ld="nav-panel",data-name="panel2",data-nav="group") hi 2
-        div(ld="nav-panel",data-name="panel3",data-nav="group") hi 3
-        div(ld="nav-panel",data-name="panel4",data-nav="group") hi 4
-      .rounded.border.shadow.scroll.text-center(style="height:300px;width:200px;overflow-y:scroll")
-        each i in [1,2,3,4,5,6,7,8,9]
-          each j in [1,2,3,4,5,6,7,8,9]
-            .p-2 #{i * 10 + j}
-      .rounded.border.shadow.scroll.text-center.bg-dark(style="height:300px;width:200px;overflow-y:scroll")
-        each i in [1,2,3,4,5,6,7,8,9]
-          each j in [1,2,3,4,5,6,7,8,9]
-            .p-2 #{i * 10 + j}
-
-      style(type="text/css"): :stylus
-        ::-webkit-scrollbar
-          width: .5rem
-          cursor: pointer
-          background: rgba(0,0,0,.1) unquote("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDEwMCAxMDAiPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvc3ZnPgo=)")
-        ::-webkit-scrollbar-thumb
-          background: rgba(0,0,0,.4) unquote("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDEwMCAxMDAiPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuNCIvPjwvc3ZnPgo=)")
-          border-radius: .25rem
-
-
-    +script("/js/modules/nav.js")
+    #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded(contenteditable="true")
+      | 123
+      a(href="#") hello
+      | 123
+      div hi
+    .a
+      .b
+        .c
+    script: :lsc
+      a = ld$.find \.a, 0
+      console.log(
+        ld$.find(a, '.a .b')
+      )
+      root.addEventListener \input, (e) ->
+        console.log e.target

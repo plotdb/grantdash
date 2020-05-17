@@ -42,21 +42,21 @@
       'form-radio': []
       'form-checkbox': <[count]>
       'form-file': <[file-size file-formt file-count]>
-      'budget': <[count]>
-      'checkpoint': <[count]>
+      'form-budget': <[count]>
+      'form-checkpoint': <[count]>
 
   criteria-render = ({node, data}) ->
     #criteria-data = [{type: 'number'}] 
-    console.log data
-    view = new ldView do
+    root-data = data
+    node.{}view.criteria = view = new ldView do
       root: node
       action: click: do
         add: ->
-          data.push {type: \number}
+          data.[]criteria.push {type: \number}
           view.render!
       handler: do
         criteria: do
-          list: -> data
+          list: -> data.[]criteria
           action: click: ({node, data, evt}) ->
             if !(n = ld$.parent(evt.target, '.dropdown-item', node)) => return
             if n.type => data.type = n.type
@@ -64,6 +64,12 @@
             node.view.render!
 
           init: ({node, data}) -> 
+            get-type = -> data.type or criteria.support[root-data.name][0] or \number
+            get-op = ->
+              ops = criteria.ops[criteria.types[get-type!].ops]
+              v = [v for k,v of ops][0]
+              return ops[data.op] or v or {name: ""}
+
             ld$.find(node, '.dropdown .dropdown-toggle').map -> new Dropdown(it)
             node.view = new ldView do
               root: node
@@ -74,61 +80,62 @@
                   data.invalid = node.value
               handler: do
                 input1: ({node}) -> ld$.find(node, 'input', 0).value = data.input1 or ''
-                input2: ({node}) -> ld$.find(node, 'input', 0).value = data.input2 or ''
+                input2: ({node}) ->
+                  node.classList.toggle \d-none, ((get-op!field or 1) < 2)
+                  ld$.find(node, 'input', 0).value = data.input2 or ''
                 invalid: ({node}) -> node.value = data.invalid or ''
                 type: ({node}) ->
-                  type = data.type or 'number'
-                  node.innerText = criteria.types[type].name
-                op: ({node}) ->
-                  ops = criteria.ops[criteria.types[data.type or 'number'].ops]
-                  v = [v for k,v of ops][0]
-                  node.innerHTML = ops[data.op] and ops[data.op].name or (v and v.name) or ""
+                  node.innerText = criteria.types[get-type!].name
+                op: ({node}) -> node.innerHTML = get-op!name
                 "types": do
-                  list: ->
-                    criteria.support["form-short-answer"]
+                  list: -> criteria.support[root-data.name]
                   handler: ({node, data}) ->
                     node.innerText = criteria.types[data].name
                     node.type = data
                 "ops": do
                   list: ->
-                    [[k,v] for k,v of criteria.ops[criteria.types[data.type or 'number'].ops]]
+                    [[k,v] for k,v of criteria.ops[criteria.types[get-type!].ops]]
                   handler: ({node, data}) ->
                     node.innerHTML = data.1.name
                     node.op = data.0
           handler: ({node, data}) -> if node.view => node.view.render!
-    view.render!
 
-  checkpoint-data = [{title: "第一個點", description: "第一個點的描述"}]
-  view2 = new ldView do
-    root: '[data-name=form-checkpoint]'
-    action: click: do
-      add: ->
-        checkpoint-data.push {title: "某個點", description: "某個點的描述"}
-        view2.render!
-    handler: do
-      checkpoint: do
-        list: -> checkpoint-data
-        init: ({node, data}) ->
-          node.view = view = new ldView do
-            root: node
-            action: input: do
-              "timeline-title": ({node}) -> data.title = node.innerText
-              "timeline-description": ({node}) -> data.description = node.innerText
-            handler: do
-              "timeline-title": ({node}) ->
-                node.innerText = data.title
-              "timeline-description": ({node}) -> node.innerText = data.description
-        render: ({node}) -> node.render!
+  render-list = ({node, data}) ->
+    local-data = data.[]data
+    node.{}view.list = view = new ldView do
+      root: node
+      action: click: do
+        "list-add": ->
+          local-data.push {title: "某個點", description: "某個點的描述"}
+          view.render!
+      handler: do
+        list: do
+          list: -> local-data
+          init: ({node, data}) ->
+            node.view = view = new ldView do
+              root: node
+              action: input: do
+                "list-title": ({node}) -> data.title = node.innerText
+                "list-description": ({node}) -> data.description = node.innerText
+              handler: do
+                "list-title": ({node}) ->
+                  node.innerText = data.title
+                "list-description": ({node}) -> node.innerText = data.description
+          render: ({node}) -> node.render!
+
+  form-modules = do
+    "form-radio": render-list
+    "form-checkbox": render-list
+    "form-checkpoint": render-list
 
 
   block-renderer = ({node, data}) ->
     #data = {title: "提問的標題", description: "提問的描述", config: {required: true}}
-    view3 = new ldView do
+    node.{}view.block = new ldView do
       root: node
       action:
         input: do
           title: ({node, evt}) ->
-            console.log \here
             data.title = node.innerText
           description: ({node, evt}) -> data.description = node.innerText
         click: do
@@ -145,16 +152,27 @@
 
   blocks = [
     {
-      name: "form-short-answer", title: "提問的標題1", description: "提問的描述",
-      config: {required: true}, criteria: [{type: \number}]
+      name: "form-short-answer", title: "提問的標題1", description: "提問的描述"
+      config: {required: true}, criteria: [{}]
     }
     {
-      name: "form-long-answer", title: "提問的標題2", description: "提問的描述",
-      config: {required: true}, criteria: [{type: \number}]
+      name: "form-long-answer", title: "提問的標題2", description: "提問的描述"
+      config: {required: true}, criteria: [{}]
     }
     {
-      name: "form-checkpoint", title: "提問的標題3", description: "提問的描述",
-      config: {required: true}, criteria: [{type: \number}]
+      name: "form-checkpoint", title: "提問的標題3", description: "提問的描述"
+      data: [{title: "第一個點", description: "第一個點的描述"}]
+      config: {required: true}, criteria: [{}]
+    }
+    {
+      name: "form-radio", title: "提問的標題3", description: "提問的描述"
+      data: [{title: "第一個點", description: "第一個點的描述"}]
+      config: {required: true}, criteria: [{}]
+    }
+    {
+      name: "form-checkbox", title: "提問的標題3", description: "提問的描述"
+      data: [{title: "第一個點", description: "第一個點的描述"}]
+      config: {required: true}, criteria: [{}]
     }
   ]
 
@@ -168,7 +186,8 @@
           node.innerHTML = ""
           node.appendChild sample
           block-renderer {node, data}
-          criteria-render {node, data: data.{}criteria}
+          criteria-render {node, data: data}
+          if form-modules[data.name] => that({node, data})
 
 
   bmgr = do
@@ -178,11 +197,15 @@
     block-manager: bmgr
     action: do
       afterMoveNode: ({src, des, ib}) ->
-        if src.getAttribute(\ld) == \checkpoint =>
-          checkpoint-data := Array.from(src.parentNode.childNodes)
+        if src.parentNode.hasAttribute(\hostable) =>
+          n = src.parentNode
+          while n and !n._data => n = n.parentNode
+          if !n => return
+
+          n._data.data = Array.from(src.parentNode.childNodes)
             .filter(->it.nodeType == 1 )
             .map(-> it._data)
             .filter(->it)
-          view2.render!
+          n.view.list.render!
 
 )!

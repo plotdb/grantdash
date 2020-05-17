@@ -52,36 +52,36 @@ block body
         .btn.btn-light.text-nowrap.mr-2 副檔名
       .d-none(data-type="match")
         .dropdown.mr-2
-        .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 符合
-        .dropdown-menu
-          a.dropdown-item 符合
-          a.dropdown-item 不符
+          .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 符合
+          .dropdown-menu
+            a.dropdown-item(data-op="match") 符合
+            a.dropdown-item(data-op="not-match") 不符
       .d-none(data-type="count")
         .dropdown.mr-2
           .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 介於
           .dropdown-menu
-            a.dropdown-item #[.s.mr-2 &#x2265;] 大於
-            a.dropdown-item #[.s.mr-2 &#x2264;] 小於
-            a.dropdown-item(data-field-count="2") #[.s.mr-2 &#x223c;] 介於
+            a.dropdown-item(data-op="gte") #[.s.mr-2 &#x2265;] 大於
+            a.dropdown-item(data-op="lte") #[.s.mr-2 &#x2264;] 小於
+            a.dropdown-item(data-op="between",data-field-count="2") #[.s.mr-2 &#x223c;] 介於
       .d-none(data-type="string")
         .dropdown.mr-2
           .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 包含
           .dropdown-menu
-            a.dropdown-item 包含
-            a.dropdown-item 不包含
-            a.dropdown-item 電子郵件位置
-            a.dropdown-item 網址
+            a.dropdown-item(data-op="include") 包含
+            a.dropdown-item(data-op="exclude") 不包含
+            a.dropdown-item(data-op="email") 電子郵件位置
+            a.dropdown-item(data-op="url") 網址
       .d-inline-block(data-type="number")
         .dropdown.mr-2
           .btn.btn-light.dropdown-toggle(data-toggle="dropdown") 大於
           .dropdown-menu
-            a.dropdown-item #[.s.mr-2 &#x2265;] 大於或等於
-            a.dropdown-item #[.s.mr-2 &#x2264;] 小於或等於
-            a.dropdown-item #[.s.mr-2 &gt;] 大於
-            a.dropdown-item #[.s.mr-2 &lt;] 小於
-            a.dropdown-item #[.s.mr-2 =] 等於
-            a.dropdown-item #[.s.mr-2 &#x2260;] 不等於
-            a.dropdown-item(data-field-count="2") #[.s.mr-2 &#x223c;] 介於
+            a.dropdown-item(data-op="gte") #[.s.mr-2 &#x2265;] 大於或等於
+            a.dropdown-item(data-op="lte") #[.s.mr-2 &#x2264;] 小於或等於
+            a.dropdown-item(data-op="ge") #[.s.mr-2 &gt;] 大於
+            a.dropdown-item(data-op="le") #[.s.mr-2 &lt;] 小於
+            a.dropdown-item(data-op="eq") #[.s.mr-2 =] 等於
+            a.dropdown-item(data-op="ne") #[.s.mr-2 &#x2260;] 不等於
+            a.dropdown-item(data-op="between",data-field-count="2") #[.s.mr-2 &#x223c;] 介於
 
     .mr-2.flex-grow-1(ld="in1"): input.form-control(placeholder="值 1")
     .mr-2.flex-grow-1(ld="in2"): input.form-control(placeholder="值 2")
@@ -101,7 +101,7 @@ block body
   +script("/assets/lib/handsontable/handsontable.min.js")
   +script("/assets/lib/ldui/ldui.min.js")
 
-  script: :lsc
+  //-script: :lsc
     dom = ld$.find document, '#prj-budget', 0
     data = [
       ['分類', '項目', '預估', '', '', '實際', '', '', '執行率']
@@ -170,7 +170,7 @@ block body
               console.log hot.getSelected!0
               hot.alter \remove_row, (hot.getSelected!0 - 1), 1
 
-  script: :lsc
+  //-script: :lsc
     ld$.find \.dropdown .map (node) ->
       if !(menu = ld$.find(node, \.dropdown-menu, 0)) => return
       menu.addEventListener \click, (evt) ->

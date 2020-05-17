@@ -75,10 +75,10 @@ var slice$ = [].slice;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
-    this.data = opt.data;
+    this.binding = {};
+    this.repeatable = {};
     this.blockmgr = opt.blockManager;
     this.init();
-    this.ready = proxise(function(){});
     return this;
   };
   reblock.prototype = import$(Object.create(Object.prototype), {
@@ -96,7 +96,25 @@ var slice$ = [].slice;
       return results$;
     },
     init: function(){
-      var this$ = this;
+      var obj, this$ = this;
+      obj = {
+        host: this.root,
+        force: true
+      };
+      if (this.opt.rootBlock) {
+        import$(obj, typeof this.opt.rootBlock === 'string'
+          ? {
+            name: this.opt.rootBlock
+          }
+          : {
+            data: this.opt.rootBlock
+          });
+      }
+      this.inject(obj).then(function(arg$){
+        var node, data;
+        node = arg$.node, data = arg$.data;
+        return this$.data = data;
+      });
       document.addEventListener('click', function(e){
         var n, t;
         n = t = e.target;
@@ -159,14 +177,12 @@ var slice$ = [].slice;
           this$.node.injecting = null;
         }
         return this$.inject({
-          node: e.target,
+          sibling: e.target,
           name: e.dataTransfer.getData('text/plain')
         }).then(function(){
           e.preventDefault();
           return e.stopPropagation();
-        })['catch'](function(it){
-          return console.log(it);
-        });
+        })['catch'](function(){});
       });
       this.root.addEventListener('drop', function(){
         this$.reorder.check = 0;
@@ -268,9 +284,55 @@ var slice$ = [].slice;
         }
       });
       return this.root.addEventListener('input', function(e){
-        var n, name;
-        if (!((n = e.target) && n.hasAttribute && (name = n.getAttribute('editable')))) {}
+        var n, name, c, ret, node, data;
+        if (!((n = e.target) && n.hasAttribute && (name = n.getAttribute('editable')))) {
+          return;
+        }
+        c = n;
+        while (c && !c.reblock) {
+          c = c.parentNode;
+        }
+        if (!c || !(ret = this$.find(c.reblock.id))) {
+          return;
+        }
+        node = ret.node, data = ret.data;
+        this$.old = JSON.parse(JSON.stringify(this$.data));
+        data[name] = n.innerText;
+        return this$.submit();
       });
+    },
+    submit: function(){
+      var ops;
+      console.log(">", this.old, this.data);
+      ops = json0OtDiff(this.old, this.data);
+      return console.log(ops);
+    },
+    apply: function(ops){
+      return otJson0.type.apply(this.data, ops[0]);
+    },
+    find: function(v){
+      if (typeof v === 'string') {
+        return this.binding[v];
+      }
+      while (v && !v.reblock) {
+        v = v.parentNode;
+      }
+      if (!v) {
+        return null;
+      }
+      return this.binding[v.reblock.id];
+    },
+    bind: function(arg$){
+      var node, data;
+      node = arg$.node, data = arg$.data;
+      if (!data.id) {
+        data.id = Math.random().toString(36).substring(2);
+      }
+      this.binding[data.id] = {
+        node: node,
+        data: data
+      };
+      return (node.reblock || (node.reblock = {})).id = data.id;
     },
     select: function(n, append){
       append == null && (append = false);
@@ -292,12 +354,7 @@ var slice$ = [].slice;
       });
     },
     edit: function(n){
-      var type;
       if (!(n && n.hasAttribute && n.hasAttribute('editable'))) {
-        return;
-      }
-      type = n.getAttribute('edit-type');
-      if (type && !in$('text', type.split(' '))) {
         return;
       }
       if (this.node.editing) {
@@ -338,58 +395,236 @@ var slice$ = [].slice;
           return des.parentNode.insertBefore(src, ib);
         }
       });
-    },
+    }
+    /*
+    inject: ({node, name, force}) -> new Promise (res, rej) ~>
+      n = node
+      # force injection to node, regardless of hostable attribute
+      if force => t = n
+      else # can only drop on hostable elements. t = hostable target, n = element to insert before; 
+        while n and (p = n.parentNode) =>
+          if p.hasAttribute and p.hasAttribute(\hostable) => t = p; break
+          if n.hasAttribute and n.hasAttribute(\hostable) => t = n; break else n = p
+        if !t => return rej new Error("")
+    
+      if t == n => n = null
+      # -- fetch block content
+      if !name => return rej(new Error("reblock: inject block but name is not provided"))
+      if !@blockmgr => return rej(new Error("reblock: inject block without providing blockManager"))
+      @blockmgr.get(name)
+        .then (content) ~>
+          # -- insert block
+          div = document.createElement("div")
+          div.innerHTML = content
+          ps = for i from 0 til div.childNodes.length => Promise.resolve(div.childNodes[0]).then (c) ~>
+            c.parentNode.removeChild c
+            t.insertBefore c, n
+            if c.nodeType != 1 => return
+            # TODO this is not always true if list grows horizontally.
+            s = window.getComputedStyle(c)
+            h = s.height
+            c.style.height = "0px"
+            c.style.transition = "height .15s ease-in-out"
+            setTimeout (-> c.style.height = h), 0
+    
+            # - block data - TODO dom tree / data spec
+            #c.block = {data: {}, dom: {list: [], node: c}}
+            #p = t
+            #while p => if p.block => break else p = p.parentNode
+            #if p and p.block => p.block.dom.list.push c.block.dom
+            #else @block.dom.list.push c.block.dom
+            debounce 150 .then -> c.style.transition = ""; c.style.height = ""
+          Promise.all ps
+        .then -> res!
+        .catch -> rej it
+    */,
     inject: function(arg$){
-      var node, name, force, this$ = this;
-      node = arg$.node, name = arg$.name, force = arg$.force;
+      var host, sibling, name, data, dir, force, recurse, ns, retval, this$ = this;
+      host = arg$.host, sibling = arg$.sibling, name = arg$.name, data = arg$.data, dir = arg$.dir, force = arg$.force, recurse = arg$.recurse;
+      if (!data) {
+        data = {
+          type: 'block',
+          name: name,
+          data: {}
+        };
+      }
+      if (!name) {
+        name = data.name;
+      }
+      if (sibling) {
+        if (!host) {
+          host = ld$.parent(sibling, '[hostable]', host);
+        }
+        ns = ld$.parent(sibling, '[hostable] > *', host);
+      }
+      retval = {
+        data: data
+      };
       return new Promise(function(res, rej){
-        var n, t, p;
-        n = node;
-        if (force) {
-          t = n;
-        } else {
-          while (n && (p = n.parentNode)) {
-            if (p.hasAttribute && p.hasAttribute('hostable')) {
-              t = p;
-              break;
+        if (data.type !== 'block') {
+          return rej();
+        }
+        return (!name
+          ? Promise.resolve("<div hostable=\"block\"></div>")
+          : this$.blockmgr.get(name)).then(function(blockData){
+          var node, s, h, x$, ret, idx, ref$, key$;
+          if (typeof blockData === 'string') {
+            retval.node = node = document.createElement("div");
+            node.innerHTML = blockData;
+            if (node.childNodes.length === 0) {
+              node = node.childNodes[0];
+              node.parentNode.removeChild(node);
             }
-            if (n.hasAttribute && n.hasAttribute('hostable')) {
-              t = n;
-              break;
-            } else {
-              n = p;
-            }
+          } else if (blockData instanceof Element) {
+            retval.node = node = blockData;
+          } else {
+            Promise.reject(new Error("unrecognized block data"));
           }
-          if (!t) {
-            return rej(new Error(""));
+          if (host) {
+            host.insertBefore(node, ns);
           }
-        }
-        if (t === n) {
-          n = null;
-        }
-        if (!name || !this$.blockmgr) {
-          return rej(new Error("inject block: no name, or no blockmgr"));
-        }
-        return this$.blockmgr.get(name).then(function(newNode){
-          var s, h;
-          t.insertBefore(newNode, n);
-          Array.from(t.childNodes).indexOf(n);
-          s = window.getComputedStyle(newNode);
+          s = window.getComputedStyle(node);
           h = s.height;
-          newNode.style.height = "0px";
-          newNode.style.transition = "height .15s ease-in-out";
+          x$ = node.style;
+          x$.height = "0px";
+          x$.transition = "height .15s ease-in-out";
           setTimeout(function(){
-            return newNode.style.height = h;
+            return node.style.height = h;
           }, 0);
-          return debounce(150).then(function(){
-            newNode.style.transition = "";
-            return newNode.style.height = "";
+          debounce(150).then(function(){
+            node.style.transition = "";
+            return node.style.height = "";
           });
+          this$.construct({
+            node: node,
+            data: data
+          });
+          if (!recurse && (ret = this$.find(host))) {
+            idx = Array.from(host.childNodes).indexOf(node);
+            return ((ref$ = ret.data.data)[key$ = host.getAttribute('hostable')] || (ref$[key$] = [])).splice(idx, 0, data);
+          }
         }).then(function(){
-          return res();
+          return res(retval);
         })['catch'](function(it){
           return rej(it);
         });
+      });
+    }
+    /*update: (ops) ->
+      for each op in ops 
+        find corresponding node and data by op.path
+        render node, data
+    */,
+    construct: function(arg$){
+      var node, data, recurse, this$ = this;
+      node = arg$.node, data = arg$.data, recurse = arg$.recurse;
+      return new Promise(function(res, rej){
+        var nodes, dhash;
+        nodes = ld$.find(node, '[editable],[repeatable],[hostable]');
+        this$.bind({
+          node: node,
+          data: data
+        });
+        dhash = recurse
+          ? data
+          : data.data;
+        return Promise.all(nodes.map(function(node){
+          var name, d, ns, p, ds;
+          if (name = node.getAttribute('editable')) {
+            if (!(d = dhash[name])) {} else if (!d.type) {
+              node.innerText = d;
+            } else if (d.type === 'value') {
+              node.innerText = d.value;
+              this$.bind({
+                node: node,
+                data: d
+              });
+            } else if (d.type === 'tag') {
+              this$.dom({
+                data: d
+              }).then(function(it){
+                return node.appendChild(it);
+              });
+            } else if (d.type === 'html') {
+              node.innerHTML = d.value;
+              this$.bind({
+                node: node,
+                data: d
+              });
+            }
+            return Promise.resolve();
+          } else if (name = node.getAttribute('repeatable')) {
+            ns = node.nextSibling;
+            p = node.parentNode;
+            p.removeChild(node);
+            node.removeAttribute('repeatable');
+            ds = dhash[name] || [];
+            Promise.all(ds.map(function(d){
+              var n;
+              n = node.cloneNode(true);
+              p.insertBefore(n, ns);
+              return this$.construct({
+                node: n,
+                data: d,
+                recurse: true
+              });
+            }));
+            return this$.repeatable[name] = node;
+          } else if (name = node.getAttribute('hostable')) {
+            ds = (dhash[name] || []).filter(function(it){
+              return it.type === 'block';
+            });
+            return Promise.all(ds.map(function(d){
+              return this$.inject({
+                host: node,
+                data: d,
+                recurse: true
+              });
+            }));
+          }
+        })).then(function(){
+          return res();
+        }).then(function(){
+          return rej();
+        });
+      });
+    },
+    dom: function(arg$){
+      var data, this$ = this;
+      data = arg$.data;
+      return new Promise(function(res, rej){
+        var n, that;
+        if (!data.type) {
+          return document.createTextNode(data);
+        } else if (data.type === 'tag') {
+          n = ld$.create({
+            name: data.name,
+            attr: data.attr,
+            style: data.style
+          });
+          this$.bind({
+            node: n,
+            data: data,
+            id: data.id
+          });
+          return res((that = data.text)
+            ? (n.innerText = that, n)
+            : Promise.all((d.child || []).map(function(it){
+              return Promise.resolve(this.dom({
+                data: it
+              }));
+            })).then(function(it){
+              return it.map(function(it){
+                return n.appendChild(it);
+              });
+            }).then(function(){
+              return n;
+            }));
+        } else if (data.type === 'value') {
+          return document.createTextNode(data.value);
+        } else {
+          return null;
+        }
       });
     }
   });
@@ -406,9 +641,4 @@ function import$(obj, src){
   var own = {}.hasOwnProperty;
   for (var key in src) if (own.call(src, key)) obj[key] = src[key];
   return obj;
-}
-function in$(x, xs){
-  var i = -1, l = xs.length >>> 0;
-  while (++i < l) if (x === xs[i]) return true;
-  return false;
 }
