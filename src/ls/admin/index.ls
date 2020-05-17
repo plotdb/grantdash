@@ -1,9 +1,10 @@
 (->
   ldc.register \admin,
-  <[viewLocals orgInfo orgPerm brdInfo prjInfo loader]>,
-  ({viewLocals, orgInfo, orgPerm, brdInfo, prjInfo, loader}) ->
+  <[viewLocals orgInfo orgPerm brdInfo prjInfo loader util]>,
+  ({viewLocals, orgInfo, orgPerm, brdInfo, prjInfo, loader, util}) ->
     loader.on!
     lc = {}
+
 
     sdb = new sharedb-wrapper do
       url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
@@ -18,6 +19,7 @@
       orgPerm.watch {ops, source}
 
     ret = /o\/([0-9]+)/.exec(window.location.pathname)
+    if !ret and util.parseQuerystring(\o) => ret = ['', that]
     if ret => 
       id = "org-#{if ret => ret.1 else \demo}"
       init = ->
@@ -75,6 +77,7 @@
       prjg-view.render!
 
     ret = /b\/([0-9]+)/.exec(window.location.pathname)
+    if !ret and util.parseQuerystring(\b) => ret = ['', that]
     if ret => 
       id = "board-#{if ret => ret.1 else \demo}"
       init-board = ->
