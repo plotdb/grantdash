@@ -10,13 +10,15 @@
     nav = it.getAttribute('data-nav');
     it.classList.toggle('d-none', !isDefault);
     if (isDefault) {
-      return ((ref$ = lc.nav)[nav] || (ref$[nav] = {})).panel = it;
+      ((ref$ = lc.nav)[nav] || (ref$[nav] = {})).panel = it;
     }
+    return it.classList.add('ld', 'ld-float-ltr-in', 'xp15');
   });
   ld$.find('[ld~=nav-tab]').map(function(it){
     var isDefault, nav, p, ref$;
     isDefault = in$('default', (it.getAttribute('ld') || '').split(' '));
     nav = it.getAttribute('data-nav');
+    it.style.transition = "all .15s ease-in-out";
     if (!nav && (p = ld$.parent(it, '[data-nav]'))) {
       nav = p.getAttribute('data-nav');
     }
@@ -25,7 +27,7 @@
       return ((ref$ = lc.nav)[nav] || (ref$[nav] = {})).tab = it;
     }
   });
-  return document.body.addEventListener('click', function(e){
+  document.body.addEventListener('click', function(e){
     var n, tab, nav, p, name, that, ref$, panel;
     if (!((n = e.target) && n.getAttribute)) {
       return;
@@ -51,6 +53,11 @@
     if (panel) {
       return panel.classList.toggle('d-none', false);
     }
+  });
+  return ld$.find('.folder').map(function(it){
+    return new ldui.Folder({
+      root: it
+    });
   });
 })();
 function in$(x, xs){

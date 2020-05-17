@@ -6,9 +6,11 @@
     nav = it.getAttribute(\data-nav)
     it.classList.toggle \d-none, !is-default
     if is-default => lc.nav{}[nav].panel = it
+    it.classList.add \ld, \ld-float-ltr-in, \xp15
   ld$.find('[ld~=nav-tab]').map ->
     is-default = \default in (it.getAttribute(\ld) or '').split(' ')
     nav = it.getAttribute(\data-nav)
+    it.style.transition = "all .15s ease-in-out"
     if !nav and (p = ld$.parent(it, '[data-nav]')) => nav = p.getAttribute(\data-nav)
     it.classList.toggle \active, is-default
     if is-default => lc.nav{}[nav].tab = it
@@ -26,4 +28,7 @@
     lc.nav{}[nav].panel = panel
     tab.classList.toggle \active, true
     if panel => panel.classList.toggle \d-none, false
+
+  ld$.find '.folder' .map ->
+    new ldui.Folder root: it
 )!
