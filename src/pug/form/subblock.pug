@@ -15,6 +15,9 @@ mixin footer
       .flex-grow-1
         .btn.btn-sm.btn-outline-danger.mr-2(ld="delete") 刪除 #[i.i-close]
       .d-flex.align-items-center.mr-4
+        .mr-2 公開
+        .switch.on(ld="switch",data-name="public")
+      .d-flex.align-items-center.mr-4
         .mr-2 必填
         .switch(ld="switch",data-name="required")
       .d-flex.align-items-center.mr-4
