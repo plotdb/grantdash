@@ -68,7 +68,7 @@
             node.setAttribute \data-key, data.key
             n.innerText = data.name
             if !node.folder => node.folder = new ldui.Folder root: node
-            if !node.nav => node.nav = new ldui.Nav node
+            #if !node.nav => node.nav = new ldui.Nav node
 
 
     watch-board = (ops, source) ->

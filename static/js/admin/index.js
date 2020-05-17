@@ -120,12 +120,9 @@
             node.setAttribute('data-key', data.key);
             n.innerText = data.name;
             if (!node.folder) {
-              node.folder = new ldui.Folder({
+              return node.folder = new ldui.Folder({
                 root: node
               });
-            }
-            if (!node.nav) {
-              return node.nav = new ldui.Nav(node);
             }
           }
         }
