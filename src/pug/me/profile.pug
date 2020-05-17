@@ -11,17 +11,17 @@ block body
       .mr-4: .sticky(style="height:100vh;top:0"): .vertical-center: .w-100.text-center
           .card.mx-auto.shadow(style="font-family:arial;width:300px")
             .card-body.p-4
-              .mx-auto.mb-4(style="margin-top:-25%;width:140px"): .rounded-circle.bg-secondary.aspect-ratio.ratio-1by1.ldlz.shadow.ldlz(data-src="/assets/img/misc/avatar.png")
+              .mx-auto.mb-4(style="margin-top:-25%;width:140px"): .rounded-circle.bg-secondary.aspect-ratio.ratio-1by1.ldlz.shadow.ldlz(data-src=`/s/avatar/${user.key}.png`)
               .text-center
                 .text-lg.text-center: b #{user.displayname}
                 .text-muted.mb-4
-                  .my-2 Designer
-                  .text-sm joined #{user.createdtime}
+                  .my-2 #{user.title || '尚無抬頭'}
+                  .text-sm #{new Date(user.createdtime).toLocaleString()} 加入這裡
                   hr
-                  p.text-sm.text-left #{user.description || '尚未準備自我介紹...'}
+                  p.text-sm.text-center #{user.description || '尚未準備自我介紹...'}
                   hr
                   .tags
-                    each tag in (user.tags || [])
+                    each tag in (user.tags || '').split(',')
                       .badge.badge-secondary.mr-1 #{tag}
                   .mt-4
                     //-.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2 追蹤
