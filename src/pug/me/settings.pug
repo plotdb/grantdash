@@ -1,0 +1,111 @@
+//- view
+extends /base.pug
+block vars
+  - ctrl.carbon.enabled = false
+  - ctrl.navtop.className = "navbar-light bg-semi-light";
+  - var meta = { title: "設定" };
+block body
+  .d-flex.flex-wrap.mb-0.w-768.mx-auto.rwd
+    //-.flex-grow-1(style="background:linear-gradient(225deg,#f4fcff 0%,#fff 30%);border-radius:0 32px 0 0 ")
+      div(style="width:280px;margin-left:auto;margin-right:0;padding:30px;")
+        include sidepanel.pug
+    div(style="flex:1 0 auto;padding-bottom:100px")
+      .w-768.rwd(style="padding:30px")
+        h1.mt-4.mb-4 個人設定
+        br
+        h3 基本資訊
+        hr
+        .form(data-name="basic")
+          .row.mb-3
+            .col-md
+              .form-group
+                label 顯示名稱 #[small.text-muted / 此為公開資訊]
+                input.form-control(name="displayname",placeholder="例如, 王小明",value=user.displayname)
+                .invalid-feedback 顯示名稱就像青春一樣不能留白
+            .col-md
+              .form-group
+                label 用戶代碼
+                .input-group
+                  input#uid-input.form-control.disabled(readonly,value=user.key)
+                  .input-group-append.has-tips.manual(ld="copyUid",data-clipboard-target="#uid-input")
+                    .hover-tip.tip-sm Copied
+                    .btn.btn-outline-dark Copy
+
+          .row.mb-0
+            .col-md
+              .form-group
+                if user.verified
+                  .float-right.text-success #[i.i-check] #[span 已認證]
+                else
+                  .float-right.text-warning #[i.i-question] #[small 未認證]
+                label 帳號名稱 #[small.text-muted / 你的電子郵件地址]
+                input.form-control(placeholder="e.g., yourname@yourhost.com",
+                disabled,value=user.username)
+            .col-md
+              .form-group
+                label 電子郵箱認證
+                if user.verified
+                  .btn.btn-outline-secondary.btn-block.disabled(ld="mailVerify") 已認證
+                else
+                  .btn.btn-success.btn-block.ld.ld-ext-right(ld="mailVerify")
+                    | 寄發認證信 #[i.i-mail.ml-2] #[.ld.ld-spin.ld-ring]
+          .form-group.mb-4
+            label 描述 #[small.text-muted / 會顯示在個人檔案中]
+            textarea.form-control(name="description",rows="1",placeholder="談談關於你的事吧")= user.description
+          .form-group.mb-4
+            label 職業 #[small.text-muted / 會顯示在個人檔案中]
+            input.form-control(name="title",placeholder="你是做什麼的呢？",value=user.title)
+          .form-group.mb-4
+            label 關鍵字 #[small.text-muted / 會顯示在個人檔案中]
+            textarea.form-control(name="tags",rows="1",
+            placeholder="寫幾個跟你有關的關鍵詞吧")= user.tags
+          .form-group.mt-4
+            .btn.btn-primary.ld-ext-right(ld="updateBasicData") 更新基本資訊 #[.ld.ld-spin.ld-ring]
+        +nbr(2)
+
+        h3 變更密碼
+        hr
+        .form(data-name="passwd")
+          .row
+            .col-md-8
+              .form-group
+                label 舊的密碼
+                input.form-control(name="oldpasswd",type="password")
+                .invalid-feedback Password not matched.
+            .col-md-4
+              .form-group
+                label 忘記密碼嗎？
+                .btn.btn-outline-dark.btn-block(ld="sendResetLink") #[i.i-mail] 寄發重設連結信
+          .row
+            .col-md-8
+              .form-group
+                label 新密碼
+                input.form-control(name="newpasswd1",type="password")
+                .invalid-feedback 新密碼太弱了，換一組吧
+            .col-md-4
+              .form-group(data-node="passwd-bar1")
+                label.text-capitalize &nbsp;
+                .progress(style="height:36px"): .progress-bar.progress-bar-striped(style="width:0%")
+          .row
+            .col-md-8
+              .form-group
+                label 再輸入一次新密碼
+                input.form-control(name="newpasswd2",type="password")
+                .invalid-feedback 兩次輸入不符合
+              .btn.btn-primary.btn-block.mb-4.disabled.ld-ext-right(ld="update-password") 更新密碼 #[.ld.ldld.bare.em-1]
+
+              .text-muted: small
+                p 好的密碼至少要夠長 ( 至少十個字 )。請不要用姓名、電話或生日當您的密碼。
+                p 你可以查閱 #[a(href="https://en.wikipedia.org/wiki/Password_strength",target="_blank") Password Strength] 這篇文章來了解怎樣算是一個好密碼。
+
+            .col-md-4 &nbsp;
+        +nbr(3)
+        h3 危險區域
+        hr
+        p 在這裡你可以刪除你的帳號。要刪除帳號的話，請點擊以下按鈕，並依指示再次輸入您的電子郵件地址做為確認。
+        .btn.btn-danger(onclick="lda.ldcvmgr.toggle('delete-account')") 刪除帳號
+        //-include /modules/cover/delete-account.pug
+
+block script
+  //-+script("/js/me/sidepanel.js")
+  +script("/js/me/settings.js")

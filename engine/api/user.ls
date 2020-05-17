@@ -46,7 +46,7 @@ api.get \/me/, (req, res) ->
   ret = {}
   if !req.user => return res.json '{}'
   id = req.user.key
-  io.query "select key,displayname,description from users where key = $1", [id]
+  io.query "select key,displayname,description,title,tags from users where key = $1", [id]
     .then (r={}) ->
       if !r.rows or !r.rows.length => return aux.reject 404
       ret.user = r.rows.0
@@ -57,7 +57,7 @@ api.get \/me/, (req, res) ->
 
 render-profile = (req, res, id) ->
   ret = {}
-  io.query "select key,displayname, description from users where key = $1", [id]
+  io.query "select key,displayname,description,createdtime,title,tags from users where key = $1", [id]
     .then (r={}) ->
       if !r.rows or !r.rows.length => return aux.reject 404
       ret.user = r.rows.0
@@ -76,7 +76,7 @@ app.get \/me/, aux.needlogin (req, res) ->
 
 app.get \/user/:id, aux.numid true, (req, res) ->
   io.query """
-  select key,displayname,description,createdtime,plan from users where key = $1 and deleted is not true
+  select key,displayname,description,createdtime,plan,title,tags from users where key = $1 and deleted is not true
   """, [req.params.id]
     .then (r={}) ->
       if !r.rows or !r.rows.length => return aux.reject 404
@@ -88,16 +88,13 @@ app.get \/me/settings/, aux.needlogin (req, res) ->
 
 api.put \/user/:id, aux.numid false, (req, res) ->
   if !req.user or req.user.key != +req.params.id => return aux.r403 res
-  {displayname, description, public_email} = req.body{displayname, description, public_email}
+  {displayname, description, title, tags} = req.body{displayname, description, title, tags}
   displayname = "#displayname".trim!
   description = "#description".trim!
-  public_email = !!!public_email
-  if displayname.length > 30 or displayname.length < 1 => return aux.r400 res, ("profile.displayname.length")
-  if description.length > 200 => return aux.r400 res, ("profile.description.toolong")
-  io.query "update users set (displayname,description,public_email) = ($1,$2,$3) where key = $4",
-  [displayname, description, public_email, req.user.key]
+  io.query "update users set (displayname,description,title,tags) = ($1,$2,$3,$4) where key = $5",
+  [displayname, description, title, tags, req.user.key]
     .then ->
-      req.user <<< {displayname, description, public_email}
+      req.user <<< {displayname, description, title, tags}
       req.login req.user, -> res.send!
       return null
 

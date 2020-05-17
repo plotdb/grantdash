@@ -164,6 +164,16 @@ p {
   width: 1.75em;
   height: 1.75em;
 }
+.tagify.form-control {
+  display: flex;
+  padding: 0;
+  align-items: flex-start;
+  line-height: 1.1;
+  height: auto;
+}
+.tagify__input {
+  font-weight: 300;
+}
 .dropdown-item {
   font-weight: 300;
 }
