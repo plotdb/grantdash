@@ -39,6 +39,7 @@ html
           i.i-radio.ml-4
           i.i-clone.ml-4
           i.i-close.ml-4.mr-4
+
     -
       var tree = [
         {name: "活動辦法"},
@@ -48,25 +49,24 @@ html
       ];
 
     .w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
-      .d-none
-        +item({})#item-sample
-        #folder-sample.folder.show(draggable="true")
+      .d-none(ld="folder-sample")
+        div(ld="item"): .folder-item
+          .inner.d-flex.align-items-center
+            i.i-bars.mr-4
+            .name.flex-grow-1.mr-2: input.form-control(ld="name",name="name",placeholder="選單文字")
+            .url.flex-grow-1: input.form-control(ld="url",name="url",placeholder="URL")
+            i.i-radio.ml-4(ld="toggle-fold")
+            i.i-clone.ml-4(ld="clone")
+            i.i-close.ml-4.mr-4(ld="delete")
+        div(ld="folder"): .folder.show(draggable="true")
+          .folder-item
           .folder-menu
+            div(ld-each="list")
+
+
       #root.folder-root
-        //-each item in tree
-          if item.item
-            +folder(item)
-          else
-            +item(item)
-      //-#root: .folder-root
-        .folder-item(draggable="true"): .inner 活動辦法
-        .folder-item(draggable="true"): .inner 關於我們
-        .folder(draggable="true")
-          .folder-item.folder-toggle: .inner 歷屆活動
-          .folder-menu
-            .folder-item(draggable="true"): .inner 2018 春季
-            .folder-item(draggable="true"): .inner 2018 秋季
-        .folder-item(draggable="true"): .inner 成果報告
+        div(ld-each="list")
+
 
 
     +script("/js/modules/nav.js")
@@ -76,4 +76,4 @@ html
       otJson0 = require("ot-json0")
     +script("/assets/lib/ldui/ext/folder.min.js")
     +script("/js/reblock/form-reblock.js")
-    +script("/js/admin/folder-dynamics.js")
+    +script("/js/form/menu.js")
