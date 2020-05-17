@@ -1,10 +1,24 @@
 (->
   ldc.register \admin,
-  <[viewLocals orgInfo orgPerm brdInfo prjInfo loader util]>,
-  ({viewLocals, orgInfo, orgPerm, brdInfo, prjInfo, loader, util}) ->
+  <[permctrl navbar adminNavigation viewLocals orgInfo brdInfo prjInfo loader util]>,
+  ({permctrl, navbar, admin-navigation, viewLocals, orgInfo, brdInfo, prjInfo, loader, util}) ->
     loader.on!
     lc = {}
 
+    perm-panel = ld$.find '[ld~=nav-panel][data-nav=brd-config][data-name=perm]  [ld-scope=permission-panel]', 0
+    path = ["perm"]
+    permctrl-opt = {root: perm-panel, path: <[perm]>}
+    permctrl-adopter = permctrl.prepare permctrl-opt
+    console.log permctrl-adopter
+
+    perm-panel = ld$.find '[ld~=nav-panel][data-nav=org-config][data-name=perm]  [ld-scope=permission-panel]', 0
+    path = ["perm"]
+    org-permctrl-opt = {root: perm-panel, path: <[perm]>}
+    org-permctrl-adopter = permctrl.prepare org-permctrl-opt
+
+    navbar-panel = ld$.find '[ld~=nav-panel][data-nav=main][data-name=brd-navbar]  [ld-scope=navbar-editor]', 0
+    brd-navbar-opt = {root: navbar-panel, path: <[page navbar]>}
+    brd-navbar-adopter = navbar.prepare brd-navbar-opt
 
     sdb = new sharedb-wrapper do
       url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
@@ -16,7 +30,8 @@
 
     watch = (ops, source) ->
       orgInfo.watch {ops, source}
-      orgPerm.watch {ops, source}
+      org-permctrl-adopter.watch {ops, source}
+      #orgPerm.watch {ops, source}
 
     ret = /o\/([0-9]+)/.exec(window.location.pathname)
     if !ret and util.parseQuerystring(\o) => ret = ['', that]
@@ -28,7 +43,8 @@
           .then (doc) ->
             lc.doc = doc
             orgInfo.init {doc, sdb}
-            orgPerm.init {doc, sdb}
+            org-permctrl-adopter.init {doc, sdb}
+            #orgPerm.init {doc, sdb}
             loader.off!
       init!
 
@@ -85,11 +101,13 @@
             lc.docbrd = doc
             brdInfo.init {doc: lc.docbrd, sdb}
             prjInfo.init {doc: lc.docbrd, sdb}
+            permctrl-adopter.init {doc: lc.docbrd, sdb}
             prjg-view.render!
             loader.off!
       init-board!
 
     loader.off!
+
 
   ldc.app \admin
 )!

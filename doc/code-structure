@@ -1,0 +1,31 @@
+admin architecture
+
+index
+ - 我們需要處理的資料分三階層: org ( 組織 ), brd ( 活動 ), grp ( 提案分組 )
+   - 資料的編輯分兩部份
+     - org - 組織相關設定
+     - brd - 活動相關設定. 因為活動可能相當多, 所以跟 org 分開.
+       - brd 包含所有 grp 的設定.
+   - 看是否需要用同一支 sharedb 做兩隻的操作. 可以先建兩組 socket, 再看能不能切換.
+   - 為實現 collaborative, 所有的實作都應該支援 data -> view update, 也能夠依 event -> ctrl -> data update. 生成 ops.
+     - 使用 Adopter: 
+       - 設定父資料的子路徑, 以實現部份更新 ( 避免過度重繪 )
+       - 實現收發 ( update / watch ) 介面.
+ - 面板式操作
+   - admin 功能繁多, 只有在點選特定選項時該頁面才會出來.
+     - 動態載入? 至少可以先全靜態.
+       - 進一步的話, 可以試著用同一組 DOM, 重覆熱插拔試試.
+   - Adopter 可能需要支援重設定, 因為 grp 間應該會使用同一組.
+ - 特定的資料型態的編輯, 其操作與協作.
+   - 包括:
+     - perm    - 權限   ( org, brd, grp )
+     - version - 版本   ( org, brd )
+     - info    - 資訊   ( org, brd, grp )
+     - menu    - 選單列 ( org, brd )
+     - stage   - 階段   ( brd, grp )
+   - 為了達成這些任務, 我們需要:
+     - DOM Node - 做這件事的 DOM 架構. ( view )
+     - Script   - 實現動態的源碼 ( control ) 
+     - Data     - 資料來源與對應的路徑. ( modal )
+   - 
+

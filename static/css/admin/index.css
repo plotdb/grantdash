@@ -1,0 +1,12 @@
+[ld-scope=navbar-editor] .folder-item {
+  display: flex;
+  align-items: center;
+}
+[ld-scope=navbar-editor] .folder-item .inner {
+  flex: 1;
+  display: inline-block;
+  border: 1px solid #ddd;
+  border-radius: 0.25em;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  padding: 0.5em;
+}

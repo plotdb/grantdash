@@ -5,12 +5,12 @@
     ul.nav.nav-pills.mr-auto(ld="nav",data-nav="org-config")
       li.nav-item: .nav-link.active(ld="nav-tab default",data-name="info") 基本資訊
       li.nav-item: .nav-link(ld="nav-tab",data-name="perm") 權限
-      li.nav-item: .nav-link(ld="nav-tab",data-name="version") 版本控制
+      //-li.nav-item: .nav-link(ld="nav-tab",data-name="version") 版本控制
 
 .p-4
   div(ld="default nav-panel",data-nav="org-config",data-name="info")
     include info.pug
   div(ld="nav-panel",data-nav="org-config",data-name="perm")
     include perm.pug
-  div(ld="nav-panel",data-nav="org-config",data-name="version")
+  //-div(ld="nav-panel",data-nav="org-config",data-name="version")
     include version.pug

@@ -1,10 +1,7 @@
 (->
   ldc.register \orgPerm, <[]>, ->
     lc = {type: \list}
-    obj = do
-      idx: -1
-      cfg: {roles: [
-      ]}
+    obj = { idx: -1, cfg: {roles: []}}
 
     toggle-role = ->
       role = obj.cfg.roles[idx = obj.idx]
