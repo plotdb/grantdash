@@ -709,7 +709,7 @@ pug_html = pug_html + "\u003Cli class=\"nav-item dropdown\" ld=\"profile\"\u003E
 ;pug_debug_line = 20;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
 pug_html = pug_html + "\u003Ca class=\"nav-link dropdown-toggle\" href=\"#\" data-toggle=\"dropdown\"\u003E";
 ;pug_debug_line = 20;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
-pug_html = pug_html + "\u003Cdiv class=\"avatar\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fa\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"avatar\" ld=\"avatar\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fa\u003E";
 ;pug_debug_line = 21;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
 pug_html = pug_html + "\u003Cdiv class=\"dropdown-menu dropdown-menu-right shadow-sm\"\u003E";
 ;pug_debug_line = 22;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
