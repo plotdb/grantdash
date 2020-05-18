@@ -57,10 +57,10 @@ mixin criteria
   .px-4.py-3.border.rounded(editable="option",edit-type="block")
     .mb-2
       div(hostable): .d-flex.align-items-center.my-2(draggable="true",ld-each="list")
-        input.w-100(type="radio",style="height:1.5em;margin-top:-2px")
-        .position-absolute.ml-4(ld="list-data",editable="name") #{item}
+        input.w-100(type="radio",style="height:1.5em;margin-top:-2px",ld="list-input")
+        .position-absolute.ml-4(ld="list-data",editable="name")
       .d-flex.my-2.align-items-center
-        input(type="radio",name="checkbox",style="height:1.5em;margin-top:-2px")
+        input(type="radio",ld="list-input",style="height:1.5em;margin-top:-2px")
         .mx-2 其它
         .flex-grow-1: input.form-control(ld="list-other")
 
@@ -71,11 +71,11 @@ mixin criteria
   .px-4.py-3.border.rounded
     .mb-2
       div(hostable): .form-check.clickable.my-2(draggable="true",ld-each="list")
-        input.form-check-input(type="checkbox",name="checkbox")
-        label.form-check-label(ld="list-data",editable="name") 選項 #{i}
+        input.form-check-input(type="checkbox",ld="list-input")
+        label.form-check-label(ld="list-data",editable="name")
       .d-flex.my-2.align-items-center
         .form-check.mr-2
-          input.form-check-input(type="checkbox",name="checkbox")
+          input.form-check-input(type="checkbox",ld="list-input")
           label.form-check-label(editable="name") 其它
         .flex-grow-1: input.form-control(ld="list-other")
     .btn.btn-sm.btn-outline-dark(ld="edit-only list-add") 增加項目 #[i.i-plus]

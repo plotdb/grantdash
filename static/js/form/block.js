@@ -5,13 +5,13 @@
     renderList = function(arg$){
       var node, data, viewMode, localData, view;
       node = arg$.node, data = arg$.data, viewMode = arg$.viewMode;
-      localData = data.data || (data.data = []);
+      localData = data;
       return (node.view || (node.view = {})).list = view = new ldView({
         root: node,
         action: {
           click: {
             "list-add": function(){
-              localData.push({
+              (localData.data || (localData.data = [])).push({
                 title: "某個點",
                 desc: "某個點的描述"
               });
@@ -22,7 +22,7 @@
         handler: {
           list: {
             list: function(){
-              return localData;
+              return localData.data || (localData.data = []);
             },
             init: function(arg$){
               var node, data, editable, view;
@@ -53,6 +53,11 @@
                   }
                 },
                 handler: {
+                  "list-input": function(arg$){
+                    var node;
+                    node = arg$.node;
+                    return node.setAttribute('name', localData.title);
+                  },
                   "list-data": function(arg$){
                     var node;
                     node = arg$.node;
@@ -78,7 +83,6 @@
     render = function(arg$){
       var node, data, viewMode;
       node = arg$.node, data = arg$.data, viewMode = arg$.viewMode;
-      console.log(viewMode);
       (node.view || (node.view = {})).block = new ldView({
         root: node,
         action: {
@@ -134,6 +138,11 @@
             var node;
             node = arg$.node;
             return node.remove();
+          },
+          "list-input": function(arg$){
+            var node;
+            node = arg$.node;
+            return node.setAttribute('name', data.title);
           }
         }
       });
