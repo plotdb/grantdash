@@ -85,7 +85,7 @@ mixin criteria
     .btn.btn-outline-primary.btn-upload #[span 上傳檔案 ...]#[input(type="file")]
 
 +form-block({name: "form-long-answer"})
-  textarea.form-control(rows="5")
+  textarea.form-control(rows="5",ld="input-field")
   .d-flex.align-items-center.mt-2
     .d-flex.align-items-center.text-sm.text-muted.mr-4
       input.mr-1(type="checkbox")
@@ -95,5 +95,5 @@ mixin criteria
       div 預覽
 
 +form-block({name: "form-short-answer"})
-  input.form-control(placeholder="請在這裡輸入 ...")
+  input.form-control(ld="input-field",placeholder="請在這裡輸入 ...")
 

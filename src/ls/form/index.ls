@@ -10,6 +10,7 @@
         div.appendChild n.cloneNode(true)
         res div
 
+    update = -> console.log \update, it
     blocks-view = new ldView do
       root: '#form'
       handler:
@@ -21,7 +22,7 @@
               n.parentNode.removeChild n
               node.innerHTML = ""
               node.appendChild n
-              prj-form-block.render {node, data, view-mode}
+              prj-form-block.render {node, data, view-mode, update}
               if !view-mode => prj-form-criteria.render {node, data}
 
     if (n = ld$.find('[ld-scope=blocksrc]',0)) =>

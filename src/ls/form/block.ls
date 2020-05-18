@@ -1,6 +1,6 @@
 (->
   ldc.register \prjFormBlock, [], ->
-    render-list = ({node, data, view-mode}) ->
+    render-list = ({node, data, view-mode, update}) ->
       local-data = data
       node.{}view.list = view = new ldView do
         root: node
@@ -16,8 +16,11 @@
               if !editable and view-mode => node.removeAttribute \draggable
               node.view = view = new ldView do
                 root: node
-                action: input: do
-                  "list-data": ({node}) -> data[node.getAttribute(\data-name)] = node.innerText
+                action: do
+                  input: do
+                    "list-data": ({node}) ->
+                      data[node.getAttribute(\data-name)] = node.innerText
+                    "list-input": ({node}) -> console.log \ok123
                 init: "list-data": ({node}) ->
                   node.setAttribute \data-name, node.getAttribute \editable
                   if !editable and view-mode => node.removeAttribute \editable
@@ -31,10 +34,25 @@
       "form-checkbox": render-list
       "form-checkpoint": render-list
 
+    fill-answer = ({node, data, view-mode, update}) ->
+        node.{}view.fill = new ldView do
+          root: node
+          action: input: do
+            "input-field": ({node}) ->
+              data.value = node.value
+              update data
+          handler: do
+            "input-field": ({node}) -> node.value = data.value or ''
+
+    fill = do
+      "form-short-answer": fill-answer
+      "form-long-answer": fill-answer
+
+
 
     # block sample data:
     #   {title: "提問的標題", desc: "提問的描述", config: {required: true}}
-    render = ({node, data, view-mode}) ->
+    render = ({node, data, view-mode, update}) ->
       node.{}view.block = new ldView do
         root: node
         action:
@@ -57,8 +75,9 @@
             node.removeAttribute \editable
           switch: ({node}) -> node.classList.toggle \on, !!data.{}config[node.getAttribute(\data-name)]
           "edit-only": ({node}) -> node.remove!
-          "list-input": ({node}) -> node.setAttribute \name, data.title
-      if module[data.name] => module[data.name]({node, data, view-mode})
+          "list-input": ({node}) -> node.setAttribute \name, "input-#{data.key}"
+      if module[data.name] => module[data.name]({node, data, view-mode, update})
+      if view-mode and fill[data.name] => fill[data.name]({node, data, view-mode, update})
 
     return {render, module}
 )!
