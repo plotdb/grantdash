@@ -5,7 +5,7 @@
     prepare = function(ctrlOpt){
       var lc, view, adopter, updateDataDebounced, updateData;
       lc = {
-        active: {},
+        active: null,
         obj: {
           entries: []
         }
@@ -18,8 +18,11 @@
               var node, evt, name;
               node = arg$.node, evt = arg$.evt;
               name = node.getAttribute('data-name');
-              (lc.active || (lc.active = {}))[name] = node.value;
-              return view.render();
+              if (lc.active) {
+                lc.active[name] = node.value;
+              }
+              view.render();
+              return updateData();
             }
           },
           click: {
@@ -31,7 +34,8 @@
               }
               lc.obj.entries.splice(idx, 1);
               lc.active = lc.obj.entries[idx] || lc.obj.entries[idx - 1];
-              return view.render();
+              view.render();
+              return updateData();
             },
             "new-entry": function(arg$){
               var node, evt, newData;
@@ -41,14 +45,18 @@
                 description: "未準備詳細描述的項目"
               });
               lc.active = newData;
-              return view.render();
+              view.render();
+              return updateData();
             },
             'switch': function(arg$){
               var node, name, ref$;
               node = arg$.node;
               node.classList.toggle('on');
               name = node.getAttribute('data-name');
-              return ((ref$ = lc.active || (lc.active = {})).config || (ref$.config = {}))[name] = node.classList.contains('on');
+              if (lc.active) {
+                ((ref$ = lc.active).config || (ref$.config = {}))[name] = node.classList.contains('on');
+              }
+              return updateData();
             }
           }
         },
@@ -57,7 +65,7 @@
             var node, name, ref$;
             node = arg$.node;
             name = node.getAttribute('data-name');
-            return node.classList.toggle('on', !!((ref$ = lc.active || (lc.active = {})).config || (ref$.config = {}))[name]);
+            return node.classList.toggle('on', lc.active ? !!((ref$ = lc.active).config || (ref$.config = {}))[name] : false);
           },
           "entry-data": function(arg$){
             var node, name;
@@ -101,10 +109,13 @@
         path: ctrlOpt.path
       });
       adopter.on('change', function(arg$){
-        var ops, source;
+        var ops, source, idx;
         ops = arg$.ops, source = arg$.source;
         if (source) {
           return;
+        }
+        if (lc.obj) {
+          idx = lc.obj.entries.indexOf(lc.active);
         }
         lc.obj = adopter.data
           ? JSON.parse(JSON.stringify(adopter.data))
@@ -112,7 +123,8 @@
         if (!lc.obj.entries) {
           lc.obj.entries = [];
         }
-        return updateView();
+        lc.active = lc.obj.entries[!~idx ? 0 : idx] || {};
+        return view.render();
       });
       updateDataDebounced = debounce(500, function(){
         return updateData();

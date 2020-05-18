@@ -63,6 +63,9 @@
       brdInfo.watch {ops, source}
       prjInfo.watch {ops, source}
       prj-permctrl-adopter.watch {ops, source}
+      grade-adopter.watch {ops, source}
+      criteria-adopter.watch {ops, source}
+        
       grp-sidemenu.prepare {prj-info, prj-permctrl: prj-permctrl-adopter, data: lc.docbrd.data}
       #prjg-view.render!
 
@@ -79,6 +82,8 @@
             prjInfo.init {doc: lc.docbrd, sdb}
             prj-permctrl-adopter.init {doc: lc.docbrd, sdb}
             permctrl-adopter.init {doc: lc.docbrd, sdb}
+            grade-adopter.init {doc: lc.docbrd, sdb}
+            criteria-adopter.init {doc: lc.docbrd, sdb}
             grp-sidemenu.prepare {prj-info, prj-permctrl: prj-permctrl-adopter, data: doc.data}
             #prjg-view.render!
             loader.off!

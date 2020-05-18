@@ -108,6 +108,14 @@
         ops: ops,
         source: source
       });
+      gradeAdopter.watch({
+        ops: ops,
+        source: source
+      });
+      criteriaAdopter.watch({
+        ops: ops,
+        source: source
+      });
       return grpSidemenu.prepare({
         prjInfo: prjInfo,
         prjPermctrl: prjPermctrlAdopter,
@@ -140,6 +148,14 @@
             sdb: sdb
           });
           permctrlAdopter.init({
+            doc: lc.docbrd,
+            sdb: sdb
+          });
+          gradeAdopter.init({
+            doc: lc.docbrd,
+            sdb: sdb
+          });
+          criteriaAdopter.init({
             doc: lc.docbrd,
             sdb: sdb
           });

@@ -2,7 +2,7 @@
   ldc.register \entryctrl, <[]>, ->
     prepare = (ctrl-opt) ->
       lc = do
-        active: {}
+        active: null
         obj: {entries: []}
 
       view = new ldView do
@@ -11,27 +11,31 @@
           input: do
             "entry-data": ({node, evt}) ->
               name = node.getAttribute(\data-name)
-              lc.{}active[name] = node.value
+              if lc.active => lc.active[name] = node.value
               view.render!
+              update-data!
           click: do
             "delete-entry": ({node, evt}) ->
               if !~(idx = lc.obj.entries.indexOf(lc.active)) => return
               lc.obj.entries.splice idx, 1
               lc.active = lc.obj.entries[idx] or  lc.obj.entries[idx - 1]
               view.render!
+              update-data!
             "new-entry": ({node, evt}) ->
               lc.obj.entries.push (new-data = {name: "新項目", description: "未準備詳細描述的項目"})
               lc.active = new-data
               view.render!
+              update-data!
             switch: ({node}) ->
               node.classList.toggle \on
               name = node.getAttribute(\data-name)
-              lc.{}active.{}config[name] = node.classList.contains(\on)
+              if lc.active => lc.active.{}config[name] = node.classList.contains(\on)
+              update-data!
 
         handler: do
           switch: ({node}) ->
             name = node.getAttribute(\data-name)
-            node.classList.toggle \on, !!lc.{}active.{}config[name]
+            node.classList.toggle \on, if lc.active => !!lc.active.{}config[name] else false
           "entry-data": ({node}) ->
             name = node.getAttribute(\data-name)
             node.value = (lc.active or {})[name] or ''
@@ -51,9 +55,13 @@
       adopter = new Adopter path: ctrl-opt.path
       adopter.on \change, ({ops, source}) ->
         if source => return
+        if lc.obj => idx = lc.obj.entries.indexOf(lc.active)
+        # inefficient but entryctrl wont be big thus it's ok.
         lc.obj = if adopter.data => JSON.parse(JSON.stringify(adopter.data)) else {}
         if !lc.obj.entries => lc.obj.entries = []
-        update-view!
+        # active will be orphan after lc.obj is updated, thus we re-assign it from new lc.obj.
+        lc.active = lc.obj.entries[if !~idx => 0 else idx] or {}
+        view.render!
       update-data-debounced = debounce 500, -> update-data!
       update-data = (deb) ->
         if deb => update-data-debounced!
