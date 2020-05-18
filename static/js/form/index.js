@@ -24,7 +24,7 @@
       }
     };
     update = function(it){
-      return console.log('update', it);
+      return console.log('update', it.value);
     };
     blocksView = new ldView({
       root: '#form',

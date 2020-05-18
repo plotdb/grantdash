@@ -58,9 +58,9 @@ mixin criteria
     .mb-2
       div(hostable): .d-flex.align-items-center.my-2(draggable="true",ld-each="list")
         input.w-100(type="radio",style="height:1.5em;margin-top:-2px",ld="list-input")
-        .position-absolute.ml-4(ld="list-data",editable="name")
+        .position-absolute.ml-4(ld="list-data",editable="title")
       .d-flex.my-2.align-items-center
-        input(type="radio",ld="list-input",style="height:1.5em;margin-top:-2px")
+        input(type="radio",ld="list-other-option",style="height:1.5em;margin-top:-2px")
         .mx-2 其它
         .flex-grow-1: input.form-control(ld="list-other")
 
@@ -72,10 +72,10 @@ mixin criteria
     .mb-2
       div(hostable): .form-check.clickable.my-2(draggable="true",ld-each="list")
         input.form-check-input(type="checkbox",ld="list-input")
-        label.form-check-label(ld="list-data",editable="name")
+        label.form-check-label(ld="list-data",editable="title")
       .d-flex.my-2.align-items-center
         .form-check.mr-2
-          input.form-check-input(type="checkbox",ld="list-input")
+          input.form-check-input(type="checkbox",ld="list-other-option")
           label.form-check-label(editable="name") 其它
         .flex-grow-1: input.form-control(ld="list-other")
     .btn.btn-sm.btn-outline-dark(ld="edit-only list-add") 增加項目 #[i.i-plus]
@@ -85,13 +85,15 @@ mixin criteria
     .btn.btn-outline-primary.btn-upload #[span 上傳檔案 ...]#[input(type="file")]
 
 +form-block({name: "form-long-answer"})
-  textarea.form-control(rows="5",ld="input-field")
+  .position-relative
+    textarea.form-control(rows="5",ld="input-field edit-panel")
+    .w-100.bg-light.rounded.p-3(ld="preview-panel",style="min-height:200px")
   .d-flex.align-items-center.mt-2
     .d-flex.align-items-center.text-sm.text-muted.mr-4
-      input.mr-1(type="checkbox")
+      input.mr-1(type="checkbox",ld="use-markdown")
       div 啟用 Markdown 語法 ( #[a(href="#") 語法說明] )
-    .d-flex.align-items-center.text-sm.text-muted.mr-4
-      input.mr-1(type="checkbox")
+    .d-none(ld="if-markdown"): .d-flex.align-items-center.text-sm.text-muted.mr-4
+      input.mr-1(type="checkbox",ld="toggle-preview")
       div 預覽
 
 +form-block({name: "form-short-answer"})

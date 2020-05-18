@@ -7,18 +7,12 @@ html
     +css("/css/index.css")
     +script("/assets/lib/ldui/ldui.min.js")
   body
-    #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded(contenteditable="true")
-      | 123
-      a(href="#") hello
-      | 123
-      div hi
-    .a
-      .b
-        .c
+    #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
+      input(type="checkbox",name="a")
+      input(type="checkbox",name="a")
+      input(type="checkbox",name="a")
+      input(type="checkbox",name="a")
+
     script: :lsc
-      a = ld$.find \.a, 0
-      console.log(
-        ld$.find(a, '.a .b')
-      )
-      root.addEventListener \input, (e) ->
-        console.log e.target
+      ld$.find '#root input' .map -> it.addEventListener \input, ->
+        ld$.find '#root input' .map -> console.log it.checked
