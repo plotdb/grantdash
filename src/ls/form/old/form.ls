@@ -106,21 +106,23 @@
       root: node
       action: click: do
         "list-add": ->
-          local-data.push {title: "某個點", description: "某個點的描述"}
+          local-data.push {title: "某個點", desc: "某個點的描述"}
           view.render!
       handler: do
         list: do
           list: -> local-data
           init: ({node, data}) ->
+            editable = true
+            if !editable => node.removeAttribute \draggable
             node.view = view = new ldView do
               root: node
               action: input: do
-                "list-title": ({node}) -> data.title = node.innerText
-                "list-description": ({node}) -> data.description = node.innerText
+                "list-data": ({node}) -> data[node.getAttribute(\data-name)] = node.innerText
+              init: "list-data": ({node}) ->
+                node.setAttribute \data-name, node.getAttribute \editable
+                if !editable => node.removeAttribute \editable
               handler: do
-                "list-title": ({node}) ->
-                  node.innerText = data.title
-                "list-description": ({node}) -> node.innerText = data.description
+                "list-data": ({node}) -> node.innerText = data[node.getAttribute(\data-name)] or ''
           render: ({node}) -> node.render!
 
   form-modules = do
@@ -128,16 +130,15 @@
     "form-checkbox": render-list
     "form-checkpoint": render-list
 
-
   block-renderer = ({node, data}) ->
-    #data = {title: "提問的標題", description: "提問的描述", config: {required: true}}
+    #data = {title: "提問的標題", desc: "提問的描述", config: {required: true}}
     node.{}view.block = new ldView do
       root: node
       action:
         input: do
           title: ({node, evt}) ->
             data.title = node.innerText
-          description: ({node, evt}) -> data.description = node.innerText
+          desc: ({node, evt}) -> data.desc = node.innerText
         click: do
           switch: ({node, evt}) ->
             node.classList.toggle \on
@@ -146,32 +147,32 @@
           clone: ({node, evt}) -> console.log data
       handler: do
         title: ({node}) -> node.innerText = data.title
-        description: ({node}) -> node.innerText = data.description
+        desc: ({node}) -> node.innerText = data.desc
         switch: ({node}) -> node.classList.toggle \on, !!data.{}config[node.getAttribute(\data-name)]
 
 
   blocks = [
     {
-      name: "form-short-answer", title: "提問的標題1", description: "提問的描述"
+      name: "form-short-answer", title: "提問的標題1", desc: "提問的描述"
       config: {required: true}, criteria: [{}]
     }
     {
-      name: "form-long-answer", title: "提問的標題2", description: "提問的描述"
+      name: "form-long-answer", title: "提問的標題2", desc: "提問的描述"
       config: {required: true}, criteria: [{}]
     }
     {
-      name: "form-checkpoint", title: "提問的標題3", description: "提問的描述"
-      data: [{title: "第一個點", description: "第一個點的描述"}]
+      name: "form-checkpoint", title: "提問的標題3", desc: "提問的描述"
+      data: [{title: "第一個點", desc: "第一個點的描述"}]
       config: {required: true}, criteria: [{}]
     }
     {
-      name: "form-radio", title: "提問的標題3", description: "提問的描述"
-      data: [{title: "第一個點", description: "第一個點的描述"}]
+      name: "form-radio", title: "提問的標題3", desc: "提問的描述"
+      data: [{title: "第一個點", desc: "第一個點的描述"}]
       config: {required: true}, criteria: [{}]
     }
     {
-      name: "form-checkbox", title: "提問的標題3", description: "提問的描述"
-      data: [{title: "第一個點", description: "第一個點的描述"}]
+      name: "form-checkbox", title: "提問的標題3", desc: "提問的描述"
+      data: [{title: "第一個點", desc: "第一個點的描述"}]
       config: {required: true}, criteria: [{}]
     }
   ]
@@ -179,7 +180,6 @@
   bmgr = do
     get: (name) -> new Promise (res, rej) ->
       n = ld$.find("[data-name=#{name}]", 0)
-      console.log name, n
       if !n => rej new Error("block not found")
       div = ld$.create name: "div", attr: {draggable: true}
       div.appendChild n.cloneNode(true)

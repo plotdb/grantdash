@@ -65,7 +65,7 @@ mixin criteria
         .flex-grow-1: input.form-control(ld="list-other")
 
 
-    .btn.btn-sm.btn-outline-dark(ld="edit-only list-add") 增加項目 #[i.i-plus]
+    .btn.btn-sm.btn-outline-dark(ld="mode-edit list-add") 增加項目 #[i.i-plus]
 
 +form-block({name: "form-checkbox"})
   .px-4.py-3.border.rounded
@@ -78,7 +78,7 @@ mixin criteria
           input.form-check-input(type="checkbox",name="checkbox")
           label.form-check-label(editable="name") 其它
         .flex-grow-1: input.form-control(ld="list-other")
-    .btn.btn-sm.btn-outline-dark(ld="edit-only list-add") 增加項目 #[i.i-plus]
+    .btn.btn-sm.btn-outline-dark(ld="mode-edit list-add") 增加項目 #[i.i-plus]
 
 +form-block({name: "form-file"})
   .p-4.bg-light: .vertical-center: .w-100.text-center

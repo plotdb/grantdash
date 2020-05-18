@@ -1,0 +1,77 @@
+extends /base.pug
+block body
+  .d-none: include subblock.pug
+  include /ui/data/sample.pug
+  include /modules/mixins/index.pug
+  include timeline.pug
+  +css("/assets/lib/handsontable/handsontable.min.css")
+  +script("/assets/lib/handsontable/handsontable.min.js")
+  +script("/assets/lib/ldui/ldui.min.js")
+  +script("/js/reblock/form-reblock.js")
+  +script("/assets/lib/ctrlz/ot-json0.js")
+
+  .w-1024.mx-auto.rwd.typeset.heading-contrast
+    .d-flex
+      .mr-4.pr-4
+        .pb-4.mb-4.h-100
+          h3.my-0(ld="nview") 編輯提案
+          h3.my-0(ld="view") 預覽提案
+          hr
+          //-+prj-card-sm(data.prj).shadow-sm.mb-4
+          //-.mb-4.text-center
+            .d-flex.justify-content-center
+              .btn.btn-sm.btn-primary.rounded-pill.px-3.mx-1 分享 #[i.i-link]
+              .btn.btn-sm.btn-primary.rounded-pill.px-3.mx-1 追蹤 #[i.i-eye]
+              //-.btn.btn-sm.btn-primary.rounded-pill.px-3.mx-1 列印 #[i.i-print]
+          //-hr
+
+          .sticky(style="width:250px")
+            .mb-4
+              .d-flex.align-items-center.mb-2
+                .flex-grow-1 編輯紀錄 
+                .text-sm.text-success.ld.ld-fall-ttb-in 已自動存檔.
+              select.form-control
+                option 2020/04/08 12:30:12
+                option 2020/04/08 12:30:11
+                option 2020/04/08 12:30:02
+                option 2020/04/08 12:20:12
+                option 2020/04/08 11:10:54
+                option 2020/04/06 04:52:15
+            //- shown in view mode
+            .mb-4
+              .btn.btn-block.btn-primary(ld="view viewing") 編輯提案 #[i.i-pen]
+              .btn.btn-block.btn-primary(ld="nview viewing") 預覽提案 #[i.i-pen]
+            //- shown in edit mode
+            .mb-4(ld="nview")
+              .d-flex.align-items-center.mb2
+                .flex-grow-1 編輯進度
+                a.text-sm.text-danger(href="#") 尚有 5 項待補 #[i.i-dart-right]
+              .progress
+                .progress-bar.progress-bar-striped.progress-bar-animated(style="width:30%")
+
+            .mb-4
+              label.mb-1 提案人
+              .d-flex.align-items-center
+                +user.mr-2
+                span Kirby Wu
+
+            //-.mb-4
+              label.mb-1 追蹤者
+              .d-flex.flex-wrap
+                each i in [1,2,3,4,5]
+                  +user.mr-2
+
+
+
+      #form.flex-grow-1
+        #form: div(ld-each="block")
+        div(ld="nview")
+          .d-flex.align-items-center
+            .btn.btn-lg.btn-primary.mr-4.disabled(ld="submit") 儲存並發布
+            .text-sm.text-danger #[i.i-close] 在能發布之前，您尚有 5 個項目未完成。#[a.text-danger.text-underline(href="#") 跳至待編修項目]
+
+block script
+  +script("/js/form/sample-data.js")
+  +script("/js/form/index.js")
+  +script("/js/form/criteria.js")
+  +script("/js/form/block.js")
