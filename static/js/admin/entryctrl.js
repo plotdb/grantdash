@@ -42,10 +42,23 @@
               });
               lc.active = newData;
               return view.render();
+            },
+            'switch': function(arg$){
+              var node, name, ref$;
+              node = arg$.node;
+              node.classList.toggle('on');
+              name = node.getAttribute('data-name');
+              return ((ref$ = lc.active || (lc.active = {})).config || (ref$.config = {}))[name] = node.classList.contains('on');
             }
           }
         },
         handler: {
+          'switch': function(arg$){
+            var node, name, ref$;
+            node = arg$.node;
+            name = node.getAttribute('data-name');
+            return node.classList.toggle('on', !!((ref$ = lc.active || (lc.active = {})).config || (ref$.config = {}))[name]);
+          },
           "entry-data": function(arg$){
             var node, name;
             node = arg$.node;

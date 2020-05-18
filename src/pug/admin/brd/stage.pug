@@ -25,13 +25,13 @@
 
   .row.form
     .col-md
-      +switch-lg("活動公開", "一般人都可以看到這個活動")
-      +switch-lg("提案功能", "註冊使用者可以自由提案")
-      +switch-lg("評論功能", "註冊使用者可以針對不同提案進行評論")
+      +switch-lg({name: "活動公開", desc: "一般人都可以看到這個活動", key: "public"})
+      +switch-lg({name: "提案功能", desc: "註冊使用者可以自由提案", key: "propose"})
+      +switch-lg({name: "評論功能", desc: "註冊使用者可以針對不同提案進行評論", key: "comment"})
     .col-md
-      +switch-lg("修改提案", "提案人可以修改自己的提案")
-      +switch-lg("修改評論", "留言用戶可以修改自己的評論")
-      +switch-lg("評審功能", "被標註為評審的使用者可以針對提案進行評論")
+      +switch-lg({name: "修改提案", desc: "提案人可以修改自己的提案", key: "project-edit"})
+      +switch-lg({name: "修改評論", desc: "留言用戶可以修改自己的評論", key: "comment-edit"})
+      +switch-lg({name: "評審功能", desc: "被標註為評審的使用者可以針對提案進行評論", key: "judge"})
 
   hr
   .d-flex.mt-4

@@ -23,7 +23,15 @@
               lc.obj.entries.push (new-data = {name: "新項目", description: "未準備詳細描述的項目"})
               lc.active = new-data
               view.render!
+            switch: ({node}) ->
+              node.classList.toggle \on
+              name = node.getAttribute(\data-name)
+              lc.{}active.{}config[name] = node.classList.contains(\on)
+
         handler: do
+          switch: ({node}) ->
+            name = node.getAttribute(\data-name)
+            node.classList.toggle \on, !!lc.{}active.{}config[name]
           "entry-data": ({node}) ->
             name = node.getAttribute(\data-name)
             node.value = (lc.active or {})[name] or ''
