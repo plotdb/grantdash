@@ -1,0 +1,24 @@
+# Board
+
+{
+ valid: ..?
+ info: {}
+ stage: {}
+ permission: {}
+ page: {
+   navbar: {}
+   files: {}
+ }
+ group: [
+   {
+     id: xx, 
+     name: '...'
+     criteria: {}
+     grade: {}
+     form: {}
+     permission: {}
+     stage: {}
+   }
+ ]
+}
+

@@ -1,7 +1,7 @@
 (->
   ldc.register \admin,
-  <[permctrl navbar grpSidemenu adminNavigation viewLocals orgInfo brdInfo prjInfo loader util]>,
-  ({permctrl, navbar, grp-sidemenu, admin-navigation, viewLocals, orgInfo, brdInfo, prjInfo, loader, util}) ->
+  <[permctrl entryctrl navbar grpSidemenu adminNavigation viewLocals orgInfo brdInfo prjInfo loader util]>,
+  ({permctrl, entryctrl, navbar, grp-sidemenu, admin-navigation, viewLocals, orgInfo, brdInfo, prjInfo, loader, util}) ->
     loader.on!
     lc = {}
 
@@ -16,6 +16,14 @@
     perm-panel = ld$.find '[ld~=nav-panel][data-nav=prj-config][data-name=perm]  [ld-scope=permission-panel]', 0
     prj-permctrl-opt = {root: perm-panel, path: ['group', 0, 'perm']}
     prj-permctrl-adopter = permctrl.prepare prj-permctrl-opt
+
+    criteria-panel = ld$.find '[ld~=nav-panel][data-nav=prj-config][data-name=criteria] [ld-scope=criteria-panel]', 0
+    criteria-opt = {root: criteria-panel, path: ['group', 0, 'criteria']}
+    criteria-adopter = entryctrl.prepare criteria-opt
+
+    grade-panel = ld$.find '[ld~=nav-panel][data-nav=prj-config][data-name=grade] [ld-scope=grade-panel]', 0
+    grade-opt = {root: grade-panel, path: ['group', 0, 'grade']}
+    grade-adopter = entryctrl.prepare grade-opt
 
     navbar-panel = ld$.find '[ld~=nav-panel][data-nav=main][data-name=brd-navbar]  [ld-scope=navbar-editor]', 0
     brd-navbar-opt = {root: navbar-panel, path: <[page navbar]>}

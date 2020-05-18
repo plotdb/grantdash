@@ -7,8 +7,8 @@
       //-li.nav-item: .nav-link(ld="nav-tab",data-name="brd-stage") 階段
       li.nav-item: .nav-link(ld="nav-tab",data-name="perm") 權限
       //-li.nav-item: .nav-link(ld="nav-tab",data-name="form") 提案表
-      li.nav-item: .nav-link(ld="nav-tab",data-name="qualify") 審查資格
-      li.nav-item: .nav-link(ld="nav-tab",data-name="score") 評選標準
+      li.nav-item: .nav-link(ld="nav-tab",data-name="criteria") 審查資格
+      li.nav-item: .nav-link(ld="nav-tab",data-name="grade") 評選標準
     ul.navbar-nav.ml-auto
       li.nav-item: .nav-link(href="/org/dashboard.html") 組織設定
 .p-4
@@ -20,7 +20,7 @@
     include ../brd/perm.pug
   //-div(ld="nav-panel",data-nav="prj-config",data-name="form")
     include form.pug
-  div(ld="nav-panel",data-nav="prj-config",data-name="qualify")
-    include qualify.pug
-  div(ld="nav-panel",data-nav="prj-config",data-name="score")
-    include score.pug
+  div(ld="nav-panel",data-nav="prj-config",data-name="criteria")
+    include criteria.pug
+  div(ld="nav-panel",data-nav="prj-config",data-name="grade")
+    include grade.pug

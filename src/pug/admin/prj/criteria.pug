@@ -1,0 +1,23 @@
+//- module
+h4 資格審核
+p.text-muted.text-sm 編輯提案所需具備的資格清單與細節。此列表將運用在評選時的資格審核表中。
++scope("criteria-panel").position-relative
+  ul.nav.nav-tabs.mb-4
+    li.nav-item(ld-each="entry"): a.nav-link
+    li.nav-item.flex-grow-1
+    li.nav-item.text-right: a.nav-link.text-muted.border-0(ld="new-entry") 新增 +
+  .form-group.mb-4
+    label 項目名稱
+    input.form-control(ld="entry-data",data-name="name",placeholder="項目名稱")
+  .form-group.mb-4
+    label 詳細說明
+    textarea.form-control(ld="entry-data",data-name="description",placeholder="詳細說明 ...",rows="5")
+  .d-flex
+    .flex-grow-1
+      .btn.btn-outline-danger.mr-2(ld="delete-entry") 刪除
+    div
+      .btn.btn-primary 儲存變更
+  .position-absolute.w-100.h-100.vertical-center.rounded.bg-white(style="top:0;left:0",ld="empty")
+    .w-100.text-center
+      .mb-4 您尚未建立任何項目. 要先建立一個嗎？
+      .btn.btn-outline-primary(ld="new-entry") 建立項目
