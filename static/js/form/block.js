@@ -194,20 +194,6 @@
       "form-long-answer": renderTextarea,
       "form-short-answer": renderTextarea
     };
-    /*
-    fill-answer = ({node, data, view-mode, update}) ->
-        node.{}view.fill = new ldView do
-          root: node
-          action: input: do
-            "input-field": ({node}) ->
-              data.value = node.value
-              update data
-          handler: do
-            "input-field": ({node}) -> node.value = data.value or ''
-    fill = do
-      "form-short-answer": fill-answer
-      "form-long-answer": fill-answer
-    */
     render = function(arg$){
       var node, data, viewMode, update;
       node = arg$.node, data = arg$.data, viewMode = arg$.viewMode, update = arg$.update;

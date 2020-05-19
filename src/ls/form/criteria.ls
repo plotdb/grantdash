@@ -35,7 +35,7 @@
           "ne": { name: '<div class="s mr-2">&#x2260;</div> 不等於' }
           "between": { name: '<div class="s mr-2">&#x223c;</div> 介於', field: 2 }
         smaller: do
-          "ge": { name: '<div class="s mr-2">&gt;</div> 大於' }
+          "lte": { name: '<div class="s mr-2">&lt;</div> 小於' }
 
       support: 
         'form-short-answer': <[number string length regex]>

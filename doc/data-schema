@@ -36,3 +36,27 @@
  -  markdown
  -  detail
  -  deleted
+
+# Form Block
+
+ - key          - ID, 用來識別此欄位。自動生成的隨意字串
+ - title        - 標題
+ - desc         - 描述
+ - config       - 設定項目
+   - public     - 是否為公開
+   - required   - 是否為必填
+   - show-desc  - 是否顯示 description
+ - criteria:    - 檢查條件, 為陣列, 其中每個物件的欄位:
+   - type       - 以此種型態來檢查資料 ( 如長度、數值 等 )
+   - op         - 檢查的動作 ( 如大於、小於等 )
+   - input1     - 檢查用的第一個值
+   - input2     - 檢查用的第二個值 ( 若需要用到的話 )
+   - invalid    - 檢查不過時顯示的錯誤資訊
+ - data         - 表單的其它設計資料
+ - value        - 用戶填的資料. 此欄位不會存進 form block spec, 而僅用在用戶填資料時.
+   - content    - 預設的回答內容 ( short-answer, long-answer )
+   - list       - 多選、單選、檢查點的回答內容, 為列表. 視情況包含字串或物件 ( checkpoint )。物件包含:
+     - title
+     - decs
+   - other      - 用於多選、單選。若為真，代表用戶選填了其它資料。
+   - otherValue - 在 other = true 時, 代表用戶選擇了自己田填了的這個值。

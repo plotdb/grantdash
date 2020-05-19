@@ -105,8 +105,8 @@
           }
         },
         smaller: {
-          "ge": {
-            name: '<div class="s mr-2">&gt;</div> 大於'
+          "lte": {
+            name: '<div class="s mr-2">&lt;</div> 小於'
           }
         }
       },

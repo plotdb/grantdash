@@ -84,22 +84,6 @@
       "form-long-answer": render-textarea
       "form-short-answer": render-textarea
 
-    /*
-    fill-answer = ({node, data, view-mode, update}) ->
-        node.{}view.fill = new ldView do
-          root: node
-          action: input: do
-            "input-field": ({node}) ->
-              data.value = node.value
-              update data
-          handler: do
-            "input-field": ({node}) -> node.value = data.value or ''
-    fill = do
-      "form-short-answer": fill-answer
-      "form-long-answer": fill-answer
-    */
-
-
     # block sample data:
     #   {title: "提問的標題", desc: "提問的描述", config: {required: true}}
     render = ({node, data, view-mode, update}) ->
