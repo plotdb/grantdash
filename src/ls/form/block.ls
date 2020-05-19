@@ -102,6 +102,13 @@
             delete: ({node, evt}) ->
             clone: ({node, evt}) -> console.log data
         handler: do
+          invalid: ({node}) ->
+            is-valid = (!(data.{}valid.result?) or data.valid.result)
+            if !is-valid => node.innerText = data.valid.criteria.invalid or "這個欄位格式不符"
+            node.classList.toggle \d-none, is-valid
+          block: ({node}) ->
+            is-valid = (!(data.{}valid.result?) or data.valid.result)
+            node.classList.toggle \invalid, !is-valid
           title: ({node}) ->
             node.innerText = data.title
             node.removeAttribute \editable

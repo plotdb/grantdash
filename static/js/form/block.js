@@ -232,6 +232,21 @@
           }
         },
         handler: {
+          invalid: function(arg$){
+            var node, isValid;
+            node = arg$.node;
+            isValid = !((data.valid || (data.valid = {})).result != null) || data.valid.result;
+            if (!isValid) {
+              node.innerText = data.valid.criteria.invalid || "這個欄位格式不符";
+            }
+            return node.classList.toggle('d-none', isValid);
+          },
+          block: function(arg$){
+            var node, isValid;
+            node = arg$.node;
+            isValid = !((data.valid || (data.valid = {})).result != null) || data.valid.result;
+            return node.classList.toggle('invalid', !isValid);
+          },
           title: function(arg$){
             var node;
             node = arg$.node;

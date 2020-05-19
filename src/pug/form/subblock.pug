@@ -1,12 +1,23 @@
 //- module
+style(type="text/css"): :stylus
+  .card[ld=block]
+    transition: all .15s ease-in-out
+    border-left-width: 0px
+    border-left-style: solid
+    border-left-color: #f00
+ 
+  .card.invalid[ld=block]
+    border-left-width: 8px
+    
 
 mixin form-block(opt)
-  .card.shadow-sm(data-name=opt.name)
+  .card.shadow-sm(ld="block",data-name=opt.name)
     .card-body: .p-2
       .flex-grow-1
         h4.mb-1(ld="title",editable="title") 提問的標題
         p.text-muted.mb-2(ld="desc",editable="desc") 提問的簡短描述 ...
       block
+      .alert.alert-danger.mt-2.ld.ld-float-btt-in(ld="invalid")
     div(ld="edit-only")
       +criteria
       +footer

@@ -9,7 +9,13 @@ sampleBlocks = [
     config: {
       required: true
     },
-    criteria: [{}]
+    criteria: [{
+      type: 'number',
+      op: 'between',
+      input1: 10,
+      input2: 20,
+      invalid: '應介於 10 ~ 20 之間'
+    }]
   }, {
     key: 2,
     name: "form-long-answer",
@@ -18,7 +24,12 @@ sampleBlocks = [
     config: {
       required: true
     },
-    criteria: [{}]
+    criteria: [{
+      type: 'length',
+      op: 'gte',
+      input1: 10,
+      invalid: '字數不足 ( 10 個字以上 )'
+    }]
   }, {
     key: 3,
     name: "form-checkpoint",
@@ -31,7 +42,13 @@ sampleBlocks = [
     config: {
       required: true
     },
-    criteria: [{}]
+    criteria: [{
+      type: 'count',
+      op: 'between',
+      input1: 1,
+      input2: 2,
+      invalid: "介於 1 ~ 2 個項目"
+    }]
   }, {
     key: 4,
     name: "form-radio",

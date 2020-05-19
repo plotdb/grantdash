@@ -42,6 +42,8 @@
  - key          - ID, 用來識別此欄位。自動生成的隨意字串
  - title        - 標題
  - desc         - 描述
+ - invalid      - 用戶填的欄位有誤
+ - invalid-msg  - 有誤時的顯示文字
  - config       - 設定項目
    - public     - 是否為公開
    - required   - 是否為必填

@@ -1,7 +1,9 @@
 (->
-  ldc.register \prjForm, <[prjFormCriteria prjFormBlock]>, ({prj-form-criteria, prj-form-block}) ->
-    view-mode = false
-    lc = {view: true}
+  ldc.register \prjForm,
+  <[prjFormCriteria prjFormBlock prjFormValidation]>,
+  ({prj-form-criteria, prj-form-block, prj-form-validation}) ->
+    view-mode = true
+    lc = {view: false}
 
     bmgr = do
       get: (name) -> new Promise (res, rej) ->
@@ -12,11 +14,16 @@
         res div
 
     fill-data = {}
+    validate = debounce (block) ->
+      block.valid = prj-form-validation.validate block
+      blocks-view.render!
+      if viewer => viewer.render!
     update = (block) -> 
       if view-mode =>
         fill-data[block.key] = block.value
         console.log "[update]", fill-data
-        if viewer => viewer.render!
+        validate block
+
     blocks-view = new ldView do
       root: '#form'
       handler:
@@ -30,6 +37,9 @@
               node.appendChild n
               prj-form-block.render {node, data, view-mode, update}
               if !view-mode => prj-form-criteria.render {node, data}
+          handler: ({node, data}) ->
+            if node.view => node.view.block.render!
+
 
     if (n = ld$.find('[ld-scope=blocksrc]',0)) =>
       new ldView do
@@ -55,7 +65,7 @@
 
     if view-mode =>
       progress = ->
-        done = [k for k of fill-data].length
+        done = sample-blocks.filter(-> it.{}valid.result).length
         total = sample-blocks.length
         percent = ( done / sample-blocks.length )
         remain = total - done
@@ -95,7 +105,6 @@
               """
             .join("")
           node.innerHTML = """<div class="timeline-list">#items</div>"""
-          console.log data
         "form-radio": ({node, data}) ->
           node.innerText = ((data.list or []) ++ (if data.other => [data.otherValue or ''] else [])).join(', ')
         "form-checkbox": ({node, data}) ->
