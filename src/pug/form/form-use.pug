@@ -64,8 +64,14 @@ block body
 
 
 
-      #form.flex-grow-1
-        #form: div(ld-each="block")
+      .flex-grow-1
+        #answer(ld="view"): .mb-4.pb-4(ld-each="answer")
+          h4.mb-1(ld="title") 提問的標題
+          p.text-muted.mb-2(ld="desc") 提問的簡短描述 ...
+          hr
+          .mb-4(ld="content")
+
+        #form(ld="nview"): div(ld-each="block")
         div(ld="nview")
           .d-flex.align-items-center
             .btn.btn-lg.btn-primary.mr-4.disabled(ld="submit") 儲存並發布
