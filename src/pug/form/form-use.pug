@@ -46,9 +46,10 @@ block body
             .mb-4(ld="nview")
               .d-flex.align-items-center.mb2
                 .flex-grow-1 編輯進度
-                a.text-sm.text-danger(href="#") 尚有 5 項待補 #[i.i-dart-right]
+                a.text-sm.text-danger(ld="invalid",href="#") 尚有 #[span(ld="remain") 1] 項待補 #[i.i-dart-right]
+                .text-sm.text-success.d-none(ld="valid") 欄位均已填妥
               .progress
-                .progress-bar.progress-bar-striped.progress-bar-animated(style="width:30%")
+                .progress-bar.progress-bar-striped.progress-bar-animated(ld="progress",style="width:0%")
 
             .mb-4
               label.mb-1 提案人
@@ -75,7 +76,8 @@ block body
         div(ld="nview")
           .d-flex.align-items-center
             .btn.btn-lg.btn-primary.mr-4.disabled(ld="submit") 儲存並發布
-            .text-sm.text-danger #[i.i-close] 在能發布之前，您尚有 5 個項目未完成。#[a.text-danger.text-underline(href="#") 跳至待編修項目]
+            .text-sm.text-danger(ld="invalid") #[i.i-close] 在能發布之前，您尚有 #[span(ld="remain") 1] 個項目未完成。#[a.text-danger.text-underline(href="#") 跳至待編修項目]
+            .text-sm.text-success.d-none(ld="valid") 您已填完所有項目，可別忘了儲存並發布喔！
 
 block script
   +script("/js/form/sample-data.js")

@@ -211,6 +211,7 @@
     render = function(arg$){
       var node, data, viewMode, update;
       node = arg$.node, data = arg$.data, viewMode = arg$.viewMode, update = arg$.update;
+      node.setAttribute('id', "block-" + data.key);
       (node.view || (node.view = {})).block = new ldView({
         root: node,
         action: {

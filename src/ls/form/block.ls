@@ -103,6 +103,7 @@
     # block sample data:
     #   {title: "提問的標題", desc: "提問的描述", config: {required: true}}
     render = ({node, data, view-mode, update}) ->
+      node.setAttribute \id, "block-#{data.key}"
       node.{}view.block = new ldView do
         root: node
         action:
