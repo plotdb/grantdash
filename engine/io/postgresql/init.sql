@@ -95,10 +95,11 @@ create table if not exists comment (
   owner int references users(key) not null,
   thread int,
   idx int,
-  content text,
-  config jsonb,
+  content jsonb,
   history jsonb,
   createdtime timestamp not null default now(),
   state state not null default 'pending',
   deleted bool default false
 );
+
+create index if not exists comment_idx on comment (idx);

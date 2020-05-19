@@ -9,18 +9,17 @@
       .folder-item
 */
 .folder .folder-menu {
-  position: absolute;
-  display: none;
+  height: 0;
+  overflow: hidden;
   transition: height 0.25s ease-in-out;
 }
-.folder.show > .folder-menu {
-  position: relative;
-  display: block;
-  overflow: hidden;
+.folder.show .folder-menu {
+  height: auto;
 }
 .folder-item {
   padding: 0.375em 1em;
   cursor: pointer;
+  color: currentColor;
 }
 .folder-item:before {
   font-family: "ldi";

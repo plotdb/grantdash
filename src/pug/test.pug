@@ -7,12 +7,13 @@ html
     +css("/css/index.css")
     +script("/assets/lib/ldui/ldui.min.js")
   body
-    #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
-      input(type="checkbox",name="a")
-      input(type="checkbox",name="a")
-      input(type="checkbox",name="a")
-      input(type="checkbox",name="a")
-
+    #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded: .d-none
+      .rounded.p-4.border.shadow.bg-white
+        .p-2 HEAD
+        .menu.bg-light.p-2.border(style="height:0;overflow:hidden")
+          each i in [1,2,3,4,5]
+            .p-2.m-2.border.shadow.rounded ITEM
     script: :lsc
-      ld$.find '#root input' .map -> it.addEventListener \input, ->
-        ld$.find '#root input' .map -> console.log it.checked
+      menu = ld$.find('.menu',0)
+      console.log(menu.scrollHeight)
+      console.log(menu.scrollHeight)

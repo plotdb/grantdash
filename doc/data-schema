@@ -22,3 +22,17 @@
  ]
 }
 
+
+# Comment
+
+ -  owner
+ -  thread
+    - key of parent comment
+ -  idx
+    - traverse distance from root.
+ -  createdtime
+ -  modifiedtime
+ -  content
+ -  markdown
+ -  detail
+ -  deleted
