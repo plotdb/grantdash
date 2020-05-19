@@ -90,11 +90,17 @@ create table if not exists project (
   deleted bool default false
 );
 
+create table if not exists discus (
+  key serial primary key,
+  slug text not null unique constraint slug_len check (char_length(slug) <= 256)
+);
+
 create table if not exists comment (
   key serial primary key,
   owner int references users(key) not null,
-  thread int,
-  idx int,
+  discus int,
+  reply int,
+  distance int,
   content jsonb,
   history jsonb,
   createdtime timestamp not null default now(),
@@ -102,4 +108,4 @@ create table if not exists comment (
   deleted bool default false
 );
 
-create index if not exists comment_idx on comment (idx);
+create index if not exists comment_distance on comment (distance);

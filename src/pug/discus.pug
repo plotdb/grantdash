@@ -1,53 +1,73 @@
 extends /base.pug
+block head
+  style(type="text/css"): :stylus
+    .comment .ctrl
+      display: none
+    .comment:hover
+      background: rgba(0,0,0,.01)
+    .comment:hover .ctrl
+      display: block
+    .comment h1 { font-size: 1.5em!important  }
+    .comment h2 { font-size: 1.4em!important  }
+    .comment h3 { font-size: 1.3em!important  }
+    .comment h4 { font-size: 1.2em!important  }
+    .comment h5 { font-size: 1.1em!important  }
+    .comment h6 { font-size: 1.05em!important }
 block body
   - var opt = {}
   .w-1024.mx-auto.rwd.typeset.heading-contrast
-    .comment.media.mb-2.p-2.position-relative(class=(opt.thread ? "thread" : ""))
-      .btn-group.position-absolute.shadow-sm.bg-white.ctrl(style="top:-.75em;right:1em")
-        .btn.btn-sm.btn-outline-secondary #[i.i-heart]
-        .btn.btn-sm.btn-outline-secondary #[i.i-clone]
-        .btn.btn-sm.btn-outline-secondary #[i.i-pen]
-        .btn.btn-sm.btn-outline-secondary #[i.i-lock]
-        .btn.btn-sm.btn-outline-secondary #[i.i-close]
-      .avatar.mr-3(style="width:3.25em"): .aspect-ratio.ratio-1by1.rounded.bg-dark.w-100
-      .media-body
-        .d-flex.align-items-center
-          b.my-0 #{opt.author}
-          if opt.role
-            .text-sm.text-muted.ml-1 ． #{opt.role}
-          .text-sm.text-muted.ml-1 ． #{opt.date}
-          //-.text-sm.text-muted.ml-1 ．回覆
-        .content.my-1
-          p Hello World!
-        //-.d-flex.text-muted
-          .mr-1 #[i.i-dart-up]
-          .mr-1 | #[i.i-dart-down]
-          .mr-1 ．回覆
-        if opt.more
-          a.d-flex.align-items-center(href="#")
-            div.mr-1(style="width:1em"): .aspect-ratio.ratio-1by1.rounded-sm.bg-dark.w-100
-            div.mr-1(style="width:1em"): .aspect-ratio.ratio-1by1.rounded-sm.bg-dark.w-100
-            div 四則回覆
+    +scope("discus")
+      .comment.media.mb-2.p-2.position-relative(ld="loading")
+        .avatar.mr-3(style="width:3.25em"): .aspect-ratio.ratio-1by1.bg-light
+        .media-body
+          .w-100.bg-light.mb-2.pb-3.ld.ld-dim
+          .w-100.bg-light.mb-2.pb-3.ld.ld-dim.x2
+          .w-50.bg-light.mb-2.pb-3.ld.ld-dim.xhalf
+      .d-none(ld="loading off")
+        .comment.media.mb-2.p-2.position-relative(ld-each="comment",class=(opt.thread ? "thread" : ""))
+          .btn-group.position-absolute.shadow-sm.bg-white.ctrl(style="top:-.75em;right:1em")
+            .btn.btn-sm.btn-outline-secondary #[i.i-heart]
+            .btn.btn-sm.btn-outline-secondary #[i.i-clone]
+            .btn.btn-sm.btn-outline-secondary #[i.i-pen]
+            .btn.btn-sm.btn-outline-secondary #[i.i-lock]
+            .btn.btn-sm.btn-outline-secondary #[i.i-close]
+          .avatar.mr-3(style="width:3.25em")
+            .aspect-ratio.ratio-1by1.rounded.bg-dark.w-100.bg-cover(ld="avatar")
+          .media-body
+            .d-flex.align-items-center
+              b.my-0(ld="author") #{opt.author}
+              .text-sm.text-muted.ml-1(ld="role") ． #[span #{opt.role}]
+              .text-sm.text-muted.ml-1 ． #[span(ld="date") #{opt.date}]
+              //-.text-sm.text-muted.ml-1 ．回覆
+            .content.my-1(ld="content")
+              p Hello World!
+            //-.d-flex.text-muted
+              .mr-1 #[i.i-dart-up]
+              .mr-1 | #[i.i-dart-down]
+              .mr-1 ．回覆
+            if opt.more
+              a.d-flex.align-items-center(href="#")
+                div.mr-1(style="width:1em"): .aspect-ratio.ratio-1by1.rounded-sm.bg-dark.w-100
+                div.mr-1(style="width:1em"): .aspect-ratio.ratio-1by1.rounded-sm.bg-dark.w-100
+                div 四則回覆
 
-    +scope("discus-edit").media.mb-4.p-2.position-relative
-      .avatar.mr-2(style="width:3.25em"): .aspect-ratio.ratio-1by1.rounded.bg-dark.w-100.bg-cover(ld="avatar")
-      .media-body
-        .position-relative
-        textarea.form-control.mb-2(rows="4",ld="comment preview off")
-        .w-100.bg-light.rounded.p-3(ld="preview panel",style="min-height:200px")
-        .d-flex
-          .flex-grow-1.d-flex
-            .btn.btn-text(ld="link"): i.i-link
-            .btn.btn-text(ld="attach"): i.i-doc
-          div
-            .btn.btn-outline-secondary(ld="post") 送出留言
-        .d-flex.align-items-center.mt-2
-          .d-flex.align-items-center.text-sm.text-muted.mr-4
-            input.mr-1(type="checkbox",ld="use-markdown")
-            div 啟用 Markdown 語法 ( #[a(href="#") 語法說明] )
-          .d-none(ld="if-markdown"): .d-flex.align-items-center.text-sm.text-muted.mr-4
-            input.mr-1(type="checkbox",ld="toggle-preview")
-            div 預覽
+      .media.mb-4.p-2.position-relative
+        .avatar.mr-2(style="width:3.25em"): .aspect-ratio.ratio-1by1.rounded.bg-dark.w-100.bg-cover(ld="avatar")
+        .media-body
+          .position-relative
+          textarea.form-control.mb-2(rows="4",ld="input preview off")
+          .w-100.bg-light.rounded.mb-2.p-3.d-none(ld="preview panel",style="min-height:200px")
+          .d-flex
+            .flex-grow-1.d-flex.align-items-center
+              .btn.btn-outline-secondary(ld="link"): i.i-link
+              //-.btn.btn-text(ld="attach"): i.i-doc
+              .d-flex.align-items-center.text-sm.text-muted.mx-4
+                input.mr-1(type="checkbox",ld="use-markdown")
+                div 啟用 Markdown 語法 ( #[a(href="#") 語法說明] )
+              .d-none(ld="if-markdown"): .d-flex.align-items-center.text-sm.text-muted.mr-4
+                input.mr-1(type="checkbox",ld="toggle-preview")
+                div 預覽
+            div: .btn.btn-outline-secondary.ld.ld-ext-right(ld="post") 送出留言 #[.ld.ld-spinner.ld-spin]
 
 block script
   +script("/js/modules/discus.js")
