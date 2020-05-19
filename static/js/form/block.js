@@ -266,7 +266,9 @@
           "edit-only": function(arg$){
             var node;
             node = arg$.node;
-            return node.remove();
+            if (viewMode) {
+              return node.remove();
+            }
           },
           "list-input": function(arg$){
             var node;

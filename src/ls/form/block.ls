@@ -125,7 +125,7 @@
             node.innerText = data.desc
             node.removeAttribute \editable
           switch: ({node}) -> node.classList.toggle \on, !!data.{}config[node.getAttribute(\data-name)]
-          "edit-only": ({node}) -> node.remove!
+          "edit-only": ({node}) -> if view-mode => node.remove!
           "list-input": ({node}) -> node.setAttribute \name, "input-#{data.key}"
       if module[data.name] => module[data.name]({node, data, view-mode, update})
       #if view-mode and fill[data.name] => fill[data.name]({node, data, view-mode, update})

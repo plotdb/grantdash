@@ -3,7 +3,7 @@
   ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock'], function(arg$){
     var prjFormCriteria, prjFormBlock, viewMode, lc, bmgr, fillData, update, blocksView, n, reb, progress, viewer, renderAnswer, viewAnswer;
     prjFormCriteria = arg$.prjFormCriteria, prjFormBlock = arg$.prjFormBlock;
-    viewMode = true;
+    viewMode = false;
     lc = {
       view: true
     };
@@ -28,10 +28,12 @@
     };
     fillData = {};
     update = function(block){
-      fillData[block.key] = block.value;
-      console.log("[update]", fillData);
-      if (viewer) {
-        return viewer.render();
+      if (viewMode) {
+        fillData[block.key] = block.value;
+        console.log("[update]", fillData);
+        if (viewer) {
+          return viewer.render();
+        }
       }
     };
     blocksView = new ldView({

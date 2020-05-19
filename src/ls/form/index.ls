@@ -1,6 +1,6 @@
 (->
   ldc.register \prjForm, <[prjFormCriteria prjFormBlock]>, ({prj-form-criteria, prj-form-block}) ->
-    view-mode = true
+    view-mode = false
     lc = {view: true}
 
     bmgr = do
@@ -13,9 +13,10 @@
 
     fill-data = {}
     update = (block) -> 
-      fill-data[block.key] = block.value
-      console.log "[update]", fill-data
-      if viewer => viewer.render!
+      if view-mode =>
+        fill-data[block.key] = block.value
+        console.log "[update]", fill-data
+        if viewer => viewer.render!
     blocks-view = new ldView do
       root: '#form'
       handler:
