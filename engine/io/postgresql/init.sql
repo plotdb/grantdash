@@ -89,3 +89,16 @@ create table if not exists project (
   state state not null default 'active',
   deleted bool default false
 );
+
+create table if not exists comment (
+  key serial primary key,
+  owner int references users(key) not null,
+  thread int,
+  idx int,
+  content text,
+  config jsonb,
+  history jsonb,
+  createdtime timestamp not null default now(),
+  state state not null default 'pending',
+  deleted bool default false
+);
