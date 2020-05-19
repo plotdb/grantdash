@@ -10,7 +10,10 @@
         div.appendChild n.cloneNode(true)
         res div
 
-    update = -> console.log \update, it.value
+    fill-data = {}
+    update = (block) -> 
+      fill-data[block.key] = block.value
+      console.log "[update]", fill-data
     blocks-view = new ldView do
       root: '#form'
       handler:
