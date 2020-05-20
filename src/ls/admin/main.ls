@@ -1,5 +1,5 @@
 (->
-  ldc.register \adminGuard, <[auth loader]>, ({auth, loader}) ->
+  ldc.register \adminGuard, <[auth loader adminPanel]>, ({auth, loader, admin-panel}) ->
     loader.on!
     auth.ensure!
       .then ->
@@ -13,25 +13,26 @@
             lda.ldcvmgr.toggle \error
       .catch -> lda.ldcvmgr.toggle \auth-required
     init = (toc) ->
-      toc.org = toc.org or {}
-      toc.brd = toc.brd or {}
-      toc.brds = toc.brds or []
-      toc.brds-filtered = toc.brds or []
-      toc.grps = [{name: "分組#i", key: i} for i from 1 til 4]
+      <[org brd brds brdsFiltered grps]>.map -> toc[it] = toc[it] or []
+      toc.brdsFiltered = toc.brds or []
+      #toc.grps = [{name: "分組#i", key: i} for i from 1 til 4]
+      menu toc
+      sdb toc
 
+    sdb = (toc) ->
+
+    menu = (toc) ->
       set-group = (grp) ->
       search = debounce (val) ->
         toc.brds-filtered = toc.brds.filter -> ~it.name.indexOf(val)
         view.render!
         view.get("brd-list").folder.fit!
-
-      console.log toc
       root = ld$.find '[ld-scope=admin-menu]', 0
       view = new ldView do
         root: root
         action: do
           click: do
-            brd: ({node}) ->
+            "brd-bar": ({node}) ->
               ret = view.get("brd-list").folder.toggle!
               view.render \brd-list-toggle
           input: do

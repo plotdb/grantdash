@@ -4,8 +4,9 @@ block script
   .d-flex.flex-column.h-100.position-relative.z-float
     div(style="height:2.75em")
     .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4(style="overflow:hidden")
+      //- side menu
       +scope("admin-menu").admin-menu.bg-dark.text-white.text-left
-        #brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(
+        .sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(
         style="top:0;transition:height .25s ease-in-out")
           div
             .folder.border-bottom.border-secondary.text-sm.no-dart(ld="folder org-menu nav",data-nav="main")
@@ -18,7 +19,7 @@ block script
                 .folder-item(ld="nav-tab",data-name="org-navbar",data-nav="main") 選單列
                 .folder-item.mb-3(ld="nav-tab",data-name="org-config",data-nav="main") 頁面編輯器
 
-            .clickable(style="box-shadow:0 2px 3px rgba(0,0,0,1)")
+            .clickable(ld="brd-bar",style="box-shadow:0 2px 3px rgba(0,0,0,1)")
               .d-flex.align-items-center.p-3.w-100
                 .flex-grow-1.text-truncate.d-none(ld="brd")
                   .text-sm(ld="brd-progress")
@@ -68,8 +69,10 @@ block script
                 .folder-item(ld="nav-tab",data-name="prj-form") 提案表
             .folder-item(ld="project-group-add") 新增分組 ...
           .my-4
-
-
-
+      //- content panel
+      .flex-grow-1.bg-white(style="overflow-y:scroll")
+        .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
+          include brd/config.pug
 
   +script("/js/admin/main.js")
+  +script("/js/admin/panel.js")

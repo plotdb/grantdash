@@ -1,5 +1,5 @@
 (->
-  ldc.register \adminNavigation, <[]>, ->
+  ldc.register \adminPanel, <[]>, ->
     lc = {nav: {}, cur: {}, tab: {}}
     ld$.find('[ld~=nav-panel]').map ->
       is-default = \default in (it.getAttribute(\ld) or '').split(' ')
