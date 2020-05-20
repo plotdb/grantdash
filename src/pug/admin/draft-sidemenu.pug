@@ -34,7 +34,6 @@ style(style="text/css").
                 - now = new Date()
                 - et = new Date(brd.endtime)
                 - progress = (!st || now < st) ? 0 : (et && now > et ? 2 : st ? 1 : 0)
-
                 span.ml-2(class=["text-warning", "text-success", "text-secondary"][progress])
                   i.i-radio
                   | #{["尚未開始", "進行中", "已結束"][progress]}

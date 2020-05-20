@@ -4,16 +4,28 @@ html
   head
     +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
     +css("/assets/lib/ldui/ldui.min.css")
+    +css("/assets/lib/ldui/ext/folder.min.css")
     +css("/css/index.css")
     +script("/assets/lib/ldui/ldui.min.js")
+    +script("/assets/lib/ldui/ext/folder.min.js")
+    style(type="text/css"): :stylus
+      .folder-toggle { display: none }
   body
-    #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded: .d-none
-      .rounded.p-4.border.shadow.bg-white
-        .p-2 HEAD
-        .menu.bg-light.p-2.border(style="height:0;overflow:hidden")
-          each i in [1,2,3,4,5]
-            .p-2.m-2.border.shadow.rounded ITEM
+    #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
+      .folder.show
+        .folder-item.folder-toggle
+        .folder-menu
+          span hello world
+      hr
+      .folder
+        .folder-item.folder-toggle
+        .folder-menu
+          span hello world
+
     script: :lsc
-      menu = ld$.find('.menu',0)
-      console.log(menu.scrollHeight)
-      console.log(menu.scrollHeight)
+      f = ld$.find('.folder').map -> new ldui.Folder root: it
+      setTimeout (->
+        f.0.toggle!
+        f.1.toggle!
+      ), 1000
+      
