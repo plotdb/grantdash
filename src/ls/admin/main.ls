@@ -1,5 +1,7 @@
 (->
-  ldc.register \adminGuard, <[auth loader adminPanel sdbAdapter]>, ({auth, loader, admin-panel, sdbAdapter}) ->
+  ldc.register \adminGuard,
+  <[auth loader adminPanel sdbAdapter adminInfo]>,
+  ({auth, loader, admin-panel, sdbAdapter, admin-info}) ->
     loader.on!
     auth.ensure!
       .then ->
@@ -16,12 +18,15 @@
       toc.doc = {}
       <[org brd brds brdsFiltered grps]>.map -> toc[it] = toc[it] or []
       toc.brdsFiltered = toc.brds or []
-      #toc.grps = [{name: "分組#i", key: i} for i from 1 til 4]
+      console.log toc
+      
       sdb toc
-        .then -> menu toc, it
+        .then (sdb) ->
+          menu toc, sdb
+          info = new admin-info root: '[ld-scope=brd-info]', type: \brd
+          info.adapt {sdb, doc: toc.doc.brd}
 
     sdb = (toc) ->
-
       sdb = new sharedb-wrapper do
         url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
       sdb.on \close, ->
@@ -36,7 +41,6 @@
           .then (doc) -> toc.doc.org = doc
           .then -> sdb.get {id: "brd-#{toc.brd.key}", watch}
           .then (doc) -> toc.doc.brd = doc
-          .then -> console.log toc.doc.brd.data
           .then -> sdb
           .catch -> ldcvmgr.toggle \error
       prepare!

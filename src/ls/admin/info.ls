@@ -1,5 +1,7 @@
 (->
-  ldc.register \adminInfo, <[loader notify ldcvmgr auth sdbAdopter]>, ({loader, notify, ldcvmgr, auth, sdbAdopter}) ->
+  ldc.register \adminInfo,
+  <[loader notify ldcvmgr auth sdbAdapter]>,
+  ({loader, notify, ldcvmgr, auth, sdbAdapter}) ->
     Ctrl = (opt) ->
       @opt = opt
       @type = type = if opt.type == \org => \o else \b
@@ -16,7 +18,7 @@
           .catch -> slugs[v] = true
           .then -> form.check {n: 'slug'}
 
-      form = new ldForm do
+      @form = form = new ldForm do
         root: root
         submit: '[ld=submit]'
         afterCheck: (s, f) ->
@@ -26,7 +28,7 @@
               .then (r) -> p.style.backgroundImage = "url(#{r.result})"
           s.all = if <[name slug description]>.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
         verify: (n,v,e) ~>
-          if @adopter => @adopter.update -> it[n] = v; it
+          if @adapter => @adapter.update -> it[n] = v; it
           if n in <[slug]> =>
             if !/^[a-zA-Z0-9-]+$/.exec(v) => return 2
             if slugs[v]? => return if slugs[v] => 2 else 0
@@ -50,11 +52,15 @@
                   loader.off!
                   ldcvmgr.toggle 'error'
             .catch ->
+      return @
 
     Ctrl.prototype = Object.create(Object.prototype) <<< do
-      adopt: ->
-        @adopter = adopter = new sdbAdopter path: <[info]>
-        adopter.on \change, -> for k,v of @data => form.fields[k].value = v
-        return adopter
+      adapt: ({sdb, doc}) ->
+        @adapter = adapter = new sdbAdapter path: <[info]>
+        form = @form
+        adapter.on \change, ->
+          for k,v of @data => form.fields[k].value = v
+        adapter.init {sdb, doc}
+        return adapter
     return Ctrl
 )!
