@@ -1,12 +1,12 @@
 (->
-  ldc.register \sdbAdopter, [], ->
+  ldc.register \sdbAdapter, [], ->
 
-    Adopter = (opt = {}) ->
+    Adapter = (opt = {}) ->
       @ <<< {doc: null, sdb: null, data: null, evt-handler: JSON.parse(JSON.stringify({}))}
       @ <<< {path: opt.path or []}
       @
 
-    Adopter.prototype = Object.create(Object.prototype) <<< do
+    Adapter.prototype = Object.create(Object.prototype) <<< do
       on: (n, cb) -> @evt-handler.[][n].push cb
       fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
       init: ->
@@ -40,5 +40,5 @@
         # force update all fields. not effecient.
         @fire \change, {ops, data, source}
 
-    return Adopter
+    return Adapter
 )!

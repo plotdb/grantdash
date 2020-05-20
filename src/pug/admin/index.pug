@@ -67,12 +67,14 @@ block script
                 .folder-item(ld="nav-tab",data-name="prj-list") 專案列表
                 .folder-item(ld="nav-tab",data-name="prj-judge") 評選資訊
                 .folder-item(ld="nav-tab",data-name="prj-form") 提案表
-            .folder-item(ld="project-group-add") 新增分組 ...
+            .folder-item(ld="grp-add") 新增分組 ...
           .my-4
       //- content panel
       .flex-grow-1.bg-white(style="overflow-y:scroll")
         .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
           include brd/config.pug
 
+  +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
+  +script("/js/admin/sdb-adapter.js")
   +script("/js/admin/main.js")
   +script("/js/admin/panel.js")
