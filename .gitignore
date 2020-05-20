@@ -6,3 +6,4 @@ src/pug/project/data.pug
 server.log
 static/assets/uploads
 doc/memo
+users
