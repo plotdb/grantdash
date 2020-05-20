@@ -1,12 +1,12 @@
 include /modules/common.pug
 .ldcv.ldcvmgr(data-name="error"): .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
-  h1 Ooops, Things Broken.
-  p We failed to finish your last action/request
+  h1 糟糕，有東西出錯了！
+  p 您剛剛的正在進行的動作可能未能完成
   br
   .m-auto.text-left.text-muted
-    p Sorry but something went wrong in our system about what you want to do, so your last action might have failed.
-    p You can try again later or #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") contact us] to see if there is anything we can do for you.
+    p 很抱歉，系統在執行您剛剛的要求時可能出了些差錯，因此有些動作可能沒有完成，或者失敗了。
+    p 您可以再試一次看看是否會有所好轉，或者 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 直接聯繫我們] 看看是否有什麼是我們可以幫上忙的。
     br
     .row.no-gutters
-      .col-md.mr-2: .btn.btn-outline-dark.btn-block.btn-lg.mr-2(onclick="lda.ldcvmgr.toggle('contact')") Contact Us
-      .col-md.ml-2: .btn.btn-primary.btn-block.btn-lg.mr-2(data-ldcv-set="") Close This Popup
+      .col-md.mr-2: .btn.btn-outline-dark.btn-block.btn-lg.mr-2(onclick="lda.ldcvmgr.toggle('contact')") 聯繫我們
+      .col-md.ml-2: .btn.btn-primary.btn-block.btn-lg.mr-2(data-ldcv-set="") 關閉對話框

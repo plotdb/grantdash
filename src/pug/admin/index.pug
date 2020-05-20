@@ -10,7 +10,6 @@ include /modules/mixins/index.pug
 - var vars = {root: ""}
 //- use for importing from report. remove this once we are done.
 include /ui/data/sample.pug
-block vars
 html
   head
     meta(charset="utf-8")
@@ -21,42 +20,11 @@ html
     +css("/assets/lib/ldui/ext/folder.min.css")
     +css("/css/index.css")
     +script("/assets/lib/ldc/ldc.min.js")
-    block head
   body.bg-secondary(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
     include /admin/modules/navtop.pug
     include /modules/mixins/index.pug
     .ldNotify
 
-    .position-fixed.alert.alert-warning.border.border-warning.shadow.mx-auto.z-fixed.p-2.d-flex.align-items-center.justify-content-center(style="left:0;right:0;top:.675em;width:500px")
-      span.mr-2 您目前修改中的設定尚未儲存至系統中。
-      strong.clickable.text-underline.mr-4 立刻儲存
-      strong.clickable.text-underline 取消變更
-
-    //-.position-fixed.alert.alert-warning.border.border-warning.shadow.mx-auto.z-fixed.p-2.d-flex.align-items-center.justify-content-center(style="left:0;right:0;top:.675em;width:480px")
-      span.mr-2 您目前正在瀏覽的是過往版本的設定。
-      strong.clickable.text-underline 回到最新設定
-
-    .d-flex.flex-column.h-100.position-relative.z-float
-      div(style="height:2.75em")
-      .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4(style="overflow:hidden")
-        include sidemenu.pug
-        .flex-grow-1.bg-white(style="overflow-y:scroll")
-          .p-4(ld="default nav-panel",data-nav="main",data-name="org-config")
-            include org/config.pug
-
-          .p-4(ld="nav-panel",data-nav="main",data-name="org-navbar")
-            include navbar.pug
-
-          .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
-            include brd/config.pug
-
-          .p-4(ld="nav-panel",data-nav="main",data-name="brd-navbar")
-            include navbar.pug
-
-          .p-4(ld="nav-panel",data-nav="main",data-name="prj-config")
-            include prj/config.pug
-
-          include prj/panels.pug
 
     if ctrl.cover.authpanel
       include /modules/widget/authpanel.pug
@@ -64,24 +32,45 @@ html
 
     if ctrl.foot.shown
       include /modules/widget/foot.pug
+    .w-640.mx-auto.rwd.card: .card-body
+      h3 請選擇您要使用的組織
 
-    +register-locals("org")
+
     +script("/assets/lib/moment.js/2.25.3/moment.min.js")
     +script("/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")
-    +script("/assets/lib/tail.datetime/0.4.13/js/tail.datetime-full.min.js")
-    +script("/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
     +script("/assets/lib/ldui/ldui.min.js")
-    +script("/assets/lib/ldui/ext/folder.min.js")
-    +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
-    +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
-    +script("/assets/lib/ctrlz/ctrlz.bundle.min.js")
     +script("/js/site.js")
-    +script("/js/modules/nav.js")
-    +script("/js/admin/adopter.js")
-    +script("/js/admin/index.js")
-    +script("/js/admin/permctrl.js")
-    +script("/js/admin/entryctrl.js")
-    +script("/js/admin/navbar.js")
-    +script("/js/admin/grp-sidemenu.js")
-    +script("/js/reblock/form-reblock.js")
-    block script
+    +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
+    //-
+      +script("/assets/lib/moment.js/2.25.3/moment.min.js")
+      +script("/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")
+      +script("/assets/lib/tail.datetime/0.4.13/js/tail.datetime-full.min.js")
+      +script("/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
+      +script("/assets/lib/ldui/ldui.min.js")
+      +script("/assets/lib/ldui/ext/folder.min.js")
+      +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
+      +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
+      +script("/assets/lib/ctrlz/ctrlz.bundle.min.js")
+      +script("/js/site.js")
+      +script("/js/modules/nav.js")
+      +script("/js/admin/adopter.js")
+      //-+script("/js/admin/index.js")
+      +script("/js/admin/permctrl.js")
+      +script("/js/admin/entryctrl.js")
+      +script("/js/admin/navbar.js")
+      +script("/js/admin/grp-sidemenu.js")
+      +script("/js/reblock/form-reblock.js")
+
+    script: :lsc
+      ldc.register \test, <[auth]>, ({auth}) ->
+        auth.ensure!
+          .then ->
+            [path,type,slug] = /^\/([ob])\/([^/]+)\/admin/.exec(window.location.pathname) or []
+            hint = {} <<< (if type => (if type == \o => {org: slug} else {brd: slug}) else {})
+            ld$.fetch '/d/toc/', {method: \POST}, {json: hint, type: \json}
+              .then (toc) -> console.log toc
+              .catch -> lda.ldcvmgr.lock \error-404
+          .catch ->
+            console.log it
+            lda.ldcvmgr.toggle \auth-required
+      ldc.app \test

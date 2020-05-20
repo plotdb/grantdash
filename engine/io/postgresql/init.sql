@@ -61,7 +61,7 @@ create table if not exists org (
   deleted bool default false
 );
 
-create table if not exists board (
+create table if not exists brd (
   key serial primary key,
   owner int references users(key) not null,
   org int references org(key),
@@ -77,11 +77,11 @@ create table if not exists board (
   deleted bool default false
 );
 
-create table if not exists project (
+create table if not exists prj (
   key serial primary key,
   owner int references users(key) not null,
   slug text not null,
-  board int references board(key),
+  brd int references brd(key),
   name text not null constraint name_len check (char_length(name) <= 100),
   description text constraint description_len check (char_length(description) <= 500),
   detail jsonb,

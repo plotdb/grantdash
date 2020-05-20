@@ -19,3 +19,13 @@
    * /user/:id
 
 
+
+error handling
+
+router ->
+  1. handle directly in code 
+  2. Promise.catch error-handler
+  3. next(new ldError)
+  4. unexpected error in next
+
+    
