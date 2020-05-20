@@ -1,0 +1,70 @@
+//- module
+doctype html
+include /modules/common.pug
+include /modules/mixins/index.pug
+-
+  var ctrl = {
+    cover: {authpanel: false},
+    navtop: {placeholder: false, shown: true},
+    foot: {shown: true}
+  }
+- var vars = {root: ""}
+block vars
+html
+  head
+    meta(charset="utf-8")
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    +css("/assets/lib/tail.datetime/0.4.13/css/tail.datetime-harx-light.min.css")
+    +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
+    +css("/assets/lib/ldui/ldui.min.css")
+    +css("/assets/lib/ldui/ext/folder.min.css")
+    +css("/css/index.css")
+    block head
+    +script("/assets/lib/ldc/ldc.min.js")
+  body.bg-secondary(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
+    include /admin/modules/navtop.pug
+    .ldNotify
+    if ctrl.cover.authpanel
+      include /modules/widget/authpanel.pug
+      .w-640.mx-auto: +authpanel
+
+    if ctrl.foot.shown
+      include /modules/widget/foot.pug
+
+    +script("/assets/lib/moment.js/2.25.3/moment.min.js")
+    +script("/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")
+    +script("/assets/lib/ldui/ldui.min.js")
+    +script("/js/site.js")
+    +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
+    //-
+      +script("/assets/lib/moment.js/2.25.3/moment.min.js")
+      +script("/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")
+      +script("/assets/lib/tail.datetime/0.4.13/js/tail.datetime-full.min.js")
+      +script("/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
+      +script("/assets/lib/ldui/ldui.min.js")
+      +script("/assets/lib/ldui/ext/folder.min.js")
+      +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
+      +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
+      +script("/assets/lib/ctrlz/ctrlz.bundle.min.js")
+      +script("/js/site.js")
+      +script("/js/modules/nav.js")
+      +script("/js/admin/adopter.js")
+      //-+script("/js/admin/index.js")
+      +script("/js/admin/permctrl.js")
+      +script("/js/admin/entryctrl.js")
+      +script("/js/admin/navbar.js")
+      +script("/js/admin/grp-sidemenu.js")
+      +script("/js/reblock/form-reblock.js")
+
+    .ldcv.ldcvmgr(data-name="create-brd-now",data-lock="true")
+      .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
+        h1 您尚無可用的活動
+        p 想要使用 Grant Dash 嗎？現在就來建立活動吧！
+        br
+        .m-auto.text-left.text-muted
+          p 您想要使用的功能需要先建立好活動才能開始使用。因此，若您想要使用這個功能，您可以先 #[a(href="#") 點擊我] 來進入活動建立流程，我們會一步步帶您完成活動的建立。
+          br
+          a.btn.btn-primary.btn-block.btn-lg.mr-2(href="/") 回首頁
+
+    block body
+    block script
