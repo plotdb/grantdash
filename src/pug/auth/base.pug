@@ -1,0 +1,14 @@
+//- module
+extends /base.pug
+block vars
+  - ctrl.foot.edgeMask = false;
+  - ctrl.navtop.className = "navbar-light"
+  - ctrl.navtop.placeholder = false;
+  block vars
+block body
+  .w-100.h-100.text-center.vertical-center(
+  style="background:url(/assets/img/c/bg/valley.svg) center center;background-size:cover")
+    div: block content
+block script
+  block script
+  +script("/js/auth/password.js")

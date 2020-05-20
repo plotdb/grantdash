@@ -1,0 +1,34 @@
+extends /auth/base.pug
+block content
+  //-img.mb-2.mx-a(src="/assets/img/c/logo/ldio-alt.svg",style="width:100px")
+  h3.mb-0 重設您的密碼
+  p.text-muted.mb-4.text-sm 請務必選一個夠強的密碼。
+  form#password-reset.form.text-left.m-a(method="POST", style="width:400px")
+    .from-group.mb-3
+      label 輸入新的密碼
+      input.form-control(name="password",type="password",placeholder="至少八個字元")
+      .invalid-feedback 密碼太弱了
+    .from-group.mb-3
+      label 再輸入一次
+      input.form-control(name="confirm",type="password",placeholder="")
+      .invalid-feedback 兩組密碼不相符
+    input.btn.btn-success.btn-block.mt-2.disabled(type="submit",value="設定密碼")
+    input(type="hidden",name="_csrf")
+    +nbr(2)
+    .text-muted: small
+      p 好的密碼至少要夠長 ( 至少十個字 )。請不要用姓名、電話或生日當您的密碼。
+      p 你可以查閱 #[a(href="https://en.wikipedia.org/wiki/Password_strength",target="_blank") Password Strength] 這篇文章來了解怎樣算是一個好密碼。
+  .ldcv.ldcvmgr(data-name="reset-password-invalid"): .base: .inner.card.m-auto.shadow-sm(style="width:600px")
+    .card-body: .p-4
+      .text-center
+        h1 無效的重設碼
+        p 您所使用的密碼重設連結無效。
+      br
+      .text-muted
+        p 你所使用的這個密碼重設連結應該是過期了。沒關係，您可以回到 #[a(href="/auth/reset/") 密碼重設頁] 再次發送重設密碼信給自己。
+        p 如果這個問題一直發生，您也可以 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 直接聯繫我們 ]，我們可以協助您取回自己的帳號。
+
+      br
+      a.btn.btn-primary.btn-lg.btn-block(href="/auth/reset/") 再送一次
+block script
+  +script("/js/auth/reset/change.js")

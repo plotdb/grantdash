@@ -1,0 +1,25 @@
+extends /auth/base.pug
+block content
+  h1
+    | 驗證完成
+    sup #[i.i-check.text-success]
+  p 我們已經確認您的電子郵件地址無誤。您亦可在 #[a(href="/me/settings/") 個人設定頁面] 確認您的電子郵件地址的認證狀態。
+  img(src="/assets/img/p/auth/mail/verify/done/mail.svg")
+  +nbr(3)
+  p
+    a(href="/me/settings") 查看個人設定
+    span.mx-2 或
+    a(href="/") 回到首頁
+
+  script: :lsc
+    ldc.register <[auth ldcvmgr]>, ({auth, ldcvmgr}) ->
+      return
+      ensure = ->
+        auth.ensure!
+          .then -> window.location.href= \/
+          .catch -> ensure!
+      auth.get!then ->
+        if it.user =>
+          lda.ldcvmgr.toggle("logged-in")
+          debounce 2000 .then -> window.location.href = \/
+        else debounce 2000 .then -> ensure!

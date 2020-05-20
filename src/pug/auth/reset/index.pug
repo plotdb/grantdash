@@ -1,0 +1,30 @@
+extends /auth/base.pug
+block content
+  h3 忘記密碼？
+  +nbr(1)
+  +scope("password-reset"): form.form.text-left(style="margin:auto;width:400px")
+    .from-group
+      p 請輸入您帳號所用的電子郵件地址，我們將發送密碼重設連結給您：
+      input.form-control.form-control-lg(ld="email",name="email",placeholder="例如, me@someurl.com")
+      .invalid-feedback 無效的電子郵件
+      .btn.btn-success.btn-block.btn-lg.mt-2.disabled(ld="submit") 發送重設連結
+    +nbr(2)
+    .text-muted: small
+      p 您若不是使用這個電子郵件註冊的話，就不會收到密碼重設信。
+      p 若您已經不記得您使用了哪組電子郵件註冊的話，請 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 直接與我們聯係] ，讓我們來協助您。
+    .ldcv(ld="not-found"): .base.w-640.rwd: .inner.card: .card-body: .p-4
+      h1.text-center 找不到電子郵件。
+      .text-center.text-muted.mb-4 我們無法找到這個電子郵件對應的帳號。
+      .text-muted
+        p 這可能是因為：
+        ul
+          li 您之前用的是另一組電子郵件。
+          li 您剛剛有打錯字。
+          li 您之前註冊時有打錯字。
+        p 需要協助嗎？請 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 直接與我們聯係]，讓我們來協助您。
+      +nbr(1)
+      .row
+        .col-md: .btn.btn-lg.btn-primary.btn-block(onclick="lda.ldcvmgr.toggle('contact')") 聯絡我們
+        .col-md: .btn.btn-lg.btn-outline-dark.btn-block(data-ldcv-set="") 關閉視窗
+block script
+  +script("/js/auth/reset/index.js")

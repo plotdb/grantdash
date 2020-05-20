@@ -1,0 +1,22 @@
+extends base.pug
+block vars
+ - ctrl.cover.authpanel = false;
+ - ctrl.navtop.placeholder = false;
+block content
+  include /modules/widget/authpanel.pug
+  .text-left: +authpanel
+block script
+  script: :lsc
+    ldc.register <[auth loader]>, ({auth, loader}) ->
+      nexturl = (window.location.search or '')
+        .replace(/^\?/,'')
+        .split(\&)
+        .map -> decodeURIComponent(it).trim!.split(\=)
+        .filter -> it.0 == \nexturl
+        .map -> it.1
+        .0 or \/
+      reload = ->
+        loader.on!
+        window.location.href = nexturl
+      auth.fetch {renew: true} .then -> if it.user.key => reload!
+      auth.on \auth.signin, -> reload!
