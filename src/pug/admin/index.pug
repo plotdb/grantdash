@@ -58,8 +58,8 @@ block script
                 div: i.i-link
           .folder-item 建立複本
           .border-bottom.border-secondary.my-2
-          .project-groups
-            .folder(ld-each="project-group")
+          div
+            .folder(ld-each="grp-entry")
               .folder-toggle.folder-item(ld="name") 分組
               .folder-menu
                 .folder-item(ld="nav-tab",data-name="prj-config") 設定

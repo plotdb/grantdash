@@ -17,6 +17,9 @@
       toc.brd = toc.brd or {}
       toc.brds = toc.brds or []
       toc.brds-filtered = toc.brds or []
+      toc.grps = [{name: "分組#i", key: i} for i from 1 til 4]
+
+      set-group = (grp) ->
       search = debounce (val) ->
         toc.brds-filtered = toc.brds.filter -> ~it.name.indexOf(val)
         view.render!
@@ -58,6 +61,16 @@
             handler: ({node, data}) ->
               ld$.find(node, 'span',0).innerText = data.name
               ld$.find(node, '.text-sm',0).innerText = data.description
+          "grp-entry": do
+            list: -> toc.grps or []
+            init: ({node,data}) ->
+              node.folder = new ldui.Folder root: node
+              node.view = new ldView do
+                root: node
+                handler: name: ({node}) -> node.innerText = data.name
+                action: click: "nav-tab": ({node}) -> set-group data
+            handler: ({node, data}) -> node.view.render 'name'
+
 
 
       loader.off!

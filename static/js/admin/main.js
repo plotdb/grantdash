@@ -33,11 +33,21 @@
       return lda.ldcvmgr.toggle('auth-required');
     });
     return init = function(toc){
-      var search, root, view;
+      var res$, i$, i, setGroup, search, root, view;
       toc.org = toc.org || {};
       toc.brd = toc.brd || {};
       toc.brds = toc.brds || [];
       toc.brdsFiltered = toc.brds || [];
+      res$ = [];
+      for (i$ = 1; i$ < 4; ++i$) {
+        i = i$;
+        res$.push({
+          name: "分組" + i,
+          key: i
+        });
+      }
+      toc.grps = res$;
+      setGroup = function(grp){};
       search = debounce(function(val){
         toc.brdsFiltered = toc.brds.filter(function(it){
           return ~it.name.indexOf(val);
@@ -131,6 +141,42 @@
               node = arg$.node, data = arg$.data;
               ld$.find(node, 'span', 0).innerText = data.name;
               return ld$.find(node, '.text-sm', 0).innerText = data.description;
+            }
+          },
+          "grp-entry": {
+            list: function(){
+              return toc.grps || [];
+            },
+            init: function(arg$){
+              var node, data;
+              node = arg$.node, data = arg$.data;
+              node.folder = new ldui.Folder({
+                root: node
+              });
+              return node.view = new ldView({
+                root: node,
+                handler: {
+                  name: function(arg$){
+                    var node;
+                    node = arg$.node;
+                    return node.innerText = data.name;
+                  }
+                },
+                action: {
+                  click: {
+                    "nav-tab": function(arg$){
+                      var node;
+                      node = arg$.node;
+                      return setGroup(data);
+                    }
+                  }
+                }
+              });
+            },
+            handler: function(arg$){
+              var node, data;
+              node = arg$.node, data = arg$.data;
+              return node.view.render('name');
             }
           }
         }
