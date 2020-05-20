@@ -35,11 +35,11 @@ block script
             .px-3.py-3(ld="brds empty")
               div 目前尚沒有任何活動可供您做選擇。
               .py-4.px-2.text-center
-                .btn.btn-primary(href="#") 立刻建立活動
+                a.btn.btn-primary(href="/new/brd/") 立刻建立活動
             .px-3.py-3(ld="brds")
               .pb-2.text-sm.d-flex
                 b.flex-grow-1 活動列表
-                .text-underline.text-white(href="#") 建立新活動
+                a.text-underline.text-white(href="/new/brd/") 建立新活動
               .pb-2: input.form-control.form-control-sm.rounded(ld="brd-search",placeholder="搜尋...")
               .pb-2.clickable(ld-each="brd-entry") #[span]#[.text-muted.text-sm]
 
