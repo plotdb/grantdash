@@ -12,10 +12,12 @@
      ? /o/<slug>/admin/     : 組織後台
      - /o/<slug>/v/<page>/  : 組織公開頁面
      - /o/<slug>/b/create   : 建立活動
+     - /o/<slug>/list       : 活動列表
    - 活動
      ? /b/<slug>/admin/     : 活動後台
      - /b/<slug>/v/<page>   : 活動公開頁面
      ? /b/<slug>/p/create   : 建立活動 ( 選擇分組? )
+     - /b/<slug>/list       : 提案列表
    - 提案
      - /p/<id>/             : 提案頁面
    - 評選
