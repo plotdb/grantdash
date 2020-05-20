@@ -30,7 +30,7 @@
           click: do
             brd: ({node}) ->
               ret = view.get("brd-list").folder.toggle!
-              node.classList.toggle \on, ret
+              view.render \brd-list-toggle
           input: do
             "brd-search": ({node}) -> search node.value
         text: do
@@ -42,6 +42,8 @@
         handler: do
           "org-menu": ({node}) -> node.classList.toggle \d-none, !toc.org.key
           "brd-progress": ({node}) -> node.classList.toggle \text-success, true
+          "brd-list-toggle": ({node}) ->
+            if view => node.classList.toggle \on, view.get("brd-list").classList.contains("show")
           # if brd picked
           "brd": ({node}) ->
             node.classList.toggle \d-none, (!toc.brd.key xor ~node.getAttribute(\ld).indexOf(\empty))

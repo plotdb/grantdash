@@ -55,7 +55,7 @@
               var node, ret;
               node = arg$.node;
               ret = view.get("brd-list").folder.toggle();
-              return node.classList.toggle('on', ret);
+              return view.render('brd-list-toggle');
             }
           },
           input: {
@@ -96,6 +96,13 @@
             var node;
             node = arg$.node;
             return node.classList.toggle('text-success', true);
+          },
+          "brd-list-toggle": function(arg$){
+            var node;
+            node = arg$.node;
+            if (view) {
+              return node.classList.toggle('on', view.get("brd-list").classList.contains("show"));
+            }
           },
           "brd": function(arg$){
             var node, ref$, ref1$;

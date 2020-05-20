@@ -203,3 +203,9 @@ input.form-control {
 .admin-menu::-webkit-scrollbar {
   background-color: #fff !important;
 }
+.admin-menu [ld=brd-list-toggle] {
+  transition: all 0.35s ease-in-out;
+}
+.admin-menu [ld=brd-list-toggle].on {
+  transform: rotate(180deg);
+}

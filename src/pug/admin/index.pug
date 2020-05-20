@@ -26,7 +26,7 @@ block script
                     span.mr-2(ld="brd-progress-text") ...
                   .text-truncate.text-capitalize(ld="brd-name") ...
                 .flex-grow-1.text-truncate(ld="brd empty") 請選擇活動 ...
-                .ml-2 #[i.i-dart-down]
+                .ml-2(ld="brd-list-toggle") #[i.i-dart-down]
 
 
         .border-top.border-secondary.border-bottom: .folder(ld="folder brd-list")
@@ -49,7 +49,7 @@ block script
           a.folder-item.d-flex(href="#")
             .flex-grow-1 入口頁面
             div: i.i-link
-          .folder.show
+          .folder.show(ld="folder")
             .folder-toggle.folder-item 客製頁面
             .folder-menu
               .folder-item(ld="nav-tab",data-name="brd-navbar") 選單列
