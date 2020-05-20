@@ -1,4 +1,12 @@
 extends /admin/base.pug
 block body
 block script
+  .d-flex.flex-column.h-100.position-relative.z-float
+    div(style="height:2.75em")
+    .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4(style="overflow:hidden")
+      .admin-menu.bg-dark.text-white.text-left
+        +scope("sidemenu-brd-info")#brd-info.sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(
+        style="top:0;transition:height .25s ease-in-out")
+          div(ld="brd-head")
+
   +script("/js/admin/main.js")
