@@ -32,9 +32,6 @@ html
 
     if ctrl.foot.shown
       include /modules/widget/foot.pug
-    .w-640.mx-auto.rwd.card: .card-body
-      h3 請選擇您要使用的組織
-
 
     +script("/assets/lib/moment.js/2.25.3/moment.min.js")
     +script("/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")
@@ -61,16 +58,27 @@ html
       +script("/js/admin/grp-sidemenu.js")
       +script("/js/reblock/form-reblock.js")
 
+    .ldcv.ldcvmgr(data-name="create-brd-now",data-lock="true")
+      .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
+        h1 您尚無可用的活動
+        p 想要使用 Grant Dash 嗎？現在就來建立活動吧！
+        br
+        .m-auto.text-left.text-muted
+          p 您想要使用的功能需要先建立好活動才能開始使用。因此，若您想要使用這個功能，您可以先 #[a(href="#") 點擊我] 來進入活動建立流程，我們會一步步帶您完成活動的建立。
+          br
+          a.btn.btn-primary.btn-block.btn-lg.mr-2(href="/") 回首頁
+
+
+
     script: :lsc
-      ldc.register \test, <[auth]>, ({auth}) ->
+      ldc.register \admin-guard, <[auth]>, ({auth}) ->
         auth.ensure!
           .then ->
             [path,type,slug] = /^\/([ob])\/([^/]+)\/admin/.exec(window.location.pathname) or []
             hint = {} <<< (if type => (if type == \o => {org: slug} else {brd: slug}) else {})
             ld$.fetch '/d/toc/', {method: \POST}, {json: hint, type: \json}
-              .then (toc) -> console.log toc
-              .catch -> lda.ldcvmgr.lock \error-404
-          .catch ->
-            console.log it
-            lda.ldcvmgr.toggle \auth-required
-      ldc.app \test
+              .then (toc) ->
+                console.log toc
+              .catch -> lda.ldcvmgr.lock \create-brd-now
+          .catch -> lda.ldcvmgr.toggle \auth-required
+      ldc.app \admin-guard

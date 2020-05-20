@@ -26,19 +26,19 @@ style(style="text/css").
 
       .clickable(style="box-shadow:0 2px 3px rgba(0,0,0,1)")
         .d-flex.align-items-center.p-3.w-100
-          if board
+          if brd
             .flex-grow-1.text-truncate
               .text-sm.text-muted
                 span 活動
-                - st = new Date(board.starttime)
+                - st = new Date(brd.starttime)
                 - now = new Date()
-                - et = new Date(board.endtime)
+                - et = new Date(brd.endtime)
                 - progress = (!st || now < st) ? 0 : (et && now > et ? 2 : st ? 1 : 0)
 
                 span.ml-2(class=["text-warning", "text-success", "text-secondary"][progress])
                   i.i-radio
                   | #{["尚未開始", "進行中", "已結束"][progress]}
-              .text-truncate.text-capitalize #{board.name || '未命名的活動'}
+              .text-truncate.text-capitalize #{brd.name || '未命名的活動'}
             .ml-2(ld="cart") #[i.i-dart-down]
           else
             .flex-grow-1.text-truncate 請選擇活動 ...
@@ -56,10 +56,6 @@ style(style="text/css").
         .text-underline.text-white(href="#") 建立新活動
       .px-3.pb-2: input.form-control.form-control-sm.rounded(placeholder="搜尋...")
       .px-3.py-2.clickable(ld-each="boards") #[span]#[.text-muted.text-sm]
-      //-each i in ["一","二","三","四","五","六","七","八","九","十"]
-        .px-3.py-2
-          span 第#{i}次沉浸式內容國際合資合製補助案
-          .text-muted.text-sm 2020/04/22 ~ 2020/07/22
 
   .pt-2(ld="nav",data-nav="main")
 

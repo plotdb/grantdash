@@ -3,16 +3,13 @@ block vars
   - ctrl.navtop.placeholder = true;
   - ctrl.navtop.shown = true;
   - ctrl.navtop.className = "navbar-light"
-  // include /design/data/sample.pug
 block head
 block body
-  //include /activity/mixins/index.pug
-  //include /design/mixins/index.pug
   style(type="text/css"): :stylus
     body { background: radial-gradient(#f1f2f3,#999) fixed top center; background-size: cover }
   +nbr(2)
   .w-640.mx-auto
-    +scope("org-basic").card.mb-4.shadow-lg: .card-body: .p-4
+    +scope("org-info").card.mb-4.shadow-lg: .card-body: .p-4
       h3 建立組織
       p.text-sm.text-muted 在我們進行下一步之前，先填妥組織的基本資訊吧
       hr
@@ -50,4 +47,7 @@ block body
         .col-md: .btn.btn-lg.btn-primary.disabled(ld="submit") 立刻建立
 
 block script
-  +script("/js/admin/org-info.js")
+  +script("/js/admin/info.js")
+  script: :lsc
+    ldc.register <[adminInfo]>, ({admin-info}) ->
+      new admin-info root: '[ld-scope=org-info]', type: \org

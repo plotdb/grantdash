@@ -35,3 +35,8 @@ api.post \/o, aux.signed, express-formidable!, (req, res) ->
         if e => rej(e) else res!
     .then -> res.send lc.ret
     .catch aux.error-handler res
+
+api.post \/o/list, aux.signed, (req, res) ->
+  io.query "select key,name,slug from org where owner = $1", [req.user.key]
+    .then (r={}) -> res.send r.[]rows
+    .catch aux.error-handler res
