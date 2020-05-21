@@ -8,24 +8,33 @@ html
     +css("/css/index.css")
     +script("/assets/lib/ldui/ldui.min.js")
     +script("/assets/lib/ldui/ext/folder.min.js")
+    +script("/js/reblock/form-reblock.js")
     style(type="text/css"): :stylus
       .folder-toggle { display: none }
   body
     #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
-      .folder.show
-        .folder-item.folder-toggle
-        .folder-menu
-          span hello world
-      hr
-      .folder
-        .folder-item.folder-toggle
-        .folder-menu
-          span hello world
+      .p-4
+        ul.nav.nav-tabs(hostable)
+          li.nav-item(ld-each="item",draggable="true"): a.nav-link
+      .mt-4.btn.btn-outline-dark(ld="show") Show
 
     script: :lsc
-      f = ld$.find('.folder').map -> new ldui.Folder root: it
-      setTimeout (->
-        f.0.toggle!
-        f.1.toggle!
-      ), 1000
-      
+      data = <[item1 item2 item3 item4 item5]>
+      view = new ldView do
+        root: '#root'
+        action: click: do
+          show: -> console.log JSON.stringify(data)
+        handler: do
+          item: do
+            list: -> data
+            handler: ({node,data}) -> ld$.find(node,'a.nav-link',0).innerText = data
+
+              
+      bmgr = get: -> new Promise (res, rej) -> res ""
+      reb = new reblock root: '#root', block-manager: bmgr, action: do
+        beforeMoveNode: ({src, des, ib}) ->
+          console.log 123, src._data
+          data.splice data.indexOf(src._data), 1
+        afterMoveNode: ({src, des, ib}) ->
+          console.log 456, des._data
+          data.splice data.indexOf(des._data), 0, src._data
