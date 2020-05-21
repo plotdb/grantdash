@@ -1,5 +1,5 @@
-({loader, notify, ldcvmgr, auth, sdbAdapter}) <-
-ldc.register \adminInfo, <[loader notify ldcvmgr auth sdbAdapter]>, _
+({loader, notify, ldcvmgr, auth, sdbAdapter}) <- ldc.register(
+\adminInfo, <[loader notify ldcvmgr auth sdbAdapter]>, _)
 Ctrl = (opt) ->
   @opt = opt
   @type = type = if opt.type == \org => \o else \b
