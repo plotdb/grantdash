@@ -2,12 +2,12 @@
 +scope("brd-stage")
   h4 階段設定
   .text-muted.text-sm.mb-4 活動設定讓您針對不同時間設定不同的活動狀態。例如，您可以設定在活動發表的 60 天後才開放提案，同時設定 90 天後進入評審階段。
-  ul.nav.nav-tabs.mb-4(ld="stages")
-    li.nav-item(ld-each="stage"): a.nav-link 預設
-    //-li.nav-item(ld-each="stage"): a.nav-link.active 提案
-    //-li.nav-item(ld-each="stage"): a.nav-link 審查
-    li.nav-item.flex-grow-1
-    li.nav-item.flex-grow-1.text-right: a.nav-link.text-muted.border-0(data-type="new-stage") 新增 +
+  .d-flex(ld="stages")
+    ul.nav.nav-tabs.mb-4(hostable)
+      li.nav-item(ld-each="stage",draggable="true"): a.nav-link 預設
+    ul.nav.nav-tabs.mb-4.flex-grow-1
+      li.nav-item.flex-grow-1
+      li.nav-item.flex-grow-1.text-right: a.nav-link.text-muted.border-0(data-type="new-stage") 新增 +
   .alert.alert-light.border(ld="default-view") 在提案期間一般用戶可自由建立提案並修改提案。提案審查員會視情況檢視提案，並提醒提案者在提案期結束前做提案內容的調整與補充。
   div(ld="custom-view"): .row.mt-2.mb-3.pb-1
     .col-md

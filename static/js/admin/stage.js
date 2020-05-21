@@ -3,30 +3,127 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
   var sdbAdapter, Ctrl;
   sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var root, obj, updateData, isValid, viewConfig, view, this$ = this;
+    var root, obj, view, isValid, stage, viewConfig, this$ = this;
     this.opt = opt;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
     this.obj = obj = {
-      idx: 'default',
-      cfg: null
+      cfg: null,
+      update: function(){
+        return this$.opsOut(function(){
+          return this$.obj.cfg;
+        });
+      }
     };
-    updateData = function(){
-      return this$.opsOut(function(){
-        return this$.obj.cfg;
-      });
+    this.view = view = {};
+    this.view.update = function(){
+      this$.view.all.render();
+      return this$.view.updateStage().now();
     };
+    this.view.updateStage = debounce(100, function(){
+      if (this$.reb.node.dragging) {
+        return this$.view.updateStage();
+      } else {
+        return this$.view.stage.render();
+      }
+    });
     isValid = function(n){
-      var k, v;
-      return n && (!~(function(){
-        var ref$, results$ = [];
-        for (k in ref$ = obj.cfg.stage) {
-          v = ref$[k];
-          results$.push(v.name);
+      var o;
+      if (!n) {
+        return false;
+      }
+      if ((o = stage.get()) && o.name === n) {
+        return true;
+      }
+      if (~obj.cfg.stage.map(function(it){
+        return it.name;
+      }).indexOf(n)) {
+        return false;
+      }
+      return true;
+    };
+    this.stage = stage = {
+      list: function(){
+        var ref$;
+        return (ref$ = obj.cfg).stage || (ref$.stage = []);
+      },
+      key: 'default',
+      _key: function(k){
+        return k = k != null
+          ? k
+          : this.key || 'default';
+      },
+      init: function(){
+        if (!Array.isArray(obj.cfg.stage)) {
+          return obj.cfg.stage = [{
+            key: 'default'
+          }];
         }
-        return results$;
-      }()).indexOf(n) || obj.cfg.stage[obj.idx].name === n);
+      },
+      is: function(k){
+        return this._key() === k;
+      },
+      isDefault: function(){
+        return this._key() === 'default';
+      },
+      insertBefore: function(a, b){
+        var st, ia, o, ib;
+        st = obj.cfg.stage;
+        ia = st.map(function(it){
+          return it.key;
+        }).indexOf(a);
+        o = st.splice(ia, 1)[0];
+        ib = b != null
+          ? st.map(function(it){
+            return it.key;
+          }).indexOf(b)
+          : st.length;
+        return st.splice(ib, 0, o);
+      },
+      get: function(k){
+        var this$ = this;
+        return obj.cfg.stage.filter(function(it){
+          return it.key === this$._key(k);
+        })[0];
+      },
+      add: function(o){
+        o == null && (o = {});
+        if (this.get(o.key)) {
+          return;
+        }
+        obj.cfg.stage.push(o);
+        return this.key = o.key;
+      },
+      del: function(k){
+        var idx, ref$;
+        if ((k = this._key(k)) === 'default') {
+          return;
+        }
+        idx = obj.cfg.stage.map(function(it){
+          return it.key;
+        }).indexOf(k);
+        obj.cfg.stage.splice(idx, 1);
+        if (k === this.key) {
+          return this.key = ((ref$ = obj.cfg.stage)[ref$.length - 1] || {}).key || 'default';
+        }
+      },
+      val: function(arg$){
+        var name, value, key, o;
+        name = arg$.name, value = arg$.value, key = arg$.key;
+        key = this._key(key);
+        if (!(o = obj.cfg.stage.filter(function(it){
+          return it.key === key;
+        })[0])) {
+          return;
+        }
+        return value != null
+          ? o[name] = value
+          : o[name];
+      },
+      use: function(k){
+        return this.key = k;
+      }
     };
     viewConfig = {
       root: root,
@@ -40,25 +137,41 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
     };
     import$(viewConfig.action.input, {
       "stage-name": function(arg$){
-        var node, name, invalid, k, v;
+        var node, name, invalid;
         node = arg$.node;
         name = (node.value || '').trim();
         invalid = !isValid(name);
-        (function(){
-          var ref$, results$ = [];
-          for (k in ref$ = obj.cfg.stage) {
-            v = ref$[k];
-            results$.push(v.name);
-          }
-          return results$;
-        }()).indexOf(name);
         node.classList.toggle('is-invalid', invalid);
         if (invalid) {
           return;
         }
-        obj.cfg.stage[obj.idx].name = node.value;
-        updateData();
-        return view.render();
+        stage.val({
+          name: 'name',
+          value: node.value
+        });
+        obj.update();
+        return view.update();
+      }
+    });
+    import$(viewConfig.init, {
+      stages: function(arg$){
+        var node, evt, reb;
+        node = arg$.node, evt = arg$.evt;
+        return this$.reb = reb = new reblock({
+          root: node,
+          action: {
+            beforeMoveNode: function(arg$){
+              var src, des, ib;
+              src = arg$.src, des = arg$.des, ib = arg$.ib;
+            },
+            afterMoveNode: function(arg$){
+              var src, des, ib;
+              src = arg$.src, des = arg$.des, ib = arg$.ib;
+              stage.insertBefore(src._data.key || 'default', ib ? ib._data.key : null);
+              return obj.update();
+            }
+          }
+        });
       }
     });
     import$(viewConfig.action.click, {
@@ -71,82 +184,56 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
         }
         if (type === 'new-stage') {
           key = Math.random().toString(36).substring(2);
-          obj.cfg.stage[key] = {
+          stage.add({
             name: "新階段",
             key: key,
             desc: "自訂時段",
             config: {}
-          };
-          updateData();
+          });
+          obj.update();
         } else {
-          obj.idx = n.getAttribute('data-key');
+          stage.use(n.getAttribute('data-key'));
         }
-        return view.render();
+        return view.update();
       },
       "delete-stage": function(arg$){
-        var node, evt, k;
+        var node, evt;
         node = arg$.node, evt = arg$.evt;
-        if (obj.idx === 'default') {
-          return;
-        }
-        delete obj.cfg.stage[obj.idx];
-        obj.idx = (function(){
-          var results$ = [];
-          for (k in obj.cfg.stage) {
-            results$.push(k);
-          }
-          return results$;
-        }())[0] || 'default';
-        updateData();
-        return view.render();
+        stage.del();
+        obj.update();
+        return view.update();
       }
     });
     import$(viewConfig.handler, {
       "default-view": function(arg$){
         var node;
         node = arg$.node;
-        return node.classList.toggle('d-none', obj.idx !== 'default');
+        return node.classList.toggle('d-none', !stage.isDefault());
       },
       "custom-view": function(arg$){
         var node;
         node = arg$.node;
-        return node.classList.toggle('d-none', obj.idx === 'default');
+        return node.classList.toggle('d-none', stage.isDefault());
       },
       "stage-name": function(arg$){
         var node, name;
         node = arg$.node;
-        node.value = obj.cfg.stage[obj.idx].name || '預設';
+        node.value = stage.val({
+          name: 'name'
+        }) || '預設';
         name = (node.value || '').trim();
         return node.classList.toggle('is-invalid', !isValid(name));
-      },
-      stage: {
-        list: function(){
-          var k, ref$, v, results$ = [];
-          for (k in ref$ = obj.cfg.stage) {
-            v = ref$[k];
-            results$.push(v);
-          }
-          return results$;
-        },
-        handler: function(arg$){
-          var node, data, idx, key, x$, n;
-          node = arg$.node, data = arg$.data, idx = arg$.idx;
-          key = data.key || 'default';
-          x$ = n = ld$.find(node, 'a', 0);
-          x$.innerText = data.name || '預設';
-          x$.classList.toggle('active', key === obj.idx);
-          x$.setAttribute('data-key', key);
-          x$.setAttribute('data-type', 'tab');
-          return x$;
-        }
       }
     });
     import$(viewConfig.action.input, {
       time: function(arg$){
         var node;
         node = arg$.node;
-        obj.cfg.stage[obj.idx][node.getAttribute('data-name')] = node.value;
-        return updateData();
+        stage.val({
+          name: node.getAttribute('data-name'),
+          value: node.value
+        });
+        return obj.update();
       }
     });
     import$(viewConfig.init, {
@@ -160,7 +247,9 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
       time: function(arg$){
         var node;
         node = arg$.node;
-        return node.value = obj.cfg.stage[obj.idx][node.getAttribute('data-name')] || '';
+        return node.value = stage.val({
+          name: node.getAttribute('data-name')
+        }) || '';
       }
     });
     import$(viewConfig.action.click, {
@@ -168,42 +257,55 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
         var node, c, ref$;
         node = arg$.node;
         node.classList.toggle('on');
-        c = (ref$ = obj.cfg.stage[obj.idx]).config || (ref$.config = {});
-        if (!c) {
-          return;
-        }
+        c = (ref$ = stage.get()).config || (ref$.config = {});
         c[node.getAttribute('data-name')] = node.classList.contains('on');
-        return updateData();
+        return obj.update();
       }
     });
     import$(viewConfig.handler, {
       'switch': function(arg$){
-        var node, ref$;
+        var node, c;
         node = arg$.node;
-        return node.classList.toggle('on', !!((ref$ = obj.cfg.stage[obj.idx]).config || (ref$.config = {}))[node.getAttribute('data-name')]);
+        c = stage.val({
+          name: 'config'
+        }) || {};
+        return node.classList.toggle('on', !!c[node.getAttribute('data-name')]);
       }
     });
-    this.view = view = new ldView(viewConfig);
+    this.view.all = new ldView(viewConfig);
+    this.view.stage = new ldView({
+      root: root,
+      initRender: false,
+      handler: {
+        stage: {
+          list: function(){
+            return stage.list();
+          },
+          handler: function(arg$){
+            var node, data, idx, key, x$, n;
+            node = arg$.node, data = arg$.data, idx = arg$.idx;
+            key = data.key || 'default';
+            x$ = n = ld$.find(node, 'a', 0);
+            x$.innerText = data.name || '預設';
+            x$.classList.toggle('active', stage.is(key));
+            x$.setAttribute('data-key', key);
+            x$.setAttribute('data-type', 'tab');
+            return x$;
+          }
+        }
+      }
+    });
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
     opsIn: function(arg$){
-      var data, ops, source, ref$, ref1$, k;
+      var data, ops, source;
       data = arg$.data, ops = arg$.ops, source = arg$.source;
       if (source) {
         return;
       }
       this.obj.cfg = JSON.parse(JSON.stringify(data || {}));
-      (ref$ = (ref1$ = this.obj.cfg).stage || (ref1$.stage = {}))['default'] || (ref$['default'] = {});
-      if (!this.obj.cfg.stage[this.obj.idx]) {
-        this.obj.idx = (function(){
-          var results$ = [];
-          for (k in this.obj.cfg.stage) {
-            results$.push(k);
-          }
-          return results$;
-        }.call(this))[0] || 'default';
-      }
-      return this.view.render();
+      this.stage.init();
+      return this.view.update();
     }
   });
   return Ctrl;

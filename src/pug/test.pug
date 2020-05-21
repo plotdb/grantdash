@@ -13,9 +13,15 @@ html
       .folder-toggle { display: none }
   body
     #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
-      .p-4
+      .p-4.d-flex
         ul.nav.nav-tabs(hostable)
           li.nav-item(ld-each="item",draggable="true"): a.nav-link
+        ul.nav.nav-tabs.flex-grow-1.text-right
+          li.nav-item.flex-grow-1: a.nav-link hi
+          li.nav-item: a.nav-link hi
+          li.nav-item: a.nav-link hi
+          li.nav-item: a.nav-link hi
+          li.nav-item: a.nav-link hi
       .mt-4.btn.btn-outline-dark(ld="show") Show
 
     script: :lsc

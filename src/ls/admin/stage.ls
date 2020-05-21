@@ -4,64 +4,48 @@
 Ctrl = (opt) !->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
-  @obj = obj = {idx: \default, cfg: null}
+  @obj = obj = {cfg: null, update: ~> @ops-out ~> @obj.cfg}
+  @view = view = {}
+  @view.update = ~>
+    @view.all.render!
+    @view.update-stage!now!
+  @view.update-stage = debounce 100, ~>
+    if @reb.node.dragging => @view.update-stage!
+    else @view.stage.render!
 
-  @update-view = update-view = ~>
-    @view.render!
-    update-view-stage!now!
-  update-view-stage = debounce ~>
-    if @reb.node.dragging => update-view-stage!
-    else @view-stage.render!
-  update-data = ~> @ops-out ~>
-    console.log "send: ", JSON.stringify( @obj.cfg )
-    s = {}
-    for k in @obj.cfg.order => s[k] = @obj.cfg.stage[k]
-    return {}
-    @obj.cfg = {stage: []}
-    
-    @obj.cfg
   is-valid = (n) ->
     if !n => return false
-    if stage.get!name == n => return true
-    if ~[v.name for k,v of obj.cfg.stage].indexOf(n) => return false
+    if (o = stage.get!) and o.name == n => return true
+    if ~obj.cfg.stage.map(->it.name).indexOf(n) => return false
     return true
-  #return n and (!~[v.name for k,v of obj.cfg.stage].indexOf(n) or obj.cfg.stage[obj.idx].name == n)
 
   @stage = stage = do
-    order: null
-    list: ->
-      ret = @order.map -> obj.cfg.stage[it]
-      console.log "get list: ", ret
-      ret
+    list: -> obj.cfg.[]stage
     key: \default
+    _key: (k) -> k = if k? => k else (@key or \default)
     init: ->
-      if !@get! => @key = \default
-      @order = if obj.cfg.order => that else obj.cfg.order = [k for k,v of obj.cfg.stage]
-      @order = @order.filter -> obj.cfg.stage[it]
-      console.log "get order: ", @order
-    is: -> it == @key
-    is-default: -> return @key == \default
+      if !Array.isArray(obj.cfg.stage) => obj.cfg.stage = [{key: \default}]
+    is: (k) -> @_key! == k
+    is-default: -> @_key! == \default
     insertBefore: (a,b) ->
-      @order.splice @order.indexOf(a), 1
-      @order.splice (if b => @order.indexOf(b) else @order.length), 0, a
-      obj.cfg.order = @order
-      console.log "new order: ", @order
-      update-data!
-    get: (n) -> obj.cfg.stage[if n? => n else @key]
-    add: (o) ->
-      if o.key in @order => return
-      obj.cfg.stage[o.key] = o
-      @order.push o.key
+      st = obj.cfg.stage
+      ia = st.map(->it.key).indexOf(a)
+      o = st.splice(ia, 1).0
+      ib = if b? => st.map(->it.key).indexOf(b) else st.length
+      st.splice ib, 0, o
+    get: (k) -> obj.cfg.stage.filter(~>it.key == @_key(k)).0
+    add: (o = {}) ->
+      if @get(o.key) => return
+      obj.cfg.stage.push o
       @key = o.key
-    del: (n) ->
-      n = if n? => n else @key
-      if n == \default => return
-      delete obj.cfg.stage[n]
-      @order.splice @order.indexOf(n), 1
-
-      if n == @key => @key = [k for k of obj.cfg.stage].0 or \default
-    val: ({name,value,key}) -> 
-      if !(o = obj.cfg.stage[if key? => key else @key]) => return
+    del: (k) ->
+     if (k = @_key(k)) == \default => return
+     idx = obj.cfg.stage.map(->it.key).indexOf(k)
+     obj.cfg.stage.splice idx, 1
+     if k == @key => @key = (obj.cfg.stage[* - 1] or {}).key or \default
+    val: ({name,value,key}) ->
+      key = @_key(key)
+      if !(o = obj.cfg.stage.filter(->it.key == key)[0]) => return
       return if value? => o[name] = value else o[name]
     use: (k) -> @key = k
 
@@ -73,14 +57,15 @@ Ctrl = (opt) !->
       node.classList.toggle \is-invalid, invalid
       if invalid => return
       stage.val name: \name, value: node.value
-      update-data!
-      update-view!
+      obj.update!
+      view.update!
   view-config.init <<< do
     stages: ({node, evt}) ~>
       @reb = reb = new reblock root: node, action: do
         beforeMoveNode: ({src, des, ib}) -> 
         afterMoveNode: ({src, des, ib}) ->
           stage.insertBefore (src._data.key or \default), (if ib => ib._data.key else null)
+          obj.update!
   view-config.action.click <<< do
     stages: ({node, evt}) ->
       n = evt.target
@@ -88,13 +73,13 @@ Ctrl = (opt) !->
       if type == \new-stage =>
         key = Math.random!toString(36)substring(2)
         stage.add {name: "新階段", key, desc: "自訂時段", config: {} }
-        update-data!
+        obj.update!
       else stage.use n.getAttribute(\data-key)
-      update-view!
+      view.update!
     "delete-stage": ({node, evt}) ->
       stage.del!
-      update-data!
-      update-view!
+      obj.update!
+      view.update!
 
   view-config.handler <<< do
     "default-view": ({node}) -> node.classList.toggle \d-none, !stage.is-default!
@@ -107,7 +92,7 @@ Ctrl = (opt) !->
   view-config.action.input <<< do
     time: ({node}) ->
       stage.val name: node.getAttribute(\data-name), value: node.value
-      update-data!
+      obj.update!
   view-config.init <<< do
     time: ({node}) -> tail.DateTime(node)
   view-config.handler <<< do
@@ -116,16 +101,16 @@ Ctrl = (opt) !->
   view-config.action.click <<< do
     switch: ({node}) ->
       node.classList.toggle \on
-      c = stage.get!config or {}
+      c = stage.get!.{}config
       c[node.getAttribute(\data-name)] = node.classList.contains(\on)
-      update-data!
+      obj.update!
   view-config.handler <<< do
     switch: ({node}) ->
       c = stage.val({name: \config}) or {}
       node.classList.toggle \on, !!c[node.getAttribute(\data-name)]
 
-  @view = view = new ldView view-config
-  @view-stage = new ldView do
+  @view.all = new ldView view-config
+  @view.stage = new ldView do
     root: root, init-render: false
     handler: do
       stage: do
@@ -143,9 +128,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     if source => return
     # empty object will be truncated in data thus we clone it to prevent edited
     @obj.cfg = JSON.parse(JSON.stringify(data or {}))
-    #@obj.cfg.{}stage.{}default
-    console.log "receive: ", JSON.stringify(@obj.cfg)
     @stage.init!
-    @update-view!
+    @view.update!
 
 return Ctrl
