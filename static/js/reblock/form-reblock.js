@@ -283,6 +283,9 @@ var slice$ = [].slice;
         }
       });
     },
+    isDragging: function(){
+      return !!this.node.dragging;
+    },
     select: function(n, append){
       append == null && (append = false);
       this.selected.map(function(it){

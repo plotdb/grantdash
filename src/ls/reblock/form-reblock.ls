@@ -161,6 +161,7 @@
         if !((n = e.target) and n.hasAttribute and (name = n.getAttribute(\editable))) => return
         if @action.input => @action.input {node: n}
 
+    is-dragging: -> !!@node.dragging
     select: (n, append = false) ->
       @selected.map -> it.removeAttribute \selected
       if !append => @selected.splice 0, @selected.length
