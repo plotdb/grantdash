@@ -4,7 +4,7 @@
     var auth, loader, adminPanel, sdbAdapter, adminInfo, init, sdb, menu;
     auth = arg$.auth, loader = arg$.loader, adminPanel = arg$.adminPanel, sdbAdapter = arg$.sdbAdapter, adminInfo = arg$.adminInfo;
     loader.on();
-    auth.ensure().then(function(){
+    auth.fetch().then(function(g){
       var ref$, path, type, slug, hint;
       ref$ = /^\/([ob])\/([^/]+)\/admin/.exec(window.location.pathname) || [], path = ref$[0], type = ref$[1], slug = ref$[2];
       hint = import$({}, type

@@ -1,0 +1,13 @@
+include /modules/common.pug
+.ldcv.ldcvmgr(data-lock="true",data-name="error"): .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
+  h1 喔喔，網站掛掉了
+  p 現在暫時無法執行您想做的動作
+  br
+  .m-auto.text-left.text-muted
+    p 抱歉，網站似乎出了點問題因此暫時無法回應您剛剛的要求。可能只是暫時性的，也許我們正好在更新系統，或有某些東西壞掉了。
+    p 若您持續注意到這個現象，我們通常也已經在處理了，所以您可以稍候再試，看看是否我們很快就處理完成；或者您也可以 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 聯絡我們] 看看是否有什麼我們可以先幫上忙的部份。
+    br
+
+    .row.no-gutters
+      .col-md.mr-2: .btn.btn-outline-dark.btn-block.btn-lg(onclick="lda.ldcvmgr.toggle('contact')") 聯絡我們
+      .col-md.ml-2: .btn.btn-primary.btn-block.btn-lg(onclick="window.location.reload()") 再試一次

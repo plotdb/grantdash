@@ -7626,6 +7626,9 @@ pre {
 .z-notify {
   z-index: 5000;
 }
+.z-max {
+  z-index: 99999999 !important;
+}
 .ldap > .base > .inner .item.limited {
   text-decoration: none !important;
 }

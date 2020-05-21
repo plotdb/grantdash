@@ -323,7 +323,7 @@ var slice$ = [].slice;
         })[0] : null;
         promise = ret
           ? Promise.resolve(JSON.parse(decodeURIComponent(ret[1])))
-          : ld$.fetch('/js/global', {}, {
+          : ld$.fetch('/d/global', {}, {
             type: 'json'
           });
         return promise.then(function(it){
@@ -364,7 +364,9 @@ var slice$ = [].slice;
           hintFail.cancel();
           loader.cancel();
           ldcvmgr.toggle("server-down");
-          return console.log(it);
+          console.log(it);
+          new Promise(function(res, rej){});
+          return loader.off();
         });
       }
     };

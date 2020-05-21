@@ -1,0 +1,9 @@
+//- module
+extends /base.pug
+block vars
+ - ctrl.navtop.placeholder = false;
+ - ctrl.foot.edgeMask = false;
+block body
+  .w-100.h-100.text-center.vertical-center(
+  style="background:url(/assets/img/c/bg/valley.svg) center center;background-size:cover")
+    div: block content

@@ -1,0 +1,13 @@
+doctype html
+include /modules/common.pug
+html
+  head
+    meta(charset="utf-8")
+    +css("/css/pack/vendor.min.css")
+    +css("/css/index.css")
+    style(type="text/css"): :stylus
+      .ldcv .base .inner { overflow: hidden }
+  body
+    include /modules/cover/ie-lock.pug
+    script: :lsc
+      document.querySelector(".ldcvmgr").className = "ldcv ldcvmgr active";

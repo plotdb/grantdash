@@ -3,8 +3,8 @@
   <[auth loader adminPanel sdbAdapter adminInfo]>,
   ({auth, loader, admin-panel, sdbAdapter, admin-info}) ->
     loader.on!
-    auth.ensure!
-      .then ->
+    auth.fetch!
+      .then (g) ->
         [path,type,slug] = /^\/([ob])\/([^/]+)\/admin/.exec(window.location.pathname) or []
         hint = {} <<< (if type => (if type == \o => {org: slug} else {brd: slug}) else {})
         ld$.fetch '/d/toc/', {method: \POST}, {json: hint, type: \json}
@@ -12,13 +12,9 @@
             init toc
               .catch (e) ->
                 lda.ldcvmgr.toggle \error
-          .catch ->
-            lda.ldcvmgr.lock \create-brd-now
-
-      .catch ->
-        lda.ldcvmgr.toggle \auth-required
-      .then ->
-        loader.off!
+          .catch -> lda.ldcvmgr.lock \create-brd-now
+      .catch -> lda.ldcvmgr.toggle \auth-required
+      .then -> loader.off!
     init = (toc) ->
       toc.doc = {}
       <[org brd brds brdsFiltered grps]>.map -> toc[it] = toc[it] or []

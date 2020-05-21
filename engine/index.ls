@@ -200,7 +200,7 @@ backend = do
     # * user could stil alter cookie's content, so it's necessary to force ajax call for important action
     #   there is no way to prevent user from altering client side content,
     #   so if we want to prevent user from editing our code, we have to go backend for the generation.
-    app.get \/js/global, backend.csrfProtection, (req, res) ->
+    app.get \/d/global, backend.csrfProtection, (req, res) ->
       res.setHeader \content-type, \application/json
       payload = JSON.stringify do
         global: true, csrfToken: req.csrfToken!, production: config.is-production
@@ -256,7 +256,7 @@ backend = do
         # so client will force re-fetch data(global), even re-login(connect.sid).
         # but, while clearCookie here might be easier, it might also be abused by malicious source.
         # so, we added an /d/me/reauth/ route for this purpose, and dont clearCookie here.
-        # note: global must align with the one if /js/global/,
+        # note: global must align with the one if /d/global/,
         #       and connect.side must align with session's cookie setting.
         res
         #  .clearCookie \connect.sid, {path:'/', domain: \localhost} # clear old one
