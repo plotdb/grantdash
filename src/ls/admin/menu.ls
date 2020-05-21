@@ -1,49 +1,74 @@
-(->
-  ldc.register \brd, <[]>, ->
-    view = new ldView do
-      root: '#brd-info'
-      action: click: do
-        'brd-head': ({node, evt}) ->
-          if !(p = ld$.parent evt.target, '.clickable', document) => return
-          ison = node.classList.contains \on
-          hbox = node.getBoundingClientRect!
-          pbox = node.parentNode.parentNode.getBoundingClientRect!
-          view.get('brd-list').style.height = "#{if ison => 0 else pbox.height - hbox.height}px"
-          node.classList.toggle \on
-      handler: do
-        boards: do
-          list: ->
-            [0 to 10].map -> do
-              key: it, name: "測試#{it}"
-              description: "隨意的描述"
-              starttime: '2020-05-10', endtime: '2020-08-10'
-          action: click: ({node}) ->
-            key = node.getAttribute(\data-key)
-            window.location.href = "/b/#{key}/admin"
+({sdbAdapter, loader}) <- ldc.register \adminMenu, <[sdbAdapter loader]>, _
 
-          handler: ({node,data}) ->
-            ld$.find(node, \span, 0).innerText = data.name
-            ld$.find(node, \.text-muted, 0).innerText = "#{data.starttime} - #{data.endtime}"
-            node.setAttribute \data-key, data.key
-  ldc.app \brd
+Ctrl = (opt) ->
+  @opt = opt
+  @toc = toc = opt.toc
+  @grps = []
+  update = debounce 500, ~> @ops-out ~> @grps
+  set-group = (grp) ->
+  search = debounce (val) ->
+    toc.brds-filtered = toc.brds.filter -> ~it.name.indexOf(val)
+    view.render!
+    view.get("brd-list").folder.fit!
+  root = ld$.find '[ld-scope=admin-menu]', 0
+  @view = view = new ldView do
+    root: root
+    action: do
+      click: do
+        "brd-bar": ({node}) ->
+          ret = view.get("brd-list").folder.toggle!
+          view.render \brd-list-toggle
+        "grp-add": ({node}) ~>
+          for i from 0 til 100 =>
+            key = "grp-#{Math.random!toString(36)substring(2)}"
+            if !@grps[key] => break
+          if @grps[key] => throw new ldError(1011)
+          @grps[key] = {key, name: "新分組"}
+          view.render 'grp-entry'
+          update!now!
 
-  /*
-  ldc.register \test, <[]>, ->
-    toggle-folder = (node)->
-      root = node.parentNode
-      ison = root.classList.contains \show
-      if !ison => root.classList.toggle \show
-      menu = node.parentNode.childNodes.1
-      dbox = menu.getBoundingClientRect!
-      menu.style.height = "#{if ison => dbox.height else 0}px"
-      setTimeout (-> menu.style.height = "#{if ison => 0 else dbox.height}px"), 0
-      if ison =>
-        setTimeout (->
-          root.classList.toggle \show
-          menu.style.height = ""
-        ), 250
-      if !ison => setTimeout (-> menu.style.height = ""), 250
-    ld$.find(document, '.folder-toggle').map -> it.addEventListener \click, -> toggle-folder(this)
-  ldc.app \test
-  */
-)!
+      input: do
+        "brd-search": ({node}) -> search node.value
+    text: do
+      "org-name": -> toc.org.name
+      "brd-name": -> toc.brd.name
+      "brd-progress-text": -> "活動進行中"
+    init: do
+      "folder": ({node}) -> node.folder = new ldui.Folder root: node
+    handler: do
+      "org-menu": ({node}) -> node.classList.toggle \d-none, !toc.org.key
+      "brd-progress": ({node}) -> node.classList.toggle \text-success, true
+      "brd-list-toggle": ({node}) ->
+        if view => node.classList.toggle \on, view.get("brd-list").classList.contains("show")
+      # if brd picked
+      "brd": ({node}) ->
+        node.classList.toggle \d-none, (!toc.brd.key xor ~node.getAttribute(\ld).indexOf(\empty))
+      # if any brds
+      "brds": ({node}) ->
+        node.classList.toggle \d-none, (!toc.brds.length xor ~node.getAttribute(\ld).indexOf(\empty))
+      "brd-entry": do
+        list: -> toc.brds-filtered
+        action: click: ({node, data}) ->
+          toc.brd = data
+          view.render!
+        handler: ({node, data}) ->
+          ld$.find(node, 'span',0).innerText = data.name
+          ld$.find(node, '.text-sm',0).innerText = data.description
+      "grp-entry": do
+        list: ~> [v for k,v of (@grps or {})]
+        init: ({node,data}) ->
+          node.folder = new ldui.Folder root: node
+          node.view = new ldView do
+            root: node
+            handler: name: ({node}) -> node.innerText = data.name
+            action: click: "nav-tab": ({node}) -> set-group data
+        handler: ({node, data}) -> node.view.render 'name'
+  @
+
+Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+  ops-in: ({data,ops,source}) ->
+    if source => return
+    @grps = JSON.parse JSON.stringify(data or {})
+    @view.render!
+
+return Ctrl

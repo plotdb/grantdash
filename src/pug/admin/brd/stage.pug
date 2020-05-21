@@ -1,5 +1,5 @@
 //- module
-+scope("stage-panel")
++scope("brd-stage")
   h4 階段設定
   .text-muted.text-sm.mb-4 活動設定讓您針對不同時間設定不同的活動狀態。例如，您可以設定在活動發表的 60 天後才開放提案，同時設定 90 天後進入評審階段。
   ul.nav.nav-tabs.mb-4(ld="stages")
@@ -38,8 +38,8 @@
     .flex-grow-1: .btn.btn-outline-danger(ld="delete-stage custom-view") 刪除
     .d-none(ld="custom-view"): .d-flex
       .btn.btn-text.mr-2 階段名稱
-      .form-group.mb-0
+      .form-group.mb-0.mr-2
         input.form-control(ld="stage-name")
-        .invalid-feedback 不能用這個名稱
+        .invalid-feedback.position-absolute 不能用這個名稱
     .btn.btn-primary.disabled(ld="submit") 更新資料
   //-+script("/js/admin/brd-stage.js")

@@ -7,8 +7,9 @@
       var type, root, slugs, slugCheck, form, view, this$ = this;
       this.opt = opt;
       this.type = type = opt.type === 'org' ? 'o' : 'b';
-      root = opt.root;
-      this.root = root = typeof root === 'string' ? document.querySelector(root) : root;
+      this.root = root = typeof opt.root === 'string'
+        ? document.querySelector(opt.root)
+        : opt.root;
       slugs = {};
       slugCheck = debounce(500, function(n, v, e){
         var p;
@@ -54,12 +55,10 @@
           }, true) ? 0 : 2;
         },
         verify: function(n, v, e){
-          if (this$.adapter) {
-            this$.adapter.update(function(it){
-              it[n] = v;
-              return it;
-            });
-          }
+          this$.opsOut(function(d){
+            d[n] = v;
+            return d;
+          });
           if (in$(n, ['slug'])) {
             if (!/^[a-zA-Z0-9-]+$/.exec(v)) {
               return 2;
@@ -112,27 +111,15 @@
       });
       return this;
     };
-    Ctrl.prototype = import$(Object.create(Object.prototype), {
-      adapt: function(arg$){
-        var sdb, doc, adapter, form;
-        sdb = arg$.sdb, doc = arg$.doc;
-        this.adapter = adapter = new sdbAdapter({
-          path: ['info']
-        });
-        form = this.form;
-        adapter.on('change', function(){
-          var k, ref$, v, results$ = [];
-          for (k in ref$ = this.data) {
-            v = ref$[k];
-            results$.push(form.fields[k].value = v);
-          }
-          return results$;
-        });
-        adapter.init({
-          sdb: sdb,
-          doc: doc
-        });
-        return adapter;
+    Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
+      opsIn: function(arg$){
+        var data, k, v, results$ = [];
+        data = arg$.data;
+        for (k in data) {
+          v = data[k];
+          results$.push(this.form.fields[k].value = v);
+        }
+        return results$;
       }
     });
     return Ctrl;
