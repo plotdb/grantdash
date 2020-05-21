@@ -8,12 +8,17 @@
         [path,type,slug] = /^\/([ob])\/([^/]+)\/admin/.exec(window.location.pathname) or []
         hint = {} <<< (if type => (if type == \o => {org: slug} else {brd: slug}) else {})
         ld$.fetch '/d/toc/', {method: \POST}, {json: hint, type: \json}
-          .catch -> lda.ldcvmgr.lock \create-brd-now
-          .then (toc) -> init toc
-          .catch (e) ->
-            console.log e
-            lda.ldcvmgr.toggle \error
-      .catch -> lda.ldcvmgr.toggle \auth-required
+          .then (toc) ->
+            init toc
+              .catch (e) ->
+                lda.ldcvmgr.toggle \error
+          .catch ->
+            lda.ldcvmgr.lock \create-brd-now
+
+      .catch ->
+        lda.ldcvmgr.toggle \auth-required
+      .then ->
+        loader.off!
     init = (toc) ->
       toc.doc = {}
       <[org brd brds brdsFiltered grps]>.map -> toc[it] = toc[it] or []
@@ -41,8 +46,12 @@
           .then (doc) -> toc.doc.org = doc
           .then -> sdb.get {id: "brd-#{toc.brd.key}", watch}
           .then (doc) -> toc.doc.brd = doc
+
           .then -> sdb
           .catch -> ldcvmgr.toggle \error
+
+
+
       prepare!
 
     menu = (toc, sdb) ->
@@ -106,7 +115,6 @@
                 action: click: "nav-tab": ({node}) -> set-group data
             handler: ({node, data}) -> node.view.render 'name'
 
-      loader.off!
 
       adapter = new sdbAdapter path: <[group]>
       adapter.on \change, ({ops, source}) ->
@@ -116,6 +124,8 @@
         view.render!
       notify = debounce 500, -> adapter.update -> JSON.parse(JSON.stringify(toc.grps))
       adapter.init {doc: toc.doc.brd, sdb: sdb}
+
+      loader.off!
 
 
   ldc.app \adminGuard

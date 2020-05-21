@@ -21,16 +21,17 @@
       }, {
         json: hint,
         type: 'json'
+      }).then(function(toc){
+        return init(toc)['catch'](function(e){
+          return lda.ldcvmgr.toggle('error');
+        });
       })['catch'](function(){
         return lda.ldcvmgr.lock('create-brd-now');
-      }).then(function(toc){
-        return init(toc);
-      })['catch'](function(e){
-        console.log(e);
-        return lda.ldcvmgr.toggle('error');
       });
     })['catch'](function(){
       return lda.ldcvmgr.toggle('auth-required');
+    }).then(function(){
+      return loader.off();
     });
     init = function(toc){
       toc.doc = {};
@@ -251,7 +252,6 @@
           }
         }
       });
-      loader.off();
       adapter = new sdbAdapter({
         path: ['group']
       });
@@ -274,10 +274,11 @@
           return JSON.parse(JSON.stringify(toc.grps));
         });
       });
-      return adapter.init({
+      adapter.init({
         doc: toc.doc.brd,
         sdb: sdb
       });
+      return loader.off();
     };
   });
   return ldc.app('adminGuard');
