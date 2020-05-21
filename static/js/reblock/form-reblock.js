@@ -397,7 +397,7 @@ var slice$ = [].slice;
           }
         }
         if (!t) {
-          return rej(new Error(""));
+          return Promise.reject(new Error(""));
         }
       }
       if (t === n) {

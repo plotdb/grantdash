@@ -212,7 +212,7 @@
         while n and (p = n.parentNode) =>
           if p.hasAttribute and p.hasAttribute(\hostable) => t = p; break
           if n.hasAttribute and n.hasAttribute(\hostable) => t = n; break else n = p
-        if !t => return rej new Error("")
+        if !t => return Promise.reject new Error("")
       if t == n => n = null
 
       if data and !name => name = data.name
