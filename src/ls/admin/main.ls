@@ -1,15 +1,8 @@
-/*
-toc
-  doc
-sdb
-
-*/
-
 ldc.register \adminGuard,
 <[auth loader sdbAdapter
-adminMenu adminPanel adminInfo adminStage]>,
+adminMenu adminPanel adminInfo adminStage adminPerm]>,
 ({auth, loader, sdbAdapter,
-admin-menu, admin-panel, admin-info, admin-stage}) ->
+admin-menu, admin-panel, admin-info, admin-stage, admin-perm}) ->
 
   loader.on!
 
@@ -39,8 +32,10 @@ admin-menu, admin-panel, admin-info, admin-stage}) ->
         menu.adapt  {hub: brd, path: <[group]>}
         info = new admin-info root: '[ld-scope=brd-info]', type: \brd
         info.adapt  {hub: brd, path: <[info]> }
-        stage = new admin-stage {toc, root: '[ld-scope=brd-stage]', type: \brd}
+        stage = new admin-stage {toc, root: '[ld-scope=brd-stage]'}
         stage.adapt {hub: brd, path: <[stage]>}
+        perm = new admin-perm {toc, root: '[ld-scope=brd-perm]'}
+        perm.adapt {hub: brd, path: <[perm]>}
 
   Hub = -> @ <<< {evt-handler: {}} <<< it
   Hub.prototype = Object.create(Object.prototype) <<< do
