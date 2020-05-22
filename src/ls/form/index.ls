@@ -44,6 +44,7 @@ Ctrl = (opt) ->
     root: @node.list
     handler:
       block: do
+        key: -> it.key
         list: -> obj.list
         init: ({node, data}) ->
           bmgr.get(data.name).then (n) ->
@@ -51,10 +52,11 @@ Ctrl = (opt) ->
             n.parentNode.removeChild n
             node.innerHTML = ""
             node.appendChild n
-            prj-form-block.render {node, root-data: obj.list, data, view-mode, update}
+            prj-form-block.init {node, root-data: obj.list, data, view-mode, update}
             if !view-mode => prj-form-criteria.render {node, data}
         handler: ({node, data}) ->
-          if node.view => node.view.block.render!
+          if node.view =>
+            prj-form-block.render {node, data, root-data: obj.list, view-mode, update}
 
 
   if @node.src =>

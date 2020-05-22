@@ -11008,19 +11008,28 @@ var slice$ = [].slice;
       });
     },
     procEach: function(name, data){
-      var list, items, nodes, lastidx, ret, ns, this$ = this;
+      var list, getkey, hash, items, nodes, lastidx, ret, ns, this$ = this;
       list = this.handler[name].list() || [];
+      getkey = this.handler[name].key || function(it){
+        return it;
+      };
+      hash = {};
+      list.map(function(it){
+        return hash[getkey(it)] = it;
+      });
       items = [];
       nodes = data.nodes.filter(function(it){
         return it;
       }).map(function(n){
-        if (!in$(n._data, list)) {
+        var k;
+        k = getkey(n._data);
+        if ((typeof k !== 'object' && !hash[k]) || (typeof k === 'object' && !in$(n._data, list))) {
           if (n.parentNode) {
             n.parentNode.removeChild(n);
           }
           n._data = null;
         } else {
-          items.push(n._data);
+          items.push(k);
         }
         return n;
       }).filter(function(it){
@@ -11029,8 +11038,10 @@ var slice$ = [].slice;
       lastidx = -1;
       ret = list.map(function(n, i){
         var j, node;
-        if ((j = items.indexOf(n)) >= 0) {
+        if ((j = items.indexOf(getkey(n))) >= 0) {
           node = nodes[lastidx = j];
+          node._data = n;
+          console.log(node._data);
           if (!node._obj) {
             node._obj = {
               node: node,
@@ -11038,6 +11049,9 @@ var slice$ = [].slice;
               data: n,
               idx: i
             };
+          }
+          if (node._obj.data !== n) {
+            node._obj.data = n;
           }
           return node;
         }

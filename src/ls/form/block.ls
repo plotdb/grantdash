@@ -86,50 +86,55 @@
 
     # block sample data:
     #   {title: "提問的標題", desc: "提問的描述", config: {required: true}}
+
+    lc = {}
     render = ({node, data, root-data, view-mode, update}) ->
+      lc <<< {data, root-data}
+      node.view.block.render!
+    init = ({node, data, root-data, view-mode, update}) ->
       node.setAttribute \id, "block-#{data.key}"
+      lc <<< {data, root-data}
       node.{}view.block = new ldView do
         root: node
         action:
           input: do
             title: ({node, evt}) ->
-              data.title = node.innerText
+              lc.data.title = node.innerText
               update!
             desc: ({node, evt}) ->
-              data.desc = node.innerText
+              lc.data.desc = node.innerText
               update!
           click: do
             switch: ({node, evt}) ->
               node.classList.toggle \on
-              data.{}config[node.getAttribute(\data-name)] = node.classList.contains(\on)
+              lc.data.{}config[node.getAttribute(\data-name)] = node.classList.contains(\on)
               update!
             delete: ({node, evt}) ->
-              root-data.splice(root-data.indexOf(data), 1)
+              lc.root-data.splice(lc.root-data.indexOf(data), 1)
               update!
             clone: ({node, evt}) ->
-              new-data = JSON.parse(JSON.stringify(data))
+              new-data = JSON.parse(JSON.stringify(lc.data))
               new-data.key = Math.random!toString(36)substring(2)
-              root-data.splice(root-data.indexOf(data), 0, new-data )
+              lc.root-data.splice(lc.root-data.indexOf(lc.data), 0, new-data )
               update!
         handler: do
           invalid: ({node}) ->
-            is-valid = (!(data.{}valid.result?) or data.valid.result)
-            if !is-valid => node.innerText = data.valid.criteria.invalid or "這個欄位格式不符"
+            is-valid = (!(lc.data.{}valid.result?) or lc.data.valid.result)
+            if !is-valid => node.innerText = lc.data.valid.criteria.invalid or "這個欄位格式不符"
             node.classList.toggle \d-none, is-valid
           block: ({node}) ->
-            is-valid = (!(data.{}valid.result?) or data.valid.result)
+            is-valid = (!(lc.data.{}valid.result?) or lc.data.valid.result)
             node.classList.toggle \invalid, !is-valid
           title: ({node}) ->
-            node.innerText = data.title
+            node.innerText = lc.data.title
             if view-mode => node.removeAttribute \editable
           desc: ({node}) ->
-            node.innerText = data.desc
+            node.innerText = lc.data.desc
             if view-mode => node.removeAttribute \editable
-          switch: ({node}) -> node.classList.toggle \on, !!data.{}config[node.getAttribute(\data-name)]
+          switch: ({node}) -> node.classList.toggle \on, !!lc.data.{}config[node.getAttribute(\data-name)]
           "edit-only": ({node}) -> if view-mode => node.remove!
-          "list-input": ({node}) -> node.setAttribute \name, "input-#{data.key}"
-      if module[data.name] => module[data.name]({node, data, view-mode, update})
-      #if view-mode and fill[data.name] => fill[data.name]({node, data, view-mode, update})
+          "list-input": ({node}) -> node.setAttribute \name, "input-#{lc.data.key}"
+      if module[lc.data.name] => module[lc.data.name]({node, data: lc.data, view-mode, update})
 
-    return {render, module}
+    return {init, render, module}
 )!

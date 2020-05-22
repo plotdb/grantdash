@@ -87,6 +87,9 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       root: this.node.list,
       handler: {
         block: {
+          key: function(it){
+            return it.key;
+          },
           list: function(){
             return obj.list;
           },
@@ -98,7 +101,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
               n.parentNode.removeChild(n);
               node.innerHTML = "";
               node.appendChild(n);
-              prjFormBlock.render({
+              prjFormBlock.init({
                 node: node,
                 rootData: obj.list,
                 data: data,
@@ -117,7 +120,13 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
             var node, data;
             node = arg$.node, data = arg$.data;
             if (node.view) {
-              return node.view.block.render();
+              return prjFormBlock.render({
+                node: node,
+                data: data,
+                rootData: obj.list,
+                viewMode: viewMode,
+                update: update
+              });
             }
           }
         }
