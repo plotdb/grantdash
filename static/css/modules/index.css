@@ -125,6 +125,10 @@
 .tagify__input {
   font-weight: 300;
 }
+[ld-scope=prj-form] [ld=title],
+[ld-scope=prj-form] [ld=desc] {
+  word-break: break-word;
+}
 .folder-item:hover {
   color: currentColor;
 }
