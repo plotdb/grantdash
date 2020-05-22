@@ -21,13 +21,13 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
     @hub = hub
     @ <<< hub{sdb, doc}
     o = @doc.data
-    for n in @path => o = o[n]
+    for n in @path => o = o{}[n]
     @watch {data: o}
     @hub.on \change, ~> @watch it
   set: ({path}) ->
     @path = path
     o = @doc.data
-    for n in @path => o = o[n]
+    for n in @path => o = o{}[n]
     @watch {data: o}
   update: (ops) ->
     if !@sdb => return
@@ -44,7 +44,7 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
     if data => @data = data
     else
       o = @doc.data
-      for n in @path => o = o[n]
+      for n in @path => o = o{}[n]
       @data = o
     # force update all fields. not effecient.
     @fire \change, {ops, data, source}

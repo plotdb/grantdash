@@ -33,7 +33,7 @@ ldc.register('sdbAdapter', [], function(){
       o = this.doc.data;
       for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
         n = ref$[i$];
-        o = o[n];
+        o = o[n] || (o[n] = {});
       }
       this.watch({
         data: o
@@ -49,7 +49,7 @@ ldc.register('sdbAdapter', [], function(){
       o = this.doc.data;
       for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
         n = ref$[i$];
-        o = o[n];
+        o = o[n] || (o[n] = {});
       }
       return this.watch({
         data: o
@@ -86,7 +86,7 @@ ldc.register('sdbAdapter', [], function(){
         o = this.doc.data;
         for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
           n = ref$[i$];
-          o = o[n];
+          o = o[n] || (o[n] = {});
         }
         this.data = o;
       }

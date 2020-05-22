@@ -36,6 +36,8 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
         stage.adapt {hub: brd, path: <[stage]>}
         perm = new admin-perm {toc, root: '[ld-scope=brd-perm]'}
         perm.adapt {hub: brd, path: <[perm]>}
+        navbar = new admin-navbar {toc, root: '[ld-scope=navbar-editor]'}
+        navbar.adapt {hub: brd, path: <[page navbar]>}
 
   Hub = -> @ <<< {evt-handler: {}} <<< it
   Hub.prototype = Object.create(Object.prototype) <<< do

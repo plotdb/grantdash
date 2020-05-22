@@ -1,8 +1,9 @@
 //- module
 h3 導覽列客製化
 p.text-muted 您可以在這裡調配您所需的導覽列元件。導覽列元件將出現在您的公開頁面頂端，提供您的用戶瀏覽時的線索與快捷地切換頁面的功能。
+hr
 +scope("navbar-editor")
-  .d-none(ld="folder-sample")
+  +scope("folder-sample").d-none
     div(ld="item"): .folder-item
       .inner.d-flex.align-items-center
         i.i-bars.mr-4

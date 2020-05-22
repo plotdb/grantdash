@@ -42,7 +42,7 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
     toc.brdsFiltered = toc.brds || [];
     console.log(toc);
     return prepareSharedb(toc).then(function(arg$){
-      var org, brd, menu, info, stage, perm;
+      var org, brd, menu, info, stage, perm, navbar;
       org = arg$.org, brd = arg$.brd;
       menu = new adminMenu({
         toc: toc
@@ -71,9 +71,17 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
         toc: toc,
         root: '[ld-scope=brd-perm]'
       });
-      return perm.adapt({
+      perm.adapt({
         hub: brd,
         path: ['perm']
+      });
+      navbar = new adminNavbar({
+        toc: toc,
+        root: '[ld-scope=navbar-editor]'
+      });
+      return navbar.adapt({
+        hub: brd,
+        path: ['page', 'navbar']
       });
     });
   };
