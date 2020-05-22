@@ -97,6 +97,7 @@ Ctrl = (opt) ->
 
   @view.root = render-folder {node: @node.view, data: obj.tree}
   reb = new reblock do
+    name: \navbar
     root: root
     action: do
       beforeMove: (src, des) ->

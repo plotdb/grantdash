@@ -17,20 +17,31 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
     this.obj = obj = {
       list: []
     };
-    this.obj.list = sampleBlocks;
     lc = {
       view: false
     };
     hub = {
+      updateDeb: debounce(100, function(b){
+        if (reb.isDragging()) {
+          return hub.updateDeb(b);
+        } else {
+          return hub.update(b);
+        }
+      }),
       update: function(block){
-        if (viewMode) {
+        if (viewMode && block) {
           fillData[block.key] = block.value;
-          console.log("[update]", fillData);
+          this$.opsOut(function(){
+            return {
+              list: this$.obj.list
+            };
+          });
           return validate(block);
         } else {
-          console.log("[update]", this$.obj.list);
           this$.opsOut(function(){
-            return this$.obj.list;
+            return {
+              list: this$.obj.list
+            };
           });
           return blocksView.render();
         }
@@ -67,9 +78,6 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
     update = function(block){
       return hub.update(block);
     };
-    setInterval(function(){
-      return console.log(obj.list.length, JSON.stringify(obj.list));
-    }, 3000);
     blocksView = new ldView({
       root: this.node.list,
       handler: {
@@ -125,6 +133,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       });
     }
     reb = new reblock({
+      name: 'form',
       root: this.node.list,
       blockManager: bmgr,
       action: {
@@ -149,13 +158,14 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
           };
           node._data = newData;
           idx = Array.from(node.parentNode).indexOf(node);
-          obj.list.splice(idx, 0, newData);
+          (obj.list || (obj.list = [])).splice(idx, 0, newData);
           blocksView.bindEachNode({
             name: 'block',
             container: node.parentNode,
             node: node
           });
-          return blocksView.render();
+          blocksView.render();
+          return hub.update();
         },
         afterMoveNode: function(arg$){
           var src, des, ib, n, ia;
@@ -351,8 +361,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       if (source) {
         return;
       }
-      console.log(data);
-      return this.obj.list = JSON.parse(JSON.stringify(data));
+      return this.obj.list = JSON.parse(JSON.stringify(data.list || []));
     }
   });
   return Ctrl;

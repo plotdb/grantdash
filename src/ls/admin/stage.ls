@@ -61,7 +61,7 @@ Ctrl = (opt) !->
       view.update!
   view-config.init <<< do
     stages: ({node, evt}) ~>
-      @reb = reb = new reblock root: node, action: do
+      @reb = reb = new reblock name: \stage, root: node, action: do
         beforeMoveNode: ({src, des, ib}) -> 
         afterMoveNode: ({src, des, ib}) ->
           stage.insertBefore (src._data.key or \default), (if ib => ib._data.key else null)

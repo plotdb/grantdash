@@ -1,8 +1,8 @@
 ldc.register \adminGuard,
 <[auth loader sdbAdapter
-adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar]>,
+adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar prjForm]>,
 ({auth, loader, sdbAdapter,
-admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
+admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar, prjForm}) ->
 
   loader.on!
 
@@ -31,8 +31,8 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
     
     prepare-sharedb toc
       .then ({org,brd}) ->
-        # TODO initialization here? 
-        if !brd.doc.data.page => brd.doc.submitOp [{p: ["page"], oi: {navbar: {}}}]
+        # TODO remove this? we have fixed sdb-adapter so there is no need to manually init.
+        #if !brd.doc.data.page => brd.doc.submitOp [{p: ["page"], oi: {navbar: {}}}]
         menu = new admin-menu {toc}
         menu.adapt  {hub: brd, path: <[group]>}
         info = new admin-info root: '[ld-scope=brd-info]', type: \brd
@@ -43,6 +43,9 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
         perm.adapt {hub: brd, path: <[perm]>}
         navbar = new admin-navbar {toc, root: '[ld-scope=navbar-editor]'}
         navbar.adapt {hub: brd, path: <[page navbar]>}
+        form = new prj-form {toc, root: '[ld-scope=prj-form]', view-mode: false}
+        # TODO update group idx based on user selection
+        form.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'form']}
 
   Hub = -> @ <<< {evt-handler: {}} <<< it
   Hub.prototype = Object.create(Object.prototype) <<< do
@@ -60,13 +63,12 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
         .then -> loader.off!
 
     hubs = org: new Hub({sdb}), brd: new Hub({sdb})
-
     prepare = ->
       console.log "preparing sharedb document (org) ... "
-      sdb.get {id: "org-#{toc.org.key}", watch: (ops,source) -> org.fire \change, {ops,source} }
+      sdb.get {id: "org-#{toc.org.key}", watch: (ops,source) -> hub.org.fire \change, {ops,source} }
         .then (doc) -> hubs.org.doc = doc
         .then -> console.log "preparing sharedb document (brd) ... "
-        .then -> sdb.get {id: "brd-#{toc.brd.key}", watch: (ops,source) -> hubs.brd.fire \change, {ops.source}}
+        .then -> sdb.get {id: "brd-#{toc.brd.key}", watch: (ops,source) -> hubs.brd.fire \change, {ops,source}}
         .then (doc) -> hubs.brd.doc = doc
         .then -> hubs
         .catch -> ldcvmgr.toggle \error

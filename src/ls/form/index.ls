@@ -1,4 +1,3 @@
-
 ({prj-form-criteria, prj-form-block, prj-form-validation, sdbAdapter}) <- ldc.register \prjForm,
 <[prjFormCriteria prjFormBlock prjFormValidation sdbAdapter]>, _
 
@@ -11,20 +10,18 @@ Ctrl = (opt) ->
     answer: ld$.find(root, '[ld=form-answer]', 0)
   @view-mode = view-mode = opt.view-mode
   @obj = obj = {list: []}
-  @obj.list = sample-blocks
   lc = {view: false}
   hub = do
+    update-deb: debounce 100, (b) ~> if reb.is-dragging! => hub.update-deb(b) else hub.update b
     update: (block) ~>
-      if view-mode =>
+      if view-mode and block =>
         fill-data[block.key] = block.value
-        console.log "[update]", fill-data
+        @ops-out ~> {list: @obj.list}
         validate block
       else
-        console.log "[update]", @obj.list
-        @ops-out ~> @obj.list
+        @ops-out ~> {list: @obj.list}
         blocks-view.render!
     render: ->
-
 
   bmgr = do
     get: (name) -> new Promise (res, rej) ->
@@ -41,9 +38,6 @@ Ctrl = (opt) ->
     if viewer => viewer.render!
   update = (block) -> hub.update block
 
-  setInterval (->
-    console.log obj.list.length, JSON.stringify(obj.list)
-  ), 3000
   blocks-view = new ldView do
     root: @node.list
     handler:
@@ -66,9 +60,8 @@ Ctrl = (opt) ->
       root: @node.src
       action: dragstart: block: ({node, evt}) ->
         evt.dataTransfer.setData('text/plain',"#{node.getAttribute(\data-name)}")
-
-
   reb = new reblock do
+    name: \form
     root: @node.list
     block-manager: bmgr
     action: do
@@ -79,9 +72,10 @@ Ctrl = (opt) ->
           config: {required: true}, criteria: [{type: \number, op: \between, input1: 10, input2: 20, invalid: '應介於 10 ~ 20 之間'}]
         node._data = new-data
         idx = Array.from(node.parentNode).indexOf(node)
-        obj.list.splice idx, 0, new-data
+        obj.[]list.splice idx, 0, new-data
         blocks-view.bind-each-node {name: \block, container: node.parentNode, node: node}
         blocks-view.render!
+        hub.update!
 
 
 
@@ -174,7 +168,6 @@ Ctrl = (opt) ->
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
     if source => return
-    console.log data
-    @obj.list = JSON.parse(JSON.stringify(data))
+    @obj.list = JSON.parse(JSON.stringify(data.list or []))
 
 return Ctrl

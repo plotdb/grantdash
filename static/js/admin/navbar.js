@@ -167,6 +167,7 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
       data: obj.tree
     });
     reb = new reblock({
+      name: 'navbar',
       root: root,
       action: {
         beforeMove: function(src, des){

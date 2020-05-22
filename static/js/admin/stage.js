@@ -158,6 +158,7 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
         var node, evt, reb;
         node = arg$.node, evt = arg$.evt;
         return this$.reb = reb = new reblock({
+          name: 'stage',
           root: node,
           action: {
             beforeMoveNode: function(arg$){
