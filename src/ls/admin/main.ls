@@ -6,12 +6,15 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
 
   loader.on!
 
+  console.log "fetch auth data ..."
   auth.fetch!
     .then (g) ->
       [path,type,slug] = /^\/([ob])\/([^/]+)\/admin/.exec(window.location.pathname) or []
       hint = {} <<< (if type => (if type == \o => {org: slug} else {brd: slug}) else {})
+      console.log "fetch sidemenu information ... "
       ld$.fetch '/d/toc/', {method: \POST}, {json: hint, type: \json}
         .then (toc) ->
+          console.log "initialization ..."
           init toc
             .catch (e) -> # standalone catch for capturing execution error
               console.log "admin init error", e
@@ -24,7 +27,7 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
     toc.doc = {}
     <[org brd brds brdsFiltered grps]>.map -> toc[it] = toc[it] or []
     toc.brdsFiltered = toc.brds or []
-    console.log toc
+    console.log "sidemenu information: ", toc
     
     prepare-sharedb toc
       .then ({org,brd}) ->
@@ -47,6 +50,7 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
     fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
 
   prepare-sharedb = (toc) ->
+    console.log "prepare sharedb ..."
     sdb = sdb = new sharedb-wrapper do
       url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
     sdb.on \close, ->
@@ -57,11 +61,11 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
 
     hubs = org: new Hub({sdb}), brd: new Hub({sdb})
 
-    watch = ->
     prepare = ->
-      console.log "preparing sharedb documents ... "
+      console.log "preparing sharedb document (org) ... "
       sdb.get {id: "org-#{toc.org.key}", watch: (ops,source) -> org.fire \change, {ops,source} }
         .then (doc) -> hubs.org.doc = doc
+        .then -> console.log "preparing sharedb document (brd) ... "
         .then -> sdb.get {id: "brd-#{toc.brd.key}", watch: (ops,source) -> hubs.brd.fire \change, {ops.source}}
         .then (doc) -> hubs.brd.doc = doc
         .then -> hubs

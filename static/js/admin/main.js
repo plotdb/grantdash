@@ -4,6 +4,7 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
   var auth, loader, sdbAdapter, adminMenu, adminPanel, adminInfo, adminStage, adminPerm, adminNavbar, init, Hub, prepareSharedb;
   auth = arg$.auth, loader = arg$.loader, sdbAdapter = arg$.sdbAdapter, adminMenu = arg$.adminMenu, adminPanel = arg$.adminPanel, adminInfo = arg$.adminInfo, adminStage = arg$.adminStage, adminPerm = arg$.adminPerm, adminNavbar = arg$.adminNavbar;
   loader.on();
+  console.log("fetch auth data ...");
   auth.fetch().then(function(g){
     var ref$, path, type, slug, hint;
     ref$ = /^\/([ob])\/([^/]+)\/admin/.exec(window.location.pathname) || [], path = ref$[0], type = ref$[1], slug = ref$[2];
@@ -16,12 +17,14 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
           brd: slug
         }
       : {});
+    console.log("fetch sidemenu information ... ");
     return ld$.fetch('/d/toc/', {
       method: 'POST'
     }, {
       json: hint,
       type: 'json'
     }).then(function(toc){
+      console.log("initialization ...");
       return init(toc)['catch'](function(e){
         console.log("admin init error", e);
         return lda.ldcvmgr.toggle('error');
@@ -40,7 +43,7 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
       return toc[it] = toc[it] || [];
     });
     toc.brdsFiltered = toc.brds || [];
-    console.log(toc);
+    console.log("sidemenu information: ", toc);
     return prepareSharedb(toc).then(function(arg$){
       var org, brd, menu, info, stage, perm, navbar;
       org = arg$.org, brd = arg$.brd;
@@ -112,7 +115,8 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
     }
   });
   return prepareSharedb = function(toc){
-    var sdb, hubs, watch, prepare;
+    var sdb, hubs, prepare;
+    console.log("prepare sharedb ...");
     sdb = sdb = new sharedbWrapper({
       url: {
         scheme: window.location.protocol.replace(':', ''),
@@ -135,9 +139,8 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
         sdb: sdb
       })
     };
-    watch = function(){};
     prepare = function(){
-      console.log("preparing sharedb documents ... ");
+      console.log("preparing sharedb document (org) ... ");
       return sdb.get({
         id: "org-" + toc.org.key,
         watch: function(ops, source){
@@ -148,6 +151,8 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
         }
       }).then(function(doc){
         return hubs.org.doc = doc;
+      }).then(function(){
+        return console.log("preparing sharedb document (brd) ... ");
       }).then(function(){
         return sdb.get({
           id: "brd-" + toc.brd.key,
