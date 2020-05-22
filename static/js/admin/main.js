@@ -44,6 +44,14 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
     return prepareSharedb(toc).then(function(arg$){
       var org, brd, menu, info, stage, perm, navbar;
       org = arg$.org, brd = arg$.brd;
+      if (!brd.doc.data.page) {
+        brd.doc.submitOp([{
+          p: ["page"],
+          oi: {
+            navbar: {}
+          }
+        }]);
+      }
       menu = new adminMenu({
         toc: toc
       });

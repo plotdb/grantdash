@@ -12,28 +12,18 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
       : opt.root;
     this.obj = obj = {
       tree: {
-        children: [
-          {
-            name: "活動辦法",
-            url: "/about"
-          }, {
-            name: "關於我們"
-          }, {
-            name: "歷屆活動",
-            toggle: true,
-            children: [
-              {
-                name: "2018春季"
-              }, {
-                name: "2018秋季"
-              }
-            ]
-          }, {
-            name: "成果報告"
-          }
-        ]
+        children: []
       }
     };
+    /*
+    @obj = obj = tree: do
+      children: [
+        {name: "活動辦法", url: "/about"},
+        {name: "關於我們"},
+        {name: "歷屆活動", toggle: true, children: [ {name: "2018春季"}, {name: "2018秋季"} ]},
+        {name: "成果報告"}
+      ]
+    */
     this.node = {
       view: ld$.find(this.root, '[ld=folder-root]', 0),
       sample: ld$.find(this.root, '[ld-scope=folder-sample]', 0)
@@ -46,7 +36,8 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
       }
     });
     updateData = function(){
-      return this$.ops.out(function(){
+      return this$.opsOut(function(){
+        console.log("ops-out: ", obj.tree);
         return obj.tree;
       });
     };
@@ -57,17 +48,20 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
       rootData = data;
       return view = new ldView({
         root: node,
+        initRender: false,
         action: {
           input: {
             name: function(arg$){
               var node, evt;
               node = arg$.node, evt = arg$.evt;
-              return data.name = node.value;
+              data.name = node.value;
+              return updateData();
             },
             url: function(arg$){
               var node, evt;
               node = arg$.node, evt = arg$.evt;
-              return data.url = node.value;
+              data.url = node.value;
+              return updateData();
             }
           },
           click: {
@@ -265,6 +259,34 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
     opsIn: function(arg$){
       var data;
       data = arg$.data;
+      console.log("ops-in: ", data);
+      if (!data.children) {
+        this.obj.tree = {
+          children: [
+            {
+              name: "活動辦法",
+              url: "/about"
+            }, {
+              name: "關於我們"
+            }, {
+              name: "歷屆活動",
+              toggle: true,
+              children: [
+                {
+                  name: "2018春季"
+                }, {
+                  name: "2018秋季"
+                }
+              ]
+            }, {
+              name: "成果報告"
+            }
+          ]
+        };
+      } else {
+        import$(this.obj.tree, data);
+      }
+      return this.view.root.render();
     }
   });
   return Ctrl;

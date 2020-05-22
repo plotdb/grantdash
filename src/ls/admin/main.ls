@@ -28,6 +28,8 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
     
     prepare-sharedb toc
       .then ({org,brd}) ->
+        # TODO initialization here? 
+        if !brd.doc.data.page => brd.doc.submitOp [{p: ["page"], oi: {navbar: {}}}]
         menu = new admin-menu {toc}
         menu.adapt  {hub: brd, path: <[group]>}
         info = new admin-info root: '[ld-scope=brd-info]', type: \brd

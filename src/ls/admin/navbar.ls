@@ -3,6 +3,8 @@
 Ctrl = (opt) ->
   @ <<< {opt: opt, view: {}, node: {}}
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
+  @obj = obj = tree: {children: []}
+  /*
   @obj = obj = tree: do
     children: [
       {name: "活動辦法", url: "/about"},
@@ -10,6 +12,7 @@ Ctrl = (opt) ->
       {name: "歷屆活動", toggle: true, children: [ {name: "2018春季"}, {name: "2018秋季"} ]},
       {name: "成果報告"}
     ]
+  */
 
   @node = do
     view: ld$.find(@root, '[ld=folder-root]', 0)
@@ -19,17 +22,24 @@ Ctrl = (opt) ->
     root: @node.sample
     handler: {item: (->), folder: (->)}
 
-  update-data = ~> @ops.out ~> obj.tree
+  update-data = ~> @ops-out ~>
+    console.log "ops-out: ", obj.tree
+    obj.tree
 
   render-folder = ({node, data, parent}) ~>
     rn = node
     root-data = data
     view = new ldView do
       root: node
+      init-render: false
       action:
         input: do
-          name: ({node, evt}) -> data.name = node.value
-          url: ({node, evt}) -> data.url = node.value
+          name: ({node, evt}) ->
+            data.name = node.value
+            update-data!
+          url: ({node, evt}) ->
+            data.url = node.value
+            update-data!
         click: do
           clone: ({node, evt}) ~>
             idx = rn.pdata.children.indexOf(data)
@@ -132,7 +142,17 @@ Ctrl = (opt) ->
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data}) ->
-    #@obj.tree = JSON.parse(JSON.stringify(data))
+    console.log "ops-in: ", data
+    if !data.children =>
+      @obj.tree = do
+        children: [
+          {name: "活動辦法", url: "/about"},
+          {name: "關於我們"},
+          {name: "歷屆活動", toggle: true, children: [ {name: "2018春季"}, {name: "2018秋季"} ]},
+          {name: "成果報告"}
+        ]
+    else @obj.tree <<< data
+    @view.root.render!
 
     #for k,v of data => @form.fields[k].value = v
 
