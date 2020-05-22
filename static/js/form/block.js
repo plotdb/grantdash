@@ -251,13 +251,17 @@
             var node;
             node = arg$.node;
             node.innerText = data.title;
-            return node.removeAttribute('editable');
+            if (viewMode) {
+              return node.removeAttribute('editable');
+            }
           },
           desc: function(arg$){
             var node;
             node = arg$.node;
             node.innerText = data.desc;
-            return node.removeAttribute('editable');
+            if (viewMode) {
+              return node.removeAttribute('editable');
+            }
           },
           'switch': function(arg$){
             var node;

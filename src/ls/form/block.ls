@@ -111,10 +111,10 @@
             node.classList.toggle \invalid, !is-valid
           title: ({node}) ->
             node.innerText = data.title
-            node.removeAttribute \editable
+            if view-mode => node.removeAttribute \editable
           desc: ({node}) ->
             node.innerText = data.desc
-            node.removeAttribute \editable
+            if view-mode => node.removeAttribute \editable
           switch: ({node}) -> node.classList.toggle \on, !!data.{}config[node.getAttribute(\data-name)]
           "edit-only": ({node}) -> if view-mode => node.remove!
           "list-input": ({node}) -> node.setAttribute \name, "input-#{data.key}"

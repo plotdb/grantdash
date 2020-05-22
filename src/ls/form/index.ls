@@ -2,7 +2,7 @@
   ldc.register \prjForm,
   <[prjFormCriteria prjFormBlock prjFormValidation]>,
   ({prj-form-criteria, prj-form-block, prj-form-validation}) ->
-    view-mode = true
+    view-mode = false
     lc = {view: false}
 
     bmgr = do

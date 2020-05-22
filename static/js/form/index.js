@@ -3,7 +3,7 @@
   ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation'], function(arg$){
     var prjFormCriteria, prjFormBlock, prjFormValidation, viewMode, lc, bmgr, fillData, validate, update, blocksView, n, reb, progress, viewer, renderAnswer, viewAnswer;
     prjFormCriteria = arg$.prjFormCriteria, prjFormBlock = arg$.prjFormBlock, prjFormValidation = arg$.prjFormValidation;
-    viewMode = true;
+    viewMode = false;
     lc = {
       view: false
     };
