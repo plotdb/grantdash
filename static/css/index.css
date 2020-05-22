@@ -215,3 +215,7 @@ input.form-control {
 .admin-menu [ld=brd-list-toggle].on {
   transform: rotate(180deg);
 }
+[contenteditable]:focus {
+  box-shadow: 0 0 5px 4px rgba(0,128,255,0.2);
+  outline: 3px solid #fff;
+}
