@@ -85,3 +85,9 @@ block script
   +script("/js/form/criteria.js")
   +script("/js/form/block.js")
   +script("/js/form/validator.js")
+  +script("/js/admin/sdb-adapter.js")
+  script: :lsc
+    (->
+      ldc.register <[prjForm]>, ({prj-form}) ->
+        ctrl = new prj-form {view-mode: true}
+    )!
