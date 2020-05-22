@@ -33,7 +33,7 @@ ldc.register('sdbAdapter', [], function(){
       o = this.doc.data;
       for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
         n = ref$[i$];
-        o = o[n] || (o[n] = {});
+        o = o[n] || {};
       }
       this.watch({
         data: o
@@ -49,14 +49,14 @@ ldc.register('sdbAdapter', [], function(){
       o = this.doc.data;
       for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
         n = ref$[i$];
-        o = o[n] || (o[n] = {});
+        o = o[n] || {};
       }
       return this.watch({
         data: o
       });
     },
     update: function(ops){
-      var cur, this$ = this;
+      var cur, o, p, i$, ref$, len$, n, this$ = this;
       if (!this.sdb) {
         return;
       }
@@ -74,6 +74,19 @@ ldc.register('sdbAdapter', [], function(){
         ops.map(function(it){
           return it.p = this$.path.concat(it.p);
         });
+        o = this.doc.data;
+        p = [];
+        for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
+          n = ref$[i$];
+          p.push(n);
+          if (!o[n]) {
+            ops = [{
+              p: JSON.parse(JSON.stringify(p)),
+              oi: {}
+            }].concat(ops);
+          }
+          o = o[n] || {};
+        }
         return this.doc.submitOp(ops);
       }
     },
@@ -86,7 +99,7 @@ ldc.register('sdbAdapter', [], function(){
         o = this.doc.data;
         for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
           n = ref$[i$];
-          o = o[n] || (o[n] = {});
+          o = o[n] || {};
         }
         this.data = o;
       }

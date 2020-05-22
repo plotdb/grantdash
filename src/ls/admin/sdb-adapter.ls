@@ -21,13 +21,13 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
     @hub = hub
     @ <<< hub{sdb, doc}
     o = @doc.data
-    for n in @path => o = o{}[n]
+    for n in @path => o = (o[n] or {})
     @watch {data: o}
     @hub.on \change, ~> @watch it
   set: ({path}) ->
     @path = path
     o = @doc.data
-    for n in @path => o = o{}[n]
+    for n in @path => o = (o[n] or {})
     @watch {data: o}
   update: (ops) ->
     if !@sdb => return
@@ -38,13 +38,19 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
       @update ops
     else if Array.isArray(ops) and ops.length =>
       ops.map ~> it.p = @path ++ it.p
+      o = @doc.data
+      p = []
+      for n in @path =>
+        p.push n
+        if !o[n] => ops = [{p: JSON.parse(JSON.stringify(p)), oi: {}}] ++ ops
+        o = (o[n] or {})
       @doc.submitOp ops
 
   watch: ({ops, data, source}) ->
     if data => @data = data
     else
       o = @doc.data
-      for n in @path => o = o{}[n]
+      for n in @path => o = (o[n] or {})
       @data = o
     # force update all fields. not effecient.
     @fire \change, {ops, data, source}
