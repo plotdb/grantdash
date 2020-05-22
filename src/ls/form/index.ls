@@ -5,14 +5,19 @@
 Ctrl = (opt) ->
   @opt = opt
   @view-mode = view-mode = opt.view-mode
+  @obj = obj = {list: []}
+  #@obj.list = sample-blocks
   lc = {view: false}
   hub = do
-    update: (block) ->
+    update: (block) ~>
       if view-mode =>
         fill-data[block.key] = block.value
         console.log "[update]", fill-data
         validate block
-      else blocks-view.render!
+      else
+        console.log "[update]", @obj.list
+        @ops-out ~> @obj.list
+        blocks-view.render!
     render: ->
 
 
@@ -32,20 +37,20 @@ Ctrl = (opt) ->
   update = (block) -> hub.update block
 
   setInterval (->
-    console.log sample-blocks.length, JSON.stringify(sample-blocks)
+    console.log obj.list.length, JSON.stringify(obj.list)
   ), 3000
   blocks-view = new ldView do
     root: '#form'
     handler:
       block: do
-        list: -> sample-blocks
+        list: -> obj.list
         init: ({node, data}) ->
           bmgr.get(data.name).then (n) ->
             n = n.childNodes.0
             n.parentNode.removeChild n
             node.innerHTML = ""
             node.appendChild n
-            prj-form-block.render {node, root-data: sample-blocks, data, view-mode, update}
+            prj-form-block.render {node, root-data: obj.list, data, view-mode, update}
             if !view-mode => prj-form-criteria.render {node, data}
         handler: ({node, data}) ->
           if node.view => node.view.block.render!
@@ -69,7 +74,7 @@ Ctrl = (opt) ->
           config: {required: true}, criteria: [{type: \number, op: \between, input1: 10, input2: 20, invalid: '應介於 10 ~ 20 之間'}]
         node._data = new-data
         idx = Array.from(node.parentNode).indexOf(node)
-        sample-blocks.splice idx, 0, new-data
+        obj.list.splice idx, 0, new-data
         blocks-view.bind-each-node {name: \block, container: node.parentNode, node: node}
         blocks-view.render!
 
@@ -81,10 +86,10 @@ Ctrl = (opt) ->
           while n and !n._data => n = n.parentNode
           # no n? it's a block.
           if !n =>
-            ia = sample-blocks.indexOf(src._data)
-            sample-blocks.splice ia, 1
-            ib = if ib => sample-blocks.indexOf(ib._data) else sample-blocks.length
-            sample-blocks.splice ib, 0, src._data
+            ia = obj.list.indexOf(src._data)
+            obj.list.splice ia, 1
+            ib = if ib => obj.list.indexOf(ib._data) else obj.list.length
+            obj.list.splice ib, 0, src._data
             blocks-view.render!
             return
           # otherwise - n is block.
@@ -96,9 +101,9 @@ Ctrl = (opt) ->
 
   if view-mode =>
     progress = ->
-      done = sample-blocks.filter(-> it.{}valid.result).length
-      total = sample-blocks.length
-      percent = ( done / sample-blocks.length )
+      done = obj.list.filter(-> it.{}valid.result).length
+      total = obj.list.length
+      percent = ( done / obj.list.length )
       remain = total - done
       return {remain, done, total, percent}
 
@@ -111,9 +116,9 @@ Ctrl = (opt) ->
           view-answer.render!
         invalid: ->
           filled = [k for k of fill-data]
-          for i from 0 til sample-blocks.length =>
-            if !("#{sample-blocks[i].key}" in filled) => break
-          node = ld$.find("\#block-#{sample-blocks[i].key}",0)
+          for i from 0 til obj.list.length =>
+            if !("#{obj.list[i].key}" in filled) => break
+          node = ld$.find("\#block-#{obj.list[i].key}",0)
           if node => scrollto node
       handler: do
         nview: ({node}) -> node.classList.toggle \d-none, lc.view
@@ -145,7 +150,7 @@ Ctrl = (opt) ->
       root: document.body
       handler: do
         answer: do
-          list: -> sample-blocks
+          list: -> obj.list
           init: ({node, data}) ->
             node.view = new ldView do
               root: node
@@ -162,6 +167,9 @@ Ctrl = (opt) ->
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
-  ops-in: ({data}) -> for k,v of data => @form.fields[k].value = v
+  ops-in: ({data,ops,source}) ->
+    if source => return
+    console.log data
+    @obj.list = JSON.parse(JSON.stringify(data))
 
 return Ctrl

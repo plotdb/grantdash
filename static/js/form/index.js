@@ -3,9 +3,12 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
   var prjFormCriteria, prjFormBlock, prjFormValidation, sdbAdapter, Ctrl;
   prjFormCriteria = arg$.prjFormCriteria, prjFormBlock = arg$.prjFormBlock, prjFormValidation = arg$.prjFormValidation, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var viewMode, lc, hub, bmgr, fillData, validate, update, blocksView, n, reb, progress, viewer, renderAnswer, viewAnswer;
+    var viewMode, obj, lc, hub, bmgr, fillData, validate, update, blocksView, n, reb, progress, viewer, renderAnswer, viewAnswer, this$ = this;
     this.opt = opt;
     this.viewMode = viewMode = opt.viewMode;
+    this.obj = obj = {
+      list: []
+    };
     lc = {
       view: false
     };
@@ -16,6 +19,10 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
           console.log("[update]", fillData);
           return validate(block);
         } else {
+          console.log("[update]", this$.obj.list);
+          this$.opsOut(function(){
+            return this$.obj.list;
+          });
           return blocksView.render();
         }
       },
@@ -52,14 +59,14 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       return hub.update(block);
     };
     setInterval(function(){
-      return console.log(sampleBlocks.length, JSON.stringify(sampleBlocks));
+      return console.log(obj.list.length, JSON.stringify(obj.list));
     }, 3000);
     blocksView = new ldView({
       root: '#form',
       handler: {
         block: {
           list: function(){
-            return sampleBlocks;
+            return obj.list;
           },
           init: function(arg$){
             var node, data;
@@ -71,7 +78,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
               node.appendChild(n);
               prjFormBlock.render({
                 node: node,
-                rootData: sampleBlocks,
+                rootData: obj.list,
                 data: data,
                 viewMode: viewMode,
                 update: update
@@ -133,7 +140,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
           };
           node._data = newData;
           idx = Array.from(node.parentNode).indexOf(node);
-          sampleBlocks.splice(idx, 0, newData);
+          obj.list.splice(idx, 0, newData);
           blocksView.bindEachNode({
             name: 'block',
             container: node.parentNode,
@@ -150,12 +157,12 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
               n = n.parentNode;
             }
             if (!n) {
-              ia = sampleBlocks.indexOf(src._data);
-              sampleBlocks.splice(ia, 1);
+              ia = obj.list.indexOf(src._data);
+              obj.list.splice(ia, 1);
               ib = ib
-                ? sampleBlocks.indexOf(ib._data)
-                : sampleBlocks.length;
-              sampleBlocks.splice(ib, 0, src._data);
+                ? obj.list.indexOf(ib._data)
+                : obj.list.length;
+              obj.list.splice(ib, 0, src._data);
               blocksView.render();
               return;
             }
@@ -174,11 +181,11 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
     if (viewMode) {
       progress = function(){
         var done, total, percent, remain;
-        done = sampleBlocks.filter(function(it){
+        done = obj.list.filter(function(it){
           return (it.valid || (it.valid = {})).result;
         }).length;
-        total = sampleBlocks.length;
-        percent = done / sampleBlocks.length;
+        total = obj.list.length;
+        percent = done / obj.list.length;
         remain = total - done;
         return {
           remain: remain,
@@ -203,13 +210,13 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
                 res$.push(k);
               }
               filled = res$;
-              for (i$ = 0, to$ = sampleBlocks.length; i$ < to$; ++i$) {
+              for (i$ = 0, to$ = obj.list.length; i$ < to$; ++i$) {
                 i = i$;
-                if (!in$(sampleBlocks[i].key + "", filled)) {
+                if (!in$(obj.list[i].key + "", filled)) {
                   break;
                 }
               }
-              node = ld$.find("#block-" + sampleBlocks[i].key, 0);
+              node = ld$.find("#block-" + obj.list[i].key, 0);
               if (node) {
                 return scrollto(node);
               }
@@ -283,7 +290,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
         handler: {
           answer: {
             list: function(){
-              return sampleBlocks;
+              return obj.list;
             },
             init: function(arg$){
               var node, data;
@@ -330,13 +337,13 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
     opsIn: function(arg$){
-      var data, k, v, results$ = [];
-      data = arg$.data;
-      for (k in data) {
-        v = data[k];
-        results$.push(this.form.fields[k].value = v);
+      var data, ops, source;
+      data = arg$.data, ops = arg$.ops, source = arg$.source;
+      if (source) {
+        return;
       }
-      return results$;
+      console.log(data);
+      return this.obj.list = JSON.parse(JSON.stringify(data));
     }
   });
   return Ctrl;

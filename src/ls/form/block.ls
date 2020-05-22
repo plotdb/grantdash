@@ -94,7 +94,10 @@
           input: do
             title: ({node, evt}) ->
               data.title = node.innerText
-            desc: ({node, evt}) -> data.desc = node.innerText
+              update!
+            desc: ({node, evt}) ->
+              data.desc = node.innerText
+              updaate!
           click: do
             switch: ({node, evt}) ->
               node.classList.toggle \on

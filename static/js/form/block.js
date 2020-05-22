@@ -205,12 +205,14 @@
             title: function(arg$){
               var node, evt;
               node = arg$.node, evt = arg$.evt;
-              return data.title = node.innerText;
+              data.title = node.innerText;
+              return update();
             },
             desc: function(arg$){
               var node, evt;
               node = arg$.node, evt = arg$.evt;
-              return data.desc = node.innerText;
+              data.desc = node.innerText;
+              return updaate();
             }
           },
           click: {
