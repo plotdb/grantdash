@@ -268,7 +268,9 @@
           title: function(arg$){
             var node;
             node = arg$.node;
-            node.innerText = lc.data.title;
+            if (node.innerText !== lc.data.title) {
+              node.innerText = lc.data.title;
+            }
             if (viewMode) {
               return node.removeAttribute('editable');
             }
@@ -276,7 +278,9 @@
           desc: function(arg$){
             var node;
             node = arg$.node;
-            node.innerText = lc.data.desc;
+            if (node.innerText !== lc.data.desc) {
+              node.innerText = lc.data.desc;
+            }
             if (viewMode) {
               return node.removeAttribute('editable');
             }

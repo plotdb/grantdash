@@ -126,10 +126,10 @@
             is-valid = (!(lc.data.{}valid.result?) or lc.data.valid.result)
             node.classList.toggle \invalid, !is-valid
           title: ({node}) ->
-            node.innerText = lc.data.title
+            if node.innerText != lc.data.title => node.innerText = lc.data.title
             if view-mode => node.removeAttribute \editable
           desc: ({node}) ->
-            node.innerText = lc.data.desc
+            if node.innerText != lc.data.desc => node.innerText = lc.data.desc
             if view-mode => node.removeAttribute \editable
           switch: ({node}) -> node.classList.toggle \on, !!lc.data.{}config[node.getAttribute(\data-name)]
           "edit-only": ({node}) -> if view-mode => node.remove!

@@ -11010,14 +11010,18 @@ var slice$ = [].slice;
     procEach: function(name, data){
       var list, getkey, hash, items, nodes, lastidx, ret, ns, this$ = this;
       list = this.handler[name].list() || [];
-      getkey = this.handler[name].key || function(it){
-        return it;
-      };
+      getkey = this.handler[name].key;
       hash = {};
-      list.map(function(it){
-        return hash[getkey(it)] = it;
-      });
       items = [];
+      if (getkey) {
+        list.map(function(it){
+          return hash[getkey(it)] = it;
+        });
+      } else {
+        getkey = function(it){
+          return it;
+        };
+      }
       nodes = data.nodes.filter(function(it){
         return it;
       }).map(function(n){
@@ -11041,7 +11045,6 @@ var slice$ = [].slice;
         if ((j = items.indexOf(getkey(n))) >= 0) {
           node = nodes[lastidx = j];
           node._data = n;
-          console.log(node._data);
           if (!node._obj) {
             node._obj = {
               node: node,
