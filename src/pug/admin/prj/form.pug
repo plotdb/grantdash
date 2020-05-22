@@ -1,9 +1,9 @@
 //- module
-.d-none: include subblock.pug
-include timeline.pug
+include /form/timeline.pug
 +scope("prj-form").d-flex
-  #form.flex-grow-1(hostable): div(ld-each="block",draggable="true")
-  +scope("blocksrc").ml-4(ld="blocksrc")
+  .d-none(ld="form-sample"): include /form/subblock.pug
+  .flex-grow-1(ld="form-list",hostable): div(ld-each="block",draggable="true")
+  .ml-4(ld="blocksrc")
     .sticky(style="top:60px")
       .list-group.shadow-sm.mb-4
         .list-group-item.clickable.text-nowrap(
