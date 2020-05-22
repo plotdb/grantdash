@@ -97,7 +97,7 @@
               update!
             desc: ({node, evt}) ->
               data.desc = node.innerText
-              updaate!
+              update!
           click: do
             switch: ({node, evt}) ->
               node.classList.toggle \on

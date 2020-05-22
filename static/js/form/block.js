@@ -212,7 +212,7 @@
               var node, evt;
               node = arg$.node, evt = arg$.evt;
               data.desc = node.innerText;
-              return updaate();
+              return update();
             }
           },
           click: {
