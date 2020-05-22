@@ -161,6 +161,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
           {name: "歷屆活動", toggle: true, children: [ {name: "2018春季"}, {name: "2018秋季"} ]},
           {name: "成果報告"}
         ]
+    # clone it, otherwise editing will be directly over the original data and there won't be diff result
     else @obj.tree = JSON.parse(JSON.stringify(data))
     @view.root.render!
 
