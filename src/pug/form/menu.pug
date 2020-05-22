@@ -1,0 +1,42 @@
+doctype html
+include /../../static/assets/lib/ldui/pug/ldui.pug
+html
+  head
+    +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
+    +css("/assets/lib/ldui/ldui.min.css")
+    +css("/assets/lib/ldui/ext/folder.min.css")
+    +css("/css/index.css")
+    +script("/assets/lib/ldui/ldui.min.js")
+    +script("/assets/lib/ldc/ldc.min.js")
+
+  body
+
+    .w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
+      +scope("navbar-editor")
+        .d-none(ld="folder-sample")
+          div(ld="item"): .folder-item
+            .inner.d-flex.align-items-center
+              i.i-bars.mr-4
+              .name.flex-grow-1.mr-2: input.form-control(ld="name",name="name",placeholder="選單文字")
+              .url.flex-grow-1: input.form-control(ld="url",name="url",placeholder="URL")
+              i.i-radio.ml-4(ld="toggle-fold")
+              i.i-clone.ml-4(ld="clone")
+              i.i-close.ml-4.mr-4(ld="delete")
+          div(ld="folder"): .folder.show(draggable="true")
+            .folder-item
+            .folder-menu
+              div(ld-each="list")
+        .folder-root(ld="folder-root")
+          div(ld-each="list")
+
+
+
+    +script("/assets/lib/ctrlz/ctrlz.bundle.min.js")
+    script: :lsc
+      json0OtDiff = require("json0-ot-diff")
+      otJson0 = require("ot-json0")
+    +script("/assets/lib/ldui/ext/folder.min.js")
+    +script("/js/reblock/form-reblock.js")
+    +script("/js/admin/navbar.js")
+    script: :lsc
+      ldc.app \admin-navbar

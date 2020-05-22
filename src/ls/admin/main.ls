@@ -1,8 +1,8 @@
 ldc.register \adminGuard,
 <[auth loader sdbAdapter
-adminMenu adminPanel adminInfo adminStage adminPerm]>,
+adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar]>,
 ({auth, loader, sdbAdapter,
-admin-menu, admin-panel, admin-info, admin-stage, admin-perm}) ->
+admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar}) ->
 
   loader.on!
 

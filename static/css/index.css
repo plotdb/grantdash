@@ -197,6 +197,9 @@ input.form-control {
   box-shadow: 0 1px 1px rgba(0,0,0,0.1);
   padding: 0.5em;
 }
+[ld-scope=navbar-editor] .folder > .folder-item .url {
+  display: none;
+}
 .admin-menu {
   width: 200px;
   overflow-y: scroll;
