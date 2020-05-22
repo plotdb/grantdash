@@ -195,8 +195,8 @@
       "form-short-answer": renderTextarea
     };
     render = function(arg$){
-      var node, data, viewMode, update;
-      node = arg$.node, data = arg$.data, viewMode = arg$.viewMode, update = arg$.update;
+      var node, data, rootData, viewMode, update;
+      node = arg$.node, data = arg$.data, rootData = arg$.rootData, viewMode = arg$.viewMode, update = arg$.update;
       node.setAttribute('id', "block-" + data.key);
       (node.view || (node.view = {})).block = new ldView({
         root: node,
@@ -218,16 +218,22 @@
               var node, evt;
               node = arg$.node, evt = arg$.evt;
               node.classList.toggle('on');
-              return (data.config || (data.config = {}))[node.getAttribute('data-name')] = node.classList.contains('on');
+              (data.config || (data.config = {}))[node.getAttribute('data-name')] = node.classList.contains('on');
+              return update();
             },
             'delete': function(arg$){
               var node, evt;
               node = arg$.node, evt = arg$.evt;
+              rootData.splice(rootData.indexOf(data), 1);
+              return update();
             },
             clone: function(arg$){
-              var node, evt;
+              var node, evt, newData;
               node = arg$.node, evt = arg$.evt;
-              return console.log(data);
+              newData = JSON.parse(JSON.stringify(data));
+              newData.key = Math.random().toString(36).substring(2);
+              rootData.splice(rootData.indexOf(data), 0, newData);
+              return update();
             }
           }
         },

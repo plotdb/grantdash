@@ -86,7 +86,7 @@
 
     # block sample data:
     #   {title: "提問的標題", desc: "提問的描述", config: {required: true}}
-    render = ({node, data, view-mode, update}) ->
+    render = ({node, data, root-data, view-mode, update}) ->
       node.setAttribute \id, "block-#{data.key}"
       node.{}view.block = new ldView do
         root: node
@@ -99,8 +99,15 @@
             switch: ({node, evt}) ->
               node.classList.toggle \on
               data.{}config[node.getAttribute(\data-name)] = node.classList.contains(\on)
+              update!
             delete: ({node, evt}) ->
-            clone: ({node, evt}) -> console.log data
+              root-data.splice(root-data.indexOf(data), 1)
+              update!
+            clone: ({node, evt}) ->
+              new-data = JSON.parse(JSON.stringify(data))
+              new-data.key = Math.random!toString(36)substring(2)
+              root-data.splice(root-data.indexOf(data), 0, new-data )
+              update!
         handler: do
           invalid: ({node}) ->
             is-valid = (!(data.{}valid.result?) or data.valid.result)

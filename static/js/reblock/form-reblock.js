@@ -409,6 +409,11 @@ var slice$ = [].slice;
       if (data && !name) {
         name = data.name;
       }
+      if (this.action.beforeInject && this.action.beforeInject({
+        name: name
+      })) {
+        return Promise.resolve();
+      }
       return new Promise(function(res, rej){
         return this$.blockmgr.get(name).then(function(newNode){
           var s, h;
@@ -429,10 +434,16 @@ var slice$ = [].slice;
           setTimeout(function(){
             return newNode.style.height = h;
           }, 0);
-          return debounce(150).then(function(){
+          debounce(150).then(function(){
             newNode.style.transition = "";
             return newNode.style.height = "";
           });
+          if (this$.action.afterInject) {
+            return this$.action.afterInject({
+              node: newNode,
+              name: name
+            });
+          }
         }).then(function(){
           return res();
         })['catch'](function(it){

@@ -4,6 +4,15 @@
   ({prj-form-criteria, prj-form-block, prj-form-validation}) ->
     view-mode = false
     lc = {view: false}
+    hub = do
+      update: (block) ->
+        if view-mode =>
+          fill-data[block.key] = block.value
+          console.log "[update]", fill-data
+          validate block
+        else blocks-view.render!
+      render: ->
+
 
     bmgr = do
       get: (name) -> new Promise (res, rej) ->
@@ -18,12 +27,11 @@
       block.valid = prj-form-validation.validate block
       blocks-view.render!
       if viewer => viewer.render!
-    update = (block) -> 
-      if view-mode =>
-        fill-data[block.key] = block.value
-        console.log "[update]", fill-data
-        validate block
+    update = (block) -> hub.update block
 
+    setInterval (->
+      console.log sample-blocks.length, JSON.stringify(sample-blocks)
+    ), 3000
     blocks-view = new ldView do
       root: '#form'
       handler:
@@ -35,7 +43,7 @@
               n.parentNode.removeChild n
               node.innerHTML = ""
               node.appendChild n
-              prj-form-block.render {node, data, view-mode, update}
+              prj-form-block.render {node, root-data: sample-blocks, data, view-mode, update}
               if !view-mode => prj-form-criteria.render {node, data}
           handler: ({node, data}) ->
             if node.view => node.view.block.render!
@@ -52,11 +60,32 @@
       root: '#form'
       block-manager: bmgr
       action: do
+        afterInject: ({node, name}) ->
+          new-data = do
+            key: Math.random!toString(36)substring(2)
+            name: name, title: "提問的標題1", desc: "提問的描述"
+            config: {required: true}, criteria: [{type: \number, op: \between, input1: 10, input2: 20, invalid: '應介於 10 ~ 20 之間'}]
+          node._data = new-data
+          idx = Array.from(node.parentNode).indexOf(node)
+          sample-blocks.splice idx, 0, new-data
+          blocks-view.bind-each-node {name: \block, container: node.parentNode, node: node}
+          blocks-view.render!
+
+
+
         afterMoveNode: ({src, des, ib}) ->
           if src.parentNode.hasAttribute(\hostable) =>
             n = src.parentNode
             while n and !n._data => n = n.parentNode
-            if !n => return
+            # no n? it's a block.
+            if !n =>
+              ia = sample-blocks.indexOf(src._data)
+              sample-blocks.splice ia, 1
+              ib = if ib => sample-blocks.indexOf(ib._data) else sample-blocks.length
+              sample-blocks.splice ib, 0, src._data
+              blocks-view.render!
+              return
+            # otherwise - n is block.
             n._data.data = Array.from(src.parentNode.childNodes)
               .filter(->it.nodeType == 1 )
               .map(-> it._data)

@@ -11030,7 +11030,16 @@ var slice$ = [].slice;
       ret = list.map(function(n, i){
         var j, node;
         if ((j = items.indexOf(n)) >= 0) {
-          return nodes[lastidx = j];
+          node = nodes[lastidx = j];
+          if (!node._obj) {
+            node._obj = {
+              node: node,
+              name: name,
+              data: n,
+              idx: i
+            };
+          }
+          return node;
         }
         node = data.node.cloneNode(true);
         node._data = n;

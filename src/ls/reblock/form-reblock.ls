@@ -217,6 +217,7 @@
       if t == n => n = null
 
       if data and !name => name = data.name
+      if @action.beforeInject and @action.beforeInject({name}) => return Promise.resolve!
       new Promise (res, rej) ~>
         @blockmgr.get(name)
           .then (new-node) ~>
@@ -228,6 +229,7 @@
             new-node.style.transition = "height .15s ease-in-out"
             setTimeout (-> new-node.style.height = h), 0
             debounce 150 .then -> new-node.style.transition = ""; new-node.style.height = ""
+            if @action.afterInject => @action.afterInject {node: new-node, name}
           .then -> res!
           .catch -> rej it
 
