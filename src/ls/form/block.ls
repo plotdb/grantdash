@@ -23,7 +23,7 @@
               update data
           click: do
             "list-add": ->
-              local-data.[]data.push {title: "某個點", desc: "某個點的描述"}
+              local-data.[]data.push {title: "新項目", desc: "關於這個項目的描述 ... "}
               update data
               view.render!
             "list-other-option": ({node}) ->

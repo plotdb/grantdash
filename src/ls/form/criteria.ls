@@ -78,14 +78,14 @@
                 action: input: do
                   input1: ({node}) -> data.input1 = ld$.find(node, 'input', 0).value
                   input2: ({node}) -> data.input2 = ld$.find(node, 'input', 0).value
-                  invalid: ({node}) ->
+                  "input-invalid": ({node}) ->
                     data.invalid = node.value
                 handler: do
                   input1: ({node}) -> ld$.find(node, 'input', 0).value = data.input1 or ''
                   input2: ({node}) ->
                     node.classList.toggle \d-none, ((get-op!field or 1) < 2)
                     ld$.find(node, 'input', 0).value = data.input2 or ''
-                  invalid: ({node}) -> node.value = data.invalid or ''
+                  "input-invalid": ({node}) -> node.value = data.invalid or ''
                   type: ({node}) ->
                     node.innerText = schema.types[get-type!].name
                   op: ({node}) -> node.innerHTML = get-op!name

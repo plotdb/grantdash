@@ -195,7 +195,7 @@
                       node = arg$.node;
                       return data.input2 = ld$.find(node, 'input', 0).value;
                     },
-                    invalid: function(arg$){
+                    "input-invalid": function(arg$){
                       var node;
                       node = arg$.node;
                       return data.invalid = node.value;
@@ -214,7 +214,7 @@
                     node.classList.toggle('d-none', (getOp().field || 1) < 2);
                     return ld$.find(node, 'input', 0).value = data.input2 || '';
                   },
-                  invalid: function(arg$){
+                  "input-invalid": function(arg$){
                     var node;
                     node = arg$.node;
                     return node.value = data.invalid || '';

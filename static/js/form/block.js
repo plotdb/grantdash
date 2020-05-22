@@ -45,8 +45,8 @@
           click: {
             "list-add": function(){
               (localData.data || (localData.data = [])).push({
-                title: "某個點",
-                desc: "某個點的描述"
+                title: "新項目",
+                desc: "關於這個項目的描述 ... "
               });
               update(data);
               return view.render();
