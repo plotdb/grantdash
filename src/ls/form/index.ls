@@ -100,7 +100,7 @@ Ctrl = (opt) ->
             .filter(->it.nodeType == 1 )
             .map(-> it._data)
             .filter(->it)
-          n.view.list.render!
+          if n.view.module => n.view.module.render!
 
   if view-mode =>
     progress = ->

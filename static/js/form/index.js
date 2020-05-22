@@ -206,7 +206,9 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
             }).filter(function(it){
               return it;
             });
-            return n.view.list.render();
+            if (n.view.module) {
+              return n.view.module.render();
+            }
           }
         }
       }

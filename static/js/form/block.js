@@ -3,21 +3,21 @@
   return ldc.register('prjFormBlock', [], function(){
     var renderList, renderTextarea, module, lc, render, init;
     renderList = function(arg$){
-      var node, data, viewMode, update, localData, updateList, view;
+      var node, data, viewMode, update, localData, ref$, updateList, view;
       node = arg$.node, data = arg$.data, viewMode = arg$.viewMode, update = arg$.update;
       localData = data;
-      if (localData.name === 'form-checkpoint' && viewMode) {
+      if (lc.data.name === 'form-checkpoint' && viewMode) {
         if (!(data.value || (data.value = {})).list) {
-          (data.value || (data.value = {})).list = localData.data || (localData.data = []);
+          (data.value || (data.value = {})).list = (ref$ = lc.data).data || (ref$.data = []);
         } else {
-          localData.data = data.value.list;
+          lc.data.data = data.value.list;
         }
         ld$.find(node, '.timeline-list', 0).addEventListener('input', function(){
           return update(data);
         });
       }
       updateList = function(){
-        var ret;
+        var ret, ref$;
         ret = ld$.find(node, '[ld=list-input]').map(function(it){
           if (it.checked) {
             return it.getAttribute('data-name');
@@ -27,43 +27,45 @@
         }).filter(function(it){
           return it;
         });
-        (localData.value || (localData.value = {})).list = ret;
-        (localData.value || (localData.value = {})).other = !!ld$.find(node, '[ld=list-other-option]', 0).checked;
-        return update(localData);
+        ((ref$ = lc.data).value || (ref$.value = {})).list = ret;
+        ((ref$ = lc.data).value || (ref$.value = {})).other = !!ld$.find(node, '[ld=list-other-option]', 0).checked;
+        return update(lc.data);
       };
-      return (node.view || (node.view = {})).list = view = new ldView({
+      return (node.view || (node.view = {})).module = view = new ldView({
         root: node,
         action: {
           input: {
             "list-other": function(arg$){
-              var node;
+              var node, ref$;
               node = arg$.node;
-              (localData.value || (localData.value = {})).otherValue = node.value || '';
-              return update(data);
+              ((ref$ = lc.data).value || (ref$.value = {})).otherValue = node.value || '';
+              return update();
             }
           },
           click: {
             "list-add": function(){
-              (localData.data || (localData.data = [])).push({
+              var ref$;
+              ((ref$ = lc.data).data || (ref$.data = [])).push({
                 title: "新項目",
                 desc: "關於這個項目的描述 ... "
               });
-              update(data);
+              update();
               return view.render();
             },
             "list-other-option": function(arg$){
-              var node;
+              var node, ref$;
               node = arg$.node;
-              (localData.value || (localData.value = {})).other = node.checked;
+              ((ref$ = lc.data).value || (ref$.value = {})).other = node.checked;
+              update();
               return updateList();
             }
           }
         },
         handler: {
           "list-other": function(arg$){
-            var node;
+            var node, ref$;
             node = arg$.node;
-            return node.value = (localData.value || (localData.value = {})).otherValue || '';
+            return node.value = ((ref$ = lc.data).value || (ref$.value = {})).otherValue || '';
           },
           "list-other-option": function(arg$){
             var node;
@@ -72,7 +74,8 @@
           },
           list: {
             list: function(){
-              return localData.data || (localData.data = []);
+              var ref$;
+              return (ref$ = lc.data).data || (ref$.data = []);
             },
             init: function(arg$){
               var node, data, editable, view;
@@ -88,7 +91,8 @@
                     "list-data": function(arg$){
                       var node;
                       node = arg$.node;
-                      return data[node.getAttribute('data-name')] = node.innerText;
+                      data[node.getAttribute('data-name')] = node.innerText;
+                      return update();
                     },
                     "list-input": function(arg$){
                       var node;
@@ -111,7 +115,7 @@
                   "list-input": function(arg$){
                     var node;
                     node = arg$.node;
-                    node.setAttribute('name', "radio-" + localData.key);
+                    node.setAttribute('name', "radio-" + lc.data.key);
                     return node.setAttribute('data-name', data.title);
                   },
                   "list-data": function(arg$){
@@ -135,7 +139,7 @@
       var node, data, viewMode, update, lc, view;
       node = arg$.node, data = arg$.data, viewMode = arg$.viewMode, update = arg$.update;
       lc = {};
-      return view = new ldView({
+      return (node.view || (node.view = {})).module = view = new ldView({
         root: node,
         action: {
           input: {
@@ -200,7 +204,10 @@
       node = arg$.node, data = arg$.data, rootData = arg$.rootData, viewMode = arg$.viewMode, update = arg$.update;
       lc.data = data;
       lc.rootData = rootData;
-      return node.view.block.render();
+      node.view.block.render();
+      if (node.view.module) {
+        return node.view.module.render();
+      }
     };
     init = function(arg$){
       var node, data, rootData, viewMode, update;

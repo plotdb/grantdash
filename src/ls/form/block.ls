@@ -2,38 +2,39 @@
   ldc.register \prjFormBlock, [], ->
     render-list = ({node, data, view-mode, update}) ->
       local-data = data
-      if local-data.name == \form-checkpoint and view-mode =>
-        if !data.{}value.list => data.{}value.list = local-data.[]data else local-data.data = data.value.list
+      if lc.data.name == \form-checkpoint and view-mode =>
+        if !data.{}value.list => data.{}value.list = lc.data.[]data else lc.data.data = data.value.list
         ld$.find(node, '.timeline-list', 0).addEventListener \input, -> update data
       update-list = ->
         ret = ld$.find(node, '[ld=list-input]')
           .map -> if it.checked => it.getAttribute(\data-name) else null
           .filter -> it
-        local-data.{}value.list = ret
-        local-data.{}value.other = !!ld$.find(node, '[ld=list-other-option]',0).checked
-        update local-data
+        lc.data.{}value.list = ret
+        lc.data.{}value.other = !!ld$.find(node, '[ld=list-other-option]',0).checked
+        update lc.data
 
 
-      node.{}view.list = view = new ldView do
+      node.{}view.module = view = new ldView do
         root: node
         action: do
           input: do
             "list-other": ({node}) ->
-              local-data.{}value.other-value = node.value or ''
-              update data
+              lc.data.{}value.other-value = node.value or ''
+              update!
           click: do
             "list-add": ->
-              local-data.[]data.push {title: "新項目", desc: "關於這個項目的描述 ... "}
-              update data
+              lc.data.[]data.push {title: "新項目", desc: "關於這個項目的描述 ... "}
+              update!
               view.render!
             "list-other-option": ({node}) ->
-              local-data.{}value.other = node.checked
+              lc.data.{}value.other = node.checked
+              update!
               update-list!
         handler: do
-          "list-other": ({node}) -> node.value = (local-data.{}value.other-value or '')
+          "list-other": ({node}) -> node.value = (lc.data.{}value.other-value or '')
           "list-other-option": ({node}) -> node.setAttribute \name, "radio-#{data.key}"
           list: do
-            list: -> local-data.[]data
+            list: -> lc.data.[]data
             init: ({node, data}) ->
               editable = node.hasAttribute(\data-user-editable)
               if !editable and view-mode => node.removeAttribute \draggable
@@ -43,20 +44,21 @@
                   input: do
                     "list-data": ({node}) ->
                       data[node.getAttribute(\data-name)] = node.innerText
+                      update!
                     "list-input": ({node}) -> update-list!
                 init: "list-data": ({node}) ->
                   node.setAttribute \data-name, node.getAttribute \editable
                   if !editable and view-mode => node.removeAttribute \editable
                 handler: do
                   "list-input": ({node}) ->
-                    node.setAttribute \name, "radio-#{local-data.key}"
+                    node.setAttribute \name, "radio-#{lc.data.key}"
                     node.setAttribute \data-name, data.title
                   "list-data": ({node}) -> node.innerText = data[node.getAttribute(\data-name)] or ''
             render: ({node}) -> node.render!
 
     render-textarea = ({node, data, view-mode, update}) ->
       lc = {}
-      view = new ldView do
+      node.{}view.module = view = new ldView do
         root: node
         action: input: do
           "use-markdown": ({node}) ->
@@ -91,6 +93,7 @@
     render = ({node, data, root-data, view-mode, update}) ->
       lc <<< {data, root-data}
       node.view.block.render!
+      if node.view.module => node.view.module.render!
     init = ({node, data, root-data, view-mode, update}) ->
       node.setAttribute \id, "block-#{data.key}"
       lc <<< {data, root-data}
