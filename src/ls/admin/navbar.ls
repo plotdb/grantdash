@@ -22,6 +22,9 @@ Ctrl = (opt) ->
     root: @node.sample
     handler: {item: (->), folder: (->)}
 
+  update-data-debounce = debounce 100, ->
+    if reb.is-dragging! => update-data-debounce!
+    else update-data!
   update-data = ~> @ops-out ~>
     console.log "ops-out: ", obj.tree
     obj.tree
@@ -49,6 +52,7 @@ Ctrl = (opt) ->
           delete: ({node, evt}) ~>
             idx = rn.pdata.children.indexOf(data)
             rn.pdata.children.splice idx, 1
+            update-data!
             @view.root.render!
           "toggle-fold": ({node, evt}) ~>
             if data.children => 
@@ -84,7 +88,12 @@ Ctrl = (opt) ->
             node.pdata = root-data
             node.view = render-folder {node, data}
           handler: ({node, data}) ->
+            node.pdata = root-data
+            node.view.data = data
             if node.view => node.view.render!
+    view.on \beforeRender, ->
+      root-data := data := (view.data or obj.tree)
+    view
 
   @view.root = render-folder {node: @node.view, data: obj.tree}
   reb = new reblock do
@@ -131,6 +140,7 @@ Ctrl = (opt) ->
         d = if !n => obj.tree else n._data
         idx = Array.from(src.parentNode.childNodes).indexOf(src)
         d.children.splice Array.from(src.parentNode.childNodes).indexOf(src), 0, src._data
+        update-data-debounce!
 
         (if n => n.view else @view.root)
           .bind-each-node {name: \list, container: src.parentNode, idx, node: src}
@@ -141,8 +151,8 @@ Ctrl = (opt) ->
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
-  ops-in: ({data}) ->
-    console.log "ops-in: ", data
+  ops-in: ({data,ops,source}) ->
+    if source => return
     if !data.children =>
       @obj.tree = do
         children: [
@@ -151,7 +161,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
           {name: "歷屆活動", toggle: true, children: [ {name: "2018春季"}, {name: "2018秋季"} ]},
           {name: "成果報告"}
         ]
-    else @obj.tree <<< data
+    else @obj.tree = JSON.parse(JSON.stringify(data))
     @view.root.render!
 
     #for k,v of data => @form.fields[k].value = v

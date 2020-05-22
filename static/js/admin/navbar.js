@@ -3,7 +3,7 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
   var sdbAdapter, Ctrl;
   sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var root, obj, updateData, renderFolder, reb, this$ = this;
+    var root, obj, updateDataDebounce, updateData, renderFolder, reb, this$ = this;
     this.opt = opt;
     this.view = {};
     this.node = {};
@@ -35,6 +35,13 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
         folder: function(){}
       }
     });
+    updateDataDebounce = debounce(100, function(){
+      if (reb.isDragging()) {
+        return updateDataDebounce();
+      } else {
+        return updateData();
+      }
+    });
     updateData = function(){
       return this$.opsOut(function(){
         console.log("ops-out: ", obj.tree);
@@ -46,7 +53,7 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
       node = arg$.node, data = arg$.data, parent = arg$.parent;
       rn = node;
       rootData = data;
-      return view = new ldView({
+      view = new ldView({
         root: node,
         initRender: false,
         action: {
@@ -78,6 +85,7 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
               node = arg$.node, evt = arg$.evt;
               idx = rn.pdata.children.indexOf(data);
               rn.pdata.children.splice(idx, 1);
+              updateData();
               return this$.view.root.render();
             },
             "toggle-fold": function(arg$){
@@ -140,6 +148,8 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
             handler: function(arg$){
               var node, data;
               node = arg$.node, data = arg$.data;
+              node.pdata = rootData;
+              node.view.data = data;
               if (node.view) {
                 return node.view.render();
               }
@@ -147,6 +157,10 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
           }
         }
       });
+      view.on('beforeRender', function(){
+        return rootData = data = view.data || obj.tree;
+      });
+      return view;
     };
     this.view.root = renderFolder({
       node: this.node.view,
@@ -236,6 +250,7 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
             : n._data;
           idx = Array.from(src.parentNode.childNodes).indexOf(src);
           d.children.splice(Array.from(src.parentNode.childNodes).indexOf(src), 0, src._data);
+          updateDataDebounce();
           (n
             ? n.view
             : this$.view.root).bindEachNode({
@@ -257,9 +272,11 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
     opsIn: function(arg$){
-      var data;
-      data = arg$.data;
-      console.log("ops-in: ", data);
+      var data, ops, source;
+      data = arg$.data, ops = arg$.ops, source = arg$.source;
+      if (source) {
+        return;
+      }
       if (!data.children) {
         this.obj.tree = {
           children: [
@@ -284,7 +301,7 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
           ]
         };
       } else {
-        import$(this.obj.tree, data);
+        this.obj.tree = JSON.parse(JSON.stringify(data));
       }
       return this.view.root.render();
     }
