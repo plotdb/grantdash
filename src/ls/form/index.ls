@@ -4,9 +4,14 @@
 
 Ctrl = (opt) ->
   @opt = opt
+  @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
+  @node = do
+    src: ld$.find(root, '[ld=blocksrc]', 0)
+    list: ld$.find(root, '[ld=form-list]', 0)
+    answer: ld$.find(root, '[ld=form-answer]', 0)
   @view-mode = view-mode = opt.view-mode
   @obj = obj = {list: []}
-  #@obj.list = sample-blocks
+  @obj.list = sample-blocks
   lc = {view: false}
   hub = do
     update: (block) ~>
@@ -23,7 +28,7 @@ Ctrl = (opt) ->
 
   bmgr = do
     get: (name) -> new Promise (res, rej) ->
-      n = ld$.find("[data-name=#{name}]", 0)
+      n = ld$.find(root, "[ld=form-sample] [data-name=#{name}]", 0)
       if !n => rej new Error("block not found")
       div = ld$.create name: "div", attr: {draggable: true}
       div.appendChild n.cloneNode(true)
@@ -40,7 +45,7 @@ Ctrl = (opt) ->
     console.log obj.list.length, JSON.stringify(obj.list)
   ), 3000
   blocks-view = new ldView do
-    root: '#form'
+    root: @node.list
     handler:
       block: do
         list: -> obj.list
@@ -56,15 +61,15 @@ Ctrl = (opt) ->
           if node.view => node.view.block.render!
 
 
-  if (n = ld$.find('[ld-scope=blocksrc]',0)) =>
+  if @node.src =>
     new ldView do
-      root: n
+      root: @node.src
       action: dragstart: block: ({node, evt}) ->
         evt.dataTransfer.setData('text/plain',"#{node.getAttribute(\data-name)}")
 
 
   reb = new reblock do
-    root: '#form'
+    root: @node.list
     block-manager: bmgr
     action: do
       afterInject: ({node, name}) ->
@@ -108,17 +113,17 @@ Ctrl = (opt) ->
       return {remain, done, total, percent}
 
     viewer = new ldView do
-      root: document.body
+      root: root
       action: click: do
         viewing: ->
           lc.view = !lc.view
           viewer.render!
           view-answer.render!
-        invalid: ->
+        invalid: ~>
           filled = [k for k of fill-data]
           for i from 0 til obj.list.length =>
             if !("#{obj.list[i].key}" in filled) => break
-          node = ld$.find("\#block-#{obj.list[i].key}",0)
+          node = ld$.find(@node.list, "\#block-#{obj.list[i].key}",0)
           if node => scrollto node
       handler: do
         nview: ({node}) -> node.classList.toggle \d-none, lc.view
@@ -147,7 +152,7 @@ Ctrl = (opt) ->
         node.innerText = ((data.list or []) ++ (if data.other => [data.otherValue or ''] else [])).join(', ')
 
     view-answer = new ldView do
-      root: document.body
+      root: @node.answer
       handler: do
         answer: do
           list: -> obj.list

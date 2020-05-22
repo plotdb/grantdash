@@ -80,6 +80,9 @@ block script
         .p-4(ld="nav-panel",data-nav="main",data-name="prj-config")
           include prj/config.pug
 
+        .p-4(ld="nav-panel",data-nav="main",data-name="prj-form")
+          include prj/form.pug
+
         //-.p-4(ld="nav-panel",data-nav="main",data-name="prj-judge")
           include prj/judge.pug
 
@@ -95,3 +98,10 @@ block script
   +script("/js/admin/stage.js")
   +script("/js/admin/perm.js")
   +script("/js/admin/navbar.js")
+
+  //- form js files
+  +script("/js/form/index.js")
+  +script("/js/form/criteria.js")
+  +script("/js/form/block.js")
+  +script("/js/form/validator.js")
+

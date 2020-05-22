@@ -1,31 +1,18 @@
 //- module
-h4 提案表
-p.text-sm.text-muted 您可以在這裡設定提案 / 報名時，提案人所需要提交的表格。
-hr.my-4
-
-//-include form.pug
-.d-flex
-  .flex-grow-1
-
-    each item in data.schema
-      if item.type == "short-answer"
-        +form-short-answer(item)
-      else if item.type == "long-answer"
-        +form-long-answer(item).ok
-      else if item.type == "radio"
-        +form-radio(item)
-      else if item.type == "upload-file"
-        +form-upload-file(item)
-
-    
-  .ml-4
-    .sticky(style="top:1.5em")
+.d-none: include subblock.pug
+include timeline.pug
++scope("prj-form").d-flex
+  #form.flex-grow-1(hostable): div(ld-each="block",draggable="true")
+  +scope("blocksrc").ml-4(ld="blocksrc")
+    .sticky(style="top:60px")
       .list-group.shadow-sm.mb-4
-        .list-group-item.clickable.text-nowrap(ld="blocksrc",draggable="true",data-name="short-answer") #[i.i-doc] 短答
-        .list-group-item.clickable(ld="blocksrc",draggable="true",data-name="long-answer") #[i.i-doc] 申論
-        .list-group-item.clickable(ld="blocksrc",draggable="true",data-name="linear-scale") #[i.i-doc] 給分
-        .list-group-item.clickable(ld="blocksrc",draggable="true",data-name="checkbox") #[i.i-doc] 單選
-        .list-group-item.clickable(ld="blocksrc",draggable="true",data-name="radio") #[i.i-doc] 多選
-        .list-group-item.clickable(ld="blocksrc",draggable="true",data-name="file") #[i.i-doc] 傳檔
+        .list-group-item.clickable.text-nowrap(
+        ld="block",draggable="true",data-name="form-short-answer") #[i.i-doc] 短答
+        .list-group-item.clickable(ld="block",draggable="true",data-name="form-long-answer") #[i.i-doc] 申論
+        .list-group-item.clickable(ld="block",draggable="true",data-name="form-checkbox") #[i.i-doc] 單選
+        .list-group-item.clickable(ld="block",draggable="true",data-name="form-radio") #[i.i-doc] 多選
+        .list-group-item.clickable(ld="block",draggable="true",data-name="form-file") #[i.i-doc] 傳檔
+        .list-group-item.clickable(ld="block",draggable="true",data-name="form-budget") #[i.i-doc] 預算
+        .list-group-item.clickable(ld="block",draggable="true",data-name="form-checkpoint") #[i.i-doc] 查核
       .btn.btn-primary.btn-block 更新資料
       .btn.btn-outline-secondary.btn-block 捨棄變更

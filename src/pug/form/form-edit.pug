@@ -1,8 +1,7 @@
 extends /base.pug
 block body
-  .d-none: include subblock.pug
-  include /ui/data/sample.pug
-  include /modules/mixins/index.pug
+  //-include /ui/data/sample.pug
+  //-include /modules/mixins/index.pug
   include timeline.pug
   +css("/assets/lib/handsontable/handsontable.min.css")
   +script("/assets/lib/handsontable/handsontable.min.js")
@@ -11,9 +10,10 @@ block body
   +script("/assets/lib/ctrlz/ot-json0.js")
 
   .w-768.mx-auto.rwd.typeset.heading-contrast
-    .d-flex
-      #form.flex-grow-1(hostable): div(ld-each="block",draggable="true")
-      +scope("blocksrc").ml-4(ld="blocksrc")
+    +scope("form").d-flex
+      .d-none(ld="form-sample"): include subblock.pug
+      .flex-grow-1(ld="form-list",hostable): div(ld-each="block",draggable="true")
+      .ml-4(ld="blocksrc")
         .sticky(style="top:60px")
           .list-group.shadow-sm.mb-4
             .list-group-item.clickable.text-nowrap(
@@ -37,5 +37,5 @@ block script
   script: :lsc
     (->
       ldc.register <[prjForm]>, ({prj-form}) ->
-        ctrl = new prj-form {view-mode: false}
+        ctrl = new prj-form {view-mode: false, root: '[ld-scope=form]'}
     )!

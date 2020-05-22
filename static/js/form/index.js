@@ -3,12 +3,21 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
   var prjFormCriteria, prjFormBlock, prjFormValidation, sdbAdapter, Ctrl;
   prjFormCriteria = arg$.prjFormCriteria, prjFormBlock = arg$.prjFormBlock, prjFormValidation = arg$.prjFormValidation, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var viewMode, obj, lc, hub, bmgr, fillData, validate, update, blocksView, n, reb, progress, viewer, renderAnswer, viewAnswer, this$ = this;
+    var root, viewMode, obj, lc, hub, bmgr, fillData, validate, update, blocksView, reb, progress, viewer, renderAnswer, viewAnswer, this$ = this;
     this.opt = opt;
+    this.root = root = typeof opt.root === 'string'
+      ? document.querySelector(opt.root)
+      : opt.root;
+    this.node = {
+      src: ld$.find(root, '[ld=blocksrc]', 0),
+      list: ld$.find(root, '[ld=form-list]', 0),
+      answer: ld$.find(root, '[ld=form-answer]', 0)
+    };
     this.viewMode = viewMode = opt.viewMode;
     this.obj = obj = {
       list: []
     };
+    this.obj.list = sampleBlocks;
     lc = {
       view: false
     };
@@ -32,7 +41,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       get: function(name){
         return new Promise(function(res, rej){
           var n, div;
-          n = ld$.find("[data-name=" + name + "]", 0);
+          n = ld$.find(root, "[ld=form-sample] [data-name=" + name + "]", 0);
           if (!n) {
             rej(new Error("block not found"));
           }
@@ -62,7 +71,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       return console.log(obj.list.length, JSON.stringify(obj.list));
     }, 3000);
     blocksView = new ldView({
-      root: '#form',
+      root: this.node.list,
       handler: {
         block: {
           list: function(){
@@ -101,9 +110,9 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
         }
       }
     });
-    if (n = ld$.find('[ld-scope=blocksrc]', 0)) {
+    if (this.node.src) {
       new ldView({
-        root: n,
+        root: this.node.src,
         action: {
           dragstart: {
             block: function(arg$){
@@ -116,7 +125,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       });
     }
     reb = new reblock({
-      root: '#form',
+      root: this.node.list,
       blockManager: bmgr,
       action: {
         afterInject: function(arg$){
@@ -195,7 +204,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
         };
       };
       viewer = new ldView({
-        root: document.body,
+        root: root,
         action: {
           click: {
             viewing: function(){
@@ -216,7 +225,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
                   break;
                 }
               }
-              node = ld$.find("#block-" + obj.list[i].key, 0);
+              node = ld$.find(this$.node.list, "#block-" + obj.list[i].key, 0);
               if (node) {
                 return scrollto(node);
               }
@@ -286,7 +295,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
         }
       };
       viewAnswer = new ldView({
-        root: document.body,
+        root: this.node.answer,
         handler: {
           answer: {
             list: function(){

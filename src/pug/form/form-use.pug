@@ -1,7 +1,6 @@
 extends /base.pug
 block body
-  .d-none: include subblock.pug
-  include /ui/data/sample.pug
+  //-include /ui/data/sample.pug
   include /modules/mixins/index.pug
   include timeline.pug
   +css("/assets/lib/handsontable/handsontable.min.css")
@@ -11,7 +10,7 @@ block body
   +script("/assets/lib/ctrlz/ot-json0.js")
 
   .w-1024.mx-auto.rwd.typeset.heading-contrast
-    .d-flex
+    +scope("form").d-flex
       .mr-4.pr-4
         .pb-4.mb-4.h-100
           h3.my-0(ld="nview") 編輯提案
@@ -66,13 +65,13 @@ block body
 
 
       .flex-grow-1
-        #answer(ld="view"): .mb-4.pb-4(ld-each="answer")
+        .d-none(ld="form-sample"): include subblock.pug
+        div(ld="view"): div(ld="form-answer"): .mb-4.pb-4(ld-each="answer")
           h4.mb-1(ld="title") 提問的標題
           p.text-muted.mb-2(ld="desc") 提問的簡短描述 ...
           hr
           .mb-4(ld="content")
-
-        #form(ld="nview"): div(ld-each="block")
+        div(ld="nview"): div(ld="form-list"): div(ld-each="block")
         div(ld="nview")
           .d-flex.align-items-center
             .btn.btn-lg.btn-primary.mr-4.disabled(ld="submit") 儲存並發布
@@ -89,5 +88,5 @@ block script
   script: :lsc
     (->
       ldc.register <[prjForm]>, ({prj-form}) ->
-        ctrl = new prj-form {view-mode: true}
+        ctrl = new prj-form {view-mode: true, root: '[ld-scope=form]'}
     )!
