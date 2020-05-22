@@ -3,12 +3,14 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
   var sdbAdapter, Ctrl;
   sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var root, obj, viewRoot, viewSample, renderFolder, rootView, reb;
+    var root, obj, updateData, renderFolder, reb, this$ = this;
     this.opt = opt;
+    this.view = {};
+    this.node = {};
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
-    obj = {
+    this.obj = obj = {
       tree: {
         children: [
           {
@@ -32,15 +34,22 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
         ]
       }
     };
-    viewRoot = ld$.find(root, '[ld=folder-root]', 0);
-    console.log(root);
-    viewSample = new ldView({
-      root: ld$.find(this.root, '[ld-scope=folder-sample]', 0),
+    this.node = {
+      view: ld$.find(this.root, '[ld=folder-root]', 0),
+      sample: ld$.find(this.root, '[ld-scope=folder-sample]', 0)
+    };
+    this.view.sample = new ldView({
+      root: this.node.sample,
       handler: {
         item: function(){},
         folder: function(){}
       }
     });
+    updateData = function(){
+      return this$.ops.out(function(){
+        return obj.tree;
+      });
+    };
     renderFolder = function(arg$){
       var node, data, parent, rn, rootData, view;
       node = arg$.node, data = arg$.data, parent = arg$.parent;
@@ -67,7 +76,7 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
               node = arg$.node, evt = arg$.evt;
               idx = rn.pdata.children.indexOf(data);
               rn.pdata.children.splice(idx + 1, 0, JSON.parse(JSON.stringify(data)));
-              rootView.render();
+              this$.view.root.render();
               return console.log(JSON.stringify(obj.tree));
             },
             'delete': function(arg$){
@@ -75,7 +84,7 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
               node = arg$.node, evt = arg$.evt;
               idx = rn.pdata.children.indexOf(data);
               rn.pdata.children.splice(idx, 1);
-              return rootView.render();
+              return this$.view.root.render();
             },
             "toggle-fold": function(arg$){
               var node, evt, idx, children, newData;
@@ -87,14 +96,14 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
                 delete data.toggle;
                 children = [JSON.parse(JSON.stringify(data))].concat(children);
                 rn.pdata.children.splice.apply(rn.pdata.children, [idx, 1].concat(children));
-                return rootView.render();
+                return this$.view.root.render();
               } else {
                 idx = rn.pdata.children.indexOf(data);
                 newData = JSON.parse(JSON.stringify(data));
                 newData.toggle = true;
                 newData.children = [];
                 rn.pdata.children.splice.apply(rn.pdata.children, [idx, 1].concat([newData]));
-                return rootView.render();
+                return this$.view.root.render();
               }
             }
           }
@@ -117,12 +126,12 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
             init: function(arg$){
               var node, data, des;
               node = arg$.node, data = arg$.data;
-              des = viewSample.get(data.children ? 'folder' : 'item').childNodes[0];
+              des = this$.view.sample.get(data.children ? 'folder' : 'item').childNodes[0];
               node.setAttribute('class', des.getAttribute('class'));
               node.setAttribute('draggable', true);
               node.innerHTML = des.innerHTML;
               if (data.children) {
-                node.childNodes[0].innerHTML = viewSample.get('item').childNodes[0].innerHTML;
+                node.childNodes[0].innerHTML = this$.view.sample.get('item').childNodes[0].innerHTML;
                 node.childNodes[0].classList.add('folder-toggle');
                 node.folder = new ldui.Folder({
                   root: node
@@ -145,8 +154,8 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
         }
       });
     };
-    rootView = renderFolder({
-      node: viewRoot,
+    this.view.root = renderFolder({
+      node: this.node.view,
       data: obj.tree
     });
     reb = new reblock({
@@ -213,7 +222,9 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
             ? obj.tree
             : n._data;
           d.children.splice(d.children.indexOf(src._data), 1);
-          return (n ? n.view : rootView).unbindEachNode({
+          return (n
+            ? n.view
+            : this$.view.root).unbindEachNode({
             name: 'list',
             container: src.parentNode,
             node: src
@@ -231,7 +242,9 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
             : n._data;
           idx = Array.from(src.parentNode.childNodes).indexOf(src);
           d.children.splice(Array.from(src.parentNode.childNodes).indexOf(src), 0, src._data);
-          (n ? n.view : rootView).bindEachNode({
+          (n
+            ? n.view
+            : this$.view.root).bindEachNode({
             name: 'list',
             container: src.parentNode,
             idx: idx,
@@ -241,7 +254,7 @@ ldc.register('adminNavbar', ['sdbAdapter'], function(arg$){
           if (n) {
             return n.view.render();
           } else {
-            return rootView.render();
+            return this$.view.root.render();
           }
         }
       }

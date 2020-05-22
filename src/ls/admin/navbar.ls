@@ -1,9 +1,9 @@
 ({sdbAdapter}) <- ldc.register \adminNavbar, <[sdbAdapter]>, _
 
 Ctrl = (opt) ->
-  @opt = opt
+  @ <<< {opt: opt, view: {}, node: {}}
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
-  obj = tree: do
+  @obj = obj = tree: do
     children: [
       {name: "活動辦法", url: "/about"},
       {name: "關於我們"},
@@ -11,14 +11,17 @@ Ctrl = (opt) ->
       {name: "成果報告"}
     ]
 
-  view-root = ld$.find(root, '[ld=folder-root]', 0)
-  console.log root
+  @node = do
+    view: ld$.find(@root, '[ld=folder-root]', 0)
+    sample: ld$.find(@root, '[ld-scope=folder-sample]',0)
 
-  view-sample = new ldView do
-    root: ld$.find(@root, '[ld-scope=folder-sample]',0)
+  @view.sample = new ldView do
+    root: @node.sample
     handler: {item: (->), folder: (->)}
 
-  render-folder = ({node, data, parent}) ->
+  update-data = ~> @ops.out ~> obj.tree
+
+  render-folder = ({node, data, parent}) ~>
     rn = node
     root-data = data
     view = new ldView do
@@ -28,16 +31,16 @@ Ctrl = (opt) ->
           name: ({node, evt}) -> data.name = node.value
           url: ({node, evt}) -> data.url = node.value
         click: do
-          clone: ({node, evt}) ->
+          clone: ({node, evt}) ~>
             idx = rn.pdata.children.indexOf(data)
             rn.pdata.children.splice idx + 1, 0, JSON.parse(JSON.stringify(data))
-            root-view.render!
+            @view.root.render!
             console.log JSON.stringify(obj.tree)
-          delete: ({node, evt}) ->
+          delete: ({node, evt}) ~>
             idx = rn.pdata.children.indexOf(data)
             rn.pdata.children.splice idx, 1
-            root-view.render!
-          "toggle-fold": ({node, evt}) ->
+            @view.root.render!
+          "toggle-fold": ({node, evt}) ~>
             if data.children => 
               idx = rn.pdata.children.indexOf(data)
               children = data.children
@@ -45,27 +48,27 @@ Ctrl = (opt) ->
               delete data.toggle
               children = [JSON.parse(JSON.stringify(data))] ++ children
               rn.pdata.children.splice.apply rn.pdata.children, ([idx, 1] ++ children)
-              root-view.render!
+              @view.root.render!
             else
               idx = rn.pdata.children.indexOf(data)
               new-data = JSON.parse(JSON.stringify(data))
               new-data.toggle = true
               new-data.children = []
               rn.pdata.children.splice.apply rn.pdata.children, ([idx, 1] ++ [new-data])
-              root-view.render!
+              @view.root.render!
 
       handler: do
         name: ({node}) -> node.value = data.name or ''
         url: ({node}) ->  node.value = data.url or ''
         list: do
           list: -> data.children
-          init: ({node,data}) ->
-            des = view-sample.get(if data.children => \folder else \item).childNodes.0
+          init: ({node,data}) ~>
+            des = @view.sample.get(if data.children => \folder else \item).childNodes.0
             node.setAttribute \class, des.getAttribute(\class)
             node.setAttribute \draggable, true
             node.innerHTML = des.innerHTML
             if data.children =>
-              node.childNodes.0.innerHTML = view-sample.get(\item).childNodes.0.innerHTML
+              node.childNodes.0.innerHTML = @view.sample.get(\item).childNodes.0.innerHTML
               node.childNodes.0.classList.add \folder-toggle
               node.folder = new ldui.Folder root: node
             node.pdata = root-data
@@ -73,7 +76,7 @@ Ctrl = (opt) ->
           handler: ({node, data}) ->
             if node.view => node.view.render!
 
-  root-view = render-folder {node: view-root, data: obj.tree}
+  @view.root = render-folder {node: @node.view, data: obj.tree}
   reb = new reblock do
     root: root
     action: do
@@ -102,33 +105,35 @@ Ctrl = (opt) ->
         return des
       afterMove: (src, des, dir) ->
         if des.dummy => des.parentNode.removeChild des
-      beforeMoveNode: ({src, des, ib}) ->
+      beforeMoveNode: ({src, des, ib}) ~>
         n = src.parentNode
         while n and !n._data => n = n.parentNode
         d = if !n => obj.tree else n._data
         d.children.splice d.children.indexOf(src._data), 1
 
         # ldView keeps node inside, which might cause problem if we want to reuse this node in other view.
-        (if n => n.view else root-view)
+        (if n => n.view else @view.root)
           .unbind-each-node {name: \list, container: src.parentNode, node: src}
 
-      afterMoveNode: ({src, des, ib}) ->
+      afterMoveNode: ({src, des, ib}) ~>
         n = src.parentNode
         while n and !n._data => n = n.parentNode
         d = if !n => obj.tree else n._data
         idx = Array.from(src.parentNode.childNodes).indexOf(src)
         d.children.splice Array.from(src.parentNode.childNodes).indexOf(src), 0, src._data
 
-        (if n => n.view else root-view)
+        (if n => n.view else @view.root)
           .bind-each-node {name: \list, container: src.parentNode, idx, node: src}
         src.pdata = d
 
-        if n => n.view.render! else root-view.render!
+        if n => n.view.render! else @view.root.render!
 
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data}) ->
+    #@obj.tree = JSON.parse(JSON.stringify(data))
+
     #for k,v of data => @form.fields[k].value = v
 
 return Ctrl
