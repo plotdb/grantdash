@@ -11,7 +11,7 @@ Ctrl = (opt) ->
   @view-mode = view-mode = opt.view-mode
   @obj = obj = {list: []}
   lc = {view: false}
-  hub = do
+  @hub = hub = do
     update-deb: debounce 100, (b) ~> if reb.is-dragging! => hub.update-deb(b) else hub.update b
     update: (block) ~>
       if view-mode and block =>
@@ -22,6 +22,8 @@ Ctrl = (opt) ->
         @ops-out ~> {list: @obj.list}
         blocks-view.render!
     render: ->
+      blocks-view.render!
+      if viewer => viewer.render!
 
   bmgr = do
     get: (name) -> new Promise (res, rej) ->
@@ -168,6 +170,8 @@ Ctrl = (opt) ->
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
     if source => return
+
     @obj.list = JSON.parse(JSON.stringify(data.list or []))
+    @hub.render!
 
 return Ctrl

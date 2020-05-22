@@ -20,7 +20,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
     lc = {
       view: false
     };
-    hub = {
+    this.hub = hub = {
       updateDeb: debounce(100, function(b){
         if (reb.isDragging()) {
           return hub.updateDeb(b);
@@ -46,7 +46,12 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
           return blocksView.render();
         }
       },
-      render: function(){}
+      render: function(){
+        blocksView.render();
+        if (viewer) {
+          return viewer.render();
+        }
+      }
     };
     bmgr = {
       get: function(name){
@@ -361,7 +366,8 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       if (source) {
         return;
       }
-      return this.obj.list = JSON.parse(JSON.stringify(data.list || []));
+      this.obj.list = JSON.parse(JSON.stringify(data.list || []));
+      return this.hub.render();
     }
   });
   return Ctrl;
