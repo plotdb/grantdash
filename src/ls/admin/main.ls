@@ -1,8 +1,10 @@
 ldc.register \adminGuard,
 <[auth loader sdbAdapter
-adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar prjForm]>,
+adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
+prjForm adminEntry]>,
 ({auth, loader, sdbAdapter,
-admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar, prjForm}) ->
+admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
+prj-form, admin-entry}) ->
 
   loader.on!
 
@@ -43,9 +45,17 @@ admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar, prjF
         perm.adapt {hub: brd, path: <[perm]>}
         navbar = new admin-navbar {toc, root: '[ld-scope=navbar-editor]'}
         navbar.adapt {hub: brd, path: <[page navbar]>}
-        form = new prj-form {toc, root: '[ld-scope=prj-form]', view-mode: false}
+
+        # group information
         # TODO update group idx based on user selection
+        form = new prj-form {toc, root: '[ld-scope=prj-form]', view-mode: false}
         form.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'form']}
+        info = new admin-info root: '[ld-scope=grp-info-panel]', type: \grp
+        info.adapt  {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'info'] }
+        grade = new admin-entry {root: '[ld-scope=grade-panel]'}
+        grade.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'grade']}
+        criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
+        criteria.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'criteria']}
 
   Hub = -> @ <<< {evt-handler: {}} <<< it
   Hub.prototype = Object.create(Object.prototype) <<< do
