@@ -161,7 +161,8 @@ ldc.register('prjFormBlock', [], function(){
             },
             list: function(){
               return (this$.block.data || []).concat([{
-                other: true
+                other: true,
+                key: 'other'
               }]);
             },
             init: function(arg$){
@@ -169,7 +170,10 @@ ldc.register('prjFormBlock', [], function(){
               node = arg$.node, data = arg$.data;
               editable = node.hasAttribute('data-user-editable');
               if (!editable && this$.viewing) {
-                return node.removeAttribute('draggable');
+                node.removeAttribute('draggable');
+              }
+              if (data.other && this$.block.name === 'form-checkpoint') {
+                return node.classList.add('d-none');
               }
             },
             action: {
@@ -178,6 +182,9 @@ ldc.register('prjFormBlock', [], function(){
                 : function(arg$){
                   var node, data, evt, isRadio, val, ref$, ison, list;
                   node = arg$.node, data = arg$.data, evt = arg$.evt;
+                  if (this$.block.name === 'form-checkpoint') {
+                    return;
+                  }
                   if (evt.target.nodeName === 'INPUT') {
                     return;
                   }
@@ -198,7 +205,9 @@ ldc.register('prjFormBlock', [], function(){
                       : !in$(data.title, list);
                     if (ison) {
                       list.push(data.title);
-                      val.other = false;
+                      if (isRadio) {
+                        val.other = false;
+                      }
                     } else {
                       list.splice(list.indexOf(data.title), 1);
                     }
@@ -237,8 +246,7 @@ ldc.register('prjFormBlock', [], function(){
                     data: function(arg$){
                       var node;
                       node = arg$.node;
-                      data[node.getAttribute('data-name')] = node.innerText;
-                      return this$.update();
+                      return data[node.getAttribute('data-name')] = node.innerText;
                     }
                   },
                   click: {

@@ -66,12 +66,14 @@ module-list = module-init: ->
     handler: do
       list: do
         key: -> it.key
-        list: ~> (@block.data or []) ++ [{other: true}]
+        list: ~> (@block.data or []) ++ [{other: true, key: 'other'}]
         init: ({node, data}) ~>
           editable = node.hasAttribute(\data-user-editable)
           if !editable and @viewing => node.removeAttribute \draggable
+          if data.other and @block.name == \form-checkpoint => node.classList.add \d-none
 
         action: click: if !@viewing => (->) else ({node, data, evt}) ~>
+          if @block.name == \form-checkpoint => return
           if evt.target.nodeName == \INPUT => return
           is-radio = @block.name == \form-radio
           val = @block.{}value
@@ -84,7 +86,7 @@ module-list = module-init: ->
             ison = if is-radio => true else !(data.title in list)
             if ison =>
               list.push data.title
-              val.other = false
+              if is-radio => val.other = false
             else list.splice list.indexOf(data.title), 1
             val.list = list
           view.render!
@@ -103,8 +105,10 @@ module-list = module-init: ->
                 "other-value": ({node}) ~>
                   @block.{}value.other-value = node.value
                 data: ({node}) ~>
+                  #oldval = data[node.getAttribute(\data-name)]
+                  #data[node.getAttribute(\data-name)] = node.innerText
+                  #if oldval != node.innerText => @update!
                   data[node.getAttribute(\data-name)] = node.innerText
-                  @update!
               click: do
                 delete: ({node, evt}) ~>
                   @block.data.splice @block.data.indexOf(data), 1
@@ -120,7 +124,8 @@ module-list = module-init: ->
               "other-value": ({node}) ~>
                 node.value = @block.{}value.other-value or ''
               delete: ({node}) ~> node.classList.toggle \d-none, (@viewing or data.other)
-              other: ({node}) -> node.classList.toggle \d-none, !data.other
+              other: ({node}) ->
+                node.classList.toggle \d-none, !data.other
               data: ({node}) ->
                 if data.other =>
                   node.removeAttribute \editable
