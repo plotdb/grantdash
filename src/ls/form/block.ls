@@ -193,7 +193,7 @@ Ctrl = (opt) ->
     handler: do
       invalid: ({node}) ~>
         is-valid = (!(@block.{}valid.result?) or @block.valid.result)
-        if !is-valid => settext node, @block.valid.criteria.invalid or "這個欄位格式不符"
+        if !is-valid => settext node, (@block.valid.criteria.invalid or "這個欄位格式不符")
         node.classList.toggle \d-none, is-valid
       block: ({node}) ~>
         is-valid = (!(@block.{}valid.result?) or @block.valid.result)

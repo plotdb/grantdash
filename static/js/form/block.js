@@ -427,7 +427,7 @@ ldc.register('prjFormBlock', [], function(){
           node = arg$.node;
           isValid = !(((ref$ = this$.block).valid || (ref$.valid = {})).result != null) || this$.block.valid.result;
           if (!isValid) {
-            settext(node, this$.block.valid.criteria.invalid) || "這個欄位格式不符";
+            settext(node, this$.block.valid.criteria.invalid || "這個欄位格式不符");
           }
           return node.classList.toggle('d-none', isValid);
         },

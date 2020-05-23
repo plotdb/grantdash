@@ -76,6 +76,10 @@ sampleBlocks = [
     config: {
       required: true
     },
-    criteria: [{}]
+    criteria: [{
+      type: 'count',
+      op: 'eq',
+      input1: 1
+    }]
   }
 ];

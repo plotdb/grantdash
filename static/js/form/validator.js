@@ -101,6 +101,9 @@
       validate: function(block){
         var v, i$, ref$, len$, c, type, vtr, ref1$, i, j;
         v = (block.value || (block.value = {})).content || (block.value || (block.value = {})).list;
+        if (block.value.other) {
+          v = v.concat([block.value.otherValue]);
+        }
         if (!v) {
           return {};
         }
