@@ -62,7 +62,7 @@ sampleBlocks = [
     config: {
       required: true
     },
-    criteria: [{}]
+    criteria: []
   }, {
     key: 5,
     name: "form-checkbox",
