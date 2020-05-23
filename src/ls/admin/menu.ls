@@ -55,6 +55,7 @@ Ctrl = (opt) ->
           ld$.find(node, 'span',0).innerText = data.name
           ld$.find(node, '.text-sm',0).innerText = data.description
       "grp-entry": do
+        key: -> it.key
         list: ~> [v for k,v of (@grps or {})]
         init: ({node,data}) ->
           node.folder = new ldui.Folder root: node

@@ -132,6 +132,9 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
           }
         },
         "grp-entry": {
+          key: function(it){
+            return it.key;
+          },
           list: function(){
             var k, ref$, v, results$ = [];
             for (k in ref$ = this$.grps || {}) {
