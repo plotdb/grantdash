@@ -38,38 +38,44 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
     return loader.off();
   });
   init = function(toc){
+    var hubs, grp, setGroup;
     toc.doc = {};
     ['org', 'brd', 'brds', 'brdsFiltered', 'grps'].map(function(it){
       return toc[it] = toc[it] || [];
     });
     toc.brdsFiltered = toc.brds || [];
     console.log("sidemenu information: ", toc);
+    hubs = {};
+    grp = {};
+    setGroup = function(v){
+      var k;
+      return (function(){
+        var results$ = [];
+        for (k in grp) {
+          results$.push(k);
+        }
+        return results$;
+      }()).map(function(k){
+        var p;
+        p = ['group', v.key, k];
+        if (!grp[k].adapted()) {
+          return grp[k].adapt({
+            hub: hubs.brd,
+            path: p
+          });
+        } else {
+          return grp[k].setPath(p);
+        }
+      });
+    };
     return prepareSharedb(toc).then(function(arg$){
-      var org, brd, menu, info, stage, perm, navbar, grp;
+      var org, brd, menu, info, stage, perm, navbar;
       org = arg$.org, brd = arg$.brd;
+      hubs.org = org;
+      hubs.brd = brd;
       menu = new adminMenu({
         toc: toc,
-        setGroup: function(v){
-          var k;
-          return (function(){
-            var results$ = [];
-            for (k in grp) {
-              results$.push(k);
-            }
-            return results$;
-          }()).map(function(k){
-            var p;
-            p = ['group', v.key, k];
-            if (!grp[k].adapted()) {
-              return grp[k].adapt({
-                hub: brd,
-                path: p
-              });
-            } else {
-              return grp[k].setPath(p);
-            }
-          });
-        }
+        setGroup: setGroup
       });
       menu.adapt({
         hub: brd,
@@ -107,7 +113,6 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
         hub: brd,
         path: ['page', 'navbar']
       });
-      grp = {};
       grp.form = new prjForm({
         toc: toc,
         root: '[ld-scope=prj-form]',
@@ -115,7 +120,8 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
       });
       grp.info = new adminInfo({
         root: '[ld-scope=grp-info-panel]',
-        type: 'grp'
+        type: 'grp',
+        setGroup: setGroup
       });
       grp.grade = new adminEntry({
         root: '[ld-scope=grade-panel]'

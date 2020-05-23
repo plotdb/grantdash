@@ -37,6 +37,16 @@ Ctrl = (opt) ->
     root: root
     init: "tail-datetime": ({node}) -> tail.DateTime(node)
     action: click:
+      delete: ~>
+        p = @adapter.path
+        if p.0 != \group => return
+        ks = [k for k of @adapter.doc.data.group]
+        if ks.length == 1 => return
+        @adapter.doc.submitOp [ {p: ['group',p.1],  od: @adapter.doc.data.group[p.1] } ]
+        @set-path ['group', ks.0, 'info']
+        @opt.set-group @adapter.doc.data.group[ks.0]
+
+
       submit: ({node}) ->
         auth.ensure!
           .then ->

@@ -82,6 +82,27 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
       },
       action: {
         click: {
+          'delete': function(){
+            var p, ks, res$, k;
+            p = this$.adapter.path;
+            if (p[0] !== 'group') {
+              return;
+            }
+            res$ = [];
+            for (k in this$.adapter.doc.data.group) {
+              res$.push(k);
+            }
+            ks = res$;
+            if (ks.length === 1) {
+              return;
+            }
+            this$.adapter.doc.submitOp([{
+              p: ['group', p[1]],
+              od: this$.adapter.doc.data.group[p[1]]
+            }]);
+            this$.setPath(['group', ks[0], 'info']);
+            return this$.opt.setGroup(this$.adapter.doc.data.group[ks[0]]);
+          },
           submit: function(arg$){
             var node;
             node = arg$.node;

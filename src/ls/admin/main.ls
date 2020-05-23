@@ -30,18 +30,22 @@ prj-form, admin-entry}) ->
     <[org brd brds brdsFiltered grps]>.map -> toc[it] = toc[it] or []
     toc.brdsFiltered = toc.brds or []
     console.log "sidemenu information: ", toc
-    
+
+    hubs = {}
+
+    grp = {}
+    set-group = (v) ->
+      (k) <- [k for k of grp].map _
+      p = ['group', v.key, k]
+      if !grp[k].adapted! => grp[k].adapt {hub: hubs.brd, path: p}
+      else grp[k].set-path p
+
     prepare-sharedb toc
       .then ({org,brd}) ->
+        hubs <<< {org, brd}
         # TODO remove this? we have fixed sdb-adapter so there is no need to manually init.
         #if !brd.doc.data.page => brd.doc.submitOp [{p: ["page"], oi: {navbar: {}}}]
-        menu = new admin-menu do
-          toc: toc
-          set-group: (v) ->
-            (k) <- [k for k of grp].map _
-            p = ['group', v.key, k]
-            if !grp[k].adapted! => grp[k].adapt {hub: brd, path: p}
-            else grp[k].set-path p
+        menu = new admin-menu {toc, set-group}
         menu.adapt   {hub: brd, path: <[group]>}
         info = new admin-info root: '[ld-scope=brd-info]', type: \brd
         info.adapt   {hub: brd, path: <[info]> }
@@ -54,10 +58,9 @@ prj-form, admin-entry}) ->
 
         # group information
         # TODO update group idx based on user selection
-        grp = {}
         grp.form = new prj-form {toc, root: '[ld-scope=prj-form]', view-mode: false}
         #grp.form.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'form']}
-        grp.info = new admin-info root: '[ld-scope=grp-info-panel]', type: \grp
+        grp.info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group: set-group}
         #grp.info.adapt  {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'info'] }
         grp.grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         #grp.grade.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'grade']}
