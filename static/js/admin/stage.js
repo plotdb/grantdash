@@ -296,6 +296,7 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
         }
       }
     });
+    return this;
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
     opsIn: function(arg$){

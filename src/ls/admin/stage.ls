@@ -122,6 +122,7 @@ Ctrl = (opt) !->
             ..classList.toggle \active, stage.is key
             ..setAttribute \data-key, key
             ..setAttribute \data-type, \tab
+  return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data, ops, source}) ->
