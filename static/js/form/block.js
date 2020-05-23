@@ -266,7 +266,7 @@ ldc.register('prjFormBlock', [], function(){
                   drag: function(arg$){
                     var node;
                     node = arg$.node;
-                    return node.classList.toggle('d-none', this$.viewing);
+                    return node.classList.toggle('invisible', !!(this$.viewing || data.other));
                   },
                   state: function(arg$){
                     var node, val, ref$, ison;
@@ -283,7 +283,7 @@ ldc.register('prjFormBlock', [], function(){
                   'delete': function(arg$){
                     var node;
                     node = arg$.node;
-                    return node.classList.toggle('d-none', this$.viewing || data.other);
+                    return node.classList.toggle('d-none', !!(this$.viewing || data.other));
                   },
                   other: function(arg$){
                     var node;
