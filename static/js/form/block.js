@@ -528,7 +528,11 @@ ldc.register('prjFormBlock', [], function(){
             }
           }
         }
-      }, module[this.block.name] ? (this.moduleInit = module[this.block.name].moduleInit, this.moduleInit()) : void 8);
+      });
+    }
+    if (module[this.block.name]) {
+      this.moduleInit = module[this.block.name].moduleInit;
+      this.moduleInit();
     }
     return this;
   };

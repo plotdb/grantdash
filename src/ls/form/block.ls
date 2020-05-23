@@ -50,7 +50,6 @@ schema = do
 module = {}
 
 module-list = module-init: ->
-
   if @block.name == \form-checkpoint and @viewing =>
     if !@block.{}value.list => @block.{}value.list = @block.[]data else @block.data = @block.value.list
     ld$.find(@root, '.timeline-list', 0).addEventListener \input, ~> @update!
@@ -225,10 +224,9 @@ Ctrl = (opt) ->
                   node.op = data.0
         handler: ({node, data}) -> if node.view => node.view.render!
 
-
-    if module[@block.name] =>
-      @ <<< module[@block.name]{module-init}
-      @module-init!
+  if module[@block.name] =>
+    @ <<< module[@block.name]{module-init}
+    @module-init!
 
 
   return @
