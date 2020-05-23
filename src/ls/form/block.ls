@@ -89,9 +89,8 @@ module-list = module-init: ->
               node.setAttribute \data-name, node.getAttribute \editable
               if !editable and @viewing => node.removeAttribute \editable
             handler: do
-              "list-data": ({node}) ->
-
-                settext node, data[node.getAttribute(\data-name)] or ''
+              "list-delete": ({node}) ~> node.classList.toggle \d-none, @viewing
+              "list-data": ({node}) -> settext node, data[node.getAttribute(\data-name)] or ''
           view.render!
         handler: ({node, data}) -> node.view.render!
 
@@ -101,28 +100,31 @@ module = {} <<< do
   "form-checkpoint": module-list
 
 
-module["form-long-answer"] = do
-  module-init: ->
-    @view.module = view = new ldView do
-      root: @root
-      action: input: do
-        "use-markdown": ({node}) ~>
-          @block.{}value.use-markdown = node.checked
-          @update!
-          view.render!
-        "input-field": ({node}) ~>
-          @block.{}value.content = node.value
-          @update!
-        "toggle-preview": ({node}) ~>
-          @preview = !!node.checked
-          view.render!
-      handler: do
-        "input-field": ({node}) ~> node.value = @block.{}value.content or ''
-        "preview-panel": ({node}) ~>
-          node.classList.toggle \d-none, !@preview
-          if @preview => node.innerHTML = marked(@block.{}value.content or '')
-        "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
-        "if-markdown": ({node}) ~> node.classList.toggle \d-none, !@block.{}value.use-markdown
+module-textarea = module-init: ->
+  @view.module = view = new ldView do
+    root: @root
+    action: input: do
+      "use-markdown": ({node}) ~>
+        @block.{}value.use-markdown = node.checked
+        @update!
+        view.render!
+      "input-field": ({node}) ~>
+        @block.{}value.content = node.value
+        @update!
+      "toggle-preview": ({node}) ~>
+        @preview = !!node.checked
+        view.render!
+    handler: do
+      "input-field": ({node}) ~> node.value = @block.{}value.content or ''
+      "preview-panel": ({node}) ~>
+        node.classList.toggle \d-none, !@preview
+        if @preview => node.innerHTML = marked(@block.{}value.content or '')
+      "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
+      "if-markdown": ({node}) ~> node.classList.toggle \d-none, !@block.{}value.use-markdown
+
+module <<< do
+  "form-long-answer": module-textarea
+  "form-short-answer": module-textarea
 
 # {root, mode, data}
 Ctrl = (opt) ->
@@ -238,7 +240,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     if @view.module => @view.module.render!
     if @view.criteria => @view.criteria.render!
   update: -> 
-    @hub.update!
+    @hub.update @block
   delete: -> @hub.delete @block
   clone: -> @hub.clone @block
 
