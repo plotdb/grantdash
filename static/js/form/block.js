@@ -43,8 +43,8 @@ ldc.register('prjFormBlock', [], function(){
     },
     ops: {
       extension: {
-        "extension": {
-          name: "副檔名"
+        "ext": {
+          name: '副檔名 <span class="text-sm">( 逗點分隔 )</span>'
         }
       },
       regex: {
@@ -119,7 +119,7 @@ ldc.register('prjFormBlock', [], function(){
       'form-long-answer': ['string', 'length', 'regex'],
       'form-radio': [],
       'form-checkbox': ['count'],
-      'form-file': ['file-size', 'file-formt', 'file-count'],
+      'form-file': ['file-size', 'file-format', 'file-count'],
       'form-budget': ['count'],
       'form-checkpoint': ['count']
     }

@@ -13,7 +13,7 @@ schema = do
     "file-count": {name: "檔案數量", ops: "count"}
   ops:
     extension: do
-      "extension": { name: "副檔名" }
+      "ext": { name: '副檔名 <span class="text-sm">( 逗點分隔 )</span>' }
     regex: do
       "match": { name: "符合" }
       "not-match": { name: "不符" }
@@ -42,7 +42,7 @@ schema = do
     'form-long-answer': <[string length regex]>
     'form-radio': []
     'form-checkbox': <[count]>
-    'form-file': <[file-size file-formt file-count]>
+    'form-file': <[file-size file-format file-count]>
     'form-budget': <[count]>
     'form-checkpoint': <[count]>
 
