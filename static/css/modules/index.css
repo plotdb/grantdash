@@ -148,6 +148,24 @@
   right: 0;
   position: absolute;
 }
+.form-block i.i-radio[ld=state]:before {
+  content: "\f00e";
+}
+.form-block i.i-radio.active[ld=state]:before {
+  content: "\f00f";
+}
+.form-block i[type=radio][ld=state]:before {
+  content: "\f00e";
+}
+.form-block i.active[type=radio][ld=state]:before {
+  content: "\f00f";
+}
+.form-block i[type=checkbox][ld=state]:before {
+  content: "\f033";
+}
+.form-block i.active[type=checkbox][ld=state]:before {
+  content: "\f034";
+}
 .folder-item:hover {
   color: currentColor;
 }

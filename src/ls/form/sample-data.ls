@@ -18,13 +18,13 @@ sample-blocks = [
   {
     key: 4
     name: "form-radio", title: "提問的標題3", desc: "提問的描述"
-    data: [{title: "第一個點", desc: "第一個點的描述"}]
+    data: [{title: "第一個點", desc: "第一個點的描述", key: 1}]
     config: {required: true}, criteria: [{}]
   }
   {
     key: 5
     name: "form-checkbox", title: "提問的標題3", desc: "提問的描述"
-    data: [{title: "第一個點", desc: "第一個點的描述"}]
+    data: [{title: "第一個點", desc: "第一個點的描述", key: 1}]
     config: {required: true}, criteria: [{}]
   }
 ]

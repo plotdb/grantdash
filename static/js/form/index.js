@@ -17,6 +17,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
     this.obj = obj = {
       list: []
     };
+    this.obj.list = sampleBlocks;
     lc = {
       view: false
     };

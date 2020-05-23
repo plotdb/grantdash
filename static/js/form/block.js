@@ -146,7 +146,8 @@ ldc.register('prjFormBlock', [], function(){
               var ref$;
               ((ref$ = this$.block).data || (ref$.data = [])).push({
                 title: "新項目",
-                desc: "關於這個項目的描述 ... "
+                desc: "關於這個項目的描述 ... ",
+                key: Math.random().toString(36).substring(2)
               });
               this$.update();
               return this$.render();
@@ -155,22 +156,85 @@ ldc.register('prjFormBlock', [], function(){
         },
         handler: {
           list: {
+            key: function(it){
+              return it.key;
+            },
             list: function(){
-              var ref$;
-              return (ref$ = this$.block).data || (ref$.data = []);
+              return (this$.block.data || []).concat([{
+                other: true
+              }]);
             },
             init: function(arg$){
-              var node, data, editable, view;
+              var node, data, editable;
               node = arg$.node, data = arg$.data;
               editable = node.hasAttribute('data-user-editable');
               if (!editable && this$.viewing) {
-                node.removeAttribute('draggable');
+                return node.removeAttribute('draggable');
               }
-              node.view = view = new ldView({
+            },
+            action: {
+              click: !this.viewing
+                ? function(){}
+                : function(arg$){
+                  var node, data, evt, isRadio, val, ref$, ison, list;
+                  node = arg$.node, data = arg$.data, evt = arg$.evt;
+                  if (evt.target.nodeName === 'INPUT') {
+                    return;
+                  }
+                  isRadio = this$.block.name === 'form-radio';
+                  val = (ref$ = this$.block).value || (ref$.value = {});
+                  if (data.other) {
+                    ison = isRadio
+                      ? true
+                      : !val.other;
+                    val.other = ison;
+                    if (ison && isRadio) {
+                      val.list = [];
+                    }
+                  } else {
+                    list = val.list || [];
+                    ison = isRadio
+                      ? true
+                      : !in$(data.title, list);
+                    if (ison) {
+                      list.push(data.title);
+                      val.other = false;
+                    } else {
+                      list.splice(list.indexOf(data.title), 1);
+                    }
+                    val.list = list;
+                  }
+                  view.render();
+                  return this$.update();
+                }
+            },
+            handler: function(arg$){
+              var node, data, editable;
+              node = arg$.node, data = arg$.data;
+              editable = node.hasAttribute('data-user-editable');
+              if (node.view) {
+                return node.view.render();
+              }
+              return node.view = new ldView({
                 root: node,
+                init: {
+                  data: function(arg$){
+                    var node;
+                    node = arg$.node;
+                    node.setAttribute('data-name', node.getAttribute('editable'));
+                    if (!editable && this$.viewing) {
+                      return node.removeAttribute('editable');
+                    }
+                  }
+                },
                 action: {
                   input: {
-                    "list-data": function(arg$){
+                    "other-value": function(arg$){
+                      var node, ref$;
+                      node = arg$.node;
+                      return ((ref$ = this$.block).value || (ref$.value = {})).otherValue = node.value;
+                    },
+                    data: function(arg$){
                       var node;
                       node = arg$.node;
                       data[node.getAttribute('data-name')] = node.innerText;
@@ -178,7 +242,7 @@ ldc.register('prjFormBlock', [], function(){
                     }
                   },
                   click: {
-                    "list-delete": function(arg$){
+                    'delete': function(arg$){
                       var node, evt;
                       node = arg$.node, evt = arg$.evt;
                       this$.block.data.splice(this$.block.data.indexOf(data), 1);
@@ -188,35 +252,47 @@ ldc.register('prjFormBlock', [], function(){
                     }
                   }
                 },
-                init: {
-                  "list-data": function(arg$){
-                    var node;
-                    node = arg$.node;
-                    node.setAttribute('data-name', node.getAttribute('editable'));
-                    if (!editable && this$.viewing) {
-                      return node.removeAttribute('editable');
-                    }
-                  }
-                },
                 handler: {
-                  "list-delete": function(arg$){
+                  drag: function(arg$){
                     var node;
                     node = arg$.node;
                     return node.classList.toggle('d-none', this$.viewing);
                   },
-                  "list-data": function(arg$){
+                  state: function(arg$){
+                    var node, val, ref$, ison;
+                    node = arg$.node;
+                    val = (ref$ = this$.block).value || (ref$.value = {});
+                    ison = (data.other && val.other) || (!data.other && in$(data.title, val.list || (val.list = [])));
+                    return node.classList.toggle('active', ison);
+                  },
+                  "other-value": function(arg$){
+                    var node, ref$;
+                    node = arg$.node;
+                    return node.value = ((ref$ = this$.block).value || (ref$.value = {})).otherValue || '';
+                  },
+                  'delete': function(arg$){
                     var node;
                     node = arg$.node;
-                    return settext(node, data[node.getAttribute('data-name')]) || '';
+                    return node.classList.toggle('d-none', this$.viewing || data.other);
+                  },
+                  other: function(arg$){
+                    var node;
+                    node = arg$.node;
+                    return node.classList.toggle('d-none', !data.other);
+                  },
+                  data: function(arg$){
+                    var node;
+                    node = arg$.node;
+                    if (data.other) {
+                      node.removeAttribute('editable');
+                      node.classList.toggle('flex-grow-1', false);
+                    }
+                    return settext(node, (data.other
+                      ? '其它'
+                      : data[node.getAttribute('data-name')]) || '');
                   }
                 }
               });
-              return view.render();
-            },
-            handler: function(arg$){
-              var node, data;
-              node = arg$.node, data = arg$.data;
-              return node.view.render();
             }
           }
         }
@@ -570,6 +646,11 @@ ldc.register('prjFormBlock', [], function(){
   });
   return Ctrl;
 });
+function in$(x, xs){
+  var i = -1, l = xs.length >>> 0;
+  while (++i < l) if (x === xs[i]) return true;
+  return false;
+}
 function import$(obj, src){
   var own = {}.hasOwnProperty;
   for (var key in src) if (own.call(src, key)) obj[key] = src[key];

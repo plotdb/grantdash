@@ -53,46 +53,80 @@ module-list = module-init: ->
   if @block.name == \form-checkpoint and @viewing =>
     if !@block.{}value.list => @block.{}value.list = @block.[]data else @block.data = @block.value.list
     ld$.find(@root, '.timeline-list', 0).addEventListener \input, ~> @update!
-
-  #value.list = [...]
-  #value.other-value
-  #value.other
-
   @view.module = view = new ldView do
     root: @root
     action: click: do
       "list-add": ~>
-        @block.[]data.push {title: "新項目", desc: "關於這個項目的描述 ... "}
+        @block.[]data.push {
+          title: "新項目", desc: "關於這個項目的描述 ... ", key: Math.random!toString(36)substring(2)
+        }
         @update!
         @render!
+
     handler: do
       list: do
-        list: ~>
-          @block.[]data
+        key: -> it.key
+        list: ~> (@block.data or []) ++ [{other: true}]
         init: ({node, data}) ~>
           editable = node.hasAttribute(\data-user-editable)
           if !editable and @viewing => node.removeAttribute \draggable
-          node.view = view = new ldView do
+
+        action: click: if !@viewing => (->) else ({node, data, evt}) ~>
+          if evt.target.nodeName == \INPUT => return
+          is-radio = @block.name == \form-radio
+          val = @block.{}value
+          if data.other =>
+            ison = if is-radio => true else !val.other
+            val.other = ison
+            if ison and is-radio => val.list = []
+          else
+            list = val.list or []
+            ison = if is-radio => true else !(data.title in list)
+            if ison =>
+              list.push data.title
+              val.other = false
+            else list.splice list.indexOf(data.title), 1
+            val.list = list
+          view.render!
+          @update!
+
+        handler: ({node, data}) ~>
+          editable = node.hasAttribute(\data-user-editable)
+          if node.view => return node.view.render!
+          node.view = new ldView do
             root: node
+            init: data: ({node}) ~>
+              node.setAttribute(\data-name, node.getAttribute(\editable))
+              if !editable and @viewing => node.removeAttribute \editable
             action: do
               input: do
-                "list-data": ({node}) ~>
+                "other-value": ({node}) ~>
+                  @block.{}value.other-value = node.value
+                data: ({node}) ~>
                   data[node.getAttribute(\data-name)] = node.innerText
                   @update!
               click: do
-                "list-delete": ({node, evt}) ~>
+                delete: ({node, evt}) ~>
                   @block.data.splice @block.data.indexOf(data), 1
                   @update!
                   @render!
                   evt.stopPropagation!
-            init: "list-data": ({node}) ~>
-              node.setAttribute \data-name, node.getAttribute \editable
-              if !editable and @viewing => node.removeAttribute \editable
             handler: do
-              "list-delete": ({node}) ~> node.classList.toggle \d-none, @viewing
-              "list-data": ({node}) -> settext node, data[node.getAttribute(\data-name)] or ''
-          view.render!
-        handler: ({node, data}) -> node.view.render!
+              drag: ({node}) ~> node.classList.toggle \d-none, @viewing
+              state: ({node}) ~>
+                val = @block.{}value
+                ison = (data.other and val.other) or (!data.other and (data.title in val.[]list))
+                node.classList.toggle \active, ison
+              "other-value": ({node}) ~>
+                node.value = @block.{}value.other-value or ''
+              delete: ({node}) ~> node.classList.toggle \d-none, (@viewing or data.other)
+              other: ({node}) -> node.classList.toggle \d-none, !data.other
+              data: ({node}) ->
+                if data.other =>
+                  node.removeAttribute \editable
+                  node.classList.toggle \flex-grow-1, false
+                settext node, ((if data.other => '其它' else data[node.getAttribute(\data-name)]) or '')
+
 
 module = {} <<< do
   "form-radio": module-list

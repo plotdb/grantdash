@@ -11,7 +11,7 @@ style(type="text/css"): :stylus
     
 
 mixin form-block(opt)
-  .card.shadow-sm(ld="block",data-name=opt.name)
+  .form-block.card.shadow-sm(ld="block",data-name=opt.name)
     .card-body: .p-2
       .flex-grow-1
         h4.mb-1(ld="title",editable="title") 提問的標題
@@ -68,34 +68,22 @@ mixin criteria
   .px-4.py-3.border.rounded(editable="option",edit-type="block")
     .mb-2
       div(hostable): .d-flex.align-items-center.clickable.my-2(draggable="true",ld-each="list")
-        //-input.d-none(type="radio",ld="list-input")
-        i.i-bars.mr-2.text-muted
-        i.i-circle.mr-2(ld="list-state")
-        .flex-grow-1(ld="list-data",editable="title")
-        i.i-close.mr-2.clickable.text-danger(ld="list-delete")
-      .d-flex.my-2.align-items-center(ld="list-other")
-        //-input.d-none(type="radio",ld="list-other-input")
-        i.i-bars.mr-2.invisible
-        i.i-circle.mr-2(ld="list-state")
-        .mr-2 其它
-        .flex-grow-1: input.form-control(ld="list-other-value")
-
-
+        i.i-bars.mr-2.text-muted(ld="drag")
+        i.mr-2(ld="state",type="radio")
+        .flex-grow-1.mr-2(ld="data",editable="title")
+        .flex-grow-1(ld="other"): input.form-control(ld="other-value")
+        i.i-close.mr-2.clickable.text-danger(ld="delete")
     .btn.btn-sm.btn-outline-dark(ld="edit-only list-add") 增加項目 #[i.i-plus]
 
 +form-block({name: "form-checkbox"})
   .px-4.py-3.border.rounded
     .mb-2
       div(hostable): .d-flex.align-items-center.clickable.my-2(draggable="true",ld-each="list")
-        i.i-bars.mr-2.text-muted
-        i.i-square.mr-2(ld="list-state")
-        .flex-grow-1(ld="list-data",editable="title")
-        i.i-close.mr-2.clickable.text-danger(ld="list-delete")
-      .d-flex.my-2.align-items-center(ld="list-other")
-        i.i-bars.mr-2.invisible
-        i.i-square.mr-2(ld="list-state")
-        .mr-2 其它
-        .flex-grow-1: input.form-control(ld="list-other-value")
+        i.i-bars.mr-2.text-muted(ld="drag")
+        i.mr-2(ld="state",type="checkbox")
+        .flex-grow-1.mr-2(ld="data",editable="title")
+        .flex-grow-1(ld="other"): input.form-control(ld="other-value")
+        i.i-close.mr-2.clickable.text-danger(ld="delete")
     .btn.btn-sm.btn-outline-dark(ld="edit-only list-add") 增加項目 #[i.i-plus]
 
 +form-block({name: "form-file"})

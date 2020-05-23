@@ -10,6 +10,7 @@ Ctrl = (opt) ->
     answer: ld$.find(root, '[ld=form-answer]', 0)
   @view-mode = view-mode = opt.view-mode
   @obj = obj = {list: []}
+  @obj.list = sample-blocks
   lc = {view: false}
   @hub = hub = do
     update-deb: debounce 200, (b) ~> hub.update!
