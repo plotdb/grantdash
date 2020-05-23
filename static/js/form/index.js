@@ -21,7 +21,8 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       view: false
     };
     this.hub = hub = {
-      updateDeb: debounce(100, function(b){
+      updateDeb: debounce(200, function(b){
+        console.log("is-dragging: ", reb.isDragging());
         if (reb.isDragging()) {
           return hub.updateDeb(b);
         } else {
@@ -38,14 +39,16 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
           });
           return validate(block);
         } else {
-          this$.opsOut(function(){
+          return this$.opsOut(function(){
             return {
               list: this$.obj.list
             };
           });
-          return blocksView.render();
         }
       },
+      renderDeb: debounce(200, function(){
+        return hub.render();
+      }),
       render: function(){
         blocksView.render();
         if (viewer) {
@@ -96,38 +99,30 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
           init: function(arg$){
             var node, data;
             node = arg$.node, data = arg$.data;
-            return bmgr.get(data.name).then(function(n){
-              n = n.childNodes[0];
-              n.parentNode.removeChild(n);
-              node.innerHTML = "";
-              node.appendChild(n);
-              prjFormBlock.init({
-                node: node,
-                rootData: obj.list,
-                data: data,
-                viewMode: viewMode,
-                update: update
-              });
-              if (!viewMode) {
-                return prjFormCriteria.render({
-                  node: node,
-                  data: data
-                });
-              }
-            });
           },
           handler: function(arg$){
-            var node, data;
+            var node, data, promise;
             node = arg$.node, data = arg$.data;
-            if (node.view) {
-              return prjFormBlock.render({
-                node: node,
-                data: data,
-                rootData: obj.list,
-                viewMode: viewMode,
-                update: update
-              });
-            }
+            promise = !node.block
+              ? bmgr.get(data.name).then(function(n){
+                n = n.childNodes[0];
+                n.parentNode.removeChild(n);
+                node.innerHTML = "";
+                node.appendChild(n);
+                return node.block = new prjFormBlock({
+                  root: node,
+                  data: data,
+                  viewMode: viewMode,
+                  hub: hub
+                });
+              })
+              : Promise.resolve();
+            return promise.then(function(){
+              if (node.block) {
+                node.block.setData(data);
+                return node.block.render();
+              }
+            });
           }
         }
       }
@@ -196,7 +191,8 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
                 ? obj.list.indexOf(ib._data)
                 : obj.list.length;
               obj.list.splice(ib, 0, src._data);
-              blocksView.render();
+              hub.updateDeb();
+              hub.render();
               return;
             }
             n._data.data = Array.from(src.parentNode.childNodes).filter(function(it){
@@ -207,8 +203,10 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
               return it;
             });
             if (n.view.module) {
-              return n.view.module.render();
+              n.view.module.render();
             }
+            hub.updateDeb();
+            return console.log('here');
           }
         }
       }
@@ -378,7 +376,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
         return;
       }
       this.obj.list = JSON.parse(JSON.stringify(data.list || []));
-      return this.hub.render();
+      return this.hub.renderDeb();
     }
   });
   return Ctrl;

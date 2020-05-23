@@ -11034,6 +11034,9 @@ var slice$ = [].slice;
           n._data = null;
         } else {
           items.push(k);
+          if (n.parent) {
+            n.parentNode.removeChild(n);
+          }
         }
         return n;
       }).filter(function(it){
@@ -11056,6 +11059,7 @@ var slice$ = [].slice;
           if (node._obj.data !== n) {
             node._obj.data = n;
           }
+          data.container.insertBefore(node, data.proxy);
           return node;
         }
         node = data.node.cloneNode(true);
@@ -11067,7 +11071,7 @@ var slice$ = [].slice;
           idx: i
         };
         node.removeAttribute(this$.ld + "-each");
-        data.container.insertBefore(node, nodes[lastidx + 1] || data.proxy);
+        data.container.insertBefore(node, data.proxy);
         return node;
       });
       ns = ret;

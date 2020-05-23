@@ -12,7 +12,9 @@ Ctrl = (opt) ->
   @obj = obj = {list: []}
   lc = {view: false}
   @hub = hub = do
-    update-deb: debounce 100, (b) ~> if reb.is-dragging! => hub.update-deb(b) else hub.update b
+    update-deb: debounce 200, (b) ~>
+      console.log "is-dragging: ", reb.is-dragging!
+      if reb.is-dragging! => hub.update-deb(b) else hub.update b
     update: (block) ~>
       if view-mode and block =>
         fill-data[block.key] = block.value
@@ -20,7 +22,8 @@ Ctrl = (opt) ->
         validate block
       else
         @ops-out ~> {list: @obj.list}
-        blocks-view.render!
+        #blocks-view.render!
+    render-deb: debounce 200, -> hub.render!
     render: ->
       blocks-view.render!
       if viewer => viewer.render!
@@ -47,16 +50,19 @@ Ctrl = (opt) ->
         key: -> it.key
         list: -> obj.list
         init: ({node, data}) ->
-          bmgr.get(data.name).then (n) ->
-            n = n.childNodes.0
-            n.parentNode.removeChild n
-            node.innerHTML = ""
-            node.appendChild n
-            prj-form-block.init {node, root-data: obj.list, data, view-mode, update}
-            if !view-mode => prj-form-criteria.render {node, data}
         handler: ({node, data}) ->
-          if node.view =>
-            prj-form-block.render {node, data, root-data: obj.list, view-mode, update}
+          promise = if !node.block =>
+            bmgr.get(data.name).then (n) ->
+              n = n.childNodes.0
+              n.parentNode.removeChild n
+              node.innerHTML = ""
+              node.appendChild n
+              node.block = new prj-form-block {root: node, data, view-mode, hub}
+          else Promise.resolve!
+          promise.then ->
+            if node.block =>
+              node.block.set-data data
+              node.block.render!
 
 
   if @node.src =>
@@ -93,7 +99,8 @@ Ctrl = (opt) ->
             obj.list.splice ia, 1
             ib = if ib => obj.list.indexOf(ib._data) else obj.list.length
             obj.list.splice ib, 0, src._data
-            blocks-view.render!
+            hub.update-deb!
+            hub.render!
             return
           # otherwise - n is block.
           n._data.data = Array.from(src.parentNode.childNodes)
@@ -101,6 +108,8 @@ Ctrl = (opt) ->
             .map(-> it._data)
             .filter(->it)
           if n.view.module => n.view.module.render!
+          hub.update-deb!
+          console.log \here
 
   if view-mode =>
     progress = ->
@@ -172,8 +181,7 @@ Ctrl = (opt) ->
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
     if source => return
-
     @obj.list = JSON.parse(JSON.stringify(data.list or []))
-    @hub.render!
+    @hub.render-deb!
 
 return Ctrl
