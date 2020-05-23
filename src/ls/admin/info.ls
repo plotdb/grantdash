@@ -6,7 +6,7 @@ Ctrl = (opt) ->
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   slugs = {}
 
-  slug-check = debounce 500, (n,v,e) -> 
+  slug-check = debounce 500, (n,v,e) ->
     p = ld$.parent(form.fields[n], '.form-group')
     p.classList.add \running
     ld$.fetch "/d/slug-check/#type", {method: \POST}, {json: {slug: v}, type: \json}
@@ -36,19 +36,21 @@ Ctrl = (opt) ->
   view = new ldView do
     root: root
     init: "tail-datetime": ({node}) -> tail.DateTime(node)
-    action: click: submit: ({node}) ->
-      auth.ensure!
-        .then ->
-          loader.on!
-          fd = form.getfd!
-          ld$.fetch "/d/#type/", {method: \POST, body: fd}, {type: \json}
-            .then (r) -> 
-              notify.send \success, '建立完成，將您導向主控台 ...'
-              debounce 1000 .then -> window.location.href = "/#type/#{form.values!slug}/admin"
-            .catch ->
-              loader.off!
-              ldcvmgr.toggle 'error'
-        .catch ->
+    action: click:
+      submit: ({node}) ->
+        auth.ensure!
+          .then ->
+            loader.on!
+            fd = form.getfd!
+            ld$.fetch "/d/#type/", {method: \POST, body: fd}, {type: \json}
+              .then (r) ->
+                notify.send \success, '建立完成，將您導向主控台 ...'
+                debounce 1000 .then -> window.location.href = "/#type/#{form.values!slug}/admin"
+              .catch ->
+                loader.off!
+                ldcvmgr.toggle 'error'
+          .catch -> lda.ldcvmgr.toggle 'auth-required'
+
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do

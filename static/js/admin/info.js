@@ -103,7 +103,9 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
                 loader.off();
                 return ldcvmgr.toggle('error');
               });
-            })['catch'](function(){});
+            })['catch'](function(){
+              return lda.ldcvmgr.toggle('auth-required');
+            });
           }
         }
       }
