@@ -144,8 +144,10 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
             return results$;
           },
           init: function(arg$){
-            var node, data;
+            var node, data, root;
             node = arg$.node, data = arg$.data;
+            node.data = data;
+            root = node;
             node.folder = new ldui.Folder({
               root: node
             });
@@ -153,9 +155,9 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
               root: node,
               handler: {
                 name: function(arg$){
-                  var node;
+                  var node, ref$;
                   node = arg$.node;
-                  return node.innerText = (data.info || (data.info = {})).name || '新分組';
+                  return node.innerText = ((ref$ = root.data).info || (ref$.info = {})).name || '新分組';
                 }
               },
               action: {
@@ -172,6 +174,7 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
           handler: function(arg$){
             var node, data;
             node = arg$.node, data = arg$.data;
+            node.data = data;
             return node.view.render('name');
           }
         }

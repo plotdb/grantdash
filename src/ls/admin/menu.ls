@@ -58,12 +58,17 @@ Ctrl = (opt) ->
         key: -> it.key
         list: ~> [v for k,v of (@grps or {})]
         init: ({node,data}) ->
+          node.data = data
+          root = node
           node.folder = new ldui.Folder root: node
           node.view = new ldView do
             root: node
-            handler: name: ({node}) -> node.innerText = data.{}info.name or '新分組'
+            handler: name: ({node}) -> node.innerText = root.data.{}info.name or '新分組'
             action: click: "nav-tab": ({node}) -> set-group data
-        handler: ({node, data}) -> node.view.render 'name'
+
+        handler: ({node, data}) ->
+          node.data = data
+          node.view.render 'name'
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
