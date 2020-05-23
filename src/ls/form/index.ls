@@ -12,17 +12,13 @@ Ctrl = (opt) ->
   @obj = obj = {list: []}
   lc = {view: false}
   @hub = hub = do
-    update-deb: debounce 200, (b) ~>
-      console.log "is-dragging: ", reb.is-dragging!
-      if reb.is-dragging! => hub.update-deb(b) else hub.update b
+    update-deb: debounce 200, (b) ~> hub.update!
     update: (block) ~>
       if view-mode and block =>
         fill-data[block.key] = block.value
         @ops-out ~> {list: @obj.list}
         validate block
-      else
-        @ops-out ~> {list: @obj.list}
-        #blocks-view.render!
+      else @ops-out ~> {list: @obj.list}
     render-deb: debounce 200, -> hub.render!
     render: ->
       blocks-view.render!
@@ -108,8 +104,7 @@ Ctrl = (opt) ->
             .map(-> it._data)
             .filter(->it)
           if n.view.module => n.view.module.render!
-          hub.update-deb!
-          console.log \here
+          hub.update!
 
   if view-mode =>
     progress = ->
@@ -173,7 +168,6 @@ Ctrl = (opt) ->
                   if render-answer[data.name] =>
                     render-answer[data.name]({node, block: data, data: (fill-data[data.key] or {})})
                   else node.innerText = (fill-data[data.key] or {}).content or ''
-
           handler: ({node, data}) -> node.view.render!
 
   return @

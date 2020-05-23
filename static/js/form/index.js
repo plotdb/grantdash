@@ -22,12 +22,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
     };
     this.hub = hub = {
       updateDeb: debounce(200, function(b){
-        console.log("is-dragging: ", reb.isDragging());
-        if (reb.isDragging()) {
-          return hub.updateDeb(b);
-        } else {
-          return hub.update(b);
-        }
+        return hub.update();
       }),
       update: function(block){
         if (viewMode && block) {
@@ -205,8 +200,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
             if (n.view.module) {
               n.view.module.render();
             }
-            hub.updateDeb();
-            return console.log('here');
+            return hub.update();
           }
         }
       }

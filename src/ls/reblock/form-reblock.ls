@@ -96,7 +96,9 @@
       # instead of @root, we use document so drop outside @root still works
       document.addEventListener \dragover, (e) ~>
         e.preventDefault! # we need this for injecting block ( drop event won't fire without this )
+
       document.addEventListener \drop, (e) ~>
+        if @node.dragging => @node.dragging = null
         if @node.injecting =>
           if @node.injecting.parentNode => that.removeChild @node.injecting
           @node.injecting = null

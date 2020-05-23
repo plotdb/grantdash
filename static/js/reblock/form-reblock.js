@@ -152,6 +152,9 @@ var slice$ = [].slice;
       });
       document.addEventListener('drop', function(e){
         var that, name;
+        if (this$.node.dragging) {
+          this$.node.dragging = null;
+        }
         if (this$.node.injecting) {
           if (that = this$.node.injecting.parentNode) {
             that.removeChild(this$.node.injecting);

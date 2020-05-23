@@ -537,7 +537,6 @@ ldc.register('prjFormBlock', [], function(){
       return this.block = it;
     },
     render: function(){
-      console.log('render');
       this.view.block.render();
       if (this.view.module) {
         this.view.module.render();

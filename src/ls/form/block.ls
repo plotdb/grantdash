@@ -236,7 +236,6 @@ Ctrl = (opt) ->
 Ctrl.prototype = Object.create(Object.prototype) <<< do
   set-data: -> @block = it
   render: -> 
-    console.log 'render'
     @view.block.render!
     if @view.module => @view.module.render!
     if @view.criteria => @view.criteria.render!
