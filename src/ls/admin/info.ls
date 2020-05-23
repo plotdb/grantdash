@@ -19,7 +19,7 @@ Ctrl = (opt) ->
     root: root
     submit: '[ld=submit]'
     afterCheck: (s, f) ->
-      if f.thumbnail.value =>
+      if f.thumbnail and f.thumbnail.value =>
         if !( p = ld$.parent(f.thumbnail, '.bg') ) => return
         ldFile.fromFile f.thumbnail.files.0, \dataurl
           .then (r) -> p.style.backgroundImage = "url(#{r.result})"
@@ -52,6 +52,8 @@ Ctrl = (opt) ->
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
-  ops-in: ({data}) -> for k,v of data => @form.fields[k].value = v
+  ops-in: ({data,ops,source}) ->
+    if source => return
+    for k,v of @form.fields => @form.fields[k].value = data[k] or ''
 
 return Ctrl

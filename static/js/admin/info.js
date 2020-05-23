@@ -41,7 +41,7 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
       submit: '[ld=submit]',
       afterCheck: function(s, f){
         var p;
-        if (f.thumbnail.value) {
+        if (f.thumbnail && f.thumbnail.value) {
           if (!(p = ld$.parent(f.thumbnail, '.bg'))) {
             return;
           }
@@ -112,11 +112,14 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
     opsIn: function(arg$){
-      var data, k, v, results$ = [];
-      data = arg$.data;
-      for (k in data) {
-        v = data[k];
-        results$.push(this.form.fields[k].value = v);
+      var data, ops, source, k, ref$, v, results$ = [];
+      data = arg$.data, ops = arg$.ops, source = arg$.source;
+      if (source) {
+        return;
+      }
+      for (k in ref$ = this.form.fields) {
+        v = ref$[k];
+        results$.push(this.form.fields[k].value = data[k] || '');
       }
       return results$;
     }

@@ -5,7 +5,7 @@ Ctrl = (opt) ->
   @toc = toc = opt.toc
   @grps = []
   update = debounce 500, ~> @ops-out ~> @grps
-  set-group = (grp) ->
+  set-group = (grp) -> opt.set-group grp
   search = debounce (val) ->
     toc.brds-filtered = toc.brds.filter -> ~it.name.indexOf(val)
     view.render!
@@ -23,7 +23,7 @@ Ctrl = (opt) ->
             key = "grp-#{Math.random!toString(36)substring(2)}"
             if !@grps[key] => break
           if @grps[key] => throw new ldError(1011)
-          @grps[key] = {key, name: "新分組"}
+          @grps[key] = {key, info: {name: "新分組"}}
           view.render 'grp-entry'
           update!now!
 
@@ -60,14 +60,13 @@ Ctrl = (opt) ->
           node.folder = new ldui.Folder root: node
           node.view = new ldView do
             root: node
-            handler: name: ({node}) -> node.innerText = data.name
+            handler: name: ({node}) -> node.innerText = data.{}info.name or '新分組'
             action: click: "nav-tab": ({node}) -> set-group data
         handler: ({node, data}) -> node.view.render 'name'
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
-    if source => return
     @grps = JSON.parse JSON.stringify(data or {})
     @view.render!
 

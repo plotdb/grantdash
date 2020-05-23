@@ -45,10 +45,31 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
     toc.brdsFiltered = toc.brds || [];
     console.log("sidemenu information: ", toc);
     return prepareSharedb(toc).then(function(arg$){
-      var org, brd, menu, info, stage, perm, navbar, form, grade, criteria;
+      var org, brd, menu, info, stage, perm, navbar, grp;
       org = arg$.org, brd = arg$.brd;
       menu = new adminMenu({
-        toc: toc
+        toc: toc,
+        setGroup: function(v){
+          var k;
+          return (function(){
+            var results$ = [];
+            for (k in grp) {
+              results$.push(k);
+            }
+            return results$;
+          }()).map(function(k){
+            var p;
+            p = ['group', v.key, k];
+            if (!grp[k].adapted()) {
+              return grp[k].adapt({
+                hub: brd,
+                path: p
+              });
+            } else {
+              return grp[k].setPath(p);
+            }
+          });
+        }
       });
       menu.adapt({
         hub: brd,
@@ -86,36 +107,21 @@ ldc.register('adminGuard', ['auth', 'loader', 'sdbAdapter', 'adminMenu', 'adminP
         hub: brd,
         path: ['page', 'navbar']
       });
-      form = new prjForm({
+      grp = {};
+      grp.form = new prjForm({
         toc: toc,
         root: '[ld-scope=prj-form]',
         viewMode: false
       });
-      form.adapt({
-        hub: brd,
-        path: ['group', 'grp-av6q0tmyomf', 'form']
-      });
-      info = new adminInfo({
+      grp.info = new adminInfo({
         root: '[ld-scope=grp-info-panel]',
         type: 'grp'
       });
-      info.adapt({
-        hub: brd,
-        path: ['group', 'grp-av6q0tmyomf', 'info']
-      });
-      grade = new adminEntry({
+      grp.grade = new adminEntry({
         root: '[ld-scope=grade-panel]'
       });
-      grade.adapt({
-        hub: brd,
-        path: ['group', 'grp-av6q0tmyomf', 'grade']
-      });
-      criteria = new adminEntry({
+      return grp.criteria = new adminEntry({
         root: '[ld-scope=criteria-panel]'
-      });
-      return criteria.adapt({
-        hub: brd,
-        path: ['group', 'grp-av6q0tmyomf', 'criteria']
       });
     });
   };

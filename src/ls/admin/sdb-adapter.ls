@@ -56,12 +56,13 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
     @fire \change, {ops, data, source}
 
 Adapter.interface = do
+  adapted: -> !!@adapter
   adapt: ({hub, path}) ->
     @adapter = adapter = new Adapter path: path
     adapter.on \change, ({ops, source}) ~> @ops-in {data: adapter.data, ops, source}
     adapter.init hub
     return adapter
-  set-path: (p) -> @adapter.set p
+  set-path: (p) -> @adapter.set {path: p}
   # send data to server. f is either function or ops.
   # if f is function, it takes @data clone, and should return an updated data.
   ops-out: (f) -> if @adapter => @adapter.update f

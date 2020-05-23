@@ -111,6 +111,9 @@ ldc.register('sdbAdapter', [], function(){
     }
   });
   Adapter['interface'] = {
+    adapted: function(){
+      return !!this.adapter;
+    },
     adapt: function(arg$){
       var hub, path, adapter, this$ = this;
       hub = arg$.hub, path = arg$.path;
@@ -130,7 +133,9 @@ ldc.register('sdbAdapter', [], function(){
       return adapter;
     },
     setPath: function(p){
-      return this.adapter.set(p);
+      return this.adapter.set({
+        path: p
+      });
     },
     opsOut: function(f){
       if (this.adapter) {

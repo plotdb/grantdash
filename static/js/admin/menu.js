@@ -12,7 +12,9 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
         return this$.grps;
       });
     });
-    setGroup = function(grp){};
+    setGroup = function(grp){
+      return opt.setGroup(grp);
+    };
     search = debounce(function(val){
       toc.brdsFiltered = toc.brds.filter(function(it){
         return ~it.name.indexOf(val);
@@ -46,7 +48,9 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
             }
             this$.grps[key] = {
               key: key,
-              name: "新分組"
+              info: {
+                name: "新分組"
+              }
             };
             view.render('grp-entry');
             return update().now();
@@ -148,7 +152,7 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
                 name: function(arg$){
                   var node;
                   node = arg$.node;
-                  return node.innerText = data.name;
+                  return node.innerText = (data.info || (data.info = {})).name || '新分組';
                 }
               },
               action: {
@@ -176,9 +180,6 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
     opsIn: function(arg$){
       var data, ops, source;
       data = arg$.data, ops = arg$.ops, source = arg$.source;
-      if (source) {
-        return;
-      }
       this.grps = JSON.parse(JSON.stringify(data || {}));
       return this.view.render();
     }

@@ -35,27 +35,34 @@ prj-form, admin-entry}) ->
       .then ({org,brd}) ->
         # TODO remove this? we have fixed sdb-adapter so there is no need to manually init.
         #if !brd.doc.data.page => brd.doc.submitOp [{p: ["page"], oi: {navbar: {}}}]
-        menu = new admin-menu {toc}
-        menu.adapt  {hub: brd, path: <[group]>}
+        menu = new admin-menu do
+          toc: toc
+          set-group: (v) ->
+            (k) <- [k for k of grp].map _
+            p = ['group', v.key, k]
+            if !grp[k].adapted! => grp[k].adapt {hub: brd, path: p}
+            else grp[k].set-path p
+        menu.adapt   {hub: brd, path: <[group]>}
         info = new admin-info root: '[ld-scope=brd-info]', type: \brd
-        info.adapt  {hub: brd, path: <[info]> }
+        info.adapt   {hub: brd, path: <[info]> }
         stage = new admin-stage {toc, root: '[ld-scope=brd-stage]'}
-        stage.adapt {hub: brd, path: <[stage]>}
+        stage.adapt  {hub: brd, path: <[stage]>}
         perm = new admin-perm {toc, root: '[ld-scope=brd-perm]'}
-        perm.adapt {hub: brd, path: <[perm]>}
+        perm.adapt   {hub: brd, path: <[perm]>}
         navbar = new admin-navbar {toc, root: '[ld-scope=navbar-editor]'}
         navbar.adapt {hub: brd, path: <[page navbar]>}
 
         # group information
         # TODO update group idx based on user selection
-        form = new prj-form {toc, root: '[ld-scope=prj-form]', view-mode: false}
-        form.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'form']}
-        info = new admin-info root: '[ld-scope=grp-info-panel]', type: \grp
-        info.adapt  {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'info'] }
-        grade = new admin-entry {root: '[ld-scope=grade-panel]'}
-        grade.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'grade']}
-        criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
-        criteria.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'criteria']}
+        grp = {}
+        grp.form = new prj-form {toc, root: '[ld-scope=prj-form]', view-mode: false}
+        #grp.form.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'form']}
+        grp.info = new admin-info root: '[ld-scope=grp-info-panel]', type: \grp
+        #grp.info.adapt  {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'info'] }
+        grp.grade = new admin-entry {root: '[ld-scope=grade-panel]'}
+        #grp.grade.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'grade']}
+        grp.criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
+        #grp.criteria.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'criteria']}
 
   Hub = -> @ <<< {evt-handler: {}} <<< it
   Hub.prototype = Object.create(Object.prototype) <<< do
