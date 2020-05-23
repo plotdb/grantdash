@@ -135,6 +135,8 @@ ldc.register('prjFormBlock', [], function(){
           this.block.data = this.block.value.list;
         }
         ld$.find(this.root, '.timeline-list', 0).addEventListener('input', function(){
+          var ref$;
+          ((ref$ = this$.block).value || (ref$.value = {})).list = this$.block.data;
           return this$.update();
         });
       }

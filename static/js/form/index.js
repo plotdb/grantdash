@@ -186,7 +186,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
           return hub.update();
         },
         afterMoveNode: function(arg$){
-          var src, des, ib, n, ia;
+          var src, des, ib, n, ia, ref$;
           src = arg$.src, des = arg$.des, ib = arg$.ib;
           if (src.parentNode.hasAttribute('hostable')) {
             n = src.parentNode;
@@ -209,8 +209,11 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
             }).map(function(it){
               return it._data;
             }).filter(function(it){
-              return it;
+              return it && !it.other;
             });
+            if (n._data.name === 'form-checkpoint') {
+              ((ref$ = n._data).value || (ref$.value = {})).list = n._data.data;
+            }
             if (n.view.module) {
               n.view.module.render();
             }

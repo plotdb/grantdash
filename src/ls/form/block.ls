@@ -52,7 +52,9 @@ module = {}
 module-list = module-init: ->
   if @block.name == \form-checkpoint and @viewing =>
     if !@block.{}value.list => @block.{}value.list = @block.[]data else @block.data = @block.value.list
-    ld$.find(@root, '.timeline-list', 0).addEventListener \input, ~> @update!
+    ld$.find(@root, '.timeline-list', 0).addEventListener \input, ~>
+      @block.{}value.list = @block.data
+      @update!
   @view.module = view = new ldView do
     root: @root
     action: click: do
@@ -104,11 +106,7 @@ module-list = module-init: ->
               input: do
                 "other-value": ({node}) ~>
                   @block.{}value.other-value = node.value
-                data: ({node}) ~>
-                  #oldval = data[node.getAttribute(\data-name)]
-                  #data[node.getAttribute(\data-name)] = node.innerText
-                  #if oldval != node.innerText => @update!
-                  data[node.getAttribute(\data-name)] = node.innerText
+                data: ({node}) ~> data[node.getAttribute(\data-name)] = node.innerText
               click: do
                 delete: ({node, evt}) ~>
                   @block.data.splice @block.data.indexOf(data), 1
@@ -278,8 +276,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @view.block.render!
     if @view.module => @view.module.render!
     if @view.criteria => @view.criteria.render!
-  update: -> 
-    @hub.update @block
+  update: -> @hub.update @block
   delete: -> @hub.delete @block
   clone: -> @hub.clone @block
 

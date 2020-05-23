@@ -113,7 +113,10 @@ Ctrl = (opt) ->
           n._data.data = Array.from(src.parentNode.childNodes)
             .filter(->it.nodeType == 1 )
             .map(-> it._data)
-            .filter(->it)
+            .filter(->it and !it.other)
+          # in view mode, reorder works for form-checkpoint. so we update its value.
+          # TODO use _data seems to be a bad idea. can we make it better?
+          if n._data.name == \form-checkpoint => n._data.{}value.list = n._data.data
           if n.view.module => n.view.module.render!
           hub.update!
 
