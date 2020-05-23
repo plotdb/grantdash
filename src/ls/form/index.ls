@@ -23,6 +23,16 @@ Ctrl = (opt) ->
     render: ->
       blocks-view.render!
       if viewer => viewer.render!
+    delete: ->
+      obj.list.splice obj.list.indexOf(it), 1
+      @update!
+      @render!
+    clone: ->
+      new-data = JSON.parse(JSON.stringify(it))
+      new-data.key = Math.random!toString(36)substring(2)
+      obj.list.splice obj.list.indexOf(it), 0, new-data
+      @update!
+      @render!
 
   bmgr = do
     get: (name) -> new Promise (res, rej) ->

@@ -241,14 +241,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     if @view.criteria => @view.criteria.render!
   update: -> 
     @hub.update!
-  delete: ->
-    @root-data.splice(@root-data.indexOf(data), 1)
-    @update!
-  clone: ->
-    new-data = JSON.parse(JSON.stringify(@block))
-    new-data.key = Math.random!toString(36)substring(2)
-    @root-data.splice(@root-data.indexOf(@block), 0, new-data )
-    @update!
+  delete: -> @hub.delete @block
+  clone: -> @hub.clone @block
 
 return Ctrl
 

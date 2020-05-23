@@ -49,6 +49,19 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
         if (viewer) {
           return viewer.render();
         }
+      },
+      'delete': function(it){
+        obj.list.splice(obj.list.indexOf(it), 1);
+        this.update();
+        return this.render();
+      },
+      clone: function(it){
+        var newData;
+        newData = JSON.parse(JSON.stringify(it));
+        newData.key = Math.random().toString(36).substring(2);
+        obj.list.splice(obj.list.indexOf(it), 0, newData);
+        this.update();
+        return this.render();
       }
     };
     bmgr = {

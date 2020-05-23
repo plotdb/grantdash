@@ -549,15 +549,10 @@ ldc.register('prjFormBlock', [], function(){
       return this.hub.update();
     },
     'delete': function(){
-      this.rootData.splice(this.rootData.indexOf(data), 1);
-      return this.update();
+      return this.hub['delete'](this.block);
     },
     clone: function(){
-      var newData;
-      newData = JSON.parse(JSON.stringify(this.block));
-      newData.key = Math.random().toString(36).substring(2);
-      this.rootData.splice(this.rootData.indexOf(this.block), 0, newData);
-      return this.update();
+      return this.hub.clone(this.block);
     }
   });
   return Ctrl;
