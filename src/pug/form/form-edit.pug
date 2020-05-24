@@ -33,7 +33,8 @@ block script
   +script("/js/form/index.js")
   +script("/js/form/block.js")
   +script("/js/form/criteria.js")
-  +script("/js/admin/sdb-adapter.js")
+  +script("/js/util/sdb-adapter.js")
+  +script("/js/util/hub.js")
   script: :lsc
     (->
       ldc.register <[prjForm]>, ({prj-form}) ->

@@ -237,7 +237,7 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
             node = arg$.node;
             node.classList.toggle('d-none', !this$.preview);
             if (this$.preview) {
-              return node.innerHTML = marked(((ref$ = this$.block).value || (ref$.value = {})).content || '');
+              return node.innerHTML = DOMPurify.sanitize(marked(((ref$ = this$.block).value || (ref$.value = {})).content || ''));
             }
           },
           "edit-panel": function(arg$){

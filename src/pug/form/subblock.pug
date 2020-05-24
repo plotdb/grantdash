@@ -17,7 +17,7 @@ mixin form-block(opt)
         h4.mb-1(ld="title",editable="title") 提問的標題
         p.text-muted.mb-2(ld="desc",editable="desc") 提問的簡短描述 ...
       block
-      .alert.alert-danger.mt-2.ld.ld-float-btt-in.p-2.shadow-sm(ld="invalid")
+      .alert.alert-danger.mt-2.mb-0.ld.ld-float-btt-in.p-2.shadow-sm(ld="invalid")
     div(ld="edit-only")
       +criteria
       +footer
@@ -96,7 +96,7 @@ mixin criteria
 +form-block({name: "form-long-answer"})
   .position-relative
     textarea.form-control(rows="5",ld="input-field edit-panel")
-    .w-100.bg-light.rounded.p-3(ld="preview-panel",style="min-height:200px")
+    .w-100.bg-light.rounded.p-3.text-break(ld="preview-panel",style="min-height:200px")
   .d-flex.align-items-center.mt-2
     .d-flex.align-items-center.text-sm.text-muted.mr-4
       input.mr-1(type="checkbox",ld="use-markdown")

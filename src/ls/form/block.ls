@@ -114,7 +114,7 @@ module-textarea = module-init: ->
       "input-field": ({node}) ~> node.value = @block.{}value.content or ''
       "preview-panel": ({node}) ~>
         node.classList.toggle \d-none, !@preview
-        if @preview => node.innerHTML = marked(@block.{}value.content or '')
+        if @preview => node.innerHTML = DOMPurify.sanitize(marked(@block.{}value.content or ''))
       "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
       "if-markdown": ({node}) ~> node.classList.toggle \d-none, !@block.{}value.use-markdown
 

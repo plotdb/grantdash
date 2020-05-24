@@ -9,16 +9,17 @@ Ctrl = (opt) ->
     list: ld$.find(root, '[ld=form-list]', 0)
     answer: ld$.find(root, '[ld=form-answer]', 0)
   @view-mode = view-mode = opt.view-mode
-  @obj = obj = {list: []}
-  obj.list = sample-blocks
+  @obj = obj = {list: [], value: {}}
+  if @view-mode and opt.form => @obj.list = opt.form
+
   lc = {view: false}
   @hub = hub = do
     update-deb: debounce 200, (b) ~> hub.update!
     update: (block) ~>
       if view-mode and block =>
-        fill-data[block.key] = block.value
-        @ops-out ~> {list: @obj.list}
-        validate block
+        obj.value[block.key] = block.value
+        @ops-out ~> obj.value
+        @validate block
       else @ops-out ~> {list: @obj.list}
     render-deb: debounce 200, -> hub.render!
     render: ->
@@ -43,12 +44,15 @@ Ctrl = (opt) ->
       div.appendChild n.cloneNode(true)
       res div
 
-  fill-data = {}
-  validate = debounce (block) ->
+  @validate-all = debounce ->
+    obj.list.map -> it.valid = prj-form-validation.validate it
+    blocks-view.render!
+    if viewer => viewer.render!
+  @validate = debounce (block) ->
     block.valid = prj-form-validation.validate block
     blocks-view.render!
     if viewer => viewer.render!
-  update = (block) -> hub.update block
+  #update = (block) -> hub.update block
 
   blocks-view = new ldView do
     root: @node.list
@@ -136,7 +140,7 @@ Ctrl = (opt) ->
           viewer.render!
           view-answer.render!
         invalid: ~>
-          filled = [k for k of fill-data]
+          filled = [k for k of obj.value]
           for i from 0 til obj.list.length =>
             if !("#{obj.list[i].key}" in filled) => break
           node = ld$.find(@node.list, "\#block-#{obj.list[i].key}",0)
@@ -166,30 +170,38 @@ Ctrl = (opt) ->
         node.innerText = ((data.list or []) ++ (if data.other => [data.otherValue or ''] else [])).join(', ')
       "form-checkbox": ({node, data}) ->
         node.innerText = ((data.list or []) ++ (if data.other => [data.otherValue or ''] else [])).join(', ')
+      "form-long-answer": ({node, data}) ->
+        node.innerHTML = DOMPurify.sanitize(marked(data.content or ''))
+
 
     view-answer = new ldView do
       root: @node.answer
       handler: do
         answer: do
           list: -> obj.list
-          init: ({node, data}) ->
-            node.view = new ldView do
+          handler: ({node, data}) ->
+            if node.view => node.view.render!
+            else node.view = new ldView do
               root: node
               handler: do
                 title: ({node}) -> node.innerText = data.title or ''
                 desc: ({node}) -> node.innerText = data.desc or ''
                 content: ({node}) ->
                   if render-answer[data.name] =>
-                    render-answer[data.name]({node, block: data, data: (fill-data[data.key] or {})})
-                  else node.innerText = (fill-data[data.key] or {}).content or ''
-          handler: ({node, data}) -> node.view.render!
+                    render-answer[data.name]({node, block: data, data: (obj.value[data.key] or {})})
+                  else node.innerText = (obj.value[data.key] or {}).content or ''
 
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
     if source => return
-    @obj.list = JSON.parse(JSON.stringify(data.list or []))
+    data = JSON.parse(JSON.stringify(data or {}))
+    if @view-mode =>
+      @obj.value = data
+      @obj.list.map ~> it.value = data[it.key]
+      @validate-all!
+    else @obj.list = (data.list or [])
     @hub.render-deb!
 
 return Ctrl

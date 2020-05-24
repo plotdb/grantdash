@@ -3,7 +3,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
   var prjFormCriteria, prjFormBlock, prjFormValidation, sdbAdapter, Ctrl;
   prjFormCriteria = arg$.prjFormCriteria, prjFormBlock = arg$.prjFormBlock, prjFormValidation = arg$.prjFormValidation, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var root, viewMode, obj, lc, hub, bmgr, fillData, validate, update, blocksView, reb, progress, viewer, renderAnswer, viewAnswer, this$ = this;
+    var root, viewMode, obj, lc, hub, bmgr, blocksView, reb, progress, viewer, renderAnswer, viewAnswer, this$ = this;
     this.opt = opt;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
@@ -15,9 +15,12 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
     };
     this.viewMode = viewMode = opt.viewMode;
     this.obj = obj = {
-      list: []
+      list: [],
+      value: {}
     };
-    obj.list = sampleBlocks;
+    if (this.viewMode && opt.form) {
+      this.obj.list = opt.form;
+    }
     lc = {
       view: false
     };
@@ -27,13 +30,11 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
       }),
       update: function(block){
         if (viewMode && block) {
-          fillData[block.key] = block.value;
+          obj.value[block.key] = block.value;
           this$.opsOut(function(){
-            return {
-              list: this$.obj.list
-            };
+            return obj.value;
           });
-          return validate(block);
+          return this$.validate(block);
         } else {
           return this$.opsOut(function(){
             return {
@@ -84,17 +85,22 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
         });
       }
     };
-    fillData = {};
-    validate = debounce(function(block){
+    this.validateAll = debounce(function(){
+      obj.list.map(function(it){
+        return it.valid = prjFormValidation.validate(it);
+      });
+      blocksView.render();
+      if (viewer) {
+        return viewer.render();
+      }
+    });
+    this.validate = debounce(function(block){
       block.valid = prjFormValidation.validate(block);
       blocksView.render();
       if (viewer) {
         return viewer.render();
       }
     });
-    update = function(block){
-      return hub.update(block);
-    };
     blocksView = new ldView({
       root: this.node.list,
       handler: {
@@ -250,7 +256,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
             invalid: function(){
               var filled, res$, k, i$, to$, i, node;
               res$ = [];
-              for (k in fillData) {
+              for (k in obj.value) {
                 res$.push(k);
               }
               filled = res$;
@@ -327,6 +333,11 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
           return node.innerText = ((data.list || []).concat(data.other
             ? [data.otherValue || '']
             : [])).join(', ');
+        },
+        "form-long-answer": function(arg$){
+          var node, data;
+          node = arg$.node, data = arg$.data;
+          return node.innerHTML = DOMPurify.sanitize(marked(data.content || ''));
         }
       };
       viewAnswer = new ldView({
@@ -336,42 +347,41 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
             list: function(){
               return obj.list;
             },
-            init: function(arg$){
-              var node, data;
-              node = arg$.node, data = arg$.data;
-              return node.view = new ldView({
-                root: node,
-                handler: {
-                  title: function(arg$){
-                    var node;
-                    node = arg$.node;
-                    return node.innerText = data.title || '';
-                  },
-                  desc: function(arg$){
-                    var node;
-                    node = arg$.node;
-                    return node.innerText = data.desc || '';
-                  },
-                  content: function(arg$){
-                    var node;
-                    node = arg$.node;
-                    if (renderAnswer[data.name]) {
-                      return renderAnswer[data.name]({
-                        node: node,
-                        block: data,
-                        data: fillData[data.key] || {}
-                      });
-                    } else {
-                      return node.innerText = (fillData[data.key] || {}).content || '';
-                    }
-                  }
-                }
-              });
-            },
             handler: function(arg$){
               var node, data;
               node = arg$.node, data = arg$.data;
-              return node.view.render();
+              if (node.view) {
+                return node.view.render();
+              } else {
+                return node.view = new ldView({
+                  root: node,
+                  handler: {
+                    title: function(arg$){
+                      var node;
+                      node = arg$.node;
+                      return node.innerText = data.title || '';
+                    },
+                    desc: function(arg$){
+                      var node;
+                      node = arg$.node;
+                      return node.innerText = data.desc || '';
+                    },
+                    content: function(arg$){
+                      var node;
+                      node = arg$.node;
+                      if (renderAnswer[data.name]) {
+                        return renderAnswer[data.name]({
+                          node: node,
+                          block: data,
+                          data: obj.value[data.key] || {}
+                        });
+                      } else {
+                        return node.innerText = (obj.value[data.key] || {}).content || '';
+                      }
+                    }
+                  }
+                });
+              }
             }
           }
         }
@@ -381,12 +391,21 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
     opsIn: function(arg$){
-      var data, ops, source;
+      var data, ops, source, this$ = this;
       data = arg$.data, ops = arg$.ops, source = arg$.source;
       if (source) {
         return;
       }
-      this.obj.list = JSON.parse(JSON.stringify(data.list || []));
+      data = JSON.parse(JSON.stringify(data || {}));
+      if (this.viewMode) {
+        this.obj.value = data;
+        this.obj.list.map(function(it){
+          return it.value = data[it.key];
+        });
+        this.validateAll();
+      } else {
+        this.obj.list = data.list || [];
+      }
       return this.hub.renderDeb();
     }
   });

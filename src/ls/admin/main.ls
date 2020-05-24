@@ -67,11 +67,6 @@ prj-form, admin-entry}) ->
         grp.criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
         #grp.criteria.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'criteria']}
 
-  Hub = -> @ <<< {evt-handler: {}} <<< it
-  Hub.prototype = Object.create(Object.prototype) <<< do
-    on: (n, cb) -> @evt-handler.[][n].push cb
-    fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
-
   prepare-sharedb = (toc) ->
     console.log "prepare sharedb ..."
     sdb = sdb = new sharedb-wrapper do

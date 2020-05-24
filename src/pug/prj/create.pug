@@ -2,7 +2,7 @@ extends /base.pug
 block body
   //-include /ui/data/sample.pug
   include /modules/mixins/index.pug
-  include timeline.pug
+  include /form/timeline.pug
   +css("/assets/lib/handsontable/handsontable.min.css")
   +script("/assets/lib/handsontable/handsontable.min.js")
   +script("/assets/lib/ldui/ldui.min.js")
@@ -10,7 +10,7 @@ block body
   +script("/assets/lib/ctrlz/ot-json0.js")
 
   .w-1024.mx-auto.rwd.typeset.heading-contrast
-    +scope("form").d-flex
+    +scope("prj-form").d-flex
       .mr-4.pr-4
         .pb-4.mb-4.h-100
           h3.my-0(ld="nview") 編輯提案
@@ -65,12 +65,12 @@ block body
 
 
       .flex-grow-1
-        .d-none(ld="form-sample"): include subblock.pug
+        .d-none(ld="form-sample"): include /form/subblock.pug
         div(ld="view"): div(ld="form-answer"): .mb-4.pb-4(ld-each="answer")
           h4.mb-1(ld="title") 提問的標題
           p.text-muted.mb-2(ld="desc") 提問的簡短描述 ...
           hr
-          .mb-4(ld="content")
+          .mb-4.text-break(ld="content")
         div(ld="nview"): div(ld="form-list"): div(ld-each="block")
         div(ld="nview")
           .d-flex.align-items-center
@@ -79,6 +79,7 @@ block body
             .text-sm.text-success.d-none(ld="valid") 您已填完所有項目，可別忘了儲存並發布喔！
 
 block script
+  +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
   +script("/assets/lib/dompurify/2.0.11/purify.min.js")
   +script("/js/form/sample-data.js")
   +script("/js/form/index.js")
@@ -87,8 +88,4 @@ block script
   +script("/js/form/validator.js")
   +script("/js/util/sdb-adapter.js")
   +script("/js/util/hub.js")
-  script: :lsc
-    (->
-      ldc.register <[prjForm]>, ({prj-form}) ->
-        ctrl = new prj-form {view-mode: true, root: '[ld-scope=form]'}
-    )!
+  +script("/js/prj/index.js")
