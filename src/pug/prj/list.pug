@@ -1,0 +1,70 @@
+extends /base.pug
+block vars
+  - ctrl.navtop.placeholder = true;
+  - ctrl.navtop.shown = true;
+  - ctrl.navtop.className = "navbar-light bg-semi-light"
+block body
+  include /modules/mixins/index.pug
+  //-include /ui/data/prj-list.pug
+
+  //-include /design/mixins/prj.pug
+  //-include /activity/mixin.pug
+  //-include /project/create.pug
+
+  mixin list
+    .w-1024.rwd.mx-auto.d-flex.flex-wrap.justify-content-between
+      //-each i in [1,2,3,4,5,6,7,8,9,10,11,12]
+      //-each prj in db
+        .py-4.my-4: +prj-card-noframe(prj).mb-4.h-100.border-0.shadow-none
+      each i in [1,2,3,4,5,6,7,8,9]
+        .py-4.my-4: +prj-card-noframe({}).mb-4.h-100.border-0.shadow-none
+    .w-1024.rwd.mx-auto.text-center.my-4.py-4
+      .btn-group.mx-auto
+        each i in [1,2,3,4,5,6]
+          .btn.btn-outline-secondary(class=(i==1?"active":"")) #{i}
+
+  .ldcv.ldcvmgr(data-name="dev-note"): .base.w-640: .inner.card: .card-body
+    p 提案列表.
+    ul
+      li 主要資訊：提案內容簡介, 縮圖, 連結; 活動名稱, 摘要.
+      li 分縮圖區塊式或文字摘要式
+      li 簡單搜尋功能: ( 依類型 / 搜標題 )
+      li 點擊後進入提案主頁。
+      li: ul
+        li 還需要其它資訊?
+        li 得獎狀況
+        li 屆數? ( 不一定需要? )
+
+  +scope("project-list")
+    //-.w-1024.rwd.mx-auto.my-4
+      .btn-group
+        .btn.btn-outline-dark.active(ld="style",data-value="center") 置中標頭
+        .btn.btn-outline-dark(ld="style",data-value="side") 靠左標頭
+        .btn.btn-outline-dark(ld="style",data-value="simple") 簡式標頭
+
+    //-.d-none(ld="panel center")
+      .w-1024.rwd.mx-auto.mt-4.pt-4.mb-4: +prj-list-head-center
+      +list
+
+    .d-block(ld="panel side")
+      .w-1024.rwd.mx-auto.pt-4: +prj-list-head-side
+      +list
+
+    //-.d-none(ld="panel simple")
+      .w-1024.rwd.mx-auto.mt-4.pt-4: +prj-list-head-simple
+      +list
+block script
+  script: :lsc
+    ldc.register <[]>, ->
+      lc = {}
+      view = new ldView do
+        root: '[ld-scope=project-list]'
+        action: click: do
+          style: ({node}) ->
+            lc.type = type = node.getAttribute('data-value')
+            view.getAll(\style).map -> it.classList.remove \active
+            node.classList.add \active
+            view.render!
+        handler: do
+          panel: ({node}) ->
+            node.classList.toggle \d-none, !~node.getAttribute(\ld).indexOf(lc.type or 'center') 
