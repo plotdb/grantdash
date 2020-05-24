@@ -191,6 +191,45 @@ Ctrl = (opt) ->
                     render-answer[data.name]({node, block: data, data: (obj.value[data.key] or {})})
                   else node.innerText = (obj.value[data.key] or {}).content or ''
 
+    view-answer-diff = new ldView do
+      root: '[ld-scope=prj-diff] .card-body'
+      handler: do
+        diffs: do
+          list: -> obj.list.map -> {old: {}, cur: it.value, block: it}
+          handler: ({node, data}) ->
+            if node.view => node.view.render!
+            else node.view = new ldView do
+              root: node
+              handler: do
+                title: ({node}) -> node.innerText = data.block.title or ''
+                desc: ({node}) -> node.innerText = data.block.desc or ''
+                row: ({node}) ->
+                  console.log data
+                  [old, cur] = [(data.old or {}), (data.cur or {})].map (v) ->
+                    return Math.random!toString(36)substring(2)
+                    if v.content => return (that or '')
+                    ret = (v.list or []).map (item) -> [v for k,v of item].join('\n')
+                    if v.other => ret = ([ret] ++ [v.other-value])
+                    ret = ret.join('\n')
+                    return ret
+                  console.log old, cur
+
+                  ret = Diff.diffChars old, cur
+                  html = {old: '', cur: ''}
+                  vals = ld$.find(node, '.value')
+
+                  ret.map ->
+                    c = if it.added => 'text-added' else if it.removed => 'text-removed' else ''
+                    if !it.removed => html.old += "<span class='#c'>#{(it.value)}</span>"
+                  ret = Diff.diffChars cur, old
+                  ret.map ->
+                    c = if it.added => 'text-removed' else if it.removed => 'text-added' else ''
+                    if !it.removed => html.cur += "<span class='#c'>#{(it.value)}</span>"
+                  vals.0.innerHTML = DOMPurify.sanitize(html.old)
+                  vals.1.innerHTML = DOMPurify.sanitize(html.cur)
+
+
+
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do

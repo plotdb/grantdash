@@ -125,6 +125,14 @@
 .tagify__input {
   font-weight: 300;
 }
+[ld-scope=prj-diff] .text-added {
+  background: #dfd;
+  color: #080;
+}
+[ld-scope=prj-diff] .text-removed {
+  background: #fdd;
+  color: #f00;
+}
 [ld-scope=prj-form] [ld=title],
 [ld-scope=prj-form] [ld=desc] {
   word-break: break-word;

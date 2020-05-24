@@ -3,7 +3,7 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
   var prjFormCriteria, prjFormBlock, prjFormValidation, sdbAdapter, Ctrl;
   prjFormCriteria = arg$.prjFormCriteria, prjFormBlock = arg$.prjFormBlock, prjFormValidation = arg$.prjFormValidation, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var root, viewMode, obj, lc, hub, bmgr, blocksView, reb, progress, viewer, renderAnswer, viewAnswer, this$ = this;
+    var root, viewMode, obj, lc, hub, bmgr, blocksView, reb, progress, viewer, renderAnswer, viewAnswer, viewAnswerDiff, this$ = this;
     this.opt = opt;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
@@ -378,6 +378,101 @@ ldc.register('prjForm', ['prjFormCriteria', 'prjFormBlock', 'prjFormValidation',
                       } else {
                         return node.innerText = (obj.value[data.key] || {}).content || '';
                       }
+                    }
+                  }
+                });
+              }
+            }
+          }
+        }
+      });
+      viewAnswerDiff = new ldView({
+        root: '[ld-scope=prj-diff] .card-body',
+        handler: {
+          diffs: {
+            list: function(){
+              return obj.list.map(function(it){
+                return {
+                  old: {},
+                  cur: it.value,
+                  block: it
+                };
+              });
+            },
+            handler: function(arg$){
+              var node, data;
+              node = arg$.node, data = arg$.data;
+              if (node.view) {
+                return node.view.render();
+              } else {
+                return node.view = new ldView({
+                  root: node,
+                  handler: {
+                    title: function(arg$){
+                      var node;
+                      node = arg$.node;
+                      return node.innerText = data.block.title || '';
+                    },
+                    desc: function(arg$){
+                      var node;
+                      node = arg$.node;
+                      return node.innerText = data.block.desc || '';
+                    },
+                    row: function(arg$){
+                      var node, ref$, old, cur, ret, html, vals;
+                      node = arg$.node;
+                      console.log(data);
+                      ref$ = [data.old || {}, data.cur || {}].map(function(v){
+                        var that, ret;
+                        return Math.random().toString(36).substring(2);
+                        if (that = v.content) {
+                          return that || '';
+                        }
+                        ret = (v.list || []).map(function(item){
+                          var k, v;
+                          return (function(){
+                            var ref$, results$ = [];
+                            for (k in ref$ = item) {
+                              v = ref$[k];
+                              results$.push(v);
+                            }
+                            return results$;
+                          }()).join('\n');
+                        });
+                        if (v.other) {
+                          ret = [ret].concat([v.otherValue]);
+                        }
+                        ret = ret.join('\n');
+                        return ret;
+                      }), old = ref$[0], cur = ref$[1];
+                      console.log(old, cur);
+                      ret = Diff.diffChars(old, cur);
+                      html = {
+                        old: '',
+                        cur: ''
+                      };
+                      vals = ld$.find(node, '.value');
+                      ret.map(function(it){
+                        var c;
+                        c = it.added
+                          ? 'text-added'
+                          : it.removed ? 'text-removed' : '';
+                        if (!it.removed) {
+                          return html.old += "<span class='" + c + "'>" + it.value + "</span>";
+                        }
+                      });
+                      ret = Diff.diffChars(cur, old);
+                      ret.map(function(it){
+                        var c;
+                        c = it.added
+                          ? 'text-removed'
+                          : it.removed ? 'text-added' : '';
+                        if (!it.removed) {
+                          return html.cur += "<span class='" + c + "'>" + it.value + "</span>";
+                        }
+                      });
+                      vals[0].innerHTML = DOMPurify.sanitize(html.old);
+                      return vals[1].innerHTML = DOMPurify.sanitize(html.cur);
                     }
                   }
                 });
