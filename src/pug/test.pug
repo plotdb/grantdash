@@ -12,6 +12,37 @@ html
     style(type="text/css"): :stylus
       .folder-toggle { display: none }
   body
+    +scope("prj-diff").w-640.mx-auto.shadow-sm.mt-4.h-75.position-relative(style="overflow:hidden")
+      .card.h-100
+        .sticky.z-fixed(style="top:0")
+          .closebtn(data-ldcv-set="")
+          .card-header.bg-white.rounded
+            .text-center
+              h4 修改紀錄
+              .d-flex.justify-content-center.text-sm
+                .text-removed.mx-2.py-1.px-2.rounded 舊版中被刪的字
+                .text-added.mx-2.py-1.px-2.rounded 新版中增加的字
+          .card-header.bg-light.text-dark.shadow-sm
+            .row.text-sm
+              .col-md.text-left.border-right #[i.i-dart-left] 左方 : 2020/04/20 12:30:25
+              .col-md.text-right 2020/04/21 05:59:33 : 右方 #[i.i-dart-right]
+
+        .card-body.h-100(style="overflow-y:scroll",ld-scope-ld-gep6jfbxw4n='')
+          each i in [1,2,3,4,5,6,7]
+            .mb-4.pb-4(ld-scope-ld-wizj8635o3f='')
+              div
+                b(ld='title') &#x4F60;&#x9700;&#x8981;&#x591A;&#x5C11;&#x9322;&#xFF1F;
+              .text-sm.text-muted(ld='desc') &#x6211;&#x5011;&#x63D0;&#x4F9B; 30 ~ 50 &#x842C;&#x5143;&#x7684;&#x734E;&#x52A9;&#x91D1;&#xFF0C;&#x60A8;&#x53EF;&#x4EE5;&#x4F9D;&#x64DA;&#x60A8;&#x5C08;&#x6848;&#x7684;&#x9810;&#x7B97;&#x898F;&#x756B;&#x4F86;&#x6C7A;&#x5B9A;&#x60A8;&#x9700;&#x8981;&#x7533;&#x8ACB;&#x591A;&#x5C11;&#x7684;&#x734E;&#x52A9;&#x91D1;&#x3002;
+              .p-4.bg-light.mt-2.rounded
+                .row.no-gutters(ld='row')
+                  .col-md.border-right
+                    .pr-4.value(style='white-space:pre-wrap')
+                      span.text-added 8v60hdl8pz8
+                  .col-md
+                    .pl-4.value(style='white-space:pre-wrap')
+                      span.text-removed e2wfy19ngtu
+
+
     #root.w-1024.rwd.mx-auto.h-75.my-4.d-flex.flex-column.border.rounded
       .p-4.d-flex
         ul.nav.nav-tabs(hostable)

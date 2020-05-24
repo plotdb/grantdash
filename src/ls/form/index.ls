@@ -1,5 +1,5 @@
-({prj-form-criteria, prj-form-block, prj-form-validation, sdbAdapter}) <- ldc.register \prjForm,
-<[prjFormCriteria prjFormBlock prjFormValidation sdbAdapter]>, _
+({ldcvmgr, prj-form-criteria, prj-form-block, prj-form-validation, sdbAdapter}) <- ldc.register \prjForm,
+<[ldcvmgr prjFormCriteria prjFormBlock prjFormValidation sdbAdapter]>, _
 
 Ctrl = (opt) ->
   @opt = opt
@@ -134,17 +134,21 @@ Ctrl = (opt) ->
 
     viewer = new ldView do
       root: root
-      action: click: do
-        viewing: ->
-          lc.view = !lc.view
-          viewer.render!
-          view-answer.render!
-        invalid: ~>
-          filled = [k for k of obj.value]
-          for i from 0 til obj.list.length =>
-            if !("#{obj.list[i].key}" in filled) => break
-          node = ld$.find(@node.list, "\#block-#{obj.list[i].key}",0)
-          if node => scrollto node
+      action: do
+        input: do
+          history: -> ldcvmgr.toggle 'prj-diff'
+        click: do
+          viewing: ->
+            lc.view = !lc.view
+            viewer.render!
+            view-answer.render!
+          invalid: ~>
+            filled = [k for k of obj.value]
+            for i from 0 til obj.list.length =>
+              if !("#{obj.list[i].key}" in filled) => break
+            node = ld$.find(@node.list, "\#block-#{obj.list[i].key}",0)
+            if node => scrollto node
+
       handler: do
         nview: ({node}) -> node.classList.toggle \d-none, lc.view
         view: ({node}) -> node.classList.toggle \d-none, !lc.view
@@ -214,14 +218,14 @@ Ctrl = (opt) ->
                     return ret
                   console.log old, cur
 
-                  ret = Diff.diffChars old, cur
+                  ret = Diff.diffChars cur, old
                   html = {old: '', cur: ''}
                   vals = ld$.find(node, '.value')
 
                   ret.map ->
                     c = if it.added => 'text-added' else if it.removed => 'text-removed' else ''
                     if !it.removed => html.old += "<span class='#c'>#{(it.value)}</span>"
-                  ret = Diff.diffChars cur, old
+                  ret = Diff.diffChars old, cur
                   ret.map ->
                     c = if it.added => 'text-removed' else if it.removed => 'text-added' else ''
                     if !it.removed => html.cur += "<span class='#c'>#{(it.value)}</span>"

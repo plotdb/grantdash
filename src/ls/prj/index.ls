@@ -1,7 +1,7 @@
 ({prjForm, loader, ldcvmgr}) <- ldc.register <[prjForm loader ldcvmgr]>, _
 
-ldcv = new ldCover root: '[ld-scope=prj-diff]'
-ldcv.get!then -> console.log \hi
+#ldcv = new ldCover root: '[ld-scope=prj-diff]'
+#ldcv.get!then -> console.log \hi
 
 
 loader.on!
