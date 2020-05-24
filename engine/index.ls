@@ -146,7 +146,9 @@ backend = do
           if id and +id.split('-').0 != user.key and user.key != 1 => return rej!
         if user => res! else rej!
 
-      @sharedb = {server, sdb, connect, wss} = sharedb-wrapper {app, io: config.io-pg, session, access}
+      @sharedb = {server, sdb, connect, wss} = sharedb-wrapper {
+        app, io: config.io-pg, session, access, milestone: {interval: 50, enable: true}
+      }
 
       wss.on \connection, (ws, req) ->
         p = if session? => new Promise((res, rej) -> session(req, {}, (-> res!))) else Promise.resolve!
