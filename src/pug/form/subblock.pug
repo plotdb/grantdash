@@ -58,9 +58,12 @@ mixin criteria
 +form-block({name: "form-checkpoint"})
   .pt-4.px-4
     .timeline-list(hostable)
-      .item(draggable="true",ld-each="list",data-user-editable="true")
-        .title(ld="data",editable="title") 新項目
-        p(ld="data",editable="desc") 關於這個項目的描述 ...
+      .item(draggable="true",ld-each="list",data-user-editable="true"): .d-flex
+        i.i-bars.mr-2.text-muted(ld="drag")
+        .flex-grow-1
+          .title(ld="data",editable="title") 新項目
+          p(ld="data",editable="desc") 關於這個項目的描述 ...
+        i.i-close.mr-2.clickable.text-danger(ld="delete")
     .btn.btn-sm.btn-outline-dark(ld="list-add") 增加項目 #[i.i-plus]
 
 

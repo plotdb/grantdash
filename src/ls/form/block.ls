@@ -73,14 +73,14 @@ module-list = module-init: ->
                   evt.stopPropagation!
             handler: do
               drag: ({node}) ~>
-                node.classList.toggle \invisible, !!(@viewing or data.other)
+                node.classList.toggle \invisible, !!((@viewing and !editable) or data.other)
               state: ({node}) ~>
                 val = @block.{}value
                 ison = (data.other and val.other) or (!data.other and (data.title in val.[]list))
                 node.classList.toggle \active, ison
               "other-value": ({node}) ~>
                 node.value = @block.{}value.other-value or ''
-              delete: ({node}) ~> node.classList.toggle \d-none, !!(@viewing or data.other)
+              delete: ({node}) ~> node.classList.toggle \d-none, !!((@viewing and !editable) or data.other)
               other: ({node}) ->
                 node.classList.toggle \d-none, !data.other
               data: ({node}) ->
