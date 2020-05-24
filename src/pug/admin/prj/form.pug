@@ -1,8 +1,7 @@
 //- module
 include /form/timeline.pug
 h4 提案表
-p.text-muted 您可以使用這個提案表編輯器來客製化用戶提案時所要用到的表單頁面。
-hr
+p.text-muted.mb-4 您可以使用這個提案表編輯器來客製化用戶提案時所要用到的表單頁面。
 +scope("prj-form").d-flex
   .d-none(ld="form-sample"): include /form/subblock.pug
   .flex-grow-1(ld="form-list",hostable): div(ld-each="block",draggable="true")
