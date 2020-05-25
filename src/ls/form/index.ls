@@ -87,10 +87,15 @@ Ctrl = (opt) ->
     block-manager: bmgr
     action: do
       afterInject: ({node, name}) ->
+        schema = prjFormCriteria.schema
         new-data = do
           key: Math.random!toString(36)substring(2)
-          name: name, title: "提問的標題1", desc: "提問的描述"
-          config: {required: true}, criteria: [{type: \number, op: \between, input1: 10, input2: 20, invalid: '應介於 10 ~ 20 之間'}]
+          name: name, title: "問題的標題", desc: "一些關於這個問題的簡單描述、說明或介紹"
+          config: {required: true}, criteria: [{enabled: true, type: \number, op: \between }]
+        type = schema.support[name].0
+        if type => op = [k for k of (schema.ops[schema.types[type].ops] or {})].0 else op = ''
+        new-data.criteria.0 <<< {type, op}
+
         node._data = new-data
         idx = Array.from(node.parentNode).indexOf(node)
         obj.[]list.splice idx, 0, new-data
@@ -157,7 +162,9 @@ Ctrl = (opt) ->
         valid: ({node}) -> node.classList.toggle \d-none, (progress!remain > 0)
         remain: ({node}) -> node.innerText = progress!remain
         submit: ({node}) -> node.classList.toggle \disabled, (progress!remain > 0)
-
+        "brd-name": ({node}) -> node.innerText = if opt.brd => (opt.brd.{}info.name or '') else '未定的活動'
+        "grp-name": ({node}) -> node.innerText = if opt.grp => (opt.grp.{}info.name or '') else '未定的分組'
+    console.log opt
     render-answer = do
       "form-checkpoint": ({node, data, block}) ->
         items = (data.list or [])

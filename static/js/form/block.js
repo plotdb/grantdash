@@ -378,8 +378,8 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
             },
             action: {
               click: function(arg$){
-                var node, data, evt, n;
-                node = arg$.node, data = arg$.data, evt = arg$.evt;
+                var node, data, evt, local, n;
+                node = arg$.node, data = arg$.data, evt = arg$.evt, local = arg$.local;
                 if (!(n = ld$.parent(evt.target, '.dropdown-item', node))) {
                   return;
                 }
@@ -390,12 +390,12 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
                   data.op = n.op;
                 }
                 this$.update();
-                return node.view.render();
+                return local.view.render();
               }
             },
             init: function(arg$){
-              var node, data, getType, getOp;
-              node = arg$.node, data = arg$.data;
+              var node, data, local, getType, getOp;
+              node = arg$.node, data = arg$.data, local = arg$.local;
               getType = function(){
                 return data.type || schema.support[this$.block.name][0] || 'number';
               };
@@ -417,55 +417,90 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
               ld$.find(node, '.dropdown .dropdown-toggle').map(function(it){
                 return new Dropdown(it);
               });
-              return node.view = new ldView({
+              return local.view = new ldView({
+                context: data,
                 root: node,
                 action: {
+                  click: {
+                    enabled: function(arg$){
+                      var node, context;
+                      node = arg$.node, context = arg$.context;
+                      node.classList.toggle('on');
+                      context.enabled = node.classList.contains('on');
+                      this$.update();
+                      return local.view.render();
+                    }
+                  },
                   input: {
                     input1: function(arg$){
-                      var node;
-                      node = arg$.node;
-                      data.input1 = ld$.find(node, 'input', 0).value;
+                      var node, context;
+                      node = arg$.node, context = arg$.context;
+                      context.input1 = ld$.find(node, 'input', 0).value;
                       return this$.update();
                     },
                     input2: function(arg$){
-                      var node;
-                      node = arg$.node;
-                      data.input2 = ld$.find(node, 'input', 0).value;
+                      var node, context;
+                      node = arg$.node, context = arg$.context;
+                      context.input2 = ld$.find(node, 'input', 0).value;
                       return this$.update();
                     },
                     "input-invalid": function(arg$){
-                      var node;
-                      node = arg$.node;
-                      data.invalid = node.value;
+                      var node, context;
+                      node = arg$.node, context = arg$.context;
+                      context.invalid = node.value;
                       return this$.update();
                     }
                   }
                 },
                 handler: {
+                  enabled: function(arg$){
+                    var node, context;
+                    node = arg$.node, context = arg$.context;
+                    return node.classList.toggle('on', context.enabled);
+                  },
                   input1: function(arg$){
-                    var node;
-                    node = arg$.node;
-                    return ld$.find(node, 'input', 0).value = data.input1 || '';
+                    var node, context, input;
+                    node = arg$.node, context = arg$.context;
+                    input = ld$.find(node, 'input', 0);
+                    input.value = context.input1 || '';
+                    if (context.enabled) {
+                      return input.removeAttribute('disabled');
+                    } else {
+                      return input.setAttribute('disabled', '');
+                    }
                   },
                   input2: function(arg$){
-                    var node;
-                    node = arg$.node;
+                    var node, context, input;
+                    node = arg$.node, context = arg$.context;
                     node.classList.toggle('d-none', (getOp().field || 1) < 2);
-                    return ld$.find(node, 'input', 0).value = data.input2 || '';
+                    input = ld$.find(node, 'input', 0);
+                    input.value = context.input2 || '';
+                    if (context.enabled) {
+                      return input.removeAttribute('disabled');
+                    } else {
+                      return input.setAttribute('disabled', '');
+                    }
                   },
                   "input-invalid": function(arg$){
-                    var node;
-                    node = arg$.node;
-                    return node.value = data.invalid || '';
+                    var node, context;
+                    node = arg$.node, context = arg$.context;
+                    if (context.enabled) {
+                      node.removeAttribute('disabled');
+                    } else {
+                      node.setAttribute('disabled', '');
+                    }
+                    return node.value = context.invalid || '';
                   },
                   type: function(arg$){
-                    var node;
-                    node = arg$.node;
+                    var node, context;
+                    node = arg$.node, context = arg$.context;
+                    node.classList.toggle('disabled', !context.enabled);
                     return settext(node, schema.types[getType()].name);
                   },
                   op: function(arg$){
-                    var node;
-                    node = arg$.node;
+                    var node, context;
+                    node = arg$.node, context = arg$.context;
+                    node.classList.toggle('disabled', !context.enabled);
                     return node.innerHTML = getOp().name;
                   },
                   "types": {
@@ -499,11 +534,10 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
               });
             },
             handler: function(arg$){
-              var node, data;
-              node = arg$.node, data = arg$.data;
-              if (node.view) {
-                return node.view.render();
-              }
+              var node, data, local;
+              node = arg$.node, data = arg$.data, local = arg$.local;
+              local.view.setContext(data);
+              return local.view.render();
             }
           }
         }

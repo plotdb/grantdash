@@ -20,9 +20,14 @@ html
       console.log "initiailizing ..."
       sdb = new sharedb-wrapper url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
       console.log "fetch snapshot ..."
+      sdb.get-snapshot {id: 'brd-4'}
+        .then -> console.log it
+        .catch -> 
+      /*
       sdb.connection.fetchSnapshot 'doc', 'brd-4', null, (e, s) ->
         console.log "snapshot fectched: "
         console.log e, s
+      */
       /*
       console.log "get doc ..."
       sdb.get {id: \prj-sample}

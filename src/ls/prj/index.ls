@@ -22,18 +22,25 @@ hubs = do
   brd: new Hub({sdb})
   prj: new Hub({sdb})
 
-console.log "connect to sharedb brd-4 doc.."
+console.log "fetch brd-4 snapshot ..."
 
-sdb.get {id: "brd-4", watch: (->) }
-  .then (doc) ->
-    hubs.brd.doc = doc
+lc = {}
+
+sdb.get-snapshot {id: \brd-4}
+  .then (s) ->
+    lc.snapshot = s.data
+    console.log s
+
     sdb.get {id: "prj-sample", watch: (ops,source) -> hubs.prj.fire \change, {ops,source} }
   .then (doc) ->
     hubs.prj.doc = doc
+    grp = [v for k,v of lc.snapshot.group].0 or {}
     form = new prjForm {
       root: '[ld-scope=prj-form]'
       view-mode: true
-      form: ((hubs.brd.doc.data.group["grp-dcw5apu5fe9"].{}form.list) or [])
+      form: (grp.{}form.list or [])
+      grp: grp
+      brd: lc.snapshot
     }
     form.adapt {hub: hubs.prj, path: ['content']}
     console.log "adapted"

@@ -162,24 +162,38 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
       blockManager: bmgr,
       action: {
         afterInject: function(arg$){
-          var node, name, newData, idx;
+          var node, name, schema, newData, type, op, k, ref$, idx;
           node = arg$.node, name = arg$.name;
+          schema = prjFormCriteria.schema;
           newData = {
             key: Math.random().toString(36).substring(2),
             name: name,
-            title: "提問的標題1",
-            desc: "提問的描述",
+            title: "問題的標題",
+            desc: "一些關於這個問題的簡單描述、說明或介紹",
             config: {
               required: true
             },
             criteria: [{
+              enabled: true,
               type: 'number',
-              op: 'between',
-              input1: 10,
-              input2: 20,
-              invalid: '應介於 10 ~ 20 之間'
+              op: 'between'
             }]
           };
+          type = schema.support[name][0];
+          if (type) {
+            op = (function(){
+              var results$ = [];
+              for (k in schema.ops[schema.types[type].ops] || {}) {
+                results$.push(k);
+              }
+              return results$;
+            }())[0];
+          } else {
+            op = '';
+          }
+          ref$ = newData.criteria[0];
+          ref$.type = type;
+          ref$.op = op;
           node._data = newData;
           idx = Array.from(node.parentNode).indexOf(node);
           (obj.list || (obj.list = [])).splice(idx, 0, newData);
@@ -313,9 +327,20 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
             var node;
             node = arg$.node;
             return node.classList.toggle('disabled', progress().remain > 0);
+          },
+          "brd-name": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            return node.innerText = opt.brd ? ((ref$ = opt.brd).info || (ref$.info = {})).name || '' : '未定的活動';
+          },
+          "grp-name": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            return node.innerText = opt.grp ? ((ref$ = opt.grp).info || (ref$.info = {})).name || '' : '未定的分組';
           }
         }
       });
+      console.log(opt);
       renderAnswer = {
         "form-checkpoint": function(arg$){
           var node, data, block, items;

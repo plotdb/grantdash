@@ -37,7 +37,7 @@ validator = do
 return do
   validate: (block) ->
     v = block.{}value.content or block.{}value.list
-    if block.value.other => v = v ++ [block.value.other-value]
+    if block.value.other => v = (v or []) ++ [block.value.other-value]
     if !v => return {}
     for c in (block.criteria or [])
       type = prjFormCriteria.schema.types[c.type]

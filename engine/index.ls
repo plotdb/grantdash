@@ -147,7 +147,7 @@ backend = do
         if user => res! else rej!
 
       @sharedb = {server, sdb, connect, wss} = sharedb-wrapper {
-        app, io: config.io-pg, session, access, milestone: {interval: 50, enable: true}
+        app, io: config.io-pg, session, access, milestone-db: {interval: 50, enabled: true}
       }
 
       wss.on \connection, (ws, req) ->

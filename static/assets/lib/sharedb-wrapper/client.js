@@ -21,6 +21,19 @@ var slice$ = [].slice;
         return diff(o, n, dostr);
       }
     },
+    getSnapshot: function(arg$){
+      var id, version, this$ = this;
+      id = arg$.id, version = arg$.version;
+      return new Promise(function(res, rej){
+        return this$.connection.fetchSnapshot('doc', id, version != null ? version : null, function(e, s){
+          if (e) {
+            return rej(e);
+          } else {
+            return res(s);
+          }
+        });
+      });
+    },
     get: function(arg$){
       var id, watch, create, this$ = this;
       id = arg$.id, watch = arg$.watch, create = arg$.create;

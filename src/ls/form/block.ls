@@ -175,40 +175,60 @@ Ctrl = (opt) ->
     handler: do
       criteria: do
         list: ~> @block.[]criteria
-        action: click: ({node, data, evt}) ~>
+        action: click: ({node, data, evt, local}) ~>
           if !(n = ld$.parent(evt.target, '.dropdown-item', node)) => return
           if n.type => data.type = n.type
           if n.op => data.op = n.op
           @update!
-          node.view.render!
-        init: ({node, data}) ~> 
+          local.view.render!
+        init: ({node, data, local}) ~> 
           get-type = ~> data.type or schema.support[@block.name][0] or \number
           get-op = ->
             ops = schema.ops[schema.types[get-type!].ops]
             v = [v for k,v of ops][0]
             return ops[data.op] or v or {name: ""}
           ld$.find(node, '.dropdown .dropdown-toggle').map -> new Dropdown(it)
-          node.view = new ldView do
+          local.view = new ldView do
+            context: data
             root: node
-            action: input: do
-              input1: ({node}) ~>
-                data.input1 = ld$.find(node, 'input', 0).value
-                @update!
-              input2: ({node}) ~>
-                data.input2 = ld$.find(node, 'input', 0).value
-                @update!
-              "input-invalid": ({node}) ~>
-                data.invalid = node.value
-                @update!
+            action: do
+              click: do
+                enabled: ({node, context}) ~>
+                  node.classList.toggle \on
+                  context.enabled = node.classList.contains \on
+                  @update!
+                  local.view.render!
+              input: do
+                input1: ({node, context}) ~>
+                  context.input1 = ld$.find(node, 'input', 0).value
+                  @update!
+                input2: ({node, context}) ~>
+                  context.input2 = ld$.find(node, 'input', 0).value
+                  @update!
+                "input-invalid": ({node, context}) ~>
+                  context.invalid = node.value
+                  @update!
+
             handler: do
-              input1: ({node}) -> ld$.find(node, 'input', 0).value = data.input1 or ''
-              input2: ({node}) ->
+              enabled: ({node, context}) -> node.classList.toggle \on, context.enabled
+              input1: ({node, context}) ->
+                input = ld$.find(node, 'input', 0)
+                input.value = context.input1 or ''
+                if context.enabled => input.removeAttribute \disabled else input.setAttribute \disabled, ''
+              input2: ({node, context}) ->
                 node.classList.toggle \d-none, ((get-op!field or 1) < 2)
-                ld$.find(node, 'input', 0).value = data.input2 or ''
-              "input-invalid": ({node}) -> node.value = data.invalid or ''
-              type: ({node}) ->
+                input = ld$.find(node, 'input', 0)
+                input.value = context.input2 or ''
+                if context.enabled => input.removeAttribute \disabled else input.setAttribute \disabled, ''
+              "input-invalid": ({node, context}) ->
+                if context.enabled => node.removeAttribute \disabled else node.setAttribute \disabled, ''
+                node.value = context.invalid or ''
+              type: ({node, context}) ->
+                node.classList.toggle \disabled, !context.enabled
                 settext node, schema.types[get-type!].name
-              op: ({node}) -> node.innerHTML = get-op!name
+              op: ({node, context}) ->
+                node.classList.toggle \disabled, !context.enabled
+                node.innerHTML = get-op!name
               "types": do
                 list: ~> schema.support[@block.name]
                 handler: ({node, data}) ->
@@ -220,7 +240,9 @@ Ctrl = (opt) ->
                 handler: ({node, data}) ->
                   node.innerHTML = data.1.name
                   node.op = data.0
-        handler: ({node, data}) -> if node.view => node.view.render!
+        handler: ({node, data, local}) ->
+          local.view.setContext data
+          local.view.render!
 
   if module[@block.name] =>
     @ <<< module[@block.name]{module-init}

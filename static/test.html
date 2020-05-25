@@ -11,10 +11,16 @@ sdb = new sharedbWrapper({
   }
 });
 console.log("fetch snapshot ...");
-sdb.connection.fetchSnapshot('doc', 'brd-4', null, function(e, s){
-  console.log("snapshot fectched: ");
-  return console.log(e, s);
-});
+sdb.getSnapshot({
+  id: 'brd-4'
+}).then(function(it){
+  return console.log(it);
+})['catch'](function(){});
+/*
+sdb.connection.fetchSnapshot 'doc', 'brd-4', null, (e, s) ->
+  console.log "snapshot fectched: "
+  console.log e, s
+*/
 /*
 console.log "get doc ..."
 sdb.get {id: \prj-sample}
