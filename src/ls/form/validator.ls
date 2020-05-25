@@ -40,6 +40,7 @@ return do
     if block.value.other => v = (v or []) ++ [block.value.other-value]
     if !v => return {}
     for c in (block.criteria or [])
+      if !c.enabled => continue
       type = prjFormCriteria.schema.types[c.type]
       if !(c.type and type) => continue
       vtr = validator[type.ops]

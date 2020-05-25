@@ -108,6 +108,9 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
       }
       for (i$ = 0, len$ = (ref$ = block.criteria || []).length; i$ < len$; ++i$) {
         c = ref$[i$];
+        if (!c.enabled) {
+          continue;
+        }
         type = prjFormCriteria.schema.types[c.type];
         if (!(c.type && type)) {
           continue;
