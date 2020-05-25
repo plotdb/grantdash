@@ -24,6 +24,11 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
     for n in @path => o = (o[n] or {})
     @watch {data: o}
     @hub.on \change, ~> @watch it
+  set-doc: (doc) ->
+    @doc = doc
+    o = @doc.data
+    for n in @path or [] => o = (o[n] or {})
+    @watch {data: o}
   set: ({path}) ->
     @path = path
     o = @doc.data
@@ -62,6 +67,8 @@ Adapter.interface = do
     adapter.on \change, ({ops, source}) ~> @ops-in {data: adapter.data, ops, source}
     adapter.init hub
     return adapter
+  set-doc: (doc) -> if @adapter => @adapter.set-doc doc
+
   set-path: (p) -> @adapter.set {path: p}
   # send data to server. f is either function or ops.
   # if f is function, it takes @data clone, and should return an updated data.

@@ -67,3 +67,13 @@ api.post \/slug-check/:type, (req, res) ->
   io.query "select key from #type where slug = $1", [req.body.slug or '']
     .then (r = {}) -> res.send {result: if (r.rows or []).length => 'used' else 'free'}
     .catch aux.error-handler res
+
+/*
+api.post \/b/:key/commit, aux.signed, (req, res) ->
+  check req.params.key
+  some-how-get-snapshot
+    .then (snapshot) ->
+      io.query "update brd set detail = $1 where key = $2", [snapshot]
+    .then -> res.send!
+    .catch aux.error-handler res
+*/

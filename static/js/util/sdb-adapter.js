@@ -42,6 +42,18 @@ ldc.register('sdbAdapter', [], function(){
         return this$.watch(it);
       });
     },
+    setDoc: function(doc){
+      var o, i$, ref$, len$, n;
+      this.doc = doc;
+      o = this.doc.data;
+      for (i$ = 0, len$ = (ref$ = this.path || []).length; i$ < len$; ++i$) {
+        n = ref$[i$];
+        o = o[n] || {};
+      }
+      return this.watch({
+        data: o
+      });
+    },
     set: function(arg$){
       var path, o, i$, ref$, len$, n;
       path = arg$.path;
@@ -131,6 +143,11 @@ ldc.register('sdbAdapter', [], function(){
       });
       adapter.init(hub);
       return adapter;
+    },
+    setDoc: function(doc){
+      if (this.adapter) {
+        return this.adapter.setDoc(doc);
+      }
     },
     setPath: function(p){
       return this.adapter.set({

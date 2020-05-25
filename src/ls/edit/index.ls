@@ -1,5 +1,35 @@
 (->
+
+  sdb = new sharedb-wrapper do
+    url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
+  sdb.on \close, ->
+    loader.on!
+    sdb.reconnect!
+      .then -> init!
+      .then -> loader.off!
+  hubs = pages: new Hub({sdb}), file: new Hub({sdb})
+
+  first-child = (n) ->
+    if !n.children => return [n]
+    for i in n.children =>
+      if first-child(i) => return [n] ++ that
+    return
+
+  sdb.get {id: "brd[4].pages", watch: (ops,source) -> hub.pages.fire \change, {ops,source} }
+    .then (doc) ->
+      hub.pages.doc = doc
+      n = first-child doc.data.tree
+      if !n => return
+      sdb.get {id: "brd[4].pages[#{n.join('/')}]", watch: (ops,source) -> hub.file.fire \change, {ops,source} }
+    .then (doc) ->
+      hub.file.doc = doc
+
+
+
+
   ldc.register \editor, [], ->
+
+    
     #ld$.find('.folder').map -> new ldui.Folder root: it
     files = do
       pages: []
@@ -75,9 +105,6 @@
     view-sample = new ldView {root: el.sample, handler: {item: (->), folder: (->)}}
     render-folder node: el.menu, data: tree
 
-    editor = new Quill \#editor, do
-      modules: toolbar: \#toolbar
-      theme: \snow
     ldc.action do
       get: -> console.log editor.getContents!
   ldc.app \editor

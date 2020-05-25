@@ -11011,7 +11011,9 @@ var slice$ = [].slice;
     },
     procEach: function(name, data){
       var list, getkey, hash, items, nodes, proxyIndex, ns, i$, i, n, j, node, idx, expectedIdx, this$ = this;
-      list = this.handler[name].list() || [];
+      list = this.handler[name].list({
+        context: this.context
+      }) || [];
       getkey = this.handler[name].key;
       hash = {};
       items = [];
