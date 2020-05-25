@@ -269,3 +269,7 @@ input.form-control {
   box-shadow: 0 0 5px 4px rgba(0,128,255,0.2);
   outline: 3px solid #fff;
 }
+.ql-editor[contenteditable]:focus {
+  box-shadow: none;
+  outline: 0;
+}
