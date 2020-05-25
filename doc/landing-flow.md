@@ -7,7 +7,7 @@ custom.domain -> 用戶主頁
   ! 也就是要有網址 mapping 機制, 除非我們建獨立 website.
   - 可能方案:
     - 可以設定所有非 grantdash 網址都必須走 express 
-    - 或者直接在 nginx 建立新設定 ( 樣板設定 ), 協助做 routing
+    v 或者直接在 nginx 建立新設定 ( 樣板設定 ), 協助做 routing
       - 感覺更可行. 動態切換 nginx status?
 
 主控台

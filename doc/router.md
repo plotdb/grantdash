@@ -24,14 +24,26 @@
      ? /b/<slug>/j/
    - 用戶 - 參照 servlet
 
-## Asset files
 
-用戶上傳檔案放在 `/assets/uploads/` 資料夾中. 分以下結構:
+## Site Files and Upload Files
 
- - /o/<slug>/   - 組織檔案
- - /o/<slug>/u/ - 用戶頭像
- - /b/<slug>/   - 活動檔案
- - /p/<id>/     - 提案檔案
+用戶網站資料放在 `/users/` 資料夾中, 分以下結構
+ - /users/o/<oid>
+   - /static/ - 網站資料
+ - /users/b/<bid>
+ - /users/p/<pid>
+
+用戶資料可能會跟主站資料打架. 考慮到這點, 我們必須至少保留一個路徑 `/gd/` 用以取得主站內容. `/gd/` 下的靜態內容直接對應到主站的根目錄中.
+
+同時, 其它動態生成的頁面 ( 由 express 提供的內容 ) 則維持在原本的位置, 使用者必須避開這些資料夾:
+
+ - /gd/ - 對應到主站的 /
+ - /b/  - brd 頁面
+ - /d/
+ - /o/
+ - /p/
+ - /me/
+ - /auth/
 
 
 # Draft Note
