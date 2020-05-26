@@ -70,10 +70,15 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       console.log("fetch auth data ...");
       return auth.fetch()['catch'](function(e){
         return Promise.reject(new ldError({
-          id: 1000,
+          id: 1007,
           e: e
         }));
       }).then(function(g){
+        if (!g.user.key) {
+          return Promise.reject(new ldError({
+            id: 1000
+          }));
+        }
         console.log("fetch toc information ... ");
         return ld$.fetch('/d/toc/', {
           method: 'POST'
@@ -91,10 +96,12 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         this$.modify.brd.data = JSON.stringify(this$.toc.brd.detail || {});
         return console.log("toc information: ", toc);
       })['catch'](function(e){
-        return Promise.reject(new ldError({
-          id: 1012,
-          e: e
-        }));
+        return Promise.reject(ldError.id(e)
+          ? e
+          : new ldError({
+            id: 1012,
+            e: e
+          }));
       });
     },
     sharedb: function(){
@@ -320,7 +327,19 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     return console.log("admin initialized.");
   })['finally'](function(){
     return loader.off();
-  })['catch'](error());
+  })['catch'](function(e){
+    console.log("[Admin Error] Code: ", e.id);
+    console.log("Error Object: ", e.e || e);
+    if (e.id === 1012) {
+      return ldcvmgr.toggle('error-403');
+    } else if (e.id === 1000) {
+      return ldcvmgr.toggle('auth-required');
+    } else if (e.id === 1007) {
+      return ldcvmgr.toggle('server-down');
+    } else {
+      return error()(e);
+    }
+  });
 });
 ldc.app('adminGuard');
 function import$(obj, src){

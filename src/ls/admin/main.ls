@@ -43,8 +43,9 @@ prj-form, admin-entry}) ->
       hint = {} <<< (if type => (if type == \o => {org: slug} else {brd: slug}) else {})
       console.log "fetch auth data ..."
       auth.fetch!
-        .catch (e) -> Promise.reject new ldError({id: 1000, e})
+        .catch (e) -> Promise.reject new ldError({id: 1007, e})
         .then (g) ~>
+          if !g.user.key => return Promise.reject new ldError({id: 1000})
           console.log "fetch toc information ... "
           ld$.fetch '/d/toc/', {method: \POST}, {json: hint, type: \json}
         .then (toc) ~>
@@ -54,7 +55,7 @@ prj-form, admin-entry}) ->
           @modify.org.data = JSON.stringify(@toc.org.detail or {})
           @modify.brd.data = JSON.stringify(@toc.brd.detail or {})
           console.log "toc information: ", toc
-        .catch (e) -> Promise.reject new ldError({id: 1012, e})
+        .catch (e) -> Promise.reject(if ldError.id(e) => e else new ldError({id: 1012, e}))
 
     sharedb: ->
       console.log "prepare sharedb ..."
@@ -150,6 +151,12 @@ prj-form, admin-entry}) ->
     .then -> ctrl.init-ctrl!
     .then -> console.log "admin initialized."
     .finally -> loader.off!
-    .catch error!
+    .catch (e) ->
+      console.log "[Admin Error] Code: ", e.id
+      console.log "Error Object: ", (e.e or e)
+      if e.id == 1012 => ldcvmgr.toggle \error-403
+      else if e.id == 1000 => ldcvmgr.toggle \auth-required
+      else if e.id == 1007 => ldcvmgr.toggle \server-down
+      else error!(e)
 
 ldc.app \adminGuard

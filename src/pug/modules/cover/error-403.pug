@@ -1,0 +1,12 @@
+include /modules/common.pug
+.ldcv.ldcvmgr(data-name="error-403"): .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
+  h1 噢喔, 沒有權限
+  p 因為您沒有權限存取指定的資源，所以我們沒辦法繼續。
+  br
+  .m-auto.text-left.text-muted
+    p 很抱歉，您剛剛想要進行的操作可能是因為權限不足的關係，被拒絕執行了。可能只是因為您使用了錯誤的帳號，或者尚未登入。請再次確認您的帳號，或者確認您想存取的資源是否有誤，然後再試一次。
+    p 如果您覺得這是個錯誤的話，您可以直接 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 聯絡我們] ，讓我們試著為您解決這個問題。
+    br
+    .row.no-gutters
+      .col-md.mr-2: .btn.btn-outline-dark.btn-block.btn-lg.mr-2(onclick="lda.ldcvmgr.toggle('contact')") 聯絡我們
+      .col-md.ml-2: .btn.btn-primary.btn-block.btn-lg.mr-2(data-ldcv-set="") 關閉對話框
