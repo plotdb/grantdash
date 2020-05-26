@@ -73,7 +73,11 @@ block script
       .flex-grow-1.d-flex.flex-column
 
         .flex-grow-1.bg-white(style="overflow-y:scroll")
-          div(style="min-height:calc(100% - 5em)")
+          .position-relative(style="min-height:calc(100% - 5em)")
+            .p-4.position-absolute.vertical-center(
+            ld="nav-panel default", data-nav="main", data-name="welcome",
+            style="top:0:left;right:0;bottom:0;top:0")
+              include welcome.pug
 
             .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
               include brd/config.pug
