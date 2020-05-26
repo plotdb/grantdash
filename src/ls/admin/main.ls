@@ -21,6 +21,9 @@ prj-form, admin-entry}) ->
       action: click: do
         "publish-modification": ~> @publish!
       handler: do
+        "init-loader": ({node}) ->
+          node.classList.add \ld, \ld-fade-out, \xp35
+          setTimeout (-> node.classList.add \d-none ), 350
         "brd-menu": ({node}) ~>
           node.classList.toggle \d-none, !@toc.brd.key
         "modified-warning": ({node}) ~>
@@ -94,16 +97,16 @@ prj-form, admin-entry}) ->
       toc = @toc
 
       @ctrl.org
-        ..info = new admin-info root: '[ld-scope=org-info]', type: \org
+        ..info = new admin-info {root: '[ld-scope=org-info]', type: \org}
         ..info.adapt {hub: org, path: <[info]> }
         ..navbar = new admin-navbar {toc, root: '[data-name=org-navbar] [ld-scope=navbar-editor]'}
         ..navbar.adapt {hub: org, path: <[page navbar]>}
 
       @ctrl.brd
+        ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd}
+        ..info.adapt   {hub: brd, path: <[info]> }
         ..group = new admin-menu {toc: @toc, set-group}
         ..group.adapt   {hub: brd, path: <[group]>}
-        ..info = new admin-info root: '[ld-scope=brd-info]', type: \brd
-        ..info.adapt   {hub: brd, path: <[info]> }
         ..stage = new admin-stage {toc, root: '[ld-scope=brd-stage]'}
         ..stage.adapt  {hub: brd, path: <[stage]>}
         ..perm = new admin-perm {toc, root: '[data-nav=brd-config] [ld-scope=perm-panel]'}
@@ -123,14 +126,13 @@ prj-form, admin-entry}) ->
       ldcvmgr.toggle \publishing, true
       Promise.resolve!
         .then ~>
-          ps = <[brd org]>.map (type) ~> Promise.resolve!
-            .then ~>
-              if !@toc[type]key or !@modify[type]dirty => return
-              payload = @hubs[type]doc.data
-              ld$.fetch \/d/detail/, {method: \PUT}, {json: {payload, key: @toc[type]key, type}, type: \json}
-            .then ~>
-              @toc[type]detail = payload
-              @modify[type] <<< data: JSON.stringify(payload), dirty: false
+          ps = <[brd org]>.map (type) ~>
+            if !@toc[type]key or !@modify[type]dirty => return Promise.resolve!
+            payload = @hubs[type]doc.data
+            ld$.fetch \/d/detail/, {method: \PUT}, {json: {payload, key: @toc[type]key, type}, type: \json}
+              .then ~>
+                @toc[type]detail = payload
+                @modify[type] <<< data: JSON.stringify(payload), dirty: false
           Promise.all ps
         .then ~> @render!
         .then ->

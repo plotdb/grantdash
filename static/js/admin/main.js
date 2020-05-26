@@ -27,6 +27,14 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         }
       },
       handler: {
+        "init-loader": function(arg$){
+          var node;
+          node = arg$.node;
+          node.classList.add('ld', 'ld-fade-out', 'xp35');
+          return setTimeout(function(){
+            return node.classList.add('d-none');
+          }, 350);
+        },
         "brd-menu": function(arg$){
           var node;
           node = arg$.node;
@@ -203,14 +211,6 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         path: ['page', 'navbar']
       });
       y$ = this.ctrl.brd;
-      y$.group = new adminMenu({
-        toc: this.toc,
-        setGroup: setGroup
-      });
-      y$.group.adapt({
-        hub: brd,
-        path: ['group']
-      });
       y$.info = new adminInfo({
         root: '[ld-scope=brd-info]',
         type: 'brd'
@@ -218,6 +218,14 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       y$.info.adapt({
         hub: brd,
         path: ['info']
+      });
+      y$.group = new adminMenu({
+        toc: this.toc,
+        setGroup: setGroup
+      });
+      y$.group.adapt({
+        hub: brd,
+        path: ['group']
       });
       y$.stage = new adminStage({
         toc: toc,
@@ -272,11 +280,9 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       return Promise.resolve().then(function(){
         var ps;
         ps = ['brd', 'org'].map(function(type){
-          return Promise.resolve();
-        }).then(function(){
           var payload;
           if (!this$.toc[type].key || !this$.modify[type].dirty) {
-            return;
+            return Promise.resolve();
           }
           payload = this$.hubs[type].doc.data;
           return ld$.fetch('/d/detail/', {
@@ -288,11 +294,11 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
               type: type
             },
             type: 'json'
+          }).then(function(){
+            var ref$;
+            this$.toc[type].detail = payload;
+            return ref$ = this$.modify[type], ref$.data = JSON.stringify(payload), ref$.dirty = false, ref$;
           });
-        }).then(function(){
-          var ref$;
-          this$.toc[type].detail = payload;
-          return ref$ = this$.modify[type], ref$.data = JSON.stringify(payload), ref$.dirty = false, ref$;
         });
         return Promise.all(ps);
       }).then(function(){

@@ -3,7 +3,12 @@ block body
 block script
   +scope("admin").d-flex.flex-column.h-100.position-relative.z-float
     div(style="height:2.75em")
-    .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4(style="overflow:hidden")
+    .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4.position-relative(style="overflow:hidden")
+      .position-absolute.w-100.h-100.bg-white.vertical-center(pd="init-loader",style="z-index:99999")
+        .text-center.w-100
+          div: img.ldlz(data-src="/assets/img/c/logo/grantdash.svg")
+          div: img.ldlz(data-src="/assets/img/c/loader/spinner.svg")
+
       //- side menu
       +scope("admin-menu").admin-menu.bg-dark.text-white.text-left
         .sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(
