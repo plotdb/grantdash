@@ -340,7 +340,6 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
           }
         }
       });
-      console.log(opt);
       renderAnswer = {
         "form-checkpoint": function(arg$){
           var node, data, block, items;
@@ -451,7 +450,6 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
                     row: function(arg$){
                       var node, ref$, old, cur, ret, html, vals;
                       node = arg$.node;
-                      console.log(data);
                       ref$ = [data.old || {}, data.cur || {}].map(function(v){
                         var that, ret;
                         return Math.random().toString(36).substring(2);
@@ -475,7 +473,6 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
                         ret = ret.join('\n');
                         return ret;
                       }), old = ref$[0], cur = ref$[1];
-                      console.log(old, cur);
                       ret = Diff.diffChars(cur, old);
                       html = {
                         old: '',

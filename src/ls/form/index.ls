@@ -164,7 +164,6 @@ Ctrl = (opt) ->
         submit: ({node}) -> node.classList.toggle \disabled, (progress!remain > 0)
         "brd-name": ({node}) -> node.innerText = if opt.brd => (opt.brd.{}info.name or '') else '未定的活動'
         "grp-name": ({node}) -> node.innerText = if opt.grp => (opt.grp.{}info.name or '') else '未定的分組'
-    console.log opt
     render-answer = do
       "form-checkpoint": ({node, data, block}) ->
         items = (data.list or [])
@@ -215,7 +214,6 @@ Ctrl = (opt) ->
                 title: ({node}) -> node.innerText = data.block.title or ''
                 desc: ({node}) -> node.innerText = data.block.desc or ''
                 row: ({node}) ->
-                  console.log data
                   [old, cur] = [(data.old or {}), (data.cur or {})].map (v) ->
                     return Math.random!toString(36)substring(2)
                     if v.content => return (that or '')
@@ -223,7 +221,6 @@ Ctrl = (opt) ->
                     if v.other => ret = ([ret] ++ [v.other-value])
                     ret = ret.join('\n')
                     return ret
-                  console.log old, cur
 
                   ret = Diff.diffChars cur, old
                   html = {old: '', cur: ''}
