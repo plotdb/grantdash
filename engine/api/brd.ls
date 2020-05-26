@@ -18,6 +18,16 @@ app.get \/b/:key, aux.signed, (req, res) ->
       res.render \b/index.pug, lc{brd, projects}
     .catch aux.error-handler res
 
+api.get \/b/:key/form/, (req, res) ->
+  if isNaN(key = parseInt(req.params.key)) => return aux.r400 res
+  io.query "select name,description,slug,detail from brd where key = $1", [key]
+    .then (r={}) ->
+      if !(ret = r.[]rows.0) => return aux.reject 404
+      ret.detail = ret.detail{group}
+      for k,v of (ret.detail.group or {}) => ret.detail.group[k] = v{form}
+      res.send ret{name,description,slug,detail}
+    .catch aux.error-handler res
+
 api.put \/detail/, aux.signed, (req, res) ->
   payload = req.body.payload
   {key, type, payload} = (req.body or {})
@@ -79,13 +89,3 @@ api.post \/slug-check/:type, (req, res) ->
   io.query "select key from #type where slug = $1", [req.body.slug or '']
     .then (r = {}) -> res.send {result: if (r.rows or []).length => 'used' else 'free'}
     .catch aux.error-handler res
-
-/*
-api.post \/b/:key/commit, aux.signed, (req, res) ->
-  check req.params.key
-  some-how-get-snapshot
-    .then (snapshot) ->
-      io.query "update brd set detail = $1 where key = $2", [snapshot]
-    .then -> res.send!
-    .catch aux.error-handler res
-*/
