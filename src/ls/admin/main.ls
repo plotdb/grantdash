@@ -84,12 +84,14 @@ prj-form, admin-entry}) ->
           toc.brd.detail = payload
           init-data.brd = JSON.stringify(payload)
           update-view!
-        .catch error!
         .then ->
           ldcvmgr.toggle("publishing",false)
           ldcvmgr.toggle("published",true)
           debounce 2000
         .then -> ldcvmgr.toggle("published", false)
+        .finally ->
+          ldcvmgr.toggle("publishing",false)
+        .catch error!
 
     view = new ldView do
       init-render: false

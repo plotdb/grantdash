@@ -21,7 +21,7 @@ app.get \/b/:key, aux.signed, (req, res) ->
 api.put \/b/:key/detail, aux.signed, (req, res) ->
   if isNaN(key = parseInt(req.params.key)) or key <= 0 => return aux.r400 res
   payload = req.body.payload
-  io.query "update brd set (detail) = ($1) where key = $2", [JSON.stringify(payload), key]
+  io.query "update brd set detail = $1 where key = $2", [JSON.stringify(payload), key]
     .then -> res.send {}
     .catch aux.error-handler res
 

@@ -166,13 +166,15 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         toc.brd.detail = payload;
         initData.brd = JSON.stringify(payload);
         return updateView();
-      })['catch'](error()).then(function(){
+      }).then(function(){
         ldcvmgr.toggle("publishing", false);
         ldcvmgr.toggle("published", true);
         return debounce(2000);
       }).then(function(){
         return ldcvmgr.toggle("published", false);
-      });
+      })['finally'](function(){
+        return ldcvmgr.toggle("publishing", false);
+      })['catch'](error());
     };
     view = new ldView({
       initRender: false,
