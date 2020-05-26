@@ -17,7 +17,9 @@ block script
               .folder-menu
                 .folder-item(ld="nav-tab",data-name="org-config",data-nav="main") 組織設定
                 .folder-item(ld="nav-tab",data-name="org-navbar",data-nav="main") 選單列
-                .folder-item.mb-3(ld="nav-tab",data-name="org-config",data-nav="main") 頁面編輯器
+                a.folder-item.d-flex.mb-3(href="/edit/")
+                  .flex-grow-1 頁面編輯器
+                  div: i.i-link
 
             .clickable(ld="brd-bar",style="box-shadow:0 2px 3px rgba(0,0,0,1)")
               .d-flex.align-items-center.p-3.w-100
@@ -54,7 +56,7 @@ block script
             .folder-toggle.folder-item 客製頁面
             .folder-menu
               .folder-item(ld="nav-tab",data-name="brd-navbar") 選單列
-              a.folder-item.d-flex(href="edit.html")
+              a.folder-item.d-flex(href="/edit/")
                 .flex-grow-1 頁面編輯器
                 div: i.i-link
           .folder-item 建立複本
@@ -79,8 +81,14 @@ block script
             style="top:0:left;right:0;bottom:0;top:0")
               include welcome.pug
 
+            .p-4(ld="nav-panel",data-nav="main",data-name="org-config")
+              include org/config.pug
+
             .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
               include brd/config.pug
+
+            .p-4(ld="nav-panel",data-nav="main",data-name="org-navbar")
+              include navbar.pug
 
             .p-4(ld="nav-panel",data-nav="main",data-name="brd-navbar")
               include navbar.pug

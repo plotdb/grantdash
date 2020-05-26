@@ -37,7 +37,7 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     return loader.off();
   });
   init = function(toc){
-    var hubs, grp, setGroup;
+    var hubs, ctrl, setGroup;
     toc.doc = {};
     ['org', 'brd', 'brds', 'brdsFiltered', 'grps'].map(function(it){
       return toc[it] = toc[it] || [];
@@ -45,7 +45,11 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     toc.brdsFiltered = toc.brds || [];
     console.log("sidemenu information: ", toc);
     hubs = {};
-    grp = {};
+    ctrl = {
+      org: {},
+      brd: {},
+      grp: {}
+    };
     setGroup = function(v){
       var k;
       return (function(){
@@ -57,21 +61,29 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       }()).map(function(k){
         var p;
         p = ['group', v.key, k];
-        if (!grp[k].adapted()) {
-          return grp[k].adapt({
+        if (!ctrl.grp[k].adapted()) {
+          return ctrl.grp[k].adapt({
             hub: hubs.brd,
             path: p
           });
         } else {
-          return grp[k].setPath(p);
+          return ctrl.grp[k].setPath(p);
         }
       });
     };
     return prepareSharedb(toc).then(function(arg$){
-      var org, brd, menu, info, stage, perm, navbar;
+      var org, brd, menu, info, stage, perm, navbar, x$;
       org = arg$.org, brd = arg$.brd;
       hubs.org = org;
       hubs.brd = brd;
+      ctrl.org.info = new adminInfo({
+        root: '[ld-scope=org-info]',
+        type: 'org'
+      });
+      ctrl.org.info.adapt({
+        hub: org,
+        path: ['info']
+      });
       menu = new adminMenu({
         toc: toc,
         setGroup: setGroup
@@ -104,38 +116,50 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         hub: brd,
         path: ['perm']
       });
-      navbar = new adminNavbar({
-        toc: toc,
-        root: '[ld-scope=navbar-editor]'
-      });
-      navbar.adapt({
+      navbar = {
+        brd: new adminNavbar({
+          toc: toc,
+          root: '[data-name=brd-navbar] [ld-scope=navbar-editor]'
+        }),
+        org: new adminNavbar({
+          toc: toc,
+          root: '[data-name=org-navbar] [ld-scope=navbar-editor]'
+        })
+      };
+      navbar.brd.adapt({
         hub: brd,
         path: ['page', 'navbar']
       });
-      grp.form = new prjForm({
+      navbar.org.adapt({
+        hub: org,
+        path: ['page', 'navbar']
+      });
+      x$ = ctrl.grp;
+      x$.form = new prjForm({
         toc: toc,
         root: '[ld-scope=grp-form]',
         viewMode: false
       });
-      grp.info = new adminInfo({
+      x$.info = new adminInfo({
         root: '[ld-scope=grp-info-panel]',
         type: 'grp',
         setGroup: setGroup
       });
-      grp.perm = new adminPerm({
+      x$.perm = new adminPerm({
         toc: toc,
         root: '[data-nav=grp-config] [ld-scope=perm-panel]'
       });
-      grp.grade = new adminEntry({
+      x$.grade = new adminEntry({
         root: '[ld-scope=grade-panel]'
       });
-      return grp.criteria = new adminEntry({
+      x$.criteria = new adminEntry({
         root: '[ld-scope=criteria-panel]'
       });
+      return x$;
     });
   };
   return prepareSharedb = function(toc){
-    var sdb, updateView, initData, publish, view, hubs, prepare;
+    var sdb, updateView, modify, publish, view, hubs, prepare;
     console.log("prepare sharedb ...");
     sdb = sdb = new sharedbWrapper({
       url: {
@@ -154,21 +178,39 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     updateView = debounce(500, function(){
       return view.render();
     });
-    initData = {};
+    modify = {
+      org: {},
+      brd: {}
+    };
     publish = function(){
-      var payload;
-      payload = hubs.brd.doc.data;
       ldcvmgr.toggle("publishing", true);
-      return ld$.fetch("/d/b/" + toc.brd.key + "/detail", {
-        method: 'PUT'
-      }, {
-        json: {
-          payload: payload
-        },
-        type: 'json'
+      return Promise.resolve().then(function(){
+        var ps;
+        ps = ['brd', 'org'].map(function(type){
+          return Promise.resolve().then(function(){
+            var payload;
+            if (!toc[type].key || !modify[type].dirty) {
+              return;
+            }
+            payload = hubs[type].doc.data;
+            return ld$.fetch('/d/detail/', {
+              method: 'PUT'
+            }, {
+              json: {
+                payload: payload,
+                key: toc[type].key,
+                type: type
+              },
+              type: 'json'
+            }).then(function(){
+              var ref$;
+              toc[type].detail = payload;
+              return ref$ = modify[type], ref$.data = JSON.stringify(payload), ref$.dirty = false, ref$;
+            });
+          });
+        });
+        return Promise.all(ps);
       }).then(function(){
-        toc.brd.detail = payload;
-        initData.brd = JSON.stringify(payload);
         return updateView();
       }).then(function(){
         ldcvmgr.toggle("publishing", false);
@@ -192,13 +234,12 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       },
       handler: {
         "modified-warning": function(arg$){
-          var node, modified;
+          var node, mod;
           node = arg$.node;
-          if (!hubs.brd.doc) {
-            return;
-          }
-          modified = JSON.stringify(hubs.brd.doc.data) !== initData.brd;
-          return node.classList.toggle('d-none', !modified);
+          mod = ['brd', 'org'].map(function(it){
+            return modify[it].dirty = toc[it].key && hubs[it].doc && JSON.stringify(hubs[it].doc.data || {}) !== (modify[it].data || "{}");
+          });
+          return node.classList.toggle('d-none', !(mod[0] || mod[1]));
         }
       }
     });
@@ -215,7 +256,7 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       return sdb.get({
         id: "org-" + toc.org.key,
         watch: function(ops, source){
-          return hub.org.fire('change', {
+          return hubs.org.fire('change', {
             ops: ops,
             source: source
           });
@@ -237,8 +278,8 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       }).then(function(doc){
         return hubs.brd.doc = doc;
       }).then(function(){
-        initData.org = JSON.stringify(hubs.org.doc.data);
-        initData.brd = JSON.stringify(toc.brd.detail || "");
+        modify.org.data = JSON.stringify(toc.org.detail || "");
+        modify.brd.data = JSON.stringify(toc.brd.detail || "");
         hubs.org.doc.on('op', function(){
           return updateView();
         });

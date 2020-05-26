@@ -48,6 +48,7 @@ block body
 
 block script
   +script("/js/admin/info.js")
+  +script("/js/util/sdb-adapter.js")
   script: :lsc
     ldc.register <[adminInfo]>, ({admin-info}) ->
       new admin-info root: '[ld-scope=org-info]', type: \org

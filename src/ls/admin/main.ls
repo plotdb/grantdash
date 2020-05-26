@@ -33,18 +33,20 @@ prj-form, admin-entry}) ->
 
     hubs = {}
 
-    grp = {}
+    ctrl = {org: {}, brd: {}, grp: {}}
     set-group = (v) ->
       (k) <- [k for k of grp].map _
       p = ['group', v.key, k]
-      if !grp[k].adapted! => grp[k].adapt {hub: hubs.brd, path: p}
-      else grp[k].set-path p
+      if !ctrl.grp[k].adapted! => ctrl.grp[k].adapt {hub: hubs.brd, path: p}
+      else ctrl.grp[k].set-path p
 
     prepare-sharedb toc
       .then ({org,brd}) ->
         hubs <<< {org, brd}
-        # TODO remove this? we have fixed sdb-adapter so there is no need to manually init.
-        #if !brd.doc.data.page => brd.doc.submitOp [{p: ["page"], oi: {navbar: {}}}]
+
+        ctrl.org.info = new admin-info root: '[ld-scope=org-info]', type: \org
+        ctrl.org.info.adapt {hub: org, path: <[info]> }
+
         menu = new admin-menu {toc, set-group}
         menu.adapt   {hub: brd, path: <[group]>}
         info = new admin-info root: '[ld-scope=brd-info]', type: \brd
@@ -53,15 +55,20 @@ prj-form, admin-entry}) ->
         stage.adapt  {hub: brd, path: <[stage]>}
         perm = new admin-perm {toc, root: '[data-nav=brd-config] [ld-scope=perm-panel]'}
         perm.adapt   {hub: brd, path: <[perm]>}
-        navbar = new admin-navbar {toc, root: '[ld-scope=navbar-editor]'}
-        navbar.adapt {hub: brd, path: <[page navbar]>}
+
+        navbar = do
+          brd: new admin-navbar {toc, root: '[data-name=brd-navbar] [ld-scope=navbar-editor]'}
+          org: new admin-navbar {toc, root: '[data-name=org-navbar] [ld-scope=navbar-editor]'}
+        navbar.brd.adapt {hub: brd, path: <[page navbar]>}
+        navbar.org.adapt {hub: org, path: <[page navbar]>}
 
         # group information
-        grp.form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}
-        grp.info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group: set-group}
-        grp.perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]'}
-        grp.grade = new admin-entry {root: '[ld-scope=grade-panel]'}
-        grp.criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
+        ctrl.grp
+          ..form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}
+          ..info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group: set-group}
+          ..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]'}
+          ..grade = new admin-entry {root: '[ld-scope=grade-panel]'}
+          ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
 
   prepare-sharedb = (toc) ->
     console.log "prepare sharedb ..."
@@ -75,15 +82,22 @@ prj-form, admin-entry}) ->
     update-view = debounce 500, ->
       view.render!
 
-    init-data = {}
+    modify = {org: {}, brd: {}}
 
     publish = ->
-      payload = hubs.brd.doc.data
       ldcvmgr.toggle("publishing",true)
-      ld$.fetch "/d/b/#{toc.brd.key}/detail", {method: \PUT}, {json: {payload}, type: \json}
+      Promise.resolve!
         .then ->
-          toc.brd.detail = payload
-          init-data.brd = JSON.stringify(payload)
+          ps = <[brd org]>.map (type) ->
+            Promise.resolve!then ->
+              if !toc[type]key or !modify[type]dirty => return
+              payload = hubs[type]doc.data
+              ld$.fetch \/d/detail/, {method: \PUT}, {json: {payload, key: toc[type]key, type}, type: \json}
+                .then ->
+                  toc[type]detail = payload
+                  modify[type] <<< data: JSON.stringify(payload), dirty: false
+          Promise.all ps
+        .then ->
           update-view!
         .then ->
           ldcvmgr.toggle("publishing",false)
@@ -101,21 +115,25 @@ prj-form, admin-entry}) ->
         "publish-modification": -> publish!
       handler: do
         "modified-warning": ({node}) ->
-          if !hubs.brd.doc => return
-          modified = (JSON.stringify(hubs.brd.doc.data) != init-data.brd)
-          node.classList.toggle \d-none, !modified
+          mod = <[brd org]>.map ->
+            modify[it].dirty = (
+              toc[it]key and
+              hubs[it]doc and
+              JSON.stringify(hubs[it]doc.data or {}) != (modify[it]data or "{}")
+            )
+          node.classList.toggle \d-none, !(mod.0 or mod.1)
 
     hubs = org: new Hub({sdb}), brd: new Hub({sdb})
     prepare = ->
       console.log "preparing sharedb document (org) ... "
-      sdb.get {id: "org-#{toc.org.key}", watch: (ops,source) -> hub.org.fire \change, {ops,source} }
+      sdb.get {id: "org-#{toc.org.key}", watch: (ops,source) -> hubs.org.fire \change, {ops,source} }
         .then (doc) -> hubs.org.doc = doc
         .then -> console.log "preparing sharedb document (brd) ... "
         .then -> sdb.get {id: "brd-#{toc.brd.key}", watch: (ops,source) -> hubs.brd.fire \change, {ops,source}}
         .then (doc) -> hubs.brd.doc = doc
         .then ->
-          init-data.org = JSON.stringify(hubs.org.doc.data)
-          init-data.brd = JSON.stringify(toc.brd.detail or "")
+          modify.org.data = JSON.stringify(toc.org.detail or "")
+          modify.brd.data = JSON.stringify(toc.brd.detail or "")
 
           hubs.org.doc.on \op, -> update-view!
           hubs.brd.doc.on \op, -> update-view!
