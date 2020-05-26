@@ -34,13 +34,14 @@ api.post \/b, aux.signed, express-formidable!, (req, res) ->
   {name,description,slug,starttime,endtime,org} = req.fields
   if !name or !/^[a-zA-Z0-9-]+$/.exec(slug) => return aux.r400 res
   thumb = (req.files["thumbnail[]"] or {}).path
+  detail = {info: {name, description}}
   io.query "select key from brd where slug = $1", [slug]
     .then (r={}) ->
       if r.rows and r.rows.length => return aux.reject new lderror(1011)
       io.query """
-      insert into brd (name,description,slug,starttime,endtime,org,owner)
-      values ($1,$2,$3,$4,$5,$6,$7) returning key
-      """, [name, description, slug, (starttime or null), (endtime or null), (org or null), req.user.key]
+      insert into brd (name,description,slug,starttime,endtime,org,owner,detail)
+      values ($1,$2,$3,$4,$5,$6,$7,$8) returning key
+      """, [name, description, slug, (starttime or null), (endtime or null), (org or null), req.user.key, detail]
     .then (r = {}) ->
       lc.ret = (r.[]rows or []).0
       if !thumb => return

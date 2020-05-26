@@ -253,20 +253,22 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     };
     prepare = function(){
       console.log("preparing sharedb document (org) ... ");
-      return sdb.get({
-        id: "org-" + toc.org.key,
-        watch: function(ops, source){
-          return hubs.org.fire('change', {
-            ops: ops,
-            source: source
-          });
-        }
+      return Promise.resolve().then(function(){
+        return toc.org.key ? sdb.get({
+          id: "org-" + toc.org.key,
+          watch: function(ops, source){
+            return hubs.org.fire('change', {
+              ops: ops,
+              source: source
+            });
+          }
+        }) : null;
       }).then(function(doc){
         return hubs.org.doc = doc;
       }).then(function(){
         return console.log("preparing sharedb document (brd) ... ");
       }).then(function(){
-        return sdb.get({
+        return toc.brd.key ? sdb.get({
           id: "brd-" + toc.brd.key,
           watch: function(ops, source){
             return hubs.brd.fire('change', {
@@ -274,21 +276,26 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
               source: source
             });
           }
-        });
+        }) : null;
       }).then(function(doc){
         return hubs.brd.doc = doc;
       }).then(function(){
         modify.org.data = JSON.stringify(toc.org.detail || {});
         modify.brd.data = JSON.stringify(toc.brd.detail || {});
-        hubs.org.doc.on('op', function(){
-          return updateView();
-        });
-        hubs.brd.doc.on('op', function(){
-          return updateView();
-        });
+        if (hubs.org.doc) {
+          hubs.org.doc.on('op', function(){
+            return updateView();
+          });
+        }
+        if (hubs.brd.doc) {
+          hubs.brd.doc.on('op', function(){
+            return updateView();
+          });
+        }
         view.render();
         return hubs;
-      })['catch'](function(){
+      })['catch'](function(it){
+        console.log(it);
         return lda.ldcvmgr.toggle('error');
       });
     };

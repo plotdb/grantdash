@@ -29,7 +29,9 @@ ldc.register('sdbAdapter', [], function(){
       var o, i$, ref$, len$, n, this$ = this;
       this.hub = hub;
       this.sdb = hub.sdb;
-      this.doc = hub.doc;
+      this.doc = hub.doc || {
+        data: {}
+      };
       o = this.doc.data;
       for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
         n = ref$[i$];
@@ -44,7 +46,9 @@ ldc.register('sdbAdapter', [], function(){
     },
     setDoc: function(doc){
       var o, i$, ref$, len$, n;
-      this.doc = doc;
+      this.doc = doc || {
+        data: {}
+      };
       o = this.doc.data;
       for (i$ = 0, len$ = (ref$ = this.path || []).length; i$ < len$; ++i$) {
         n = ref$[i$];
@@ -69,7 +73,7 @@ ldc.register('sdbAdapter', [], function(){
     },
     update: function(ops){
       var cur, o, p, i$, ref$, len$, n, this$ = this;
-      if (!this.sdb) {
+      if (!this.sdb || !this.doc.submitOp) {
         return;
       }
       if (typeof ops === 'function') {

@@ -17,13 +17,14 @@ api.post \/o, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {name,description,slug} = req.fields
   thumb = (req.files["thumbnail[]"] or {}).path
+  detail = {info: {name, description}}
   io.query "select key from org where slug = $1", [slug]
     .then (r={}) ->
       if r.rows and r.rows.length => return aux.reject new lderror(1011)
       io.query """
-      insert into org (name,description,slug,owner)
-      values ($1,$2,$3,$4) returning key
-      """, [name,description,slug,req.user.key]
+      insert into org (name,description,slug,owner,detail)
+      values ($1,$2,$3,$4,$5) returning key
+      """, [name,description,slug,req.user.key,detail]
     .then (r = {}) ->
       lc.ret = (r.[]rows or []).0
       if !thumb => return

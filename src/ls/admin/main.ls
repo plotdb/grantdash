@@ -124,23 +124,33 @@ prj-form, admin-entry}) ->
           node.classList.toggle \d-none, !(mod.0 or mod.1)
 
     hubs = org: new Hub({sdb}), brd: new Hub({sdb})
+
     prepare = ->
       console.log "preparing sharedb document (org) ... "
-      sdb.get {id: "org-#{toc.org.key}", watch: (ops,source) -> hubs.org.fire \change, {ops,source} }
+      Promise.resolve!
+        .then ->
+          return if toc.org.key =>
+            sdb.get {id: "org-#{toc.org.key}", watch: (ops,source) -> hubs.org.fire \change, {ops,source} }
+          else null
         .then (doc) -> hubs.org.doc = doc
         .then -> console.log "preparing sharedb document (brd) ... "
-        .then -> sdb.get {id: "brd-#{toc.brd.key}", watch: (ops,source) -> hubs.brd.fire \change, {ops,source}}
+        .then ->
+          return if toc.brd.key =>
+            sdb.get {id: "brd-#{toc.brd.key}", watch: (ops,source) -> hubs.brd.fire \change, {ops,source}}
+          else null
         .then (doc) -> hubs.brd.doc = doc
         .then ->
           modify.org.data = JSON.stringify(toc.org.detail or {})
           modify.brd.data = JSON.stringify(toc.brd.detail or {})
 
-          hubs.org.doc.on \op, -> update-view!
-          hubs.brd.doc.on \op, -> update-view!
+          if hubs.org.doc => hubs.org.doc.on \op, -> update-view!
+          if hubs.brd.doc => hubs.brd.doc.on \op, -> update-view!
 
           view.render!
           hubs
-        .catch -> lda.ldcvmgr.toggle \error
+        .catch ->
+          console.log it
+          lda.ldcvmgr.toggle \error
 
     prepare!
 

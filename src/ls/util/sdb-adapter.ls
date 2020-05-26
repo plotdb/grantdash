@@ -3,9 +3,9 @@
 # - interface
 #   - adapter({hub, path}) - initialize adapter
 #     - hub: a sharedb hub. contains sdb and doc object. also serve for event gateway.
-#   - ops-out(f): user should call this if he want to update data to server. 
+#   - ops-out(f): user should call this if he want to update data to server.
 #     - f: a function return modified data object.
-#   - ops-in({data,ops,source}): user should implement this. when remote data changed, ops-in will be called. 
+#   - ops-in({data,ops,source}): user should implement this. when remote data changed, ops-in will be called.
 
 <- ldc.register \sdbAdapter, [], _
 
@@ -19,13 +19,14 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
   fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
   init: (hub) ->
     @hub = hub
-    @ <<< hub{sdb, doc}
+    @sdb = hub.sdb
+    @doc = hub.doc or {data: {}}
     o = @doc.data
     for n in @path => o = (o[n] or {})
     @watch {data: o}
     @hub.on \change, ~> @watch it
   set-doc: (doc) ->
-    @doc = doc
+    @doc = doc or {data: {}}
     o = @doc.data
     for n in @path or [] => o = (o[n] or {})
     @watch {data: o}
@@ -35,8 +36,8 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
     for n in @path => o = (o[n] or {})
     @watch {data: o}
   update: (ops) ->
-    if !@sdb => return
-    if typeof(ops) == \function => 
+    if !@sdb or !@doc.submitOp => return
+    if typeof(ops) == \function =>
       cur = ops(JSON.parse(JSON.stringify(@data or {})))
       ops = if !@data => [{p: [], oi: {}}] else []
       ops ++= @sdb.json.diff((@data or {}), cur)
