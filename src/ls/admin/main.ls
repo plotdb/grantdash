@@ -118,7 +118,7 @@ prj-form, admin-entry}) ->
           mod = <[brd org]>.map ->
             modify[it].dirty = (
               toc[it]key and
-              hubs[it]doc and
+              hubs[it]doc and hubs[it]doc.data and
               JSON.stringify(hubs[it]doc.data or {}) != (modify[it]data or "{}")
             )
           node.classList.toggle \d-none, !(mod.0 or mod.1)
@@ -129,15 +129,19 @@ prj-form, admin-entry}) ->
       console.log "preparing sharedb document (org) ... "
       Promise.resolve!
         .then ->
-          return if toc.org.key =>
-            sdb.get {id: "org-#{toc.org.key}", watch: (ops,source) -> hubs.org.fire \change, {ops,source} }
-          else null
+          if !toc.org.key => return
+          sdb.get do
+            id: "org-#{toc.org.key}"
+            watch: (ops,source) -> hubs.org.fire \change, {ops,source}
+            create: -> toc.org.detail
         .then (doc) -> hubs.org.doc = doc
         .then -> console.log "preparing sharedb document (brd) ... "
         .then ->
-          return if toc.brd.key =>
-            sdb.get {id: "brd-#{toc.brd.key}", watch: (ops,source) -> hubs.brd.fire \change, {ops,source}}
-          else null
+          if !toc.brd.key => return
+          sdb.get do
+            id: "brd-#{toc.brd.key}"
+            watch: (ops,source) -> hubs.brd.fire \change, {ops,source}
+            create: -> toc.brd.detail
         .then (doc) -> hubs.brd.doc = doc
         .then ->
           modify.org.data = JSON.stringify(toc.org.detail or {})

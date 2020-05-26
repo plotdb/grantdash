@@ -237,7 +237,7 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
           var node, mod;
           node = arg$.node;
           mod = ['brd', 'org'].map(function(it){
-            return modify[it].dirty = toc[it].key && hubs[it].doc && JSON.stringify(hubs[it].doc.data || {}) !== (modify[it].data || "{}");
+            return modify[it].dirty = toc[it].key && hubs[it].doc && hubs[it].doc.data && JSON.stringify(hubs[it].doc.data || {}) !== (modify[it].data || "{}");
           });
           return node.classList.toggle('d-none', !(mod[0] || mod[1]));
         }
@@ -254,29 +254,41 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     prepare = function(){
       console.log("preparing sharedb document (org) ... ");
       return Promise.resolve().then(function(){
-        return toc.org.key ? sdb.get({
+        if (!toc.org.key) {
+          return;
+        }
+        return sdb.get({
           id: "org-" + toc.org.key,
           watch: function(ops, source){
             return hubs.org.fire('change', {
               ops: ops,
               source: source
             });
+          },
+          create: function(){
+            return toc.org.detail;
           }
-        }) : null;
+        });
       }).then(function(doc){
         return hubs.org.doc = doc;
       }).then(function(){
         return console.log("preparing sharedb document (brd) ... ");
       }).then(function(){
-        return toc.brd.key ? sdb.get({
+        if (!toc.brd.key) {
+          return;
+        }
+        return sdb.get({
           id: "brd-" + toc.brd.key,
           watch: function(ops, source){
             return hubs.brd.fire('change', {
               ops: ops,
               source: source
             });
+          },
+          create: function(){
+            return toc.brd.detail;
           }
-        }) : null;
+        });
       }).then(function(doc){
         return hubs.brd.doc = doc;
       }).then(function(){
