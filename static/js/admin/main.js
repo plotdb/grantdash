@@ -210,6 +210,14 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         hub: org,
         path: ['page', 'navbar']
       });
+      x$.perm = new adminPerm({
+        toc: toc,
+        root: '[data-nav=org-config] [ld-scope=perm-panel]'
+      });
+      x$.perm.adapt({
+        hub: org,
+        path: ['perm']
+      });
       y$ = this.ctrl.brd;
       y$.info = new adminInfo({
         root: '[ld-scope=brd-info]',
@@ -314,7 +322,6 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       })['catch'](error());
     }
   });
-  loader.on();
   ctrl = new Ctrl();
   return ctrl.fetch().then(function(){
     return ctrl.sharedb();

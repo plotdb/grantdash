@@ -101,6 +101,8 @@ prj-form, admin-entry}) ->
         ..info.adapt {hub: org, path: <[info]> }
         ..navbar = new admin-navbar {toc, root: '[data-name=org-navbar] [ld-scope=navbar-editor]'}
         ..navbar.adapt {hub: org, path: <[page navbar]>}
+        ..perm = new admin-perm {toc, root: '[data-nav=org-config] [ld-scope=perm-panel]'}
+        ..perm.adapt   {hub: org, path: <[perm]>}
 
       @ctrl.brd
         ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd}
@@ -143,7 +145,8 @@ prj-form, admin-entry}) ->
         .finally -> ldcvmgr.toggle \publishing, false
         .catch error!
 
-  loader.on!
+  # loading screen does this job. we can still enable it if there is no loading screen.
+  # loader.on!
   ctrl = new Ctrl!
   ctrl.fetch!
     .then -> ctrl.sharedb!
