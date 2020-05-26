@@ -146,9 +146,18 @@ api.post \/me/config/, (req, res) ->
     .then -> res.send!
     .catch aux.error-handler res
 
-api.post \/me/o/list, aux.signed, (req, res) ->
-  offset = req.query.offset or 0
-  limit = req.query.limit or 30
-  io.query "select key,name,description from org where owner = $1 offset $2 limit $3", [req.user.key, offset, limit]
-    .then (r={}) -> res.send r
+api.post \/me/list, aux.signed, (req, res) ->
+  offset = req.body.offset or 0
+  limit = req.body.limit or 100
+  type = req.body.type
+
+  tables = <[prj brd org]>
+  table = tables[tables.indexOf(type)]
+  if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
+
+  io.query(
+  "select key,name,description,slug from #table where owner = $1 offset $2 limit $3"
+  [req.user.key, offset, limit]
+  )
+    .then (r={}) -> res.send (r.rows or [])
     .catch aux.error-handler res
