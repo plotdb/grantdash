@@ -278,8 +278,8 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       }).then(function(doc){
         return hubs.brd.doc = doc;
       }).then(function(){
-        modify.org.data = JSON.stringify(toc.org.detail || "");
-        modify.brd.data = JSON.stringify(toc.brd.detail || "");
+        modify.org.data = JSON.stringify(toc.org.detail || {});
+        modify.brd.data = JSON.stringify(toc.brd.detail || {});
         hubs.org.doc.on('op', function(){
           return updateView();
         });

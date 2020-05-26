@@ -132,8 +132,8 @@ prj-form, admin-entry}) ->
         .then -> sdb.get {id: "brd-#{toc.brd.key}", watch: (ops,source) -> hubs.brd.fire \change, {ops,source}}
         .then (doc) -> hubs.brd.doc = doc
         .then ->
-          modify.org.data = JSON.stringify(toc.org.detail or "")
-          modify.brd.data = JSON.stringify(toc.brd.detail or "")
+          modify.org.data = JSON.stringify(toc.org.detail or {})
+          modify.brd.data = JSON.stringify(toc.brd.detail or {})
 
           hubs.org.doc.on \op, -> update-view!
           hubs.brd.doc.on \op, -> update-view!
