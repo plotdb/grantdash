@@ -34,7 +34,7 @@ api.post \/b, aux.signed, express-formidable!, (req, res) ->
   {name,description,slug,starttime,endtime,org} = req.fields
   if !name or !/^[a-zA-Z0-9-]+$/.exec(slug) => return aux.r400 res
   thumb = (req.files["thumbnail[]"] or {}).path
-  detail = {info: {name, description}}
+  detail = {info: {name, description, starttime, endtime}}
   io.query "select key from brd where slug = $1", [slug]
     .then (r={}) ->
       if r.rows and r.rows.length => return aux.reject new lderror(1011)
