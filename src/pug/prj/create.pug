@@ -1,4 +1,19 @@
 extends /base.pug
+block head
+  style(type="text/css"): :stylus
+    [ld-scope=prj-form]
+      .form-block
+        border: none
+        box-shadow: 0
+        margin-bottom: 2em
+        border-left-width: 8px
+        border-left-style: solid
+        border-left-color: #fdfeff
+        box-shadow: none!important
+        transition: all .35s ease-in-out
+      .card.invalid[ld=block]
+        border-left-color: #f00
+
 block body
   //-include /ui/data/sample.pug
   include /modules/mixins/index.pug
@@ -32,7 +47,7 @@ block body
 
   .w-1024.mx-auto.rwd.typeset.heading-contrast
     +scope("prj-form").d-flex
-      .mr-4.pr-4
+      .mr-4.p-4.rounded.border(style="background:linear-gradient(315deg,#f4f5f6,#fff)")
         .pb-4.mb-4.h-100
           h3.my-0.d-none(ld="nview") 編輯提案
           h3.my-0(ld="view") 預覽提案
@@ -98,7 +113,7 @@ block body
           .mb-4.text-break.bg-light.rounded.p-4(ld="content")
         .d-none(ld="nview"): div(ld="form-list"): div(ld-each="block")
         .d-none(ld="nview")
-          .d-flex.align-items-center
+          .d-flex.align-items-center.ml-4
             .btn.btn-lg.btn-primary.mr-4.disabled(ld="submit") 儲存並發布
             .text-sm.text-danger(ld="invalid") #[i.i-close] 在能發布之前，您尚有 #[span(ld="remain") 1] 個項目未完成。#[a.text-danger.text-underline(href="#") 跳至待編修項目]
             .text-sm.text-success.d-none(ld="valid") 您已填完所有項目，可別忘了儲存並發布喔！

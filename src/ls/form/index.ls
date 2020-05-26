@@ -4,6 +4,7 @@
 Ctrl = (opt) ->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
+  @evt-handler = {}
   @node = do
     src: ld$.find(root, '[ld=blocksrc]', 0)
     list: ld$.find(root, '[ld=form-list]', 0)
@@ -153,6 +154,9 @@ Ctrl = (opt) ->
               if !("#{obj.list[i].key}" in filled) => break
             node = ld$.find(@node.list, "\#block-#{obj.list[i].key}",0)
             if node => scrollto node
+          submit: ({node}) ~>
+            if node.classList.contains \disabled => return
+            @fire \submit, {answer: @obj.value}
 
       handler: do
         nview: ({node}) -> node.classList.toggle \d-none, lc.view
@@ -241,6 +245,8 @@ Ctrl = (opt) ->
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+  on: (n, cb) -> @evt-handler.[][n].push cb
+  fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
   ops-in: ({data,ops,source}) ->
     if source => return
     data = JSON.parse(JSON.stringify(data or {}))

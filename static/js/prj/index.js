@@ -75,9 +75,12 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
         grp: grp,
         brd: this.brd
       });
-      return this.ctrlForm.adapt({
+      this.ctrlForm.adapt({
         hub: this.hubs.prj,
         path: ['content']
+      });
+      return this.ctrlForm.on('submit', function(it){
+        return console.log(it);
       });
     }
   });

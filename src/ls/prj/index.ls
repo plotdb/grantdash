@@ -38,6 +38,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       brd: @brd
     }
     @ctrl-form.adapt {hub: @hubs.prj, path: ['content']}
+    @ctrl-form.on \submit, -> console.log it
 
 ctrl = new Ctrl!
 loader.on!
