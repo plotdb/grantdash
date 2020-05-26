@@ -32,7 +32,7 @@
       }
     });
     document.body.addEventListener('click', function(e){
-      var n, tab, nav, p, name, that, ref$, panel, key;
+      var n, tab, nav, p, name, that, ref$, panel;
       if (!((n = e.target) && n.getAttribute)) {
         return;
       }
@@ -57,15 +57,8 @@
       if (panel) {
         panel.classList.toggle('d-none', false);
       }
-      n = tab;
-      while (n) {
-        if (n.getAttribute && (key = n.getAttribute('data-prj-key'))) {
-          break;
-        }
-        n = n.parentNode;
-      }
       if (nav === 'main') {
-        return ref$ = lc.cur, ref$.nav = nav, ref$.name = name, ref$.key = key, ref$.func = lc.tab[lc.cur.name], ref$;
+        return ref$ = lc.cur, ref$.nav = nav, ref$.name = name, ref$.func = lc.tab[lc.cur.name], ref$;
       } else {
         return ref$ = lc.cur, ref$.func = lc.tab[lc.cur.name] = name, ref$;
       }

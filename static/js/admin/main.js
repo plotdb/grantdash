@@ -114,7 +114,7 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       });
       grp.form = new prjForm({
         toc: toc,
-        root: '[ld-scope=prj-form]',
+        root: '[ld-scope=grp-form]',
         viewMode: false
       });
       grp.info = new adminInfo({
@@ -124,7 +124,7 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       });
       grp.perm = new adminPerm({
         toc: toc,
-        root: '[data-nav=prj-config] [ld-scope=perm-panel]'
+        root: '[data-nav=grp-config] [ld-scope=perm-panel]'
       });
       grp.grade = new adminEntry({
         root: '[ld-scope=grade-panel]'

@@ -31,12 +31,8 @@
       tab.classList.toggle \active, true
       if panel => panel.classList.toggle \d-none, false
 
-      n = tab
-      while n =>
-        if n.getAttribute and (key = n.getAttribute(\data-prj-key)) => break
-        n = n.parentNode
       if nav == \main =>
-        lc.cur <<< {nav, name, key, func: lc.tab[lc.cur.name]}
+        lc.cur <<< {nav, name, func: lc.tab[lc.cur.name]}
       else lc.cur <<< { func: lc.tab[lc.cur.name] = name}
 
     ld$.find '.admin-sidemenu .folder' .map ->

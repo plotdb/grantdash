@@ -2,7 +2,7 @@
 
 .navbar.navbar-expand-lg.navbar-light.border.shadow-sm.rounded.sticky.z-fixed.bg-white(style="top:1em")
   .collapse.navbar-collapse
-    ul.nav.nav-pills.mr-auto(ld="nav",data-nav="prj-config")
+    ul.nav.nav-pills.mr-auto(ld="nav",data-nav="grp-config")
       li.nav-item: .nav-link.active(ld="nav-tab default",data-name="info") 基本資訊
       //-li.nav-item: .nav-link(ld="nav-tab",data-name="brd-stage") 階段
       li.nav-item: .nav-link(ld="nav-tab",data-name="perm") 權限
@@ -11,13 +11,13 @@
     ul.navbar-nav.ml-auto
       li.nav-item: .nav-link(href="/org/dashboard.html") 組織設定
 .p-4
-  div(ld="nav-panel default",data-nav="prj-config",data-name="info")
+  div(ld="nav-panel default",data-nav="grp-config",data-name="info")
     include info.pug
-  //-div(ld="nav-panel",data-nav="prj-config",data-name="stage")
+  //-div(ld="nav-panel",data-nav="grp-config",data-name="stage")
     include stage.pug
-  div(ld="nav-panel",data-nav="prj-config",data-name="perm")
+  div(ld="nav-panel",data-nav="grp-config",data-name="perm")
     include ../perm.pug
-  div(ld="nav-panel",data-nav="prj-config",data-name="criteria")
+  div(ld="nav-panel",data-nav="grp-config",data-name="criteria")
     include criteria.pug
-  div(ld="nav-panel",data-nav="prj-config",data-name="grade")
+  div(ld="nav-panel",data-nav="grp-config",data-name="grade")
     include grade.pug

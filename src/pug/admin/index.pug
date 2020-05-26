@@ -63,10 +63,10 @@ block script
             .folder(ld-each="grp-entry")
               .folder-toggle.folder-item(ld="name") 分組
               .folder-menu
-                .folder-item(ld="nav-tab",data-name="prj-config") 設定
-                .folder-item(ld="nav-tab",data-name="prj-list") 專案列表
-                .folder-item(ld="nav-tab",data-name="prj-judge") 評選資訊
-                .folder-item(ld="nav-tab",data-name="prj-form") 提案表
+                .folder-item(ld="nav-tab",data-name="grp-config") 設定
+                .folder-item(ld="nav-tab",data-name="grp-list") 專案列表
+                .folder-item(ld="nav-tab",data-name="grp-judge") 評選資訊
+                .folder-item(ld="nav-tab",data-name="grp-form") 提案表
             .folder-item(ld="grp-add") 新增分組 ...
           .my-4
       //- content panel
@@ -85,13 +85,13 @@ block script
             .p-4(ld="nav-panel",data-nav="main",data-name="brd-navbar")
               include navbar.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="prj-config")
+            .p-4(ld="nav-panel",data-nav="main",data-name="grp-config")
               include grp/config.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="prj-form")
+            .p-4(ld="nav-panel",data-nav="main",data-name="grp-form")
               include grp/form.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="prj-judge")
+            .p-4(ld="nav-panel",data-nav="main",data-name="grp-judge")
               include grp/judge.pug
 
           .bg-info.text-white.m-2.rounded.shadow-sm.d-none.py-2.px-4(

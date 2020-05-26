@@ -31,7 +31,7 @@
 
 .navbar.navbar-expand-lg.navbar-light.border.shadow-sm.rounded.sticky.z-fixed.bg-white(style="top:15px")
   .collapse.navbar-collapse
-    ul.nav.nav-pills.mr-auto(ld="tabbar",data-name="prj-detail")
+    ul.nav.nav-pills.mr-auto(ld="tabbar",data-name="grp-detail")
       //-li.nav-item: .nav-link.active(ld="tabbar-tab",data-name="basic") 基本資訊
       li.nav-item: .nav-link(ld="tabbar-tab default",data-name="track") 專案追蹤
       li.nav-item: .nav-link(ld="tabbar-tab",data-name="budget") 經費表
@@ -40,10 +40,10 @@
       li.nav-item: a.nav-link(href="/org/dashboard.html") 專案列表 #[i.i-chevron-right]
 
 .p-0
-  div(ld="tabbar-panel default",data-tabbar="prj-detail",data-name="track")
+  div(ld="tabbar-panel default",data-tabbar="grp-detail",data-name="track")
     include track.pug
-  div(ld="tabbar-panel",data-tabbar="prj-detail",data-name="view")
+  div(ld="tabbar-panel",data-tabbar="grp-detail",data-name="view")
     include view.pug
-  div(ld="tabbar-panel",data-tabbar="prj-detail",data-name="budget")
+  div(ld="tabbar-panel",data-tabbar="grp-detail",data-name="budget")
     include budget.pug
 
