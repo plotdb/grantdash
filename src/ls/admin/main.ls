@@ -21,8 +21,6 @@ prj-form, admin-entry}) ->
       action: click: do
         "publish-modification": ~> @publish!
       handler: do
-        "brd-list": ({node}) ~>
-          if !@toc.brd.key and node.folder => node.folder.toggle true
         "brd-menu": ({node}) ~>
           node.classList.toggle \d-none, !@toc.brd.key
         "modified-warning": ({node}) ~>
@@ -158,5 +156,6 @@ prj-form, admin-entry}) ->
       else if e.id == 1000 => ldcvmgr.toggle \auth-required
       else if e.id == 1007 => ldcvmgr.toggle \server-down
       else error!(e)
+    .then -> ctrl.render!
 
 ldc.app \adminGuard

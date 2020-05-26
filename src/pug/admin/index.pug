@@ -32,7 +32,7 @@ block script
                 .ml-2(ld="brd-list-toggle") #[i.i-dart-down]
 
 
-        .border-top.border-secondary.border-bottom: .folder(pd="brd-list",ld="folder brd-list")
+        .border-top.border-secondary.border-bottom: .folder(ld="folder brd-list")
           .folder-item.folder-toggle.d-none
           .folder-menu
             .px-3.py-3(ld="brds empty")
@@ -75,31 +75,31 @@ block script
       .flex-grow-1.d-flex.flex-column
 
         .flex-grow-1.bg-white(style="overflow-y:scroll")
-          .position-relative(style="min-height:calc(100% - 5em)")
+          .position-relative(style="min-height:calc(100% - 4em)")
             .p-4.position-absolute.vertical-center(
             ld="nav-panel default", data-nav="main", data-name="welcome",
             style="top:0:left;right:0;bottom:0;top:0")
               include welcome.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="org-config")
+            .p-4.d-none(ld="nav-panel",data-nav="main",data-name="org-config")
               include org/config.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
+            .p-4.d-none(ld="nav-panel",data-nav="main",data-name="brd-config")
               include brd/config.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="org-navbar")
+            .p-4.d-none(ld="nav-panel",data-nav="main",data-name="org-navbar")
               include navbar.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="brd-navbar")
+            .p-4.d-none(ld="nav-panel",data-nav="main",data-name="brd-navbar")
               include navbar.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="grp-config")
+            .p-4.d-none(ld="nav-panel",data-nav="main",data-name="grp-config")
               include grp/config.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="grp-form")
+            .p-4.d-none(ld="nav-panel",data-nav="main",data-name="grp-form")
               include grp/form.pug
 
-            .p-4(ld="nav-panel",data-nav="main",data-name="grp-judge")
+            .p-4.d-none(ld="nav-panel",data-nav="main",data-name="grp-judge")
               include grp/judge.pug
 
           .bg-info.text-white.m-2.rounded.shadow-sm.d-none.py-2.px-4(

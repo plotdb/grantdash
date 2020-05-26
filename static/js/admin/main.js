@@ -27,13 +27,6 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         }
       },
       handler: {
-        "brd-list": function(arg$){
-          var node;
-          node = arg$.node;
-          if (!this$.toc.brd.key && node.folder) {
-            return node.folder.toggle(true);
-          }
-        },
         "brd-menu": function(arg$){
           var node;
           node = arg$.node;
@@ -339,6 +332,8 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     } else {
       return error()(e);
     }
+  }).then(function(){
+    return ctrl.render();
   });
 });
 ldc.app('adminGuard');

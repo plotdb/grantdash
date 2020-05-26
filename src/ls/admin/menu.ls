@@ -34,7 +34,9 @@ Ctrl = (opt) ->
       "brd-name": -> toc.brd.name
       "brd-progress-text": -> "活動進行中"
     init: do
-      "folder": ({node}) -> node.folder = new ldui.Folder root: node
+      "folder": ({node,names}) ->
+        node.folder = new ldui.Folder root: node
+        if !toc.brd.key and ("brd-list" in names) => node.folder.toggle true
     handler: do
       "org-menu": ({node}) -> node.classList.toggle \d-none, !toc.org.key
       "brd-progress": ({node}) -> node.classList.toggle \text-success, true

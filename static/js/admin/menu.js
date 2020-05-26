@@ -77,11 +77,14 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
       },
       init: {
         "folder": function(arg$){
-          var node;
-          node = arg$.node;
-          return node.folder = new ldui.Folder({
+          var node, names;
+          node = arg$.node, names = arg$.names;
+          node.folder = new ldui.Folder({
             root: node
           });
+          if (!toc.brd.key && in$("brd-list", names)) {
+            return node.folder.toggle(true);
+          }
         }
       },
       handler: {
@@ -192,6 +195,11 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
   });
   return Ctrl;
 });
+function in$(x, xs){
+  var i = -1, l = xs.length >>> 0;
+  while (++i < l) if (x === xs[i]) return true;
+  return false;
+}
 function import$(obj, src){
   var own = {}.hasOwnProperty;
   for (var key in src) if (own.call(src, key)) obj[key] = src[key];
