@@ -32,7 +32,7 @@ block script
                 .ml-2(ld="brd-list-toggle") #[i.i-dart-down]
 
 
-        .border-top.border-secondary.border-bottom: .folder(ld="folder brd-list")
+        .border-top.border-secondary.border-bottom: .folder(pd="brd-list",ld="folder brd-list")
           .folder-item.folder-toggle.d-none
           .folder-menu
             .px-3.py-3(ld="brds empty")
@@ -47,7 +47,7 @@ block script
               .pb-2.clickable(ld-each="brd-entry") #[span]#[.text-muted.text-sm]
 
 
-        .pt-2(ld="nav",data-nav="main")
+        .pt-2(pd="brd-menu",ld="nav",data-nav="main")
           .folder-item(ld="nav-tab",data-name="brd-config") 活動設定
           a.folder-item.d-flex(href="#")
             .flex-grow-1 入口頁面
@@ -103,11 +103,11 @@ block script
               include grp/judge.pug
 
           .bg-info.text-white.m-2.rounded.shadow-sm.d-none.py-2.px-4(
-          ld="modified-warning",style="position:sticky;bottom:.5em")
+          pd="modified-warning",style="position:sticky;bottom:.5em")
             .d-flex.align-items-center.justify-content-end
               span 您已更動了一些設定，這些設定只要點擊右方的發布鈕後，就會生效。
-              .btn.btn-sm.btn-outline-light.ml-4(ld="publish-modification") 發布變更
-              .btn.btn-sm.btn-outline-light.ml-2(ld="restore-settings") 放棄變更
+              .btn.btn-sm.btn-outline-light.ml-4(pd="publish-modification") 發布變更
+              .btn.btn-sm.btn-outline-light.ml-2(pd="restore-settings") 放棄變更
 
   +script("/js/util/sdb-adapter.js")
   +script("/js/util/hub.js")
