@@ -273,3 +273,21 @@ input.form-control {
   box-shadow: none;
   outline: 0;
 }
+[contenteditable="true"].single-line {
+  white-space: nowrap;
+  overflow: hidden;
+}
+[contenteditable="true"].single-line br {
+  display: none;
+}
+[contenteditable="true"].single-line * {
+  display: inline;
+  white-space: nowrap;
+}
+.folder-item [contenteditable="true"]:focus {
+  box-shadow: none;
+  outline: 0;
+}
+.treeview .folder-menu .folder-item {
+  padding-left: 1em;
+}

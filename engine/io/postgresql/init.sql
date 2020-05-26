@@ -82,6 +82,7 @@ create table if not exists prj (
   owner int references users(key) not null,
   slug text not null,
   brd int references brd(key),
+  grp text,
   name text not null constraint name_len check (char_length(name) <= 100),
   description text constraint description_len check (char_length(description) <= 500),
   detail jsonb,

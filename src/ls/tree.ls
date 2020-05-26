@@ -151,6 +151,8 @@ Tree.prototype = Object.create(Object.prototype) <<< do
       context: {data, parent}
       root: node
       action: do
+        input: ({node, context, evt}) ->
+          node.innerText = node.innerText
         dblclick: do
           name: ({node, context, evt}) ->
             node.setAttribute \contenteditable, true
@@ -182,6 +184,9 @@ Tree.prototype = Object.create(Object.prototype) <<< do
           list: ({context}) -> context.data.children
           action: click: ({node, data, context, evt}) ~>
             if !node.classList.contains(\folder-item) => return
+            if @active => @active.classList.toggle \active, false
+            @active = node
+            node.classList.toggle \active, true
             @fire \click, data
           init: ({node, data, local, context}) ~>
             sample = @sample[if data.children => \folder else \item].childNodes.0

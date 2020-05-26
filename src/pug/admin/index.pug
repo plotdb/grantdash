@@ -1,7 +1,7 @@
 extends /admin/base.pug
 block body
 block script
-  .d-flex.flex-column.h-100.position-relative.z-float
+  +scope("admin").d-flex.flex-column.h-100.position-relative.z-float
     div(style="height:2.75em")
     .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4(style="overflow:hidden")
       //- side menu
@@ -70,24 +70,32 @@ block script
             .folder-item(ld="grp-add") 新增分組 ...
           .my-4
       //- content panel
-      .flex-grow-1.bg-white(style="overflow-y:scroll")
-        .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
-          include brd/config.pug
+      .flex-grow-1.d-flex.flex-column
 
-        .p-4(ld="nav-panel",data-nav="main",data-name="brd-navbar")
-          include navbar.pug
+        .flex-grow-1.bg-white(style="overflow-y:scroll")
+          div(style="min-height:calc(100% - 5em)")
 
-        .p-4(ld="nav-panel",data-nav="main",data-name="prj-config")
-          include prj/config.pug
+            .p-4(ld="nav-panel",data-nav="main",data-name="brd-config")
+              include brd/config.pug
 
-        .p-4(ld="nav-panel",data-nav="main",data-name="prj-form")
-          include prj/form.pug
+            .p-4(ld="nav-panel",data-nav="main",data-name="brd-navbar")
+              include navbar.pug
 
-        //-.p-4(ld="nav-panel",data-nav="main",data-name="prj-judge")
-          include prj/judge.pug
+            .p-4(ld="nav-panel",data-nav="main",data-name="prj-config")
+              include grp/config.pug
 
-        //-.p-4(ld="nav-panel",data-nav="main",data-name="prj-form")
-          include prj/form.pug
+            .p-4(ld="nav-panel",data-nav="main",data-name="prj-form")
+              include grp/form.pug
+
+            .p-4(ld="nav-panel",data-nav="main",data-name="prj-judge")
+              include grp/judge.pug
+
+          .bg-info.text-white.m-2.rounded.shadow-sm.d-none.py-2.px-4(
+          ld="modified-warning",style="position:sticky;bottom:.5em")
+            .d-flex.align-items-center.justify-content-end
+              span 您已更動了一些設定，這些設定只要點擊右方的發布鈕後，就會生效。
+              .btn.btn-outline-light.ml-4(ld="publish-modification") 發布變更
+              .btn.btn-outline-light.ml-2(ld="restore-settings") 放棄變更
 
   +script("/js/util/sdb-adapter.js")
   +script("/js/util/hub.js")

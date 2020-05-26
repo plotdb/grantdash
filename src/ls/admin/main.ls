@@ -1,8 +1,8 @@
 ldc.register \adminGuard,
-<[auth loader sdbAdapter
+<[ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
 prjForm adminEntry]>,
-({auth, loader, sdbAdapter,
+({ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
 prj-form, admin-entry}) ->
 
@@ -57,15 +57,10 @@ prj-form, admin-entry}) ->
         navbar.adapt {hub: brd, path: <[page navbar]>}
 
         # group information
-        # TODO update group idx based on user selection
         grp.form = new prj-form {toc, root: '[ld-scope=prj-form]', view-mode: false}
-        #grp.form.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'form']}
         grp.info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group: set-group}
-        #grp.info.adapt  {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'info'] }
         grp.grade = new admin-entry {root: '[ld-scope=grade-panel]'}
-        #grp.grade.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'grade']}
         grp.criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
-        #grp.criteria.adapt {hub: brd, path: ['group', 'grp-av6q0tmyomf', 'criteria']}
 
   prepare-sharedb = (toc) ->
     console.log "prepare sharedb ..."
@@ -76,6 +71,36 @@ prj-form, admin-entry}) ->
       sdb.reconnect!
         .then -> prepare!
         .then -> loader.off!
+    update-view = debounce 500, ->
+      view.render!
+
+    init-data = {}
+
+    publish = ->
+      payload = hubs.brd.doc.data
+      ldcvmgr.toggle("publishing",true)
+      ld$.fetch "/d/b/#{toc.brd.key}/detail", {method: \PUT}, {json: {payload}, type: \json}
+        .then ->
+          toc.brd.detail = payload
+          init-data.brd = JSON.stringify(payload)
+          update-view!
+        .catch error!
+        .then ->
+          ldcvmgr.toggle("publishing",false)
+          ldcvmgr.toggle("published",true)
+          debounce 2000
+        .then -> ldcvmgr.toggle("published", false)
+
+    view = new ldView do
+      init-render: false
+      root: '[ld-scope=admin]'
+      action: click: do
+        "publish-modification": -> publish!
+      handler: do
+        "modified-warning": ({node}) ->
+          if !hubs.brd.doc => return
+          modified = (JSON.stringify(hubs.brd.doc.data) != init-data.brd)
+          node.classList.toggle \d-none, !modified
 
     hubs = org: new Hub({sdb}), brd: new Hub({sdb})
     prepare = ->
@@ -85,8 +110,16 @@ prj-form, admin-entry}) ->
         .then -> console.log "preparing sharedb document (brd) ... "
         .then -> sdb.get {id: "brd-#{toc.brd.key}", watch: (ops,source) -> hubs.brd.fire \change, {ops,source}}
         .then (doc) -> hubs.brd.doc = doc
-        .then -> hubs
-        .catch -> ldcvmgr.toggle \error
+        .then ->
+          init-data.org = JSON.stringify(hubs.org.doc.data)
+          init-data.brd = JSON.stringify(toc.brd.detail or "")
+
+          hubs.org.doc.on \op, -> update-view!
+          hubs.brd.doc.on \op, -> update-view!
+
+          view.render!
+          hubs
+        .catch -> lda.ldcvmgr.toggle \error
 
     prepare!
 

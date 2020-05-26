@@ -8,6 +8,7 @@ html
     +css("/css/index.css")
     +script("/assets/lib/ldc/ldc.min.js")
     +script("/assets/lib/ldui/ldui.min.js")
+    +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
     +script("/assets/lib/ldui/ext/folder.min.js")
     +script("/js/reblock/form-reblock.js")
     +script("/js/util/sdb-adapter.js")
@@ -17,24 +18,9 @@ html
       .folder-toggle { display: none }
   body
     script: :lsc
-      console.log "initiailizing ..."
-      sdb = new sharedb-wrapper url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
-      console.log "fetch snapshot ..."
-      sdb.get-snapshot {id: 'brd-4'}
-        .then -> console.log it
-        .catch -> 
-      /*
-      sdb.connection.fetchSnapshot 'doc', 'brd-4', null, (e, s) ->
-        console.log "snapshot fectched: "
-        console.log e, s
-      */
-      /*
-      console.log "get doc ..."
-      sdb.get {id: \prj-sample}
-        .then ->
-          console.log "doc:", it
-          console.log "fecth snapshot: "
-          sdb.connection.fetchSnapshot 'doc', 'prj-sample', null, (e, s) ->
-            console.log "snapshot fectched: "
-            console.log e, s
-      */
+      ldc.register <[auth]>, ({auth}) ->
+        console.log 'get...'
+        auth.get!then ->
+          console.log 'fetch ...'
+          ld$.fetch '/d/b/4/detail', {method: \PUT}, {json: {a: 2}, type: \json}
+            .then -> console.log \ok

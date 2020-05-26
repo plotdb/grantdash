@@ -44,7 +44,7 @@
         .text-center.mt-4
           a(href="#") 總表 #[i.i-link]
     .col-md-7: .vertical-center: .w-100: .d-flex.flex-column
-      each i in data.criteriaJudges
+      each i in ["評審一", "評審二", "評審三"]
         .d-flex.align-items-center.mb-3
           a.mx-2(href="#") #{i}
           - var p1 = Math.round(Math.random() * 40)

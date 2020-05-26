@@ -58,17 +58,16 @@ html
 
   body
     .w-100.h-100.d-flex
-      +scope("folder").h-100.bg-secondary.text-white.p-2
+      +scope("folder").h-100.bg-secondary.text-white.treeview
         .d-none
           +scope("sample-item")
             .folder-item.d-flex.align-items-center
-              i.i-doc(ld="icon")
-              .flex-grow-1(ld="name")
+              .flex-grow-1.single-line(ld="name")
               i.i-clone.mr-2(ld="clone passive")
               i.i-close(ld="delete passive")
           +scope("sample-folder"): .folder.show(draggable="true")
             .folder-item.folder-toggle.d-flex.align-items-center
-              .flex-grow-1(ld="name")
+              .flex-grow-1.single-line(ld="name")
               i.i-plus(ld="add")
             .folder-menu
               div(ld-each="list")

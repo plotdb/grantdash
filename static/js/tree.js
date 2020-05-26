@@ -316,6 +316,11 @@ ldc.register('tree', [], function(){
         },
         root: node,
         action: {
+          input: function(arg$){
+            var node, context, evt;
+            node = arg$.node, context = arg$.context, evt = arg$.evt;
+            return node.innerText = node.innerText;
+          },
           dblclick: {
             name: function(arg$){
               var node, context, evt;
@@ -389,6 +394,11 @@ ldc.register('tree', [], function(){
                 if (!node.classList.contains('folder-item')) {
                   return;
                 }
+                if (this$.active) {
+                  this$.active.classList.toggle('active', false);
+                }
+                this$.active = node;
+                node.classList.toggle('active', true);
                 return this$.fire('click', data);
               }
             },

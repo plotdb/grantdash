@@ -1,0 +1,26 @@
+[contenteditable]:focus {
+  box-shadow: 0 0 5px 4px rgba(0,128,255,0.2);
+  outline: 3px solid #fff;
+}
+.ql-editor[contenteditable]:focus {
+  box-shadow: none;
+  outline: 0;
+}
+[contenteditable="true"].single-line {
+  white-space: nowrap;
+  overflow: hidden;
+}
+[contenteditable="true"].single-line br {
+  display: none;
+}
+[contenteditable="true"].single-line * {
+  display: inline;
+  white-space: nowrap;
+}
+.folder-item [contenteditable="true"]:focus {
+  box-shadow: none;
+  outline: 0;
+}
+.treeview .folder-menu .folder-item {
+  padding-left: 1em;
+}
