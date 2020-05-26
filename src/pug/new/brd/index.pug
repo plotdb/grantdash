@@ -45,18 +45,19 @@ block body
         .col-md-3.text-right 活動主圖
         .col-md: .w-100: .aspect-ratio.ratio-2by1.bg-secondary.rounded.overflow-hidden
           .vertical-center.bg-semi-dark.bg.bg-cover.bg-portrait: .w-100.text-center: .btn.btn-outline-light.btn-upload 上傳 #[input(name="thumbnail",type="file")]
-      //-.row.align-items-center.mb-4
+      .row.align-items-center.mb-4
         .col-md-3.text-right 所屬組織
         .col-md
-          select.form-control(ld="org",name="org")
-            option(value="") 無
-          .my-2.text-sm 您可稍後再設定組織。或者，#[a(href="#") 在此建立新組織]
+          select.form-control(ld="orgs",name="org")
+            option(ld-each="org",value="") 無
+          .my-2.text-sm 您可稍後再設定組織。或者，#[a(href="/new/org/") 現在就建立新組織]
       .row.align-items-center.mb-4.pt-4
         .col-md-3
         .col-md: .btn.btn-lg.btn-primary.disabled(ld="submit") 立刻建立
   +script("https://cdn.jsdelivr.net/npm/tail.datetime@0.4.13/js/tail.datetime-full.min.js")
 
 block script
+  +script("/js/util/sdb-adapter.js")
   +script("/js/admin/info.js")
   script: :lsc
     ldc.register <[adminInfo]>, ({admin-info}) ->

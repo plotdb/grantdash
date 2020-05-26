@@ -3,7 +3,7 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
   var loader, notify, ldcvmgr, auth, sdbAdapter, Ctrl;
   loader = arg$.loader, notify = arg$.notify, ldcvmgr = arg$.ldcvmgr, auth = arg$.auth, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var type, root, slugs, slugCheck, form, view, this$ = this;
+    var type, root, slugs, slugCheck, form, lc, view, this$ = this;
     this.opt = opt;
     this.type = type = opt.type === 'org' ? 'o' : 'b';
     this.root = root = typeof opt.root === 'string'
@@ -71,6 +71,7 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
         return !!v ? 0 : 2;
       }
     });
+    lc = {};
     view = new ldView({
       root: root,
       init: {
@@ -78,6 +79,46 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
           var node;
           node = arg$.node;
           return tail.DateTime(node);
+        },
+        orgs: function(){
+          var payload;
+          payload = {
+            type: 'org'
+          };
+          return auth.get().then(function(g){
+            return ld$.fetch('/d/me/list/', {
+              method: 'POST'
+            }, {
+              json: payload,
+              type: 'json'
+            });
+          }).then(function(it){
+            lc.list = it;
+            return view.render();
+          })['catch'](function(it){
+            return console.log(it);
+          });
+        }
+      },
+      handler: {
+        org: {
+          key: function(it){
+            return it.key;
+          },
+          list: function(){
+            return (lc.list || []).concat([{
+              name: "無",
+              key: null
+            }]);
+          },
+          handler: function(arg$){
+            var node, data;
+            node = arg$.node, data = arg$.data;
+            node.innerText = data.name + (!data.slug
+              ? ''
+              : " ( " + data.slug + " )");
+            return node.setAttribute('value', data.key);
+          }
         }
       },
       action: {

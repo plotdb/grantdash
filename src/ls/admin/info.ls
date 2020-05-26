@@ -33,9 +33,30 @@ Ctrl = (opt) ->
 
         return 1
       return if !!v => 0 else 2
+
+  lc = {}
+
   view = new ldView do
     root: root
-    init: "tail-datetime": ({node}) -> tail.DateTime(node)
+    init: do
+      "tail-datetime": ({node}) -> tail.DateTime(node)
+      orgs: ->
+        payload = {type: \org}
+        auth.get!
+          .then (g) ->
+            ld$.fetch \/d/me/list/, {method: \POST}, {json: payload, type: \json}
+          .then ->
+            lc.list = it
+            view.render!
+          .catch -> console.log it
+    handler: do
+      org: do
+        key: -> it.key
+        list: -> (lc.list or []) ++ [{name: "無", key: null}]
+        handler: ({node, data}) ->
+          node.innerText = data.name + (if !data.slug => '' else " ( #{data.slug} )")
+          node.setAttribute \value, data.key
+
     action: click:
       delete: ~>
         p = @adapter.path
@@ -45,7 +66,6 @@ Ctrl = (opt) ->
         @adapter.doc.submitOp [ {p: ['group',p.1],  od: @adapter.doc.data.group[p.1] } ]
         @set-path ['group', ks.0, 'info']
         @opt.set-group @adapter.doc.data.group[ks.0]
-
 
       submit: ({node}) ->
         auth.ensure!
