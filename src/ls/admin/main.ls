@@ -95,9 +95,10 @@ prj-form, admin-entry}) ->
       {org,brd} = @hubs
       set-group = ~> @set-group it
       toc = @toc
+      console.log ">", toc.org
 
       @ctrl.org
-        ..info = new admin-info {root: '[ld-scope=org-info]', type: \org}
+        ..info = new admin-info {root: '[ld-scope=org-info]', type: \org, data: toc.org}
         ..info.adapt {hub: org, path: <[info]> }
         ..navbar = new admin-navbar {toc, root: '[data-name=org-navbar] [ld-scope=navbar-editor]'}
         ..navbar.adapt {hub: org, path: <[page navbar]>}
@@ -105,7 +106,7 @@ prj-form, admin-entry}) ->
         ..perm.adapt   {hub: org, path: <[perm]>}
 
       @ctrl.brd
-        ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd}
+        ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd, data: toc.brd}
         ..info.adapt   {hub: brd, path: <[info]> }
         ..group = new admin-menu {toc: @toc, set-group}
         ..group.adapt   {hub: brd, path: <[group]>}

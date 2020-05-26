@@ -193,10 +193,12 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         return this$.setGroup(it);
       };
       toc = this.toc;
+      console.log(">", toc.org);
       x$ = this.ctrl.org;
       x$.info = new adminInfo({
         root: '[ld-scope=org-info]',
-        type: 'org'
+        type: 'org',
+        data: toc.org
       });
       x$.info.adapt({
         hub: org,
@@ -221,7 +223,8 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       y$ = this.ctrl.brd;
       y$.info = new adminInfo({
         root: '[ld-scope=brd-info]',
-        type: 'brd'
+        type: 'brd',
+        data: toc.brd
       });
       y$.info.adapt({
         hub: brd,

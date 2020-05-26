@@ -3,12 +3,13 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
   var loader, notify, ldcvmgr, auth, sdbAdapter, Ctrl;
   loader = arg$.loader, notify = arg$.notify, ldcvmgr = arg$.ldcvmgr, auth = arg$.auth, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var type, root, slugs, slugCheck, form, lc, view, this$ = this;
+    var type, root, slugs, slugCheck, slug, form, lc, view, this$ = this;
     this.opt = opt;
     this.type = type = opt.type === 'org' ? 'o' : 'b';
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
+    this.data = opt.data;
     slugs = {};
     slugCheck = debounce(500, function(n, v, e){
       var p;
@@ -36,8 +37,14 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
         });
       });
     });
+    slug = (this.data || {}).slug;
     this.form = form = new ldForm({
       root: root,
+      values: slug
+        ? {
+          slug: slug
+        }
+        : {},
       submit: '[ld=submit]',
       afterCheck: function(s, f){
         var p;
@@ -54,10 +61,12 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
         }, true) ? 0 : 2;
       },
       verify: function(n, v, e){
-        this$.opsOut(function(d){
-          d[n] = v;
-          return d;
-        });
+        if (!in$(n, ['slug'])) {
+          this$.opsOut(function(d){
+            d[n] = v;
+            return d;
+          });
+        }
         if (in$(n, ['slug'])) {
           if (!/^[a-zA-Z0-9-]+$/.exec(v)) {
             return 2;
@@ -183,7 +192,9 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
       }
       for (k in ref$ = this.form.fields) {
         v = ref$[k];
-        results$.push(this.form.fields[k].value = data[k] || '');
+        if (!in$(k, ['slug'])) {
+          results$.push(this.form.fields[k].value = data[k] || '');
+        }
       }
       return results$;
     }

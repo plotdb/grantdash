@@ -4,6 +4,8 @@ Ctrl = (opt) ->
   @opt = opt
   @type = type = if opt.type == \org => \o else \b
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
+  # committed data in table, if available
+  @data = opt.data
   slugs = {}
 
   slug-check = debounce 500, (n,v,e) ->
@@ -15,8 +17,10 @@ Ctrl = (opt) ->
       .catch -> slugs[v] = true
       .then -> form.check {n: 'slug'}
 
+  slug = (@data or {}).slug
   @form = form = new ldForm do
     root: root
+    values: if slug => {slug} else {}
     submit: '[ld=submit]'
     afterCheck: (s, f) ->
       if f.thumbnail and f.thumbnail.value =>
@@ -25,7 +29,7 @@ Ctrl = (opt) ->
           .then (r) -> p.style.backgroundImage = "url(#{r.result})"
       s.all = if <[name slug description]>.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
     verify: (n,v,e) ~>
-      @ops-out (d) -> d[n] = v; d
+      if !(n in <[slug]>) => @ops-out (d) -> d[n] = v; d
       if n in <[slug]> =>
         if !/^[a-zA-Z0-9-]+$/.exec(v) => return 2
         if slugs[v]? => return if slugs[v] => 2 else 0
@@ -86,6 +90,6 @@ Ctrl = (opt) ->
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
     if source => return
-    for k,v of @form.fields => @form.fields[k].value = data[k] or ''
+    for k,v of @form.fields => if !(k in <[slug]>) => @form.fields[k].value = data[k] or ''
 
 return Ctrl
