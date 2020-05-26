@@ -6,7 +6,6 @@
       li.nav-item: .nav-link.active(ld="nav-tab default",data-name="info") 基本資訊
       //-li.nav-item: .nav-link(ld="nav-tab",data-name="brd-stage") 階段
       li.nav-item: .nav-link(ld="nav-tab",data-name="perm") 權限
-      //-li.nav-item: .nav-link(ld="nav-tab",data-name="form") 提案表
       li.nav-item: .nav-link(ld="nav-tab",data-name="criteria") 審查資格
       li.nav-item: .nav-link(ld="nav-tab",data-name="grade") 評選標準
     ul.navbar-nav.ml-auto
@@ -17,9 +16,7 @@
   //-div(ld="nav-panel",data-nav="prj-config",data-name="stage")
     include stage.pug
   div(ld="nav-panel",data-nav="prj-config",data-name="perm")
-    include ../brd/perm.pug
-  //-div(ld="nav-panel",data-nav="prj-config",data-name="form")
-    include form.pug
+    include ../perm.pug
   div(ld="nav-panel",data-nav="prj-config",data-name="criteria")
     include criteria.pug
   div(ld="nav-panel",data-nav="prj-config",data-name="grade")

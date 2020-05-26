@@ -98,7 +98,7 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       });
       perm = new adminPerm({
         toc: toc,
-        root: '[ld-scope=brd-perm]'
+        root: '[data-nav=brd-config] [ld-scope=perm-panel]'
       });
       perm.adapt({
         hub: brd,
@@ -121,6 +121,10 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         root: '[ld-scope=grp-info-panel]',
         type: 'grp',
         setGroup: setGroup
+      });
+      grp.perm = new adminPerm({
+        toc: toc,
+        root: '[data-nav=prj-config] [ld-scope=perm-panel]'
       });
       grp.grade = new adminEntry({
         root: '[ld-scope=grade-panel]'

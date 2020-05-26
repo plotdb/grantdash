@@ -1,5 +1,4 @@
 //- module
-
 .navbar.navbar-expand-lg.navbar-light.border.shadow-sm.rounded.sticky.z-fixed.bg-white(style="top:1em")
   .collapse.navbar-collapse
     ul.nav.nav-pills.mr-auto(ld="nav",data-nav="brd-config")
@@ -7,10 +6,6 @@
       li.nav-item: .nav-link(ld="nav-tab",data-name="stage") 階段
       li.nav-item: .nav-link(ld="nav-tab",data-name="perm") 權限
       //-li.nav-item: .nav-link(ld="nav-tab",data-name="version") 版本控制
-      //-
-        li.nav-item: .nav-link(ld="tabbar-tab",data-name="form") 提案表
-        li.nav-item: .nav-link(ld="tabbar-tab",data-name="judge") 資格
-        li.nav-item: .nav-link(ld="tabbar-tab",data-name="navbar") 導覽
     ul.navbar-nav.ml-auto
       li.nav-item: .nav-link(href="/org/dashboard.html") 組織設定
 .p-4
@@ -19,6 +14,6 @@
   div(ld="nav-panel",data-nav="brd-config",data-name="stage")
     include stage.pug
   div(ld="nav-panel",data-nav="brd-config",data-name="perm")
-    include perm.pug
+    include ../perm.pug
   //-div(ld="nav-panel",data-nav="brd-config",data-name="version")
     include version.pug

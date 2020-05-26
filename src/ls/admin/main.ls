@@ -51,7 +51,7 @@ prj-form, admin-entry}) ->
         info.adapt   {hub: brd, path: <[info]> }
         stage = new admin-stage {toc, root: '[ld-scope=brd-stage]'}
         stage.adapt  {hub: brd, path: <[stage]>}
-        perm = new admin-perm {toc, root: '[ld-scope=brd-perm]'}
+        perm = new admin-perm {toc, root: '[data-nav=brd-config] [ld-scope=perm-panel]'}
         perm.adapt   {hub: brd, path: <[perm]>}
         navbar = new admin-navbar {toc, root: '[ld-scope=navbar-editor]'}
         navbar.adapt {hub: brd, path: <[page navbar]>}
@@ -59,6 +59,7 @@ prj-form, admin-entry}) ->
         # group information
         grp.form = new prj-form {toc, root: '[ld-scope=prj-form]', view-mode: false}
         grp.info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group: set-group}
+        grp.perm = new admin-perm {toc, root: '[data-nav=prj-config] [ld-scope=perm-panel]'}
         grp.grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         grp.criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
 
