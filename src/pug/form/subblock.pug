@@ -14,8 +14,8 @@ mixin form-block(opt)
   .form-block.card.shadow-sm(ld="block",data-name=opt.name)
     .card-body: .p-2
       .flex-grow-1
-        h4.mb-1(ld="title",editable="title") 提問的標題
-        p.text-muted.mb-2(ld="desc",editable="desc") 提問的簡短描述 ...
+        h4.mb-1.single-line(ld="title",editable="title") 提問的標題
+        p.text-muted.mb-2.single-line(ld="desc",editable="desc") 提問的簡短描述 ...
       block
       .alert.alert-danger.mt-2.mb-0.ld.ld-float-btt-in.p-2.shadow-sm(ld="invalid")
     div(ld="edit-only")
