@@ -95,7 +95,6 @@ prj-form, admin-entry}) ->
       {org,brd} = @hubs
       set-group = ~> @set-group it
       toc = @toc
-      console.log ">", toc.org
 
       @ctrl.org
         ..info = new admin-info {root: '[ld-scope=org-info]', type: \org, data: toc.org}
@@ -130,7 +129,7 @@ prj-form, admin-entry}) ->
       Promise.resolve!
         .then ~>
           ps = <[brd org]>.map (type) ~>
-            if !@toc[type]key or !@modify[type]dirty => return Promise.resolve!
+            if !(@toc[type]key and @modify[type]dirty) => return Promise.resolve!
             payload = @hubs[type]doc.data
             ld$.fetch \/d/detail/, {method: \PUT}, {json: {payload, key: @toc[type]key, type}, type: \json}
               .then ~>

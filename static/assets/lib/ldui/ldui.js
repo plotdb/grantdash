@@ -2811,7 +2811,6 @@ ldForm = function(opt){
   this.fields = fields = this.getFields(root);
   for (k in ref$ = opt.values || {}) {
     v = ref$[k];
-    console.log(this.fields[k], k, v);
     if (this.fields[k]) {
       this.fields[k].value = v;
     }

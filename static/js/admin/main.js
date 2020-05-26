@@ -193,7 +193,6 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         return this$.setGroup(it);
       };
       toc = this.toc;
-      console.log(">", toc.org);
       x$ = this.ctrl.org;
       x$.info = new adminInfo({
         root: '[ld-scope=org-info]',
@@ -292,7 +291,7 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         var ps;
         ps = ['brd', 'org'].map(function(type){
           var payload;
-          if (!this$.toc[type].key || !this$.modify[type].dirty) {
+          if (!(this$.toc[type].key && this$.modify[type].dirty)) {
             return Promise.resolve();
           }
           payload = this$.hubs[type].doc.data;
