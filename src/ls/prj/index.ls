@@ -17,7 +17,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     sdb.on \close, ->
       loader.on!
       sdb.reconnect!
-        .then -> prepare!
+        .then -> #prepare!
         .then -> loader.off!
     @hubs = prj: new Hub({sdb})
 

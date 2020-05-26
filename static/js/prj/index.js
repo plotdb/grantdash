@@ -31,9 +31,7 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
       });
       sdb.on('close', function(){
         loader.on();
-        return sdb.reconnect().then(function(){
-          return prepare();
-        }).then(function(){
+        return sdb.reconnect().then(function(){}).then(function(){
           return loader.off();
         });
       });
