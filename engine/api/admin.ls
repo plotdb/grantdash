@@ -14,7 +14,7 @@ api.post \/toc, aux.signed, (req, res) ->
     io.query "select * from brd where slug = $1", [hint.brd]
       .then (r={}) ->
         if !(lc.brd = r.[]rows.0) => return aux.reject 404
-        io.query "select key from org where key = $1", [lc.brd.org]
+        io.query "select key,name,slug,description from org where key = $1", [lc.brd.org]
       .then (r={}) -> lc.org = r.[]rows.0 or null
   else if hint.org =>
     io.query "select * from org where slug = $1", [hint.org]
