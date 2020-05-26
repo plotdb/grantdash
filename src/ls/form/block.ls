@@ -210,7 +210,7 @@ Ctrl = (opt) ->
                   @update!
 
             handler: do
-              enabled: ({node, context}) -> node.classList.toggle \on, context.enabled
+              enabled: ({node, context}) -> node.classList.toggle \on, !!context.enabled
               input1: ({node, context}) ->
                 input = ld$.find(node, 'input', 0)
                 input.value = context.input1 or ''

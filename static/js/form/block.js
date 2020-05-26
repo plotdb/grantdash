@@ -456,7 +456,7 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
                   enabled: function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;
-                    return node.classList.toggle('on', context.enabled);
+                    return node.classList.toggle('on', !!context.enabled);
                   },
                   input1: function(arg$){
                     var node, context, input;
