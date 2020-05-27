@@ -9,13 +9,16 @@
     .form-group
       label 簡單介紹您的提案
       textarea.form-control(name="description",rows="4",placeholder="簡單描述即可，亦可後續再補完")
+    .form-group
+      label 選擇分組
+      select.form-control(ld="grp",name="grp")
+        option(ld-each="grp-option",value="") 無
     .my-4.invisible(ld="inited")
       span 您的提案將建立在
       b.mx-2(ld="brd-name") 這個活動
       span(ld="show-grp") 的#[b.mx-2(ld="grp-name") 這個分組]
       span 之中。
       input(name="brd",type="hidden",value="")
-      input(name="grp",type="hidden",value="")
     .row.mt-4
       .col-md.mb-3: .btn.btn-outline-secondary.btn-block(data-ldcv-set="") 先不要
       .col-md.mb-3: .btn.btn-primary.btn-block.disabled.ld-ext-right(ld="submit") 建立提案 #[.ld.ld-spinner.ld-spin]

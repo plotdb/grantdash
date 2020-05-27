@@ -15,9 +15,15 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
       type: 'json'
     });
   }).then(function(brd){
-    var ref$, root, n, showGrp, k, info, view;
+    var ref$, res$, k, v, root, n, showGrp, info, view;
     lc.brd = brd;
     lc.grps = (ref$ = brd.detail).group || (ref$.group = {});
+    res$ = [];
+    for (k in ref$ = brd.detail.group) {
+      v = ref$[k];
+      res$.push(v);
+    }
+    lc.grpList = res$;
     lc.grp = lc.grps[key.grp];
     if (!lc.grp) {
       return Promise.reject(new Error(1015));
@@ -25,8 +31,6 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
     root = ld$.find('[ld-scope=prj-create]', 0);
     n = ld$.find(root, 'input[name=brd]', 0);
     n.value = key.brd;
-    n = ld$.find(root, 'input[name=grp]', 0);
-    n.value = key.grp;
     showGrp = (function(){
       var results$ = [];
       for (k in lc.grps) {
@@ -38,9 +42,31 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
       root: root,
       type: 'prj'
     });
-    return view = new ldView({
+    view = new ldView({
       root: root,
+      action: {
+        input: {
+          grp: function(arg$){
+            var node;
+            node = arg$.node;
+            key.grp = node.value;
+            lc.grp = lc.grps[key.grp];
+            return view.render();
+          }
+        }
+      },
       handler: {
+        "grp-option": {
+          list: function(){
+            return lc.grpList;
+          },
+          handler: function(arg$){
+            var node, data;
+            node = arg$.node, data = arg$.data;
+            node.value = data.key;
+            return node.innerText = data.info.name;
+          }
+        },
         "brd-name": function(arg$){
           var node;
           node = arg$.node;
@@ -63,6 +89,8 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
         }
       }
     });
+    n = ld$.find(root, 'select[name=grp]', 0);
+    return n.value = key.grp;
   })['finally'](function(){
     return loader.off();
   })['catch'](error());
