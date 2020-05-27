@@ -97,14 +97,26 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
     }
   };
   return {
-    validate: function(block){
+    validate: function(block, force){
       var v, i$, ref$, len$, c, type, vtr, ref1$, i, j;
+      force == null && (force = false);
       v = (block.value || (block.value = {})).content || (block.value || (block.value = {})).list;
       if (block.value.other) {
         v = (v || []).concat([block.value.otherValue]);
       }
+      if (!v && ((block.config.required && block.touched) || force)) {
+        return {
+          result: false,
+          criteria: {
+            invalid: "此為必填項目"
+          }
+        };
+      }
       if (!v) {
         return {};
+      }
+      if (v) {
+        block.touched = true;
       }
       for (i$ = 0, len$ = (ref$ = block.criteria || []).length; i$ < len$; ++i$) {
         c = ref$[i$];

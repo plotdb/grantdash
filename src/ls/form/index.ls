@@ -66,14 +66,13 @@ Ctrl = (opt) ->
       res div
 
   @validate-all = debounce ->
-    obj.list.map -> it.valid = prj-form-validation.validate it
+    obj.list.map -> it.valid = prj-form-validation.validate it, true
     blocks-view.render!
     if viewer => viewer.render!
   @validate = debounce (block) ->
     block.valid = prj-form-validation.validate block
     blocks-view.render!
     if viewer => viewer.render!
-  #update = (block) -> hub.update block
 
   blocks-view = new ldView do
     root: @node.list
@@ -87,6 +86,7 @@ Ctrl = (opt) ->
             bmgr.get(data.name).then (n) ->
               n = n.childNodes.0
               n.parentNode.removeChild n
+              node.setAttribute \id, "block-#{data.key}"
               node.innerHTML = ""
               node.appendChild n
               node.block = new prj-form-block {root: node, data, view-mode, hub, form: obj}
@@ -152,7 +152,9 @@ Ctrl = (opt) ->
 
   if view-mode =>
     progress = ->
-      done = obj.list.filter(-> it.{}valid.result).length
+      done = obj.list.filter(->
+        it.{}valid.result or (!(it.value and it.value.content and it.value.list) and !it.config.required)
+      ).length
       total = obj.list.length
       percent = ( done / obj.list.length )
       remain = total - done
@@ -169,11 +171,10 @@ Ctrl = (opt) ->
             viewer.render!
             view-answer.render!
           invalid: ~>
-            filled = [k for k of obj.value]
-            for i from 0 til obj.list.length =>
-              if !("#{obj.list[i].key}" in filled) => break
-            node = ld$.find(@node.list, "\#block-#{obj.list[i].key}",0)
-            if node => scrollto node
+            @validate-all!
+            if !(v = obj.list.filter(-> it.valid and !it.valid.result).0) => return
+            if !v => return
+            if (node = ld$.find(@node.list, "\#block-#{v.key}",0)) => scrollto node, 100, 0
           submit: ({node}) ~>
             if node.classList.contains \disabled => return
             @fire \submit, {answer: @obj.value}

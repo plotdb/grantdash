@@ -35,10 +35,13 @@ validator = do
     le: (v,i) -> v < i
 
 return do
-  validate: (block) ->
+  validate: (block, force = false) ->
     v = block.{}value.content or block.{}value.list
     if block.value.other => v = (v or []) ++ [block.value.other-value]
+    if (!v and ((block.config.required and block.touched) or force)) =>
+      return {result: false, criteria: {invalid: "此為必填項目"}}
     if !v => return {}
+    if v => block.touched = true
     for c in (block.criteria or [])
       if !c.enabled => continue
       type = prjFormCriteria.schema.types[c.type]

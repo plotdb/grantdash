@@ -121,7 +121,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
     };
     this.validateAll = debounce(function(){
       obj.list.map(function(it){
-        return it.valid = prjFormValidation.validate(it);
+        return it.valid = prjFormValidation.validate(it, true);
       });
       blocksView.render();
       if (viewer) {
@@ -156,6 +156,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
               ? bmgr.get(data.name).then(function(n){
                 n = n.childNodes[0];
                 n.parentNode.removeChild(n);
+                node.setAttribute('id', "block-" + data.key);
                 node.innerHTML = "";
                 node.appendChild(n);
                 return node.block = new prjFormBlock({
@@ -281,7 +282,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
       progress = function(){
         var done, total, percent, remain;
         done = obj.list.filter(function(it){
-          return (it.valid || (it.valid = {})).result;
+          return (it.valid || (it.valid = {})).result || (!(it.value && it.value.content && it.value.list) && !it.config.required);
         }).length;
         total = obj.list.length;
         percent = done / obj.list.length;
@@ -308,21 +309,18 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
               return viewAnswer.render();
             },
             invalid: function(){
-              var filled, res$, k, i$, to$, i, node;
-              res$ = [];
-              for (k in obj.value) {
-                res$.push(k);
+              var v, node;
+              this$.validateAll();
+              if (!(v = obj.list.filter(function(it){
+                return it.valid && !it.valid.result;
+              })[0])) {
+                return;
               }
-              filled = res$;
-              for (i$ = 0, to$ = obj.list.length; i$ < to$; ++i$) {
-                i = i$;
-                if (!in$(obj.list[i].key + "", filled)) {
-                  break;
-                }
+              if (!v) {
+                return;
               }
-              node = ld$.find(this$.node.list, "#block-" + obj.list[i].key, 0);
-              if (node) {
-                return scrollto(node);
+              if (node = ld$.find(this$.node.list, "#block-" + v.key, 0)) {
+                return scrollto(node, 100, 0);
               }
             },
             submit: function(arg$){
@@ -591,11 +589,6 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
   });
   return Ctrl;
 });
-function in$(x, xs){
-  var i = -1, l = xs.length >>> 0;
-  while (++i < l) if (x === xs[i]) return true;
-  return false;
-}
 function import$(obj, src){
   var own = {}.hasOwnProperty;
   for (var key in src) if (own.call(src, key)) obj[key] = src[key];
