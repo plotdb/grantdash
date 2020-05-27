@@ -268,6 +268,7 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
     this.hub = opt.hub;
     this.view = this.root.view = {};
     this.block = opt.data;
+    this.form = opt.form || {};
     this.view.block = new ldView({
       root: root,
       action: {
@@ -302,10 +303,69 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
             var node, evt;
             node = arg$.node, evt = arg$.evt;
             return this$.clone();
+          },
+          purpose: function(arg$){
+            var node, n, ref$;
+            node = arg$.node;
+            n = node.getAttribute('data-name');
+            if (n === 'thumb' && this$.block.name !== 'form-file') {
+              return;
+            }
+            ((ref$ = this$.form).purpose || (ref$.purpose = {}))[n] = ((ref$ = this$.form).purpose || (ref$.purpose = {}))[n] === this$.block.key
+              ? null
+              : this$.block.key;
+            this$.update();
+            return this$.view.block.render();
           }
         }
       },
+      init: {
+        "purpose-menu": function(arg$){
+          var node;
+          node = arg$.node;
+          return new Dropdown(node);
+        }
+      },
       handler: {
+        "purpose-menu": function(arg$){
+          var node, map, n, k, v, btn;
+          node = arg$.node;
+          map = {
+            title: "標題",
+            description: "簡介",
+            thumb: "縮圖"
+          };
+          n = (function(){
+            var ref$, ref1$, results$ = [];
+            for (k in ref$ = (ref1$ = this.form).purpose || (ref1$.purpose = {})) {
+              v = ref$[k];
+              results$.push({
+                k: k,
+                v: v
+              });
+            }
+            return results$;
+          }.call(this$)).filter(function(it){
+            return it.v === this$.block.key;
+          }).map(function(it){
+            return map[it.k];
+          }).join(' / ');
+          btn = ld$.find(node, '.btn', 0);
+          btn.innerText = !n
+            ? '用途'
+            : n + "";
+          if (n) {
+            btn.classList.add('btn-primary');
+            return btn.classList.remove('btn-light');
+          } else {}
+        },
+        purpose: function(arg$){
+          var node, n, ref$;
+          node = arg$.node;
+          n = node.getAttribute('data-name');
+          node.classList.toggle('disabled', n === 'thumb' && this$.block.name !== 'form-file');
+          return ld$.find(node, 'i', 0).classList.toggle('d-none', ((ref$ = this$.form).purpose || (ref$.purpose = {}))[n] !== this$.block.key);
+        },
         invalid: function(arg$){
           var node, isValid, ref$;
           node = arg$.node;

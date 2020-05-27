@@ -130,6 +130,7 @@ Ctrl = (opt) ->
   @hub = opt.hub
   @view = @root.view = {}
   @block = opt.data
+  @form = opt.form or {}
 
   @view.block = new ldView do
     root: root
@@ -148,7 +149,31 @@ Ctrl = (opt) ->
           @update!
         delete: ({node, evt}) ~> @delete!
         clone: ({node, evt}) ~> @clone!
+        purpose: ({node}) ~>
+          n = node.getAttribute(\data-name)
+          if n == \thumb and @block.name != \form-file => return
+          @form{}purpose[n] = if @form{}purpose[n] == @block.key => null else @block.key
+          @update!
+          @view.block.render!
+    init: do
+      "purpose-menu": ({node}) -> new Dropdown(node)
     handler: do
+      "purpose-menu": ({node}) ~>
+        map = {title: "標題", description: "簡介", thumb: "縮圖"}
+        n = [{k,v} for k,v of @form{}purpose]
+          .filter(~> it.v == @block.key)
+          .map(-> map[it.k])
+          .join(' / ')
+        btn = ld$.find(node, '.btn', 0)
+        btn.innerText = if !n => '用途' else "#n"
+        if n =>
+          btn.classList.add \btn-primary
+          btn.classList.remove \btn-light
+        else
+      purpose: ({node}) ~>
+        n = node.getAttribute(\data-name)
+        node.classList.toggle \disabled, (n == \thumb and @block.name != \form-file)
+        ld$.find(node, \i, 0).classList.toggle \d-none, @form{}purpose[n] != @block.key
       invalid: ({node}) ~>
         is-valid = (!(@block.{}valid.result?) or @block.valid.result)
         if !is-valid => settext node, (@block.valid.criteria.invalid or "這個欄位格式不符")

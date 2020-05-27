@@ -21,7 +21,7 @@ Ctrl = (opt) ->
         obj.value[block.key] = block.value
         @ops-out ~> obj.value
         @validate block
-      else @ops-out ~> {list: @obj.list}
+      else @ops-out ~> {list: @obj.list, purpose: @obj.purpose}
     render-deb: debounce 200, -> hub.render!
     render: ->
       blocks-view.render!
@@ -69,7 +69,7 @@ Ctrl = (opt) ->
               n.parentNode.removeChild n
               node.innerHTML = ""
               node.appendChild n
-              node.block = new prj-form-block {root: node, data, view-mode, hub}
+              node.block = new prj-form-block {root: node, data, view-mode, hub, form: obj}
           else Promise.resolve!
           promise.then ->
             if node.block =>

@@ -40,7 +40,8 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
         } else {
           return this$.opsOut(function(){
             return {
-              list: this$.obj.list
+              list: this$.obj.list,
+              purpose: this$.obj.purpose
             };
           });
         }
@@ -130,7 +131,8 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
                   root: node,
                   data: data,
                   viewMode: viewMode,
-                  hub: hub
+                  hub: hub,
+                  form: obj
                 });
               })
               : Promise.resolve();
