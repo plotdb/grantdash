@@ -7,7 +7,7 @@ mixin form-block(opt)
           h4.mb-1.single-line.w-100(ld="title",editable="title") 提問的標題
           p.text-muted.mb-2.single-line.w-100(ld="desc",editable="desc") 提問的簡短描述 ...
         .ml-4
-          .dropdown(ld="purpose-menu")
+          .dropdown(ld="purpose-menu edit-only")
             .btn.btn-sm.btn-light.dropdown-toggle(data-toggle="dropdown") 用途
             .dropdown-menu.dropdown-menu-right
               .dropdown-item.d-flex(ld="purpose",data-name="title") #[.flex-grow-1 標題]#[div: i.i-check.text-success]
