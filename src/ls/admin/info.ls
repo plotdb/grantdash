@@ -28,8 +28,9 @@ Ctrl = (opt) ->
         if !( p = ld$.parent(f.thumbnail, '.bg') ) => return
         ldFile.fromFile f.thumbnail.files.0, \dataurl
           .then (r) -> p.style.backgroundImage = "url(#{r.result})"
-      fields = <[name slug description brd]>.filter -> f[it]
-      if f.brd and f.brd.value => s.brd = 0
+      fields = <[name slug description brd grp]>.filter -> f[it]
+      # brd and grp information is filled automatically by program so it's either 0 or 2
+      <[brd grp]>.map (n) -> s[n] = if f[n] and f[n]value => 0 else 2
       s.all = if fields.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
     verify: (n,v,e) ~>
       if !(n in <[slug]>) => @ops-out (d) -> d[n] = v; d

@@ -24,7 +24,7 @@ api.get \/b/:key/form/, (req, res) ->
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       ret.detail = ret.detail{group}
-      for k,v of (ret.detail.group or {}) => ret.detail.group[k] = v{form}
+      for k,v of (ret.detail.group or {}) => ret.detail.group[k] = v{form,info}
       res.send ret{name,description,slug,detail}
     .catch aux.error-handler res
 

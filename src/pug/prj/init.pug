@@ -9,9 +9,4 @@ block script
   +script("/js/util/sdb-adapter.js")
   +script("/js/util/hub.js")
   +script("/js/admin/info.js")
-  script: :lsc
-    ldc.register <[ldcvmgr adminInfo prjCreate auth]>, ({ldcvmgr, adminInfo, prjCreate, auth}) ->
-      root = ld$.find('[ld-scope=prj-create]',0)
-      n = ld$.find(root, 'input[name=brd]', 0)
-      n.value = '4'
-      new adminInfo {root: root, type: \prj}
+  +script("/js/prj/init.js")

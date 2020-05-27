@@ -63,12 +63,12 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
             return p.style.backgroundImage = "url(" + r.result + ")";
           });
         }
-        fields = ['name', 'slug', 'description', 'brd'].filter(function(it){
+        fields = ['name', 'slug', 'description', 'brd', 'grp'].filter(function(it){
           return f[it];
         });
-        if (f.brd && f.brd.value) {
-          s.brd = 0;
-        }
+        ['brd', 'grp'].map(function(n){
+          return s[n] = f[n] && f[n].value ? 0 : 2;
+        });
         return s.all = fields.reduce(function(a, b){
           return a && s[b] === 0;
         }, true) ? 0 : 2;
