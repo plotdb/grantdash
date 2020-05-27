@@ -181,10 +181,10 @@ Ctrl = (opt) ->
         is-valid = (!(@block.{}valid.result?) or @block.valid.result)
         node.classList.toggle \invalid, !is-valid
       title: ({node}) ~>
-        settext node, @block.title
+        settext node, (@block.title or '')
         if @viewing => node.removeAttribute \editable
       desc: ({node}) ~>
-        settext node, @block.desc
+        settext node, (@block.desc or '')
         if @viewing => node.removeAttribute \editable
       switch: ({node}) ~> node.classList.toggle \on, !!@block.{}config[node.getAttribute(\data-name)]
       "edit-only": ({node}) ~> if @viewing => node.remove!

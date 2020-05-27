@@ -114,7 +114,7 @@ block body
           .mb-4.text-break.bg-light.rounded.p-4(ld="content")
         .d-none(ld="nview"): div(ld="form-list"): div(ld-each="block")
         .w-100.h-100(pd="init-loader",style="background-image:url(/assets/img/c/placeholder/content.svg);background-position:top center;background-repeat:repeat-y;")
-        .d-none
+        .d-none(ld="nview")
           .d-flex.align-items-center.ml-4
             .btn.btn-lg.btn-primary.mr-4.disabled(ld="submit") 儲存並發布
             .text-sm.text-danger(ld="invalid") #[i.i-close] 在能發布之前，您尚有 #[span(ld="remain") 1] 個項目未完成。#[a.text-danger.text-underline(href="#") 跳至待編修項目]

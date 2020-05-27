@@ -81,7 +81,7 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
       this.ctrlForm = new prjForm({
         root: '[ld-scope=prj-form]',
         viewMode: true,
-        form: (grp.form || (grp.form = {})).list || [],
+        form: (grp.form || (grp.form = {})) || [],
         grp: grp,
         brd: this.brd
       });

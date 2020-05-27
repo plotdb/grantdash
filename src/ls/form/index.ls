@@ -11,7 +11,21 @@ Ctrl = (opt) ->
     answer: ld$.find(root, '[ld=form-answer]', 0)
   @view-mode = view-mode = opt.view-mode
   @obj = obj = {list: [], value: {}}
-  if @view-mode and opt.form => @obj.list = opt.form
+  if @view-mode and opt.form =>
+    @obj.list = opt.{}form.list
+    @obj.purpose = opt.form.purpose
+    title-block = do
+      name: "form-short-answer"
+      title: "提案名稱"
+      key: \title
+      config: required: true
+    description-block = do
+      name: "form-long-answer"
+      title: "提案簡介"
+      key: \description
+      config: required: true
+    if !obj.purpose.description => @obj.list = [description-block] ++ @obj.list
+    if !obj.purpose.title => @obj.list = [title-block] ++ @obj.list
 
   lc = {view: false}
   @hub = hub = do

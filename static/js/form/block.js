@@ -393,7 +393,7 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
         title: function(arg$){
           var node;
           node = arg$.node;
-          settext(node, this$.block.title);
+          settext(node, this$.block.title || '');
           if (this$.viewing) {
             return node.removeAttribute('editable');
           }
@@ -401,7 +401,7 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
         desc: function(arg$){
           var node;
           node = arg$.node;
-          settext(node, this$.block.desc);
+          settext(node, this$.block.desc || '');
           if (this$.viewing) {
             return node.removeAttribute('editable');
           }

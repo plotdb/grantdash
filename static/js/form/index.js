@@ -4,7 +4,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
   var ldcvmgr, prjFormCriteria, prjFormBlock, prjFormValidation, sdbAdapter, Ctrl;
   ldcvmgr = arg$.ldcvmgr, prjFormCriteria = arg$.prjFormCriteria, prjFormBlock = arg$.prjFormBlock, prjFormValidation = arg$.prjFormValidation, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var root, viewMode, obj, lc, hub, bmgr, blocksView, reb, progress, viewer, renderAnswer, viewAnswer, viewAnswerDiff, this$ = this;
+    var root, viewMode, obj, titleBlock, descriptionBlock, lc, hub, bmgr, blocksView, reb, progress, viewer, renderAnswer, viewAnswer, viewAnswerDiff, this$ = this;
     this.opt = opt;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
@@ -21,7 +21,30 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
       value: {}
     };
     if (this.viewMode && opt.form) {
-      this.obj.list = opt.form;
+      this.obj.list = (opt.form || (opt.form = {})).list;
+      this.obj.purpose = opt.form.purpose;
+      titleBlock = {
+        name: "form-short-answer",
+        title: "提案名稱",
+        key: 'title',
+        config: {
+          required: true
+        }
+      };
+      descriptionBlock = {
+        name: "form-long-answer",
+        title: "提案簡介",
+        key: 'description',
+        config: {
+          required: true
+        }
+      };
+      if (!obj.purpose.description) {
+        this.obj.list = [descriptionBlock].concat(this.obj.list);
+      }
+      if (!obj.purpose.title) {
+        this.obj.list = [titleBlock].concat(this.obj.list);
+      }
     }
     lc = {
       view: false

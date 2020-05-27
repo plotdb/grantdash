@@ -40,7 +40,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @ctrl-form = new prjForm {
       root: '[ld-scope=prj-form]'
       view-mode: true
-      form: (grp.{}form.list or [])
+      form: (grp.{}form or [])
       grp: grp
       brd: @brd
     }
