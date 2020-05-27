@@ -12196,7 +12196,11 @@ ldBoundScroll.init = function(){
   }
   return results$;
 };
-scrollto = function(n, d, offset, h){
+ldui.scrollTo = function(o){
+  o == null && (o = {});
+  return scrollto(o.node, o.delay, o.offset, o.host, o.jump);
+};
+scrollto = function(n, d, offset, h, jump){
   var e, b, c, s, f;
   d == null && (d = 500);
   offset == null && (offset = -80);
@@ -12212,6 +12216,11 @@ scrollto = function(n, d, offset, h){
     c = e.scrollHeight - window.innerHeight;
   }
   c = c - b + offset;
+  if (jump) {
+    return setTimeout(function(){
+      return e.scrollTop = c + b;
+    }, 0);
+  }
   s = 0;
   f = function(t){
     var o;

@@ -320,7 +320,10 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
                 return;
               }
               if (node = ld$.find(this$.node.list, "#block-" + v.key, 0)) {
-                return scrollto(node, 100, 0);
+                return ldui.scrollTo({
+                  node: node,
+                  jump: true
+                });
               }
             },
             submit: function(arg$){

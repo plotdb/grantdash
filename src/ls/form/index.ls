@@ -174,7 +174,7 @@ Ctrl = (opt) ->
             @validate-all!
             if !(v = obj.list.filter(-> it.valid and !it.valid.result).0) => return
             if !v => return
-            if (node = ld$.find(@node.list, "\#block-#{v.key}",0)) => scrollto node, 100, 0
+            if (node = ld$.find(@node.list, "\#block-#{v.key}",0)) => ldui.scroll-to {node, jump: true}
           submit: ({node}) ~>
             if node.classList.contains \disabled => return
             @fire \submit, {answer: @obj.value}
