@@ -1,0 +1,19 @@
+include /modules/common.pug
++scope("prj-create").ldcv.ldcvmgr(data-name="prj-create"): .base.w-480: .inner.card: .card-body
+  h3 建立提案：#[span.text-sm 第一步]
+  hr
+  form
+    .form-group
+      label 提案名稱
+      input.form-control(name="name",placeholder="請填入您的提案名稱 ...")
+    .form-group
+      label 簡單介紹您的提案
+      textarea.form-control(name="description",rows="4",placeholder="簡單描述即可，亦可後續再補完")
+    .my-4
+      span 您的提案將建立在 #[span(ld="brd-name") 這個活動] 之中。
+    .row.mt-4
+      .col-md.mb-3: .btn.btn-outline-secondary.btn-block(data-ldcv-set="") 先不要
+      .col-md.mb-3: .btn.btn-primary.btn-block.disabled.ld-ext-right(ld="submit") 建立提案 #[.ld.ld-spinner.ld-spin]
+  p.text-muted.text-sm 別擔心！建立提案後，您可以再慢慢將提案內容補完。提案建立後並不會立刻發布，而是待您填完相關欄位並確認發表後，才會正式發布。
+
+
