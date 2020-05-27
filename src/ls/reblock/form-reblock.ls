@@ -9,7 +9,6 @@
 #        e.dataTransfer.setDragImage(img,10,10)
 
 (->
-
   # block animation when reordering or inserting
   animate = do
     running: false
@@ -44,7 +43,7 @@
       @des.style.transform = ""
       delete @start
       @running = false
-  
+
   reblock = (opt = {}) ->
     @opt = opt 
     @action = opt.action or {}

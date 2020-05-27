@@ -55,6 +55,14 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
           return viewer.render();
         }
       },
+      move: function(block, dir){
+        var idx;
+        idx = obj.list.indexOf(block);
+        obj.list.splice(idx, 1);
+        obj.list.splice(idx + dir, 0, block);
+        this.update();
+        return this.render();
+      },
       'delete': function(it){
         obj.list.splice(obj.list.indexOf(it), 1);
         this.update();

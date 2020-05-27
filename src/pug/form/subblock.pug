@@ -6,15 +6,11 @@ mixin form-block(opt)
         .flex-grow-1
           h4.mb-1.single-line.w-100(ld="title",editable="title") 提問的標題
           p.text-muted.mb-2.single-line.w-100(ld="desc",editable="desc") 提問的簡短描述 ...
+
         .ml-4
-          .dropdown(ld="purpose-menu edit-only")
-            .btn.btn-sm.btn-light.dropdown-toggle(data-toggle="dropdown") 用途
-            .dropdown-menu.dropdown-menu-right
-              .dropdown-item.d-flex(ld="purpose",data-name="title") #[.flex-grow-1 標題]#[div: i.i-check.text-success]
-              .dropdown-item.d-flex(ld="purpose",data-name="description")
-                .flex-grow-1 簡介
-                div: i.i-check.text-success
-              .dropdown-item.d-flex(ld="purpose",data-name="thumb") #[.flex-grow-1 縮圖]#[div: i.i-check.text-success]
+          .btn-group-vertical(ld="edit-only")
+            .btn.btn-sm.btn-light(ld="move-up",style="padding:0 .25em") #[i.i-chevron-up]
+            .btn.btn-sm.btn-light(ld="move-down",style="padding:0 .25em") #[i.i-chevron-down]
       block
       .alert.alert-danger.mt-2.mb-0.ld.ld-float-btt-in.p-2.shadow-sm(ld="invalid")
     div(ld="edit-only")
@@ -25,16 +21,28 @@ mixin footer
     .d-flex.align-items-center
       .flex-grow-1
         .btn.btn-sm.btn-outline-danger.mr-2(ld="delete") 刪除 #[i.i-close]
-      .d-flex.align-items-center.mr-4
+        .btn.btn-sm.btn-outline-secondary(ld="clone") 複製 #[i.i-clone]
+      .d-flex.align-items-center.ml-4
         .mr-2 公開
         .switch.on(ld="switch",data-name="public")
-      .d-flex.align-items-center.mr-4
+      .d-flex.align-items-center.ml-4
         .mr-2 必填
         .switch(ld="switch",data-name="required")
-      .d-flex.align-items-center.mr-4
+      .d-flex.align-items-center.ml-4
         .mr-2 顯示描述
         .switch(ld="switch",data-name="show-desc")
-      .btn.btn-sm.btn-outline-dark(ld="clone") 複製 #[i.i-clone]
+
+      .ml-4
+        .dropdown(ld="purpose-menu edit-only")
+          .btn.btn-sm.btn-light.dropdown-toggle(data-toggle="dropdown") 用途
+          .dropdown-menu.dropdown-menu-right
+            .dropdown-item.d-flex(ld="purpose",data-name="title") #[.flex-grow-1 標題]#[div: i.i-check.text-success]
+            .dropdown-item.d-flex(ld="purpose",data-name="description")
+              .flex-grow-1 簡介
+              div: i.i-check.text-success
+            .dropdown-item.d-flex(ld="purpose",data-name="thumb") #[.flex-grow-1 縮圖]#[div: i.i-check.text-success]
+
+
 mixin criteria
   .card-body.border-top: .p-2.d-flex.criteria
     .d-flex.mb-2.w-100.align-items-center(ld-each="criteria")

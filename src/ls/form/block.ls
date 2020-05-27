@@ -149,10 +149,13 @@ Ctrl = (opt) ->
           @update!
         delete: ({node, evt}) ~> @delete!
         clone: ({node, evt}) ~> @clone!
+        "move-up": ~> @move -1
+        "move-down": ~> @move 1
         purpose: ({node}) ~>
           n = node.getAttribute(\data-name)
           if n == \thumb and @block.name != \form-file => return
-          @form{}purpose[n] = if @form{}purpose[n] == @block.key => null else @block.key
+          @form{}purpose[n] = v = if @form{}purpose[n] == @block.key => null else @block.key
+          if v => for k of @form.purpose => if k != n and @form.purpose[k] == v => @form.purpose[k] = null
           @update!
           @view.block.render!
     init: do
@@ -166,10 +169,6 @@ Ctrl = (opt) ->
           .join(' / ')
         btn = ld$.find(node, '.btn', 0)
         btn.innerText = if !n => '用途' else "#n"
-        if n =>
-          btn.classList.add \btn-primary
-          btn.classList.remove \btn-light
-        else
       purpose: ({node}) ~>
         n = node.getAttribute(\data-name)
         node.classList.toggle \disabled, (n == \thumb and @block.name != \form-file)
@@ -285,8 +284,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   update: -> @hub.update @block
   delete: -> @hub.delete @block
   clone: -> @hub.clone @block
+  move: (dir) -> @hub.move @block, dir
   schema: schema
 
 return Ctrl
-
-

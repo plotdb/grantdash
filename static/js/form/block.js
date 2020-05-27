@@ -304,16 +304,29 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
             node = arg$.node, evt = arg$.evt;
             return this$.clone();
           },
+          "move-up": function(){
+            return this$.move(-1);
+          },
+          "move-down": function(){
+            return this$.move(1);
+          },
           purpose: function(arg$){
-            var node, n, ref$;
+            var node, n, ref$, v, k;
             node = arg$.node;
             n = node.getAttribute('data-name');
             if (n === 'thumb' && this$.block.name !== 'form-file') {
               return;
             }
-            ((ref$ = this$.form).purpose || (ref$.purpose = {}))[n] = ((ref$ = this$.form).purpose || (ref$.purpose = {}))[n] === this$.block.key
+            ((ref$ = this$.form).purpose || (ref$.purpose = {}))[n] = v = ((ref$ = this$.form).purpose || (ref$.purpose = {}))[n] === this$.block.key
               ? null
               : this$.block.key;
+            if (v) {
+              for (k in this$.form.purpose) {
+                if (k !== n && this$.form.purpose[k] === v) {
+                  this$.form.purpose[k] = null;
+                }
+              }
+            }
             this$.update();
             return this$.view.block.render();
           }
@@ -351,13 +364,9 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
             return map[it.k];
           }).join(' / ');
           btn = ld$.find(node, '.btn', 0);
-          btn.innerText = !n
+          return btn.innerText = !n
             ? '用途'
             : n + "";
-          if (n) {
-            btn.classList.add('btn-primary');
-            return btn.classList.remove('btn-light');
-          } else {}
         },
         purpose: function(arg$){
           var node, n, ref$;
@@ -630,6 +639,9 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
     },
     clone: function(){
       return this.hub.clone(this.block);
+    },
+    move: function(dir){
+      return this.hub.move(this.block, dir);
     },
     schema: schema
   });

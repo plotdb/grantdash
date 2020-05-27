@@ -26,6 +26,12 @@ Ctrl = (opt) ->
     render: ->
       blocks-view.render!
       if viewer => viewer.render!
+    move: (block, dir) ->
+      idx = obj.list.indexOf(block)
+      obj.list.splice idx, 1
+      obj.list.splice idx + dir, 0, block
+      @update!
+      @render!
     delete: ->
       obj.list.splice obj.list.indexOf(it), 1
       @update!
