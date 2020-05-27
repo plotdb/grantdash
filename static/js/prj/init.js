@@ -19,12 +19,10 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
     lc.brd = brd;
     lc.grps = (ref$ = brd.detail).group || (ref$.group = {});
     lc.grp = lc.grps[key.grp];
-    console.log(lc.brd, lc.grp);
     if (!lc.grp) {
       return Promise.reject(new Error(1015));
     }
     root = ld$.find('[ld-scope=prj-create]', 0);
-    console.log(root);
     n = ld$.find(root, 'input[name=brd]', 0);
     n.value = key.brd;
     n = ld$.find(root, 'input[name=grp]', 0);
