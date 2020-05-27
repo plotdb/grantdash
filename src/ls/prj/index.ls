@@ -2,6 +2,13 @@
 
 Ctrl = (opt) ->
   @ldcv = new ldCover root: '[ld-scope=prj-diff]'
+  @view = new ldView do
+    global: true
+    init-render: false
+    root: '[ld-scope=prj-form]'
+    handler: do
+      "init-loader": ({node}) ->
+        node.classList.toggle \d-none, true
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< do
@@ -40,10 +47,13 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @ctrl-form.adapt {hub: @hubs.prj, path: ['content']}
     @ctrl-form.on \submit, -> console.log it
 
+  render: -> @view.render!
+
 ctrl = new Ctrl!
-loader.on!
+#loader.on!
 ctrl.fetch!
   .then -> ctrl.sharedb!
   .then -> ctrl.getdoc!
   .then -> ctrl.init-form!
+  .then -> ctrl.render!
   .then -> loader.off!

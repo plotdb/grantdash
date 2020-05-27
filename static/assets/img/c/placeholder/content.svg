@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="628" height="183" style="width: 628px; height: 183px; background: none; shape-rendering: auto;"><path></path><g class="ldl-layer" transform="matrix(1 0 0 1 0 0)"><g class="ldl-ani"><g><g class="ldl-layer" transform="matrix(1 0 0 1 0 0) matrix(1 0 0 1 -9 -7)"><g class="ldl-ani" style="transform-origin: 320px 42.7468px; opacity: 0; animation: 1s linear -0.75s infinite normal forwards running dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879;"><rect height="29.3968" width="570" fill="#E6E6E6" y="28.0484" x="35" style="block-size: 29.3968px; fill: rgb(230, 230, 230); height: 29.3968px; inline-size: 570px; width: 570px; x: 35px; y: 28.0484px;"></rect></g></g><g class="ldl-layer" transform="matrix(1 0 0 1 0 0) matrix(1 0 0 1 -9 -7)"><g class="ldl-ani" style="transform-origin: 320px 94.2918px; opacity: 0; animation: 1s linear -0.5s infinite normal forwards running dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879;"><rect height="18.3313" width="570" fill="#E6E6E6" y="85.1262" x="35" style="block-size: 18.3313px; fill: rgb(230, 230, 230); height: 18.3313px; inline-size: 570px; width: 570px; x: 35px; y: 85.1262px;"></rect></g></g><g class="ldl-layer" transform="matrix(1 0 0 1 0 0) matrix(1 0 0 1 -9 -7)"><g class="ldl-ani" style="transform-origin: 320px 126.245px; opacity: 0; animation: 1s linear -0.25s infinite normal forwards running dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879;"><rect height="18.3313" width="570" fill="#E6E6E6" y="117.0792" x="35" style="block-size: 18.3313px; fill: rgb(230, 230, 230); height: 18.3313px; inline-size: 570px; width: 570px; x: 35px; y: 117.079px;"></rect></g></g><g class="ldl-layer" transform="matrix(1 0 0 1 0 0) matrix(1 0 0 1 -9 -7)"><g class="ldl-ani" style="transform-origin: 131px 158.198px; opacity: 0; animation: 1s linear 0s infinite normal forwards running dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879;"><rect height="18.3313" width="192" fill="#E6E6E6" y="149.0322" x="35" style="block-size: 18.3313px; fill: rgb(230, 230, 230); height: 18.3313px; inline-size: 192px; width: 192px; x: 35px; y: 149.032px;"></rect></g></g></g></g></g><style id="dim-b490112f-2153-4a6a-aeef-89883efa9ce4" data-anikit="">@keyframes dim-b490112f-2153-4a6a-aeef-89883efa9ce4
+{
+  0% {
+    animation-timing-function: cubic-bezier(0.9647,0.2413,-0.0705,0.7911);
+    opacity: 0;
+  }
+  51% {
+    animation-timing-function: cubic-bezier(0.9226,0.2631,-0.0308,0.7628);
+    opacity: 0.9995;
+  }
+  100% {
+    opacity: 0;
+  }
+}</style><style id="dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879" data-anikit="">@keyframes dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879
+{
+  0% {
+    animation-timing-function: cubic-bezier(0.9647,0.2413,-0.0705,0.7911);
+    opacity: 0;
+  }
+  51% {
+    animation-timing-function: cubic-bezier(0.9226,0.2631,-0.0308,0.7628);
+    opacity: 0.9995;
+  }
+  100% {
+    opacity: 0;
+  }
+}</style><style id="dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879" data-anikit="">@keyframes dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879
+{
+  0% {
+    animation-timing-function: cubic-bezier(0.9647,0.2413,-0.0705,0.7911);
+    opacity: 0;
+  }
+  51% {
+    animation-timing-function: cubic-bezier(0.9226,0.2631,-0.0308,0.7628);
+    opacity: 0.9995;
+  }
+  100% {
+    opacity: 0;
+  }
+}</style><style id="dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879" data-anikit="">@keyframes dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879
+{
+  0% {
+    animation-timing-function: cubic-bezier(0.9647,0.2413,-0.0705,0.7911);
+    opacity: 0;
+  }
+  51% {
+    animation-timing-function: cubic-bezier(0.9226,0.2631,-0.0308,0.7628);
+    opacity: 0.9995;
+  }
+  100% {
+    opacity: 0;
+  }
+}</style><style id="dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879" data-anikit="">@keyframes dim-25ef967b-4bfd-4be2-b4c3-3cddf7a0b879
+{
+  0% {
+    animation-timing-function: cubic-bezier(0.9647,0.2413,-0.0705,0.7911);
+    opacity: 0;
+  }
+  51% {
+    animation-timing-function: cubic-bezier(0.9226,0.2631,-0.0308,0.7628);
+    opacity: 0.9995;
+  }
+  100% {
+    opacity: 0;
+  }
+}</style></svg>

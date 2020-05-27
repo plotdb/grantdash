@@ -6,6 +6,18 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
     this.ldcv = new ldCover({
       root: '[ld-scope=prj-diff]'
     });
+    this.view = new ldView({
+      global: true,
+      initRender: false,
+      root: '[ld-scope=prj-form]',
+      handler: {
+        "init-loader": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.classList.toggle('d-none', true);
+        }
+      }
+    });
     return this;
   };
   Ctrl.prototype = import$(Object.create(Object.prototype), {
@@ -80,16 +92,20 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
       return this.ctrlForm.on('submit', function(it){
         return console.log(it);
       });
+    },
+    render: function(){
+      return this.view.render();
     }
   });
   ctrl = new Ctrl();
-  loader.on();
   return ctrl.fetch().then(function(){
     return ctrl.sharedb();
   }).then(function(){
     return ctrl.getdoc();
   }).then(function(){
     return ctrl.initForm();
+  }).then(function(){
+    return ctrl.render();
   }).then(function(){
     return loader.off();
   });
