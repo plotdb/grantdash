@@ -5,7 +5,7 @@ Ctrl = (opt) ->
   @view = new ldView do
     global: true
     init-render: false
-    root: '[ld-scope=prj-form]'
+    root: '[ld-scope=prj-form-use]'
     handler: do
       "init-loader": ({node}) ->
         node.classList.toggle \d-none, true
@@ -38,7 +38,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   init-form: ->
     grp = [v for k,v of @brd.detail.group].0 or {}
     @ctrl-form = new prjForm {
-      root: '[ld-scope=prj-form]'
+      root: '[ld-scope=prj-form-use]'
       view-mode: true
       form: (grp.{}form or [])
       grp: grp

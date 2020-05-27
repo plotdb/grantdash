@@ -5,14 +5,14 @@ require! <[../aux]>
 api = engine.router.api
 app = engine.app
 
-api.post \/p, aux.signed, express-formidable!, (req, res) ->
+api.post \/p/, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {name,description,brd} = req.fields
   if !brd => return aux.r400 res
   thumb = (req.files["thumbnail[]"] or {}).path
   io.query """
   insert into prj (name,description,brd,owner)
-  values ($1,$2,$3,$4,$5,$6,$7,$8) returning key
+  values ($1,$2,$3,$4) returning key
   """, [name, description, (brd or null), req.user.key]
     .then (r = {}) ->
       lc.ret = (r.[]rows or []).0

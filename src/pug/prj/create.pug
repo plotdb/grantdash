@@ -1,19 +1,4 @@
 extends /base.pug
-block head
-  style(type="text/css"): :stylus
-    [ld-scope=prj-form]
-      .form-block
-        border: none
-        box-shadow: 0
-        margin-bottom: 2em
-        border-left-width: 8px
-        border-left-style: solid
-        border-left-color: #fdfeff
-        box-shadow: none!important
-        transition: all .35s ease-in-out
-      .card.invalid[ld=block]
-        border-left-color: #f00
-
 block body
   //-include /ui/data/sample.pug
   include /modules/mixins/index.pug
@@ -22,7 +7,6 @@ block body
   +script("/assets/lib/handsontable/handsontable.min.js")
   +script("/assets/lib/ldui/ldui.min.js")
   +script("/js/reblock/form-reblock.js")
-  +script("/assets/lib/ctrlz/ot-json0.js")
 
   +scope("prj-diff").ldcv.scroll.ldcvmgr(data-name="prj-diff"): .base.w-640(style="height:90%"): .inner.card.h-100
     .sticky.z-fixed(style="top:0")
@@ -47,7 +31,7 @@ block body
           .col-md: .pl-4.value(style="white-space:pre-wrap")
 
   .w-1024.mx-auto.rwd.typeset.heading-contrast
-    +scope("prj-form").d-flex
+    +scope("prj-form-use").d-flex
       .mr-4.p-4.rounded.border(style="background:linear-gradient(315deg,#f4f5f6,#fff);min-height:calc(100vh - 7em)")
         .pb-4.mb-4.h-100
           h3.my-0.d-none(ld="nview") 編輯提案

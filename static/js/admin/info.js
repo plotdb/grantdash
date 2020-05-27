@@ -5,7 +5,14 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
   Ctrl = function(opt){
     var type, root, slugs, slugCheck, slug, form, lc, view, this$ = this;
     this.opt = opt;
-    this.type = type = opt.type === 'org' ? 'o' : 'b';
+    this.type = type = {
+      org: 'o',
+      prj: 'p',
+      brd: 'b'
+    }[opt.type] || null;
+    if (!type) {
+      throw new ldError(1015);
+    }
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
@@ -47,7 +54,7 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
         : {},
       submit: '[ld=submit]',
       afterCheck: function(s, f){
-        var p;
+        var p, fields;
         if (f.thumbnail && f.thumbnail.value) {
           if (!(p = ld$.parent(f.thumbnail, '.bg'))) {
             return;
@@ -56,7 +63,10 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
             return p.style.backgroundImage = "url(" + r.result + ")";
           });
         }
-        return s.all = ['name', 'slug', 'description'].reduce(function(a, b){
+        fields = ['name', 'slug', 'description', 'brd'].filter(function(it){
+          return f[it];
+        });
+        return s.all = fields.reduce(function(a, b){
           return a && s[b] === 0;
         }, true) ? 0 : 2;
       },

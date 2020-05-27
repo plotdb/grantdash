@@ -2,7 +2,8 @@
 \adminInfo, <[loader notify ldcvmgr auth sdbAdapter]>, _)
 Ctrl = (opt) ->
   @opt = opt
-  @type = type = if opt.type == \org => \o else \b
+  @type = type = {org: 'o', prj: 'p', brd: 'b'}[opt.type] or null
+  if !type => throw new ldError(1015)
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   # committed data in table, if available
   @data = opt.data
@@ -27,7 +28,8 @@ Ctrl = (opt) ->
         if !( p = ld$.parent(f.thumbnail, '.bg') ) => return
         ldFile.fromFile f.thumbnail.files.0, \dataurl
           .then (r) -> p.style.backgroundImage = "url(#{r.result})"
-      s.all = if <[name slug description]>.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
+      fields = <[name slug description brd]>.filter -> f[it]
+      s.all = if fields.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
     verify: (n,v,e) ~>
       if !(n in <[slug]>) => @ops-out (d) -> d[n] = v; d
       if n in <[slug]> =>

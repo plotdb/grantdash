@@ -225,6 +225,19 @@ p {
 .form-block i.active[type=checkbox][ld=state]:before {
   content: "\f034";
 }
+[ld-scope=prj-form-use] .form-block {
+  border: none;
+  box-shadow: 0;
+  margin-bottom: 2em;
+  border-left-width: 8px;
+  border-left-style: solid;
+  border-left-color: #fdfeff;
+  box-shadow: none !important;
+  transition: all 0.35s ease-in-out;
+}
+[ld-scope=prj-form-use] .card.invalid[ld=block] {
+  border-left-color: #f00;
+}
 .folder-item:hover {
   color: currentColor;
 }

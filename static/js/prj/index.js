@@ -9,7 +9,7 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
     this.view = new ldView({
       global: true,
       initRender: false,
-      root: '[ld-scope=prj-form]',
+      root: '[ld-scope=prj-form-use]',
       handler: {
         "init-loader": function(arg$){
           var node;
@@ -79,7 +79,7 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
         return results$;
       }.call(this))[0] || {};
       this.ctrlForm = new prjForm({
-        root: '[ld-scope=prj-form]',
+        root: '[ld-scope=prj-form-use]',
         viewMode: true,
         form: (grp.form || (grp.form = {})) || [],
         grp: grp,
