@@ -10,6 +10,7 @@ api.post \/p/, aux.signed, express-formidable!, (req, res) ->
   {name,description,brd} = req.fields
   if !brd => return aux.r400 res
   thumb = (req.files["thumbnail[]"] or {}).path
+  # TODO add or remove slug?
   io.query """
   insert into prj (name,description,brd,owner)
   values ($1,$2,$3,$4) returning key

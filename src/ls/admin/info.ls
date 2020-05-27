@@ -29,6 +29,7 @@ Ctrl = (opt) ->
         ldFile.fromFile f.thumbnail.files.0, \dataurl
           .then (r) -> p.style.backgroundImage = "url(#{r.result})"
       fields = <[name slug description brd]>.filter -> f[it]
+      if f.brd and f.brd.value => s.brd = 0
       s.all = if fields.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
     verify: (n,v,e) ~>
       if !(n in <[slug]>) => @ops-out (d) -> d[n] = v; d
@@ -74,13 +75,15 @@ Ctrl = (opt) ->
         @opt.set-group @adapter.doc.data.group[ks.0]
 
       submit: ({node}) ->
+        if node.classList.contains \disabled => return
         auth.ensure!
           .then ->
             loader.on!
             fd = form.getfd!
             ld$.fetch "/d/#type/", {method: \POST, body: fd}, {type: \json}
               .then (r) ->
-                notify.send \success, '建立完成，將您導向主控台 ...'
+                loader.off!
+                ldcvmgr.toggle \redirect
                 debounce 1000 .then -> window.location.href = "/#type/#{form.values!slug}/admin"
               .catch ->
                 loader.off!

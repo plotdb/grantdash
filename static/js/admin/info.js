@@ -66,6 +66,9 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
         fields = ['name', 'slug', 'description', 'brd'].filter(function(it){
           return f[it];
         });
+        if (f.brd && f.brd.value) {
+          s.brd = 0;
+        }
         return s.all = fields.reduce(function(a, b){
           return a && s[b] === 0;
         }, true) ? 0 : 2;
@@ -166,6 +169,9 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
           submit: function(arg$){
             var node;
             node = arg$.node;
+            if (node.classList.contains('disabled')) {
+              return;
+            }
             return auth.ensure().then(function(){
               var fd;
               loader.on();
@@ -176,7 +182,8 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
               }, {
                 type: 'json'
               }).then(function(r){
-                notify.send('success', '建立完成，將您導向主控台 ...');
+                loader.off();
+                ldcvmgr.toggle('redirect');
                 return debounce(1000).then(function(){
                   return window.location.href = "/" + type + "/" + form.values().slug + "/admin";
                 });

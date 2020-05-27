@@ -2,32 +2,16 @@ extends /base.pug
 block vars
   - ctrl.navtop.placeholder = false;
 block body
-  //-include /ui/data/sample.pug
-  include /modules/mixins/index.pug
-  include /form/timeline.pug
-  +css("/assets/lib/handsontable/handsontable.min.css")
-  +script("/assets/lib/handsontable/handsontable.min.js")
-  +script("/assets/lib/ldui/ldui.min.js")
-  +script("/js/reblock/form-reblock.js")
   .w-100.h-100.vertical-center: .text-center.w-100
-    +scope("prj-create").w-480.mx-auto.rwd
+    +scope("prj-create").w-480.mx-auto.rwd.pb-4
       include /modules/widget/prj-create.pug
 block script
-  +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
-  +script("/assets/lib/dompurify/2.0.11/purify.min.js")
-  +script("/assets/lib/jsdiff/diff.min.js")
-  +script("/js/form/sample-data.js")
-  +script("/js/form/index.js")
-  +script("/js/form/block.js")
-  +script("/js/form/criteria.js")
-  +script("/js/form/validator.js")
   +script("/js/util/sdb-adapter.js")
   +script("/js/util/hub.js")
-  +script("/js/prj/propose.js")
   +script("/js/admin/info.js")
   script: :lsc
     ldc.register <[ldcvmgr adminInfo prjCreate auth]>, ({ldcvmgr, adminInfo, prjCreate, auth}) ->
-      root = '[ld-scope=prj-create]'
+      root = ld$.find('[ld-scope=prj-create]',0)
       n = ld$.find(root, 'input[name=brd]', 0)
       n.value = '4'
       new adminInfo {root: root, type: \prj}
