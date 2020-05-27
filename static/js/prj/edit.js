@@ -18,18 +18,37 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
         }
       }
     });
+    this.key = opt.prj;
+    this.prj = {};
     return this;
   };
   Ctrl.prototype = import$(Object.create(Object.prototype), {
     fetch: function(){
       var this$ = this;
+      console.log("fetching project information ...");
       console.log("fetching board form ...");
-      return ld$.fetch('/d/b/4/form', {
+      return ld$.fetch("/d/p/" + this.key, {
         method: 'GET'
       }, {
         type: 'json'
       }).then(function(it){
-        return this$.brd = it;
+        this$.prj = it;
+        return ld$.fetch("/d/b/" + this$.prj.brd + "/form", {
+          method: 'GET'
+        }, {
+          type: 'json'
+        });
+      }).then(function(it){
+        var k, v;
+        this$.brd = it;
+        return this$.grp = (function(){
+          var ref$, results$ = [];
+          for (k in ref$ = this.brd.detail.group) {
+            v = ref$[k];
+            results$.push(v);
+          }
+          return results$;
+        }.call(this$))[0] || {};
       });
     },
     sharedb: function(){
@@ -63,26 +82,26 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
             ops: ops,
             source: source
           });
+        },
+        create: function(){
+          var ret, form, ref$;
+          ret = {};
+          form = (ref$ = this$.grp).form || (ref$.form = {});
+          ret[(form.purpose || (form.purpose = {})).title || 'title'].content = this$.prj.name;
+          ret[form.purpose.description || 'description'].content = this$.prj.description;
+          return ret;
         }
       }).then(function(doc){
         return this$.hubs.prj.doc = doc;
       });
     },
     initForm: function(){
-      var grp, k, v;
-      grp = (function(){
-        var ref$, results$ = [];
-        for (k in ref$ = this.brd.detail.group) {
-          v = ref$[k];
-          results$.push(v);
-        }
-        return results$;
-      }.call(this))[0] || {};
+      var ref$;
       this.ctrlForm = new prjForm({
         root: '[ld-scope=prj-form-use]',
         viewMode: true,
-        form: (grp.form || (grp.form = {})) || [],
-        grp: grp,
+        form: (ref$ = this.grp).form || (ref$.form = {}),
+        grp: this.grp,
         brd: this.brd
       });
       this.ctrlForm.adapt({
@@ -97,7 +116,9 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
       return this.view.render();
     }
   });
-  ctrl = new Ctrl();
+  ctrl = new Ctrl({
+    prj: 7
+  });
   return ctrl.fetch().then(function(){
     return ctrl.sharedb();
   }).then(function(){

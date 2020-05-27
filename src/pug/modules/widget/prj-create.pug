@@ -10,7 +10,10 @@
       label 簡單介紹您的提案
       textarea.form-control(name="description",rows="4",placeholder="簡單描述即可，亦可後續再補完")
     .my-4
-      span 您的提案將建立在 #[span(ld="brd-name") 這個活動] 之中。
+      span 您的提案將建立在
+      b.mx-2(ld="brd-name") 這個活動
+      span(ld="show-grp") 的#[b.mx-2(ld="grp-name") 這個分組]
+      span 之中。
       input(name="brd",type="hidden",value="")
     .row.mt-4
       .col-md.mb-3: .btn.btn-outline-secondary.btn-block(data-ldcv-set="") 先不要

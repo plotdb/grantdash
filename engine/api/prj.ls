@@ -5,6 +5,15 @@ require! <[../aux]>
 api = engine.router.api
 app = engine.app
 
+api.get "/p/:key/", aux.signed, (req, res) ->
+  if isNaN(key = parseInt(req.params.key)) => return aux.r400 res
+  io.query """
+  select * from prj where key = $1
+  """, [key]
+    .then -> res.send(r.[]rows.0 or {})
+    .catch aux.error-handler res
+
+
 api.post \/p/, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {name,description,brd} = req.fields

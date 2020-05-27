@@ -9,13 +9,22 @@ Ctrl = (opt) ->
     handler: do
       "init-loader": ({node}) ->
         node.classList.toggle \d-none, true
+  @key = opt.prj
+  @prj = {}
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< do
   fetch: ->
+    console.log "fetching project information ..."
     console.log "fetching board form ..."
-    ld$.fetch \/d/b/4/form, {method: \GET}, {type: \json}
-      .then ~> @brd = it
+    ld$.fetch "/d/p/#{@key}", {method: \GET}, {type: \json}
+      .then ~>
+        @prj = it
+        ld$.fetch "/d/b/#{@prj.brd}/form", {method: \GET}, {type: \json}
+      .then ~>
+        @brd = it
+        # TODO choose grp by prj result
+        @grp = [v for k,v of @brd.detail.group].0 or {}
 
   sharedb: ->
     console.log "initializing sharedb connection ..."
@@ -33,15 +42,20 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @sdb.get({
       id: "prj-sample"
       watch: (ops,source) ~> @hubs.prj.fire \change, {ops,source}
+      create: ~>
+        ret = {}
+        form = @grp.{}form
+        ret[form.{}purpose.title or 'title'].content = @prj.name
+        ret[form.purpose.description or 'description'].content = @prj.description
+        ret
     }).then (doc) ~> @hubs.prj.doc = doc
 
   init-form: ->
-    grp = [v for k,v of @brd.detail.group].0 or {}
     @ctrl-form = new prjForm {
       root: '[ld-scope=prj-form-use]'
       view-mode: true
-      form: (grp.{}form or [])
-      grp: grp
+      form: (@grp.{}form)
+      grp: @grp
       brd: @brd
     }
     @ctrl-form.adapt {hub: @hubs.prj, path: ['content']}
@@ -49,7 +63,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
 
   render: -> @view.render!
 
-ctrl = new Ctrl!
+ctrl = new Ctrl {prj: 7}
 #loader.on!
 ctrl.fetch!
   .then -> ctrl.sharedb!
