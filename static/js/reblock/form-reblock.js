@@ -165,6 +165,9 @@ var slice$ = [].slice;
         if (!name) {
           return;
         }
+        if (!ld$.parent(e.target, null, this$.root)) {
+          return;
+        }
         return this$.inject({
           node: e.target,
           name: name

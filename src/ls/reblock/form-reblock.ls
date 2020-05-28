@@ -103,6 +103,8 @@
           @node.injecting = null
         name = e.dataTransfer.getData(\text/plain)
         if !name => return
+        # if target is not under our root - it's not our business, just skip it.
+        if !(ld$.parent(e.target, null, @root)) => return
         @inject {node: e.target, name}
           .then ->
             e.preventDefault!
