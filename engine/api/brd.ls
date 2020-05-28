@@ -30,12 +30,12 @@ api.get \/b/:slug/form/, (req, res) ->
 
 api.put \/detail/, aux.signed, (req, res) ->
   payload = req.body.payload
-  {key, type, payload} = (req.body or {})
-  if isNaN(key) or key <= 0 => return aux.r400 res
+  {slug, type, payload} = (req.body or {})
+  if !slug => return aux.r400 res
   tables = <[prj brd org]>
   table = tables[tables.indexOf(type)]
   if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
-  io.query "update #table set detail = $1 where key = $2", [JSON.stringify(payload), key]
+  io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
     .then -> res.send {}
     .catch aux.error-handler res
 

@@ -133,7 +133,7 @@ prj-form, admin-entry}) ->
           ps = <[brd org]>.map (type) ~>
             if !(@toc[type]key and @modify[type]dirty) => return Promise.resolve!
             payload = @hubs[type]doc.data
-            ld$.fetch \/d/detail/, {method: \PUT}, {json: {payload, key: @toc[type]key, type}, type: \json}
+            ld$.fetch \/d/detail/, {method: \PUT}, {json: {payload, slug: @toc[type]slug, type}, type: \json}
               .then ~>
                 @toc[type]detail = payload
                 @modify[type] <<< data: JSON.stringify(payload), dirty: false

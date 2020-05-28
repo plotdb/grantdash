@@ -308,7 +308,7 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
           }, {
             json: {
               payload: payload,
-              key: this$.toc[type].key,
+              slug: this$.toc[type].slug,
               type: type
             },
             type: 'json'
