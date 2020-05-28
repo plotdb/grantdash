@@ -88,7 +88,7 @@ prj-form, admin-entry}) ->
     set-group: (v) ->
       (k) <~ [k for k of @ctrl.grp].map _
       idx = 0
-      @hubs.brd.doc.data.group.map (d,i) -> if d.key == v.key => idx = i
+      @hubs.brd.doc.data.group.map (d,i) -> if d.key == v.key => idx := i
       p = ['group', idx, k]
       if !@ctrl.grp[k].adapted! => @ctrl.grp[k].adapt {hub: @hubs.brd, path: p}
       else @ctrl.grp[k].set-path p

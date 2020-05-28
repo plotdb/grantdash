@@ -177,7 +177,6 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         var idx, p;
         idx = 0;
         this$.hubs.brd.doc.data.group.map(function(d, i){
-          var idx;
           if (d.key === v.key) {
             return idx = i;
           }
