@@ -17,10 +17,7 @@ html
     style(type="text/css"): :stylus
       .folder-toggle { display: none }
   body
+    +script("/assets/lib/suuid/suuid.bundle.min.js")
     script: :lsc
-      ldc.register <[auth]>, ({auth}) ->
-        console.log 'get...'
-        auth.get!then ->
-          console.log 'fetch ...'
-          ld$.fetch '/d/b/4/detail', {method: \PUT}, {json: {a: 2}, type: \json}
-            .then -> console.log \ok
+      console.log(suuid!)
+
