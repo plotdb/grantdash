@@ -52,7 +52,7 @@ create type state as enum ('active','pending','deleted','canceled','suspended','
 create table if not exists org (
   key serial primary key,
   owner int references users(key) not null,
-  slug text not null,
+  slug text not null unique,
   name text not null constraint name_len check (char_length(name) <= 100),
   description text constraint description_len check (char_length(description) <= 500),
   detail jsonb,
@@ -65,7 +65,7 @@ create table if not exists brd (
   key serial primary key,
   owner int references users(key) not null,
   org int references org(key),
-  slug text not null,
+  slug text not null unique,
   name text not null constraint name_len check (char_length(name) <= 100),
   description text constraint description_len check (char_length(description) <= 500),
   detail jsonb,
@@ -80,7 +80,7 @@ create table if not exists brd (
 create table if not exists prj (
   key serial primary key,
   owner int references users(key) not null,
-  slug text not null,
+  slug text not null unique,
   brd int references brd(key),
   grp text,
   name text not null constraint name_len check (char_length(name) <= 100),
@@ -90,6 +90,10 @@ create table if not exists prj (
   state state not null default 'active',
   deleted bool default false
 );
+
+create index if not exists org_slug on org (slug);
+create index if not exists brd_slug on brd (slug);
+create index if not exists prj_slug on prj (slug);
 
 create table if not exists discus (
   key serial primary key,
