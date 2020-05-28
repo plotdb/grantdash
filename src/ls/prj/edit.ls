@@ -57,6 +57,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       form: (@grp.{}form)
       grp: @grp
       brd: @brd
+      prj: @prj
     }
     @ctrl-form.adapt {hub: @hubs.prj, path: ['content']}
     @ctrl-form.on \submit, (answer) ~>
@@ -64,6 +65,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       ldcvmgr.toggle \publishing, true
       ld$.fetch "/d/detail", {method: \PUT}, {json: data, type: \json}
         .finally -> ldcvmgr.toggle \publishing, false
+        .then ~> @prj.detail = answer
+        .then ~> @ctrl-form.render!
         .then -> ldcvmgr.toggle \published, true
         .then -> debounce 2000
         .finally -> ldcvmgr.toggle \published, false

@@ -94,7 +94,8 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
         viewMode: true,
         form: (ref$ = this.grp).form || (ref$.form = {}),
         grp: this.grp,
-        brd: this.brd
+        brd: this.brd,
+        prj: this.prj
       });
       this.ctrlForm.adapt({
         hub: this.hubs.prj,
@@ -115,6 +116,10 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
           type: 'json'
         })['finally'](function(){
           return ldcvmgr.toggle('publishing', false);
+        }).then(function(){
+          return this$.prj.detail = answer;
+        }).then(function(){
+          return this$.ctrlForm.render();
         }).then(function(){
           return ldcvmgr.toggle('published', true);
         }).then(function(){

@@ -20,6 +20,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
       list: [],
       value: {}
     };
+    this.prj = opt.prj;
     if (this.viewMode && opt.form) {
       this.obj.list = (opt.form || (opt.form = {})).list;
       this.obj.purpose = opt.form.purpose;
@@ -369,6 +370,17 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
             node = arg$.node;
             return node.innerText = progress().remain;
           },
+          "to-fix": function(arg$){
+            var node;
+            node = arg$.node;
+            return node.classList.toggle('d-none', !progress().remain);
+          },
+          "to-publish": function(arg$){
+            var node, touched;
+            node = arg$.node;
+            touched = JSON.stringify(this$.obj.value) !== JSON.stringify((this$.prj.detail || {}).answer);
+            return node.classList.toggle('d-none', !touched || progress().remain);
+          },
           submit: function(arg$){
             var node;
             node = arg$.node;
@@ -588,6 +600,9 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
         this.obj.list = data.list || [];
       }
       return this.hub.renderDeb();
+    },
+    render: function(){
+      return this.hub.render();
     }
   });
   return Ctrl;

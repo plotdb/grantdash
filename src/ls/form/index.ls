@@ -11,6 +11,7 @@ Ctrl = (opt) ->
     answer: ld$.find(root, '[ld=form-answer]', 0)
   @view-mode = view-mode = opt.view-mode
   @obj = obj = {list: [], value: {}}
+  @prj = opt.prj
   if @view-mode and opt.form =>
     @obj.list = opt.{}form.list
     @obj.purpose = opt.form.purpose
@@ -186,6 +187,10 @@ Ctrl = (opt) ->
         invalid: ({node}) -> node.classList.toggle \d-none, (progress!remain == 0)
         valid: ({node}) -> node.classList.toggle \d-none, (progress!remain > 0)
         remain: ({node}) -> node.innerText = progress!remain
+        "to-fix": ({node}) -> node.classList.toggle \d-none, !progress!remain
+        "to-publish": ({node}) ~>
+          touched = (JSON.stringify(@obj.value) != JSON.stringify((@prj.detail or {}).answer))
+          node.classList.toggle \d-none, (!touched or progress!remain)
         submit: ({node}) -> node.classList.toggle \disabled, (progress!remain > 0)
         "brd-name": ({node}) -> node.innerText = if opt.brd => (opt.brd.{}info.name or '') else '未定的活動'
         "grp-name": ({node}) -> node.innerText = if opt.grp => (opt.grp.{}info.name or '') else '未定的分組'
@@ -277,5 +282,6 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       @validate-all!
     else @obj.list = (data.list or [])
     @hub.render-deb!
+  render: -> @hub.render!
 
 return Ctrl

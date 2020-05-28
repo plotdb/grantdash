@@ -30,8 +30,8 @@ block body
           .col-md.border-right: .pr-4.value(style="white-space:pre-wrap")
           .col-md: .pl-4.value(style="white-space:pre-wrap")
 
-  .w-1024.mx-auto.rwd.typeset.heading-contrast
-    +scope("prj-form-use").d-flex
+  +scope("prj-form-use").w-1024.mx-auto.rwd.typeset.heading-contrast
+    .d-flex
       .mr-4.p-4.rounded.border(style="background:linear-gradient(315deg,#f4f5f6,#fff);min-height:calc(100vh - 7em)")
         .pb-4.mb-4.h-100
           h3.my-0.d-none(ld="nview") 編輯提案
@@ -98,11 +98,24 @@ block body
           .mb-4.text-break.bg-light.rounded.p-4(ld="content")
         .d-none(ld="nview"): div(ld="form-list"): div(ld-each="block")
         .w-100.h-100(pd="init-loader",style="background-image:url(/assets/img/c/placeholder/content.svg);background-position:top center;background-repeat:repeat-y;")
+
+
         .d-none(ld="nview")
-          .d-flex.align-items-center.ml-4
-            .btn.btn-lg.btn-primary.mr-4.disabled(ld="submit") 儲存並發布
-            .text-sm.text-danger(ld="invalid") #[i.i-close] 在能發布之前，您尚有 #[span(ld="remain") 1] 個項目未完成。#[a.text-danger.text-underline(href="#") 跳至待編修項目]
-            .text-sm.text-success.d-none(ld="valid") 您已填完所有項目，可別忘了儲存並發布喔！
+          .ml-2
+            .text-muted.d-flex
+              .mr-2: i.i-question.text-primary
+              .flex-grow-1 您的提案內容會即時儲存到系統中，因此不用擔心資料會遺失。不過，在您正式按下發布按鈕之前，您的填答並不會正式被更新到您的提案內容中，請在確認完成填答並打算發表的時候，按下「儲存並發布」按鈕。
+        //- for space of fixed alert
+        +nbr(2)
+
+    .sticky.w-1024.mx-auto(style="bottom:2em;padding-right:1em")
+      .d-none(ld="to-publish"): .alert.alert-info.d-flex.align-items-center.shadow-sm
+        .flex-grow-1 您有尚未發布的修改，記得按「儲存並發布」更新提案的最新版本喔！
+        div: .btn.btn.btn-primary.mr-2(ld="submit") 儲存並發布
+        div: .btn.btn.btn-outline-primary(ld="cancel") 取消並還原
+      .d-none(ld="to-fix"): .alert.alert-warning.d-flex.align-items-center.shadow-sm
+        .flex-grow-1 您尚有#[span(ld="remain") 數]個欄位須修正，在請修正完成過後，便能發布您的提案。
+        div: .btn.btn.btn-warning.mr-2(ld="jump") 跳至待修正項目
 
 block script
   +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
