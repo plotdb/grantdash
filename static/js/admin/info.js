@@ -181,7 +181,11 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
                 loader.off();
                 ldcvmgr.toggle('redirect');
                 return debounce(1000).then(function(){
-                  return window.location.href = "/" + type + "/" + form.values().slug + "/admin";
+                  if (type === 'p') {
+                    return window.location.href = "/p/" + r.slug + "/edit";
+                  } else {
+                    return window.location.href = "/" + type + "/" + form.values().slug + "/admin";
+                  }
                 });
               })['catch'](function(){
                 loader.off();

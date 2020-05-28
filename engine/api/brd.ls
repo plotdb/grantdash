@@ -18,14 +18,14 @@ app.get \/b/:key, aux.signed, (req, res) ->
       res.render \b/index.pug, lc{brd, projects}
     .catch aux.error-handler res
 
-api.get \/b/:key/form/, (req, res) ->
-  if isNaN(key = parseInt(req.params.key)) => return aux.r400 res
-  io.query "select name,description,slug,detail from brd where key = $1", [key]
+api.get \/b/:slug/form/, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  io.query "select key,name,description,slug,detail from brd where slug = $1", [slug]
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       ret.detail = ret.detail{group}
       ret.detail.group = ret.detail.group.map -> it{form, info, key}
-      res.send ret{name,description,slug,detail}
+      res.send ret{key,name,description,slug,detail}
     .catch aux.error-handler res
 
 api.put \/detail/, aux.signed, (req, res) ->

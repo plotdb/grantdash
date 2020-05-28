@@ -4,9 +4,10 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
   ldcvmgr = arg$.ldcvmgr, adminInfo = arg$.adminInfo, prjCreate = arg$.prjCreate, auth = arg$.auth, error = arg$.error, loader = arg$.loader;
   loader.on();
   lc = {};
+  key = /^\/b\/([^/]+)\/p\/create/.exec(window.location.pathname) || /^\/b\/([^/]+)\/g\/([^/]+)\/p\/create/.exec(window.location.pathname) || [];
   key = {
-    brd: 4,
-    grp: 'grp-ppg7kz3njm'
+    brd: key[1],
+    grp: key[2]
   };
   return auth.get().then(function(){
     return ld$.fetch("/d/b/" + key.brd + "/form", {
@@ -20,13 +21,13 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
     lc.grps = (ref$ = brd.detail).group || (ref$.group = {});
     lc.grp = lc.grps.filter(function(it){
       return it.key === key.grp;
-    })[0];
+    })[0] || lc.grps[0];
     if (!lc.grp) {
-      return Promise.reject(new Error(1015));
+      return Promise.reject(new Error(1015, "group is not found"));
     }
     root = ld$.find('[ld-scope=prj-create]', 0);
     n = ld$.find(root, 'input[name=brd]', 0);
-    n.value = key.brd;
+    n.value = lc.brd.key;
     showGrp = lc.grps.length === 1 ? false : true;
     info = new adminInfo({
       root: root,
@@ -82,7 +83,7 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
       }
     });
     n = ld$.find(root, 'select[name=grp]', 0);
-    return n.value = key.grp;
+    return n.value = lc.grp.key;
   })['finally'](function(){
     return loader.off();
   })['catch'](error());

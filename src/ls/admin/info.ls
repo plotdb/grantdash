@@ -84,7 +84,9 @@ Ctrl = (opt) ->
               .then (r) ->
                 loader.off!
                 ldcvmgr.toggle \redirect
-                debounce 1000 .then -> window.location.href = "/#type/#{form.values!slug}/admin"
+                debounce 1000 .then ->
+                  if type == \p => window.location.href = "/p/#{r.slug}/edit"
+                  else window.location.href = "/#type/#{form.values!slug}/admin"
               .catch ->
                 loader.off!
                 ldcvmgr.toggle 'error'

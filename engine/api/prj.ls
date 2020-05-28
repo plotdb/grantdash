@@ -23,7 +23,7 @@ api.post \/p/, aux.signed, express-formidable!, (req, res) ->
   io.query """
   insert into prj (name,description,brd,grp,slug,owner)
   values ($1,$2,$3,$4,$5,$6) returning key
-  """, [name, description, brd, grp, req.user.key]
+  """, [name, description, brd, grp, slug, req.user.key]
     .then (r = {}) ->
       lc.ret = (r.[]rows or []).0
       if !thumb => return
@@ -33,5 +33,5 @@ api.post \/p/, aux.signed, express-formidable!, (req, res) ->
         if e => return rej(e)
         (e,i) <- sharp(thumb).toFile path.join(root, "thumb.png"), _
         if e => rej(e) else res!
-    .then -> res.send lc.ret
+    .then -> res.send (lc.ret or {}) <<< {slug}
     .catch aux.error-handler res
