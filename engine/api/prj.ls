@@ -1,4 +1,4 @@
-require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror]>
+require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror suuid]>
 require! <[../aux]>
 (engine,io) <- (->module.exports = it)  _
 
@@ -16,14 +16,14 @@ api.get "/p/:key/", aux.signed, (req, res) ->
 
 api.post \/p/, aux.signed, express-formidable!, (req, res) ->
   lc = {}
-  {name,description,brd} = req.fields
-  if !brd => return aux.r400 res
+  {name,description,brd,grp} = req.fields
+  if !(brd and grp) => return aux.r400 res
   thumb = (req.files["thumbnail[]"] or {}).path
-  # TODO add or remove slug?
+  slug = suuid!
   io.query """
-  insert into prj (name,description,brd,owner)
-  values ($1,$2,$3,$4) returning key
-  """, [name, description, (brd or null), req.user.key]
+  insert into prj (name,description,brd,grp,slug,owner)
+  values ($1,$2,$3,$4,$5,$6) returning key
+  """, [name, description, brd, grp, req.user.key]
     .then (r = {}) ->
       lc.ret = (r.[]rows or []).0
       if !thumb => return

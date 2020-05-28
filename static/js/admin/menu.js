@@ -39,21 +39,26 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
             for (i$ = 0; i$ < 100; ++i$) {
               i = i$;
               key = "grp-" + Math.random().toString(36).substring(2);
-              if (!this$.grps[key]) {
+              if (!this$.grps.filter(fn$).length) {
                 break;
               }
             }
-            if (this$.grps[key]) {
+            if (this$.grps.filter(function(it){
+              return it.key === key;
+            }).length) {
               throw new ldError(1011);
             }
-            this$.grps[key] = {
+            this$.grps.push({
               key: key,
               info: {
                 name: "新分組"
               }
-            };
+            });
             view.render('grp-entry');
             return update().now();
+            function fn$(it){
+              return it.key === key;
+            }
           }
         },
         input: {
@@ -139,12 +144,7 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
             return it.key;
           },
           list: function(){
-            var k, ref$, v, results$ = [];
-            for (k in ref$ = this$.grps || {}) {
-              v = ref$[k];
-              results$.push(v);
-            }
-            return results$;
+            return this$.grps || [];
           },
           init: function(arg$){
             var node, data, root;
@@ -189,7 +189,10 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
     opsIn: function(arg$){
       var data, ops, source;
       data = arg$.data, ops = arg$.ops, source = arg$.source;
-      this.grps = JSON.parse(JSON.stringify(data || {}));
+      this.grps = JSON.parse(JSON.stringify(data || []));
+      if (!Array.isArray(data)) {
+        this.grps = [];
+      }
       return this.view.render();
     }
   });

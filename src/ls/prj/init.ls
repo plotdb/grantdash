@@ -8,24 +8,23 @@ auth.get!
   .then (brd) ->
     lc.brd = brd
     lc.grps = brd.detail.{}group
-    lc.grp-list = [v for k,v of brd.detail.group]
-    lc.grp = lc.grps[key.grp]
+    lc.grp = lc.grps.filter(->it.key == key.grp).0
     if !lc.grp => return Promise.reject new Error(1015)
     root = ld$.find('[ld-scope=prj-create]',0)
     n = ld$.find(root, 'input[name=brd]', 0)
     n.value = key.brd
-    show-grp = if [k for k of lc.grps].length == 1 => false else true
+    show-grp = if lc.grps.length == 1 => false else true
     info = new adminInfo {root: root, type: \prj}
     view = new ldView do
       root: root
       action: input: do
         grp: ({node}) ->
           key.grp = node.value
-          lc.grp = lc.grps[key.grp]
+          lc.grp = lc.grps.filter(->it.key == key.grp).0
           view.render!
       handler: do
         "grp-option": do
-          list: -> lc.grp-list
+          list: -> lc.grps
           handler: ({node,data}) ->
             node.value = data.key
             node.innerText = data.info.name

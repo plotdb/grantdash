@@ -17,14 +17,18 @@ Adapter = (opt = {}) ->
 Adapter.prototype = Object.create(Object.prototype) <<< do
   on: (n, cb) -> @evt-handler.[][n].push cb
   fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
-  init: (hub) ->
+  init: (hub,type) ->
+    obj = if type == \array => [] else {}
     @hub = hub
     @sdb = hub.sdb
-    @doc = hub.doc or {data: {}}
-    o = @doc.data
-    for n in @path => o = (o[n] or {})
+    @doc = hub.doc or {data: obj}
+    o = @get-data! or obj
     @watch {data: o}
     @hub.on \change, ~> @watch it
+  get-data: -> 
+    if !(o = @doc.data) => return null
+    for n in @path => if !(o = (o[n])) => return null
+    return o
   set-doc: (doc) ->
     @doc = doc or {data: {}}
     o = @doc.data
@@ -39,7 +43,7 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
     if !@sdb or !@doc.submitOp => return
     if typeof(ops) == \function =>
       cur = ops(JSON.parse(JSON.stringify(@data or {})))
-      ops = if !@data => [{p: [], oi: {}}] else []
+      ops = if !(@get-data!) => [{p: [], oi: (if Array.isArray(cur) => [] else {})}] else []
       ops ++= @sdb.json.diff((@data or {}), cur)
       @update ops
     else if Array.isArray(ops) and ops.length =>
@@ -63,10 +67,10 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
 
 Adapter.interface = do
   adapted: -> !!@adapter
-  adapt: ({hub, path}) ->
+  adapt: ({hub, path, type}) ->
     @adapter = adapter = new Adapter path: path
     adapter.on \change, ({ops, source}) ~> @ops-in {data: adapter.data, ops, source}
-    adapter.init hub
+    adapter.init hub, type
     return adapter
   set-doc: (doc) -> if @adapter => @adapter.set-doc doc
 

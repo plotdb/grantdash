@@ -15,29 +15,19 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
       type: 'json'
     });
   }).then(function(brd){
-    var ref$, res$, k, v, root, n, showGrp, info, view;
+    var ref$, root, n, showGrp, info, view;
     lc.brd = brd;
     lc.grps = (ref$ = brd.detail).group || (ref$.group = {});
-    res$ = [];
-    for (k in ref$ = brd.detail.group) {
-      v = ref$[k];
-      res$.push(v);
-    }
-    lc.grpList = res$;
-    lc.grp = lc.grps[key.grp];
+    lc.grp = lc.grps.filter(function(it){
+      return it.key === key.grp;
+    })[0];
     if (!lc.grp) {
       return Promise.reject(new Error(1015));
     }
     root = ld$.find('[ld-scope=prj-create]', 0);
     n = ld$.find(root, 'input[name=brd]', 0);
     n.value = key.brd;
-    showGrp = (function(){
-      var results$ = [];
-      for (k in lc.grps) {
-        results$.push(k);
-      }
-      return results$;
-    }()).length === 1 ? false : true;
+    showGrp = lc.grps.length === 1 ? false : true;
     info = new adminInfo({
       root: root,
       type: 'prj'
@@ -50,7 +40,9 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
             var node;
             node = arg$.node;
             key.grp = node.value;
-            lc.grp = lc.grps[key.grp];
+            lc.grp = lc.grps.filter(function(it){
+              return it.key === key.grp;
+            })[0];
             return view.render();
           }
         }
@@ -58,7 +50,7 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
       handler: {
         "grp-option": {
           list: function(){
-            return lc.grpList;
+            return lc.grps;
           },
           handler: function(arg$){
             var node, data;

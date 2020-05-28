@@ -24,7 +24,7 @@ api.get \/b/:key/form/, (req, res) ->
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       ret.detail = ret.detail{group}
-      for k,v of (ret.detail.group or {}) => ret.detail.group[k] = v{form,info,key}
+      ret.detail.group = ret.detail.group.map -> it{form, info, key}
       res.send ret{name,description,slug,detail}
     .catch aux.error-handler res
 
@@ -44,7 +44,7 @@ api.post \/b, aux.signed, express-formidable!, (req, res) ->
   {name,description,slug,starttime,endtime,org} = req.fields
   if !name or !/^[a-zA-Z0-9-]+$/.exec(slug) => return aux.r400 res
   thumb = (req.files["thumbnail[]"] or {}).path
-  detail = {info: {name, description, starttime, endtime}}
+  detail = {info: {name, description, starttime, endtime}, group: []}
   io.query "select key from brd where slug = $1", [slug]
     .then (r={}) ->
       if r.rows and r.rows.length => return aux.reject new lderror(1011)

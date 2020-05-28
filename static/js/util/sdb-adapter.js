@@ -25,24 +25,36 @@ ldc.register('sdbAdapter', [], function(){
       }
       return results$;
     },
-    init: function(hub){
-      var o, i$, ref$, len$, n, this$ = this;
+    init: function(hub, type){
+      var obj, o, this$ = this;
+      obj = type === 'array'
+        ? []
+        : {};
       this.hub = hub;
       this.sdb = hub.sdb;
       this.doc = hub.doc || {
-        data: {}
+        data: obj
       };
-      o = this.doc.data;
-      for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
-        n = ref$[i$];
-        o = o[n] || {};
-      }
+      o = this.getData() || obj;
       this.watch({
         data: o
       });
       return this.hub.on('change', function(it){
         return this$.watch(it);
       });
+    },
+    getData: function(){
+      var o, i$, ref$, len$, n;
+      if (!(o = this.doc.data)) {
+        return null;
+      }
+      for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
+        n = ref$[i$];
+        if (!(o = o[n])) {
+          return null;
+        }
+      }
+      return o;
     },
     setDoc: function(doc){
       var o, i$, ref$, len$, n;
@@ -78,10 +90,12 @@ ldc.register('sdbAdapter', [], function(){
       }
       if (typeof ops === 'function') {
         cur = ops(JSON.parse(JSON.stringify(this.data || {})));
-        ops = !this.data
+        ops = !this.getData()
           ? [{
             p: [],
-            oi: {}
+            oi: Array.isArray(cur)
+              ? []
+              : {}
           }]
           : [];
         ops = ops.concat(this.sdb.json.diff(this.data || {}, cur));
@@ -131,8 +145,8 @@ ldc.register('sdbAdapter', [], function(){
       return !!this.adapter;
     },
     adapt: function(arg$){
-      var hub, path, adapter, this$ = this;
-      hub = arg$.hub, path = arg$.path;
+      var hub, path, type, adapter, this$ = this;
+      hub = arg$.hub, path = arg$.path, type = arg$.type;
       this.adapter = adapter = new Adapter({
         path: path
       });
@@ -145,7 +159,7 @@ ldc.register('sdbAdapter', [], function(){
           source: source
         });
       });
-      adapter.init(hub);
+      adapter.init(hub, type);
       return adapter;
     },
     setDoc: function(doc){

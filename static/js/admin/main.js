@@ -174,8 +174,15 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         }
         return results$;
       }.call(this)).map(function(k){
-        var p;
-        p = ['group', v.key, k];
+        var idx, p;
+        idx = 0;
+        this$.hubs.brd.doc.data.group.map(function(d, i){
+          var idx;
+          if (d.key === v.key) {
+            return idx = i;
+          }
+        });
+        p = ['group', idx, k];
         if (!this$.ctrl.grp[k].adapted()) {
           return this$.ctrl.grp[k].adapt({
             hub: this$.hubs.brd,
@@ -235,7 +242,8 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
       });
       y$.group.adapt({
         hub: brd,
-        path: ['group']
+        path: ['group'],
+        type: 'array'
       });
       y$.stage = new adminStage({
         toc: toc,
@@ -336,8 +344,12 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
   })['finally'](function(){
     return loader.off();
   })['catch'](function(e){
+    var that;
     console.log("[Admin Error] Code: ", e.id);
     console.log("Error Object: ", e.e || e);
+    if (that = e.stack) {
+      console.log(that);
+    }
     if (e.id === 1012) {
       return ldcvmgr.toggle('error-403');
     } else if (e.id === 1000) {

@@ -87,7 +87,9 @@ prj-form, admin-entry}) ->
 
     set-group: (v) ->
       (k) <~ [k for k of @ctrl.grp].map _
-      p = ['group', v.key, k]
+      idx = 0
+      @hubs.brd.doc.data.group.map (d,i) -> if d.key == v.key => idx = i
+      p = ['group', idx, k]
       if !@ctrl.grp[k].adapted! => @ctrl.grp[k].adapt {hub: @hubs.brd, path: p}
       else @ctrl.grp[k].set-path p
 
@@ -108,7 +110,7 @@ prj-form, admin-entry}) ->
         ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd, data: toc.brd}
         ..info.adapt   {hub: brd, path: <[info]> }
         ..group = new admin-menu {toc: @toc, set-group}
-        ..group.adapt   {hub: brd, path: <[group]>}
+        ..group.adapt   {hub: brd, path: <[group]>, type: \array}
         ..stage = new admin-stage {toc, root: '[ld-scope=brd-stage]'}
         ..stage.adapt  {hub: brd, path: <[stage]>}
         ..perm = new admin-perm {toc, root: '[data-nav=brd-config] [ld-scope=perm-panel]'}
@@ -118,7 +120,7 @@ prj-form, admin-entry}) ->
 
       @ctrl.grp
         ..form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}
-        ..info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group: set-group}
+        ..info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group}
         ..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]'}
         ..grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
@@ -157,6 +159,7 @@ prj-form, admin-entry}) ->
     .catch (e) ->
       console.log "[Admin Error] Code: ", e.id
       console.log "Error Object: ", (e.e or e)
+      if e.stack => console.log that
       if e.id == 1012 => ldcvmgr.toggle \error-403
       else if e.id == 1000 => ldcvmgr.toggle \auth-required
       else if e.id == 1007 => ldcvmgr.toggle \server-down

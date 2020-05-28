@@ -24,7 +24,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       .then ~>
         @brd = it
         # TODO choose grp by prj result
-        @grp = [v for k,v of @brd.detail.group].0 or {}
+        @grp = @brd.detail.group.0 or {}
 
   sharedb: ->
     console.log "initializing sharedb connection ..."

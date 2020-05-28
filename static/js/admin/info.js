@@ -8,10 +8,11 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
     this.type = type = {
       org: 'o',
       prj: 'p',
-      brd: 'b'
+      brd: 'b',
+      grp: 'g'
     }[opt.type] || null;
     if (!type) {
-      throw new ldError(1015);
+      throw new ldError(1015, "admin-info: type is not defined.");
     }
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
@@ -139,32 +140,27 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
             node.innerText = data.name + (!data.slug
               ? ''
               : " ( " + data.slug + " )");
-            return node.setAttribute('value', data.key);
+            return node.setAttribute('value', data.key || '');
           }
         }
       },
       action: {
         click: {
           'delete': function(){
-            var p, ks, res$, k;
+            var p, ref$;
             p = this$.adapter.path;
             if (p[0] !== 'group') {
               return;
             }
-            res$ = [];
-            for (k in this$.adapter.doc.data.group) {
-              res$.push(k);
-            }
-            ks = res$;
-            if (ks.length === 1) {
+            if (((ref$ = this$.adapter.doc.data).group || (ref$.group = [])).length === 1) {
               return;
             }
             this$.adapter.doc.submitOp([{
               p: ['group', p[1]],
               od: this$.adapter.doc.data.group[p[1]]
             }]);
-            this$.setPath(['group', ks[0], 'info']);
-            return this$.opt.setGroup(this$.adapter.doc.data.group[ks[0]]);
+            this$.setPath(['group', 0, 'info']);
+            return this$.opt.setGroup(this$.adapter.doc.data.group[0]);
           },
           submit: function(arg$){
             var node;

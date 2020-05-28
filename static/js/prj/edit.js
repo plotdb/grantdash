@@ -39,16 +39,8 @@ ldc.register(['prjForm', 'loader', 'ldcvmgr'], function(arg$){
           type: 'json'
         });
       }).then(function(it){
-        var k, v;
         this$.brd = it;
-        return this$.grp = (function(){
-          var ref$, results$ = [];
-          for (k in ref$ = this.brd.detail.group) {
-            v = ref$[k];
-            results$.push(v);
-          }
-          return results$;
-        }.call(this$))[0] || {};
+        return this$.grp = this$.brd.detail.group[0] || {};
       });
     },
     sharedb: function(){

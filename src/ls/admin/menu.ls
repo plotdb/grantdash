@@ -21,9 +21,9 @@ Ctrl = (opt) ->
         "grp-add": ({node}) ~>
           for i from 0 til 100 =>
             key = "grp-#{Math.random!toString(36)substring(2)}"
-            if !@grps[key] => break
-          if @grps[key] => throw new ldError(1011)
-          @grps[key] = {key, info: {name: "新分組"}}
+            if !@grps.filter(->it.key == key).length => break
+          if @grps.filter(->it.key == key).length => throw new ldError(1011)
+          @grps.push {key, info: {name: "新分組"}}
           view.render 'grp-entry'
           update!now!
 
@@ -58,7 +58,7 @@ Ctrl = (opt) ->
           ld$.find(node, '.text-sm',0).innerText = data.description
       "grp-entry": do
         key: -> it.key
-        list: ~> [v for k,v of (@grps or {})]
+        list: ~> @grps or []
         init: ({node,data}) ->
           node.data = data
           root = node
@@ -75,7 +75,8 @@ Ctrl = (opt) ->
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
-    @grps = JSON.parse JSON.stringify(data or {})
+    @grps = JSON.parse JSON.stringify(data or [])
+    if !Array.isArray(data) => @grps = []
     @view.render!
 
 return Ctrl

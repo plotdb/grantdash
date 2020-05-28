@@ -2,8 +2,8 @@
 \adminInfo, <[loader notify ldcvmgr auth sdbAdapter]>, _)
 Ctrl = (opt) ->
   @opt = opt
-  @type = type = {org: 'o', prj: 'p', brd: 'b'}[opt.type] or null
-  if !type => throw new ldError(1015)
+  @type = type = {org: 'o', prj: 'p', brd: 'b', grp: 'g'}[opt.type] or null
+  if !type => throw new ldError(1015, "admin-info: type is not defined.")
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   # committed data in table, if available
   @data = opt.data
@@ -63,17 +63,16 @@ Ctrl = (opt) ->
         list: -> (lc.list or []) ++ [{name: "無", key: null}]
         handler: ({node, data}) ->
           node.innerText = data.name + (if !data.slug => '' else " ( #{data.slug} )")
-          node.setAttribute \value, data.key
+          node.setAttribute \value, (data.key or '')
 
     action: click:
       delete: ~>
         p = @adapter.path
         if p.0 != \group => return
-        ks = [k for k of @adapter.doc.data.group]
-        if ks.length == 1 => return
+        if @adapter.doc.data.[]group.length == 1 => return
         @adapter.doc.submitOp [ {p: ['group',p.1],  od: @adapter.doc.data.group[p.1] } ]
-        @set-path ['group', ks.0, 'info']
-        @opt.set-group @adapter.doc.data.group[ks.0]
+        @set-path ['group', 0, 'info']
+        @opt.set-group @adapter.doc.data.group.0
 
       submit: ({node}) ->
         if node.classList.contains \disabled => return
