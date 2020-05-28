@@ -5,12 +5,12 @@ require! <[../aux]>
 api = engine.router.api
 app = engine.app
 
-api.get "/p/:key/", aux.signed, (req, res) ->
-  if isNaN(key = parseInt(req.params.key)) => return aux.r400 res
+api.get "/p/:slug/", aux.signed, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
   io.query """
-  select * from prj where key = $1
-  """, [key]
-    .then -> res.send(r.[]rows.0 or {})
+  select p.*, b.slug as brdslug from prj as p, brd as b where p.slug = $1 and b.key = p.brd
+  """, [slug]
+    .then (r = {}) -> res.send(r.[]rows.0 or {})
     .catch aux.error-handler res
 
 
