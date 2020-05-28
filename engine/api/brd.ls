@@ -5,14 +5,28 @@ require! <[../aux]>
 api = engine.router.api
 app = engine.app
 
-app.get \/b/:key, aux.signed, (req, res) ->
+app.get \/b/:bslug/g/:gslug/list, (req, res) ->
+  {offset,limit} = req.query{offset,limit}
+  {bslug,gslug} = req.params{bslug,gslug}
+  offset = (if isNaN(+offset) => 0 else +offset ) >? 0
+  limit = (if isNaN(+limit) => 24 else +limit ) <? 100 >? 1
+  if !(bslug and gslug) => return aux.r400 res
+  #io.query "select p.* from prj as p where brd = $1 and grp = $2", [bslug, gslug]
+  io.query "select p.* from prj as p"
+    .then (r={}) ->
+      res.render \prj/list.pug, {prjs: r.[]rows}
+      return null
+    .catch aux.error-handler res
+
+app.get \/b/:slug, aux.signed, (req, res) ->
   lc = {}
   if !req.user => return aux.r403 res
-  io.query "select * from brd where key = $1", [req.params.key]
+  if !(slug = req.params.slug) => return aux.r400 res
+  io.query "select * from brd where slug = $1", [slug]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 404
       if brd.owner != req.user.key => return aux.reject 403
-      io.query "select * from project where brd = $1", [brd.key]
+      io.query "select * from prj where brd = $1", [brd.key]
     .then (r={}) ->
       lc.projects = r.[]rows
       res.render \b/index.pug, lc{brd, projects}
