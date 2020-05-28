@@ -1,4 +1,4 @@
-({prjForm, loader, ldcvmgr}) <- ldc.register <[prjForm loader ldcvmgr]>, _
+({prjForm, loader, ldcvmgr, error}) <- ldc.register <[prjForm loader ldcvmgr error]>, _
 
 Ctrl = (opt) ->
   @ldcv = new ldCover root: '[ld-scope=prj-diff]'
@@ -9,7 +9,7 @@ Ctrl = (opt) ->
     handler: do
       "init-loader": ({node}) ->
         node.classList.toggle \d-none, true
-  @key = opt.prj
+  @slug = opt.prj
   @prj = {}
   @
 
@@ -17,10 +17,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   fetch: ->
     console.log "fetching project information ..."
     console.log "fetching board form ..."
-    ld$.fetch "/d/p/#{@key}", {method: \GET}, {type: \json}
+    ld$.fetch "/d/p/#{@slug}", {method: \GET}, {type: \json}
       .then ~>
         @prj = it
-        ld$.fetch "/d/b/#{@prj.brd}/form", {method: \GET}, {type: \json}
+        ld$.fetch "/d/b/#{@prj.brdslug}/form", {method: \GET}, {type: \json}
       .then ~>
         @brd = it
         # TODO choose grp by prj result
@@ -40,13 +40,13 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   getdoc: ->
     console.log "get project document ..."
     @sdb.get({
-      id: "prj-sample"
+      id: "prj-#{@slug}"
       watch: (ops,source) ~> @hubs.prj.fire \change, {ops,source}
       create: ~>
         ret = {}
         form = @grp.{}form
-        ret[form.{}purpose.title or 'title'].content = @prj.name
-        ret[form.purpose.description or 'description'].content = @prj.description
+        ret{}[form.{}purpose.title or 'title'].content = @prj.name
+        ret{}[form.purpose.description or 'description'].content = @prj.description
         ret
     }).then (doc) ~> @hubs.prj.doc = doc
 
@@ -63,7 +63,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
 
   render: -> @view.render!
 
-ctrl = new Ctrl {prj: 7}
+
+[path,slug] = /^\/p\/([^/]+)\/edit/.exec(window.location.pathname) or []
+
+ctrl = new Ctrl {prj: slug}
 #loader.on!
 ctrl.fetch!
   .then -> ctrl.sharedb!
@@ -71,3 +74,4 @@ ctrl.fetch!
   .then -> ctrl.init-form!
   .then -> ctrl.render!
   .then -> loader.off!
+  .catch error!

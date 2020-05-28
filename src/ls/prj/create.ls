@@ -7,7 +7,6 @@ key = (
   /^\/b\/([^/]+)\/p\/create/.exec(window.location.pathname) or 
   /^\/b\/([^/]+)\/g\/([^/]+)\/p\/create/.exec(window.location.pathname) or []
 )
-
 key = brd: key.1, grp: key.2
 
 auth.get!
