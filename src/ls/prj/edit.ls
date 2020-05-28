@@ -1,4 +1,4 @@
-({prjForm, loader, ldcvmgr, error}) <- ldc.register <[prjForm loader ldcvmgr error]>, _
+({auth, prjForm, loader, ldcvmgr, error}) <- ldc.register <[auth prjForm loader ldcvmgr error]>, _
 
 Ctrl = (opt) ->
   @ldcv = new ldCover root: '[ld-scope=prj-diff]'
@@ -59,7 +59,15 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       brd: @brd
     }
     @ctrl-form.adapt {hub: @hubs.prj, path: ['content']}
-    @ctrl-form.on \submit, -> console.log it
+    @ctrl-form.on \submit, (answer) ~>
+      data = payload: answer, type: \prj, slug: @prj.slug
+      ldcvmgr.toggle \publishing, true
+      ld$.fetch "/d/detail", {method: \PUT}, {json: data, type: \json}
+        .finally -> ldcvmgr.toggle \publishing, false
+        .then -> ldcvmgr.toggle \published, true
+        .then -> debounce 2000
+        .finally -> ldcvmgr.toggle \published, false
+        .catch error!
 
   render: -> @view.render!
 
@@ -67,8 +75,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
 [path,slug] = /^\/p\/([^/]+)\/edit/.exec(window.location.pathname) or []
 
 ctrl = new Ctrl {prj: slug}
-#loader.on!
-ctrl.fetch!
+auth.get!
+  .then -> ctrl.fetch!
   .then -> ctrl.sharedb!
   .then -> ctrl.getdoc!
   .then -> ctrl.init-form!
