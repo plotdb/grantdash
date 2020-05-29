@@ -46,9 +46,10 @@ mixin prj-card-sm(opt)
 mixin prj-card-noframe(opt)
   .d-flex.flex-column(style="width:20em;overflow:hidden")&attributes(attributes)
     a.text-dark.text-no-deco(href=`/p/${opt.slug}`)
-      .w-100
-        .aspect-ratio.ratio-3by2.bg-light.bg-cover.bg-portrait.rounded-lg.mb-3(
-        style=`background-image:url(${opt.thumb})`)
+      if opt.showThumb
+        .w-100
+          .aspect-ratio.ratio-3by2.bg-light.bg-cover.bg-portrait.rounded-lg.mb-3(
+          style=`background-image:url(${opt.thumb})`)
       .text-truncate(style="font-weight:500;font-size:1.25em") #{opt.name || '未命名的提案'}
 
     .text-muted.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownername || '未具名'}]
