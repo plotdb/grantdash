@@ -38,6 +38,7 @@ block script
   +script("/js/util/hub.js")
   script: :lsc
     (->
-      ldc.register <[prjForm]>, ({prj-form}) ->
-        ctrl = new prj-form {view-mode: false, root: '[ld-scope=form]'}
+      ldc.register <[prjForm auth]>, ({prj-form, auth}) ->
+        auth.get!then ->
+          ctrl = new prj-form {view-mode: false, root: '[ld-scope=form]'}
     )!

@@ -1,4 +1,4 @@
-({prjFormCriteria}) <- ldc.register \prjFormBlock, <[prjFormCriteria]>, _
+({ldcvmgr, error, prjFormCriteria}) <- ldc.register \prjFormBlock, <[ldcvmgr error prjFormCriteria]>, _
 
 schema = prjFormCriteria.schema
 
@@ -9,16 +9,41 @@ module = {}
 
 module["form-file"] = module-init: ->
   @view.module = view = new ldView do
+    context: {}
     root: @root
     init: do
-      "input-file": ({node, local}) ~>
+      "input-file": ({node, local, context}) ~>
+        context.loading = false
         local.ldf = ldf = new ldFile root: node
         ldf.on \load, (files) ~>
-          console.log files
-          @block.{}value.list = files.map -> it.file{name, size, type}
-          @update!
+          node.value = ''
+          fd = new FormData!
+          for i from 0 til files.length => fd.append "file[]", files[i].file
+          context.loading = true
           @view.module.render!
+          ld$.xhr(
+            \/d/p/2IJi18049-05bt0AFA03ZOP18/file
+            {method: \PUT, body: fd}
+            {
+              type: \json
+              progress: ({percent}) ~>
+                context.percent = percent
+                @view.module.render!
+            }
+          )
+            .then ~>
+              @block.{}value.list = files.map (d,i) -> d.file{name, size, type, key: i}
+              @update!
+            .finally ~>
+              debounce 1000 .then ~>
+                context.loading = false
+                @view.module.render!
+            .catch error!
+
     handler: do
+      loading: ({context, node}) -> node.classList.toggle \d-none, !context.loading
+      bar: ({context, node}) -> node.style.width = "#{(context.percent or 0) * 100}%"
+      "bar-label": ({context, node}) -> node.innerText = "#{(context.percent or 0) * 100}%"
       file: do
         list: ~> @block.{}value.[]list
         init: ({node, data, local}) ->

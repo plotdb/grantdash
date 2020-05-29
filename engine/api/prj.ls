@@ -33,6 +33,29 @@ api.get "/p/:slug/", aux.signed, (req, res) ->
     .then (r = {}) -> res.send(r.[]rows.0 or {})
     .catch aux.error-handler res
 
+api.put \/p/:slug/file, aux.signed, express-formidable({multiples:true}), (req, res) ->
+  lc = {}
+  if !(slug = req.params.slug) => return aux.r404 res
+  io.query """select slug from prj where slug = $1""", [slug]
+    .then (r={}) ->
+      if !(lc.prj = r.[]rows.0) => return aux.reject 404
+      lc.root = "users/p/#{lc.prj.slug}"
+    .then ->
+      lc.files = req.files["file[]"]
+      lc.files = if Array.isArray(lc.files) => lc.files else [lc.files]
+      if lc.files.length > 100 or lc.files.length < 1 => return aux.reject 400
+      lc.files = lc.files
+        .map -> {path: it.path, type: it.type.split(\/).1}
+        .filter -> /([a-zA-Z0-9]+$)/.exec(it.type)
+      fs-extra.ensure-dir lc.root
+    .then ->
+      Promise.all(
+        lc.files.map (file, idx) ->
+          fs-extra.copy file.path, path.join(lc.root, "draft.#{idx + 1}.#{file.type}")
+      )
+    .then -> res.send {}
+    .catch aux.error-handler res
+
 
 api.post \/p/, aux.signed, express-formidable!, (req, res) ->
   lc = {}

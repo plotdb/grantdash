@@ -225,7 +225,7 @@ window.uuid = v4;
     uuidGen = uuid;
   }
   hsh = {};
-  map = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+-$".split('');
+  map = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+-_".split('');
   sep = "0";
   for (i$ = 0, to$ = map.length; i$ < to$; ++i$) {
     i = i$;
