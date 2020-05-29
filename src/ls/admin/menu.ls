@@ -50,12 +50,10 @@ Ctrl = (opt) ->
         node.classList.toggle \d-none, (!toc.brds.length xor ~node.getAttribute(\ld).indexOf(\empty))
       "brd-entry": do
         list: -> toc.brds-filtered
-        action: click: ({node, data}) ->
-          toc.brd = data
-          view.render!
         handler: ({node, data}) ->
           ld$.find(node, 'span',0).innerText = data.name
           ld$.find(node, '.text-sm',0).innerText = data.description
+          node.setAttribute \href, "/b/#{data.slug}/admin"
       "grp-entry": do
         key: -> it.key
         list: ~> @grps or []

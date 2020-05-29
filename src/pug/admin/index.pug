@@ -49,8 +49,10 @@ block script
               .pb-2.text-sm.d-flex
                 b.flex-grow-1 活動列表
                 a.text-underline.text-white(href="/new/brd/") 建立新活動
-              .pb-2: input.form-control.form-control-sm.rounded(ld="brd-search",placeholder="搜尋...")
-              .pb-2.clickable(ld-each="brd-entry") #[span]#[.text-muted.text-sm]
+              //-.pb-2: input.form-control.form-control-sm.rounded(ld="brd-search",placeholder="搜尋...")
+              a.py-2.d-block.clickable.text-no-deco.text-white(href="#",ld-each="brd-entry")
+                span
+                .text-muted.text-sm.text-truncate
 
 
         .pt-2(pd="brd-menu",ld="nav",data-nav="main")

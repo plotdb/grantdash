@@ -124,19 +124,12 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
           list: function(){
             return toc.brdsFiltered;
           },
-          action: {
-            click: function(arg$){
-              var node, data;
-              node = arg$.node, data = arg$.data;
-              toc.brd = data;
-              return view.render();
-            }
-          },
           handler: function(arg$){
             var node, data;
             node = arg$.node, data = arg$.data;
             ld$.find(node, 'span', 0).innerText = data.name;
-            return ld$.find(node, '.text-sm', 0).innerText = data.description;
+            ld$.find(node, '.text-sm', 0).innerText = data.description;
+            return node.setAttribute('href', "/b/" + data.slug + "/admin");
           }
         },
         "grp-entry": {
