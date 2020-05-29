@@ -19,17 +19,28 @@ html
   body
     +nbr(2)
     .w-480.mx-auto.rwd
-      .bg-light.p-4
-        .progress.mb-4.mt-2.position-relative(ld="loading")
-          .progress-bar.progress-bar-striped.progress-bar-animated(ld="bar",style="width:50%")
-          .text-center.position-absolute.w-100(style="line-height:1.3em") 0%
-        each i in [1,2,3]
-          .py-1.px-2.my-2.bg-white.d-flex.align-items-center.rounded
-            .name.flex-grow-1 balloon-1.1s-128px.gif
-            .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light image/gif
-            .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light 0.1MB
+      +scope("users")
+        .p-4.rounded.border.shadow-sm
+          .position-relative
+            input.form-control(ld="input",style="border-radius:.25em;border:1px solid #ddd",
+            placeholder="type user name ... ")
+            .d-none(ld="picked"): .position-absolute.w-100.h-100(style="top:0;left:0")
+              .d-flex.align-items-center.p-2.bg-white.form-control.bg-light
+                .bg-dark.rounded.mr-1(ld="picked-avatar",style="width:1em;height:1em")
+                .flex-grow-1(ld="picked-name")
+                i.i-close.text-danger.clickable(ld="clear")
+            .d-none.ld.ld-fade-in(ld="loading")
+              .position-absolute.m-auto.ld.ld-spin.ld-spinner(style="top:0;bottom:0;right:.5em")
+            .p-3.rounded.border.shadow-sm.d-none.ld.ld-float-ttb-in.bg-white.xp15.position-absolute.w-100(
+            ld="users",style="border-radius: 0 0 .5em .5em")
+              .d-flex.align-items-center.clickable(ld-each="user")
+                .bg-light.rounded.mr-1(ld="avatar",style="width:1em;height:1em")
+                div(ld="name")
+
 
     +script("/assets/lib/suuid/suuid.bundle.min.js")
+    +script("/js/util/user.js")
     script: :lsc
-      console.log(suuid!)
-
+      ldc.register <[userSearch]>, ({userSearch}) ->
+        us = new userSearch root: '[ld-scope=users]', delay: 500
+        us.init!
