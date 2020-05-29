@@ -26,7 +26,10 @@ module-list = module-init: ->
     handler: do
       list: do
         key: -> it.key
-        list: ~> (@block.data or []) ++ [{other: true, key: 'other'}]
+        list: ~>
+          ret = (@block.data or [])
+          if @block.{}config.other-enabled or !@viewing => ret ++= [{other: true, key: 'other'}]
+          return ret
         init: ({node, data}) ~>
           editable = node.hasAttribute(\data-user-editable)
           if !editable and @viewing => node.removeAttribute \draggable
@@ -66,6 +69,10 @@ module-list = module-init: ->
                   @block.{}value.other-value = node.value
                 data: ({node}) ~> data[node.getAttribute(\data-name)] = node.innerText
               click: do
+                "other-enabled": ({node, evt}) ~>
+                  @block.{}config.other-enabled = !@block.{}config.other-enabled
+                  node.classList.toggle \on
+                  @render!
                 delete: ({node, evt}) ~>
                   @block.data.splice @block.data.indexOf(data), 1
                   @update!
@@ -80,7 +87,11 @@ module-list = module-init: ->
                 node.classList.toggle \active, ison
               "other-value": ({node}) ~>
                 node.value = @block.{}value.other-value or ''
+                if @block.{}config.other-enabled => node.removeAttribute \readonly
+                else node.setAttribute \readonly, ''
               delete: ({node}) ~> node.classList.toggle \d-none, !!((@viewing and !editable) or data.other)
+              "other-enabled": ({node}) ~>
+                node.classList.toggle \d-none, (@viewing or !data.other)
               other: ({node}) ->
                 node.classList.toggle \d-none, !data.other
               data: ({node}) ->

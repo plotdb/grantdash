@@ -46,10 +46,15 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
               return it.key;
             },
             list: function(){
-              return (this$.block.data || []).concat([{
-                other: true,
-                key: 'other'
-              }]);
+              var ret, ref$;
+              ret = this$.block.data || [];
+              if (((ref$ = this$.block).config || (ref$.config = {})).otherEnabled || !this$.viewing) {
+                ret = ret.concat([{
+                  other: true,
+                  key: 'other'
+                }]);
+              }
+              return ret;
             },
             init: function(arg$){
               var node, data, editable;
@@ -136,6 +141,13 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
                     }
                   },
                   click: {
+                    "other-enabled": function(arg$){
+                      var node, evt, ref$;
+                      node = arg$.node, evt = arg$.evt;
+                      ((ref$ = this$.block).config || (ref$.config = {})).otherEnabled = !((ref$ = this$.block).config || (ref$.config = {})).otherEnabled;
+                      node.classList.toggle('on');
+                      return this$.render();
+                    },
                     'delete': function(arg$){
                       var node, evt;
                       node = arg$.node, evt = arg$.evt;
@@ -162,12 +174,22 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
                   "other-value": function(arg$){
                     var node, ref$;
                     node = arg$.node;
-                    return node.value = ((ref$ = this$.block).value || (ref$.value = {})).otherValue || '';
+                    node.value = ((ref$ = this$.block).value || (ref$.value = {})).otherValue || '';
+                    if (((ref$ = this$.block).config || (ref$.config = {})).otherEnabled) {
+                      return node.removeAttribute('readonly');
+                    } else {
+                      return node.setAttribute('readonly', '');
+                    }
                   },
                   'delete': function(arg$){
                     var node;
                     node = arg$.node;
                     return node.classList.toggle('d-none', !!((this$.viewing && !editable) || data.other));
+                  },
+                  "other-enabled": function(arg$){
+                    var node;
+                    node = arg$.node;
+                    return node.classList.toggle('d-none', this$.viewing || !data.other);
                   },
                   other: function(arg$){
                     var node;

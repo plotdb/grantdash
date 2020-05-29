@@ -82,6 +82,7 @@ mixin criteria
         .flex-grow-1.mr-2(ld="data",editable="title")
         .flex-grow-1(ld="other"): input.form-control(ld="other-value")
         i.i-close.mr-2.clickable.text-danger(ld="delete")
+        .switch.ml-2(ld="other-enabled")
     .btn.btn-sm.btn-outline-dark(ld="edit-only list-add") 增加項目 #[i.i-plus]
 
 +form-block({name: "form-checkbox"})
@@ -93,6 +94,7 @@ mixin criteria
         .flex-grow-1.mr-2(ld="data",editable="title")
         .flex-grow-1(ld="other"): input.form-control(ld="other-value")
         i.i-close.mr-2.clickable.text-danger(ld="delete")
+        .switch.ml-2(ld="other-enabled")
     .btn.btn-sm.btn-outline-dark(ld="edit-only list-add") 增加項目 #[i.i-plus]
 
 +form-block({name: "form-file"})
