@@ -100,7 +100,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
       clone: function(it){
         var newData;
         newData = JSON.parse(JSON.stringify(it));
-        newData.key = Math.random().toString(36).substring(2);
+        newData.key = suuid();
         obj.list.splice(obj.list.indexOf(it), 0, newData);
         this.update();
         return this.render();
@@ -209,7 +209,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
           node = arg$.node, name = arg$.name;
           schema = prjFormCriteria.schema;
           newData = {
-            key: Math.random().toString(36).substring(2),
+            key: suuid(),
             name: name,
             title: "問題的標題",
             desc: "一些關於這個問題的簡單描述、說明或介紹",
@@ -514,7 +514,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
                       node = arg$.node;
                       ref$ = [data.old || {}, data.cur || {}].map(function(v){
                         var that, ret;
-                        return Math.random().toString(36).substring(2);
+                        return suuid();
                         if (that = v.content) {
                           return that || '';
                         }

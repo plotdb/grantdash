@@ -71,7 +71,7 @@ Ctrl = (opt) !->
       n = evt.target
       if !(type = n.getAttribute(\data-type)) => return
       if type == \new-stage =>
-        key = Math.random!toString(36)substring(2)
+        key = suuid!
         stage.add {name: "新階段", key, desc: "自訂時段", config: {} }
         obj.update!
       else stage.use n.getAttribute(\data-key)

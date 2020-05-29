@@ -184,7 +184,7 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
           return;
         }
         if (type === 'new-stage') {
-          key = Math.random().toString(36).substring(2);
+          key = suuid();
           stage.add({
             name: "新階段",
             key: key,

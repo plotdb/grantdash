@@ -146,7 +146,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               ((ref$ = this$.block).data || (ref$.data = [])).push({
                 title: "新項目",
                 desc: "關於這個項目的描述 ... ",
-                key: Math.random().toString(36).substring(2)
+                key: suuuid()
               });
               this$.update();
               return this$.render();

@@ -55,7 +55,7 @@ Ctrl = (opt) ->
       @render!
     clone: ->
       new-data = JSON.parse(JSON.stringify(it))
-      new-data.key = Math.random!toString(36)substring(2)
+      new-data.key = suuid!
       obj.list.splice obj.list.indexOf(it), 0, new-data
       @update!
       @render!
@@ -113,7 +113,7 @@ Ctrl = (opt) ->
       afterInject: ({node, name}) ->
         schema = prjFormCriteria.schema
         new-data = do
-          key: Math.random!toString(36)substring(2)
+          key: suuid!
           name: name, title: "問題的標題", desc: "一些關於這個問題的簡單描述、說明或介紹"
           config: {required: true}, criteria: [{enabled: true, type: \number, op: \between }]
         type = schema.support[name].0
@@ -247,7 +247,7 @@ Ctrl = (opt) ->
                 desc: ({node}) -> node.innerText = data.block.desc or ''
                 row: ({node}) ->
                   [old, cur] = [(data.old or {}), (data.cur or {})].map (v) ->
-                    return Math.random!toString(36)substring(2)
+                    return suuid!
                     if v.content => return (that or '')
                     ret = (v.list or []).map (item) -> [v for k,v of item].join('\n')
                     if v.other => ret = ([ret] ++ [v.other-value])
