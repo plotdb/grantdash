@@ -9,6 +9,76 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
     }
   };
   module = {};
+  module["form-file"] = {
+    moduleInit: function(){
+      var view, this$ = this;
+      return this.view.module = view = new ldView({
+        root: this.root,
+        init: {
+          "input-file": function(arg$){
+            var node, local, ldf;
+            node = arg$.node, local = arg$.local;
+            local.ldf = ldf = new ldFile({
+              root: node
+            });
+            return ldf.on('load', function(files){
+              var ref$;
+              console.log(files);
+              ((ref$ = this$.block).value || (ref$.value = {})).list = files.map(function(it){
+                var ref$;
+                return {
+                  name: (ref$ = it.file).name,
+                  size: ref$.size,
+                  type: ref$.type
+                };
+              });
+              this$.update();
+              return this$.view.module.render();
+            });
+          }
+        },
+        handler: {
+          file: {
+            list: function(){
+              var ref$, ref1$;
+              return (ref$ = (ref1$ = this$.block).value || (ref1$.value = {})).list || (ref$.list = []);
+            },
+            init: function(arg$){
+              var node, data, local;
+              node = arg$.node, data = arg$.data, local = arg$.local;
+              return local.view = new ldView({
+                context: data,
+                root: node,
+                handler: {
+                  name: function(arg$){
+                    var node, context;
+                    node = arg$.node, context = arg$.context;
+                    return node.innerText = context.name;
+                  },
+                  type: function(arg$){
+                    var node, context;
+                    node = arg$.node, context = arg$.context;
+                    return node.innerText = context.type;
+                  },
+                  size: function(arg$){
+                    var node, context, mb;
+                    node = arg$.node, context = arg$.context;
+                    mb = Math.round(10 * data.size / 1048576) / 10;
+                    return node.innerText = mb + "MB";
+                  }
+                }
+              });
+            },
+            handler: function(arg$){
+              var node, data, local;
+              node = arg$.node, data = arg$.data, local = arg$.local;
+              return local.view.render();
+            }
+          }
+        }
+      });
+    }
+  };
   moduleList = {
     moduleInit: function(){
       var ref$, view, this$ = this;
@@ -215,7 +285,7 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
       });
     }
   };
-  module = import$({}, {
+  import$(module, {
     "form-radio": moduleList,
     "form-checkbox": moduleList,
     "form-checkpoint": moduleList

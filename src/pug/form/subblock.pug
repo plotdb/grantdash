@@ -99,7 +99,14 @@ mixin criteria
 
 +form-block({name: "form-file"})
   .p-4.bg-light: .vertical-center: .w-100.text-center
-    .btn.btn-outline-primary.btn-upload #[span 上傳檔案 ...]#[input(type="file")]
+    .btn.btn-outline-primary.btn-upload #[span 上傳檔案 ...]#[input(type="file",ld="input-file")]
+    div
+      .py-1.px-2.mt-4.mb-2.bg-white.shadow-sm.d-flex.align-items-center.rounded.text-left(ld-each="file")
+        .name.flex-grow-1(ld="name")
+        .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light(ld="type")
+        .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light(ld="size")
+
+
 
 +form-block({name: "form-long-answer"})
   .position-relative

@@ -7,6 +7,35 @@ settext = (n,v) -> if n.innerText != v => n.innerText = v
 
 module = {}
 
+module["form-file"] = module-init: ->
+  @view.module = view = new ldView do
+    root: @root
+    init: do
+      "input-file": ({node, local}) ~>
+        local.ldf = ldf = new ldFile root: node
+        ldf.on \load, (files) ~>
+          console.log files
+          @block.{}value.list = files.map -> it.file{name, size, type}
+          @update!
+          @view.module.render!
+    handler: do
+      file: do
+        list: ~> @block.{}value.[]list
+        init: ({node, data, local}) ->
+          local.view = new ldView do
+            context: data
+            root: node
+            handler: do
+              name: ({node,context}) -> node.innerText = context.name
+              type: ({node,context}) -> node.innerText = context.type
+              size: ({node,context}) ->
+                mb = Math.round(10 * data.size / 1048576) / 10
+                node.innerText = "#{mb}MB"
+        handler: ({node,data,local}) ->
+          local.view.render!
+
+
+
 module-list = module-init: ->
   if @block.name == \form-checkpoint and @viewing =>
     if !@block.{}value.list => @block.{}value.list = @block.[]data else @block.data = @block.value.list
@@ -101,7 +130,7 @@ module-list = module-init: ->
                 settext node, ((if data.other => '其它' else data[node.getAttribute(\data-name)]) or '')
 
 
-module = {} <<< do
+module <<< do
   "form-radio": module-list
   "form-checkbox": module-list
   "form-checkpoint": module-list

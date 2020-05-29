@@ -17,6 +17,15 @@ html
     style(type="text/css"): :stylus
       .folder-toggle { display: none }
   body
+    +nbr(2)
+    .w-480.mx-auto.rwd
+      .bg-light.p-4
+        each i in [1,2,3]
+          .py-1.px-2.mb-2.bg-white.d-flex.align-items-center.rounded
+            .name.flex-grow-1 balloon-1.1s-128px.gif
+            .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light image/gif
+            .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light 0.1MB
+
     +script("/assets/lib/suuid/suuid.bundle.min.js")
     script: :lsc
       console.log(suuid!)
