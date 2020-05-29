@@ -63,7 +63,7 @@ mixin criteria
 
 +form-block({name: "form-checkpoint"})
   .pt-4.px-4
-    .timeline-list(hostable)
+    .timeline-list
       .item(draggable="true",ld-each="list",data-user-editable="true"): .d-flex
         i.i-bars.mr-2.text-muted(ld="drag")
         .flex-grow-1
@@ -76,7 +76,7 @@ mixin criteria
 +form-block({name: "form-radio"})
   .px-4.py-3.border.rounded(editable="option",edit-type="block")
     .mb-2
-      div(hostable): .d-flex.align-items-center.clickable.my-2(draggable="true",ld-each="list")
+      div: .d-flex.align-items-center.clickable.my-2(draggable="true",ld-each="list")
         i.i-bars.mr-2.text-muted(ld="drag")
         i.mr-2(ld="state",type="radio")
         .flex-grow-1.mr-2(ld="data",editable="title")
@@ -88,7 +88,7 @@ mixin criteria
 +form-block({name: "form-checkbox"})
   .px-4.py-3.border.rounded
     .mb-2
-      div(hostable): .d-flex.align-items-center.clickable.my-2(draggable="true",ld-each="list")
+      div: .d-flex.align-items-center.clickable.my-2(draggable="true",ld-each="list")
         i.i-bars.mr-2.text-muted(ld="drag")
         i.mr-2(ld="state",type="checkbox")
         .flex-grow-1.mr-2(ld="data",editable="title")
