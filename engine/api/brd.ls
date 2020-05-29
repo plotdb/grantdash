@@ -6,18 +6,22 @@ api = engine.router.api
 app = engine.app
 
 app.get \/b/:bslug/g/:gslug/list, (req, res) ->
+  lc = {}
   {offset,limit} = req.query{offset,limit}
   {bslug,gslug} = req.params{bslug,gslug}
   offset = (if isNaN(+offset) => 0 else +offset ) >? 0
   limit = (if isNaN(+limit) => 24 else +limit ) <? 100 >? 1
   if !(bslug and gslug) => return aux.r400 res
-  #io.query "select p.* from prj as p where brd = $1 and grp = $2", [bslug, gslug]
-  io.query """
-  select p.*,u.displayname as ownername
-  from prj as p, users as u
-  """
+  io.query "select b.name, b.description, b.slug from brd as b where b.slug = $1", [bslug]
     .then (r={}) ->
-      res.render \prj/list.pug, {prjs: r.[]rows}
+      if !(lc.brd = r.[]rows.0) => return aux.reject 404
+      #io.query "select p.* from prj as p where brd = $1 and grp = $2", [bslug, gslug]
+      io.query """
+      select p.*,u.displayname as ownername
+      from prj as p, users as u
+      """
+    .then (r={}) ->
+      res.render \prj/list.pug, {prjs: r.[]rows, brd: lc.brd}
       return null
     .catch aux.error-handler res
 
