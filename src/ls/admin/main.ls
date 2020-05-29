@@ -1,10 +1,10 @@
 ldc.register \adminGuard,
 <[ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
-prjForm adminEntry]>,
+adminPrjList prjForm adminEntry]>,
 ({ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
-prj-form, admin-entry}) ->
+admin-prj-list, prj-form, admin-entry}) ->
 
   Ctrl = ->
     @loader = loader
@@ -86,9 +86,10 @@ prj-form, admin-entry}) ->
         .then ~> @render!
 
     set-group: (v) ->
-      (k) <~ [k for k of @ctrl.grp].map _
       idx = 0
       @hubs.brd.doc.data.group.map (d,i) -> if d.key == v.key => idx := i
+      (k) <~ [k for k of @ctrl.grp].map _
+      if !@ctrl.grp[k].adapt => return
       p = ['group', idx, k]
       if !@ctrl.grp[k].adapted! => @ctrl.grp[k].adapt {hub: @hubs.brd, path: p}
       else @ctrl.grp[k].set-path p
@@ -124,6 +125,7 @@ prj-form, admin-entry}) ->
         ..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]'}
         ..grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
+        ..list = new admin-prj-list {root: '[ld-scope=prj-list]'}
 
 
     publish: ->

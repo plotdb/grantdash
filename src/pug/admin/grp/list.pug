@@ -1,42 +1,41 @@
 //- module
-include ../../data/prj-list.pug
-.border-bottom.shadow-sm.bg-white.mb-4.sticky(style="top:0")
-  .p-4
-    .d-flex
-      .input-group
-        input.form-control(placeholder="提案名稱或團隊名稱 ...")
-        .input-group-append: .btn.btn-outline-secondary 搜尋
-    .d-flex.mt-2
-      each n in ["所有專案","初選名單","決選名單","獲選名單"]
-        .d-flex.align-items-center.mr-4
-          input.mr-1(type="radio",style="margin-top:-4px")
-          div #{n}
-      .flex-grow-1.text-right
-        a(href="#") 進階搜尋 ...
-
-.px-4
-
-  .d-flex.mb-2
-    .flex-grow-1: b 專案列表
-    div
-      .btn.btn-sm.btn-text 匯出：
-      .btn-group
-        .btn.btn-sm.btn-outline-secondary #[i.i-mail]
-        .btn.btn-sm.btn-outline-secondary #[i.i-bars]
-  .w-100(ld="tabbar",data-name="main")
-    .d-flex.border-bottom.border-top.p-2
-      .px-1(style="width:48px") 編號
-      .flex-grow-1 專案名稱 / 單位
-      .px-1.text-center(style="width:200px") 預算概況
-      .px-1.text-center(style="width:100px") 階段
-    each item,$index in db
-      .d-flex.border-bottom.align-items-center.p-2
-        .px-1(style="width:48px") #{$index}
-        .flex-grow-1
-          .clickable(ld="tabbar-tab",data-name="grp-detail") #{item.name}
-          .text-muted.text-sm #{item.ownerName}
-        .px-1.text-center(style="width:200px")
-          div 已核銷 100 萬
-          .text-sm 50% ( 250 萬 / 500 萬 )
-        .px-1.text-center(style="width:100px") #{(Math.random() > 0.5 ? "資格不符" : Math.random() > 0.5 ? "初審未過" : Math.random() > 0.5 ? "決選未過" : "期中審查")}
+//-include ../../data/prj-list.pug
++scope("prj-list")
+  .border-bottom.shadow-sm.bg-white.mb-4.sticky(style="top:0")
+    .p-4
+      .d-flex
+        .input-group
+          input.form-control(placeholder="提案名稱或團隊名稱 ...")
+          .input-group-append: .btn.btn-outline-secondary 搜尋
+      .d-flex.mt-2
+        each n in ["所有專案","初選名單","決選名單","獲選名單"]
+          .d-flex.align-items-center.mr-4
+            input.mr-1(type="radio",style="margin-top:-4px")
+            div #{n}
+        .flex-grow-1.text-right
+          a(href="#") 進階搜尋 ...
+  .px-4
+    .d-flex.mb-2
+      .flex-grow-1: b 專案列表
+      div
+        .btn.btn-sm.btn-text 匯出：
+        .btn-group
+          .btn.btn-sm.btn-outline-secondary #[i.i-mail]
+          .btn.btn-sm.btn-outline-secondary #[i.i-bars]
+    .w-100
+      .d-flex.border-bottom.border-top.p-2
+        .px-1(style="width:48px") 編號
+        .flex-grow-1 專案名稱 / 單位
+        .px-1.text-center(style="width:200px") 預算概況
+        .px-1.text-center(style="width:100px") 階段
+      div(ld="prjs")
+        .d-flex.border-bottom.align-items-center.p-2(ld-each="prj")
+          .px-1(ld="index",style="width:48px")
+          .flex-grow-1
+            .clickabled(ld="name")
+            .text-muted.text-sm(ld="ownername")
+          .px-1.text-center(style="width:200px")
+            div 已核銷 #[span(ld="budget-consume")]
+            .text-sm(ld="budget-detail")
+          .px-1.text-center(ld="stage",style="width:100px")
 
