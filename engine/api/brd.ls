@@ -46,13 +46,18 @@ api.get \/b/:slug/form/, (req, res) ->
     .catch aux.error-handler res
 
 api.put \/detail/, aux.signed, (req, res) ->
-  payload = req.body.payload
   {slug, type, payload} = (req.body or {})
-  if !slug => return aux.r400 res
+  if !(slug and type and payload) => return aux.r400 res
   tables = <[prj brd org]>
   table = tables[tables.indexOf(type)]
   if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
+  if (info = payload.info) => [name, description] = [info.title, info.description]
   io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
+    .then ->
+      if !name => return
+      io.query """
+      update #table set (name,description) = ($1,$2)  where slug = $3
+      """, [name,description,slug]
     .then -> res.send {}
     .catch aux.error-handler res
 
