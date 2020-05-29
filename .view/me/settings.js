@@ -676,14 +676,6 @@ pug_html = pug_html + "Grant Dash\u003C\u002Fa\u003E";
 pug_html = pug_html + "\u003Cbutton class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#nav-top-content\"\u003E";
 ;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
 pug_html = pug_html + "\u003Cspan class=\"navbar-toggler-icon\"\u003E\u003C\u002Fspan\u003E\u003C\u002Fbutton\u003E";
-;pug_debug_line = 13;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
-pug_html = pug_html + "\u003Cul class=\"navbar-nav mr-auto\"\u003E";
-;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
-pug_html = pug_html + "\u003Cli class=\"nav-item\"\u003E";
-;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
-pug_html = pug_html + "\u003Ca class=\"nav-link\" href=\"#\"\u003E";
-;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
-pug_html = pug_html + "常用功能\u003C\u002Fa\u003E\u003C\u002Fli\u003E\u003C\u002Ful\u003E";
 ;pug_debug_line = 15;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
 pug_mixins["scope"].call({
 block: function(){
@@ -1072,7 +1064,7 @@ pug_html = pug_html + "\u003Cp\u003E";
 ;pug_debug_line = 98;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
 pug_html = pug_html + "你可以查閱 ";
 ;pug_debug_line = 98;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
-pug_html = pug_html + "\u003Ca href=\"https:\u002F\u002Fen.wikipedia.org\u002Fwiki\u002FPassword_strength\" target=\"_blank\"\u003E";
+pug_html = pug_html + "\u003Ca href=\"https:\u002F\u002Fen.wikipedia.org\u002Fwiki\u002FPassword_strength\" target=\"_blank\" rel=\"noopener noreferrer\"\u003E";
 ;pug_debug_line = 98;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
 pug_html = pug_html + "Password Strength\u003C\u002Fa\u003E";
 ;pug_debug_line = 98;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
