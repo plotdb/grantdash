@@ -117,8 +117,10 @@ Ctrl = (opt) ->
           name: name, title: "問題的標題", desc: "一些關於這個問題的簡單描述、說明或介紹"
           config: {required: true}, criteria: [{enabled: true, type: \number, op: \between }]
         type = schema.support[name].0
-        if type => op = [k for k of (schema.ops[schema.types[type].ops] or {})].0 else op = ''
-        new-data.criteria.0 <<< {type, op}
+        if type =>
+          op = [k for k of (schema.ops[schema.types[type].ops] or {})].0
+          new-data.criteria.0 <<< {type, op}
+        else new-data.criteria = []
 
         node._data = new-data
         idx = Array.from(node.parentNode).indexOf(node)

@@ -231,12 +231,12 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
               }
               return results$;
             }())[0];
+            ref$ = newData.criteria[0];
+            ref$.type = type;
+            ref$.op = op;
           } else {
-            op = '';
+            newData.criteria = [];
           }
-          ref$ = newData.criteria[0];
-          ref$.type = type;
-          ref$.op = op;
           node._data = newData;
           idx = Array.from(node.parentNode).indexOf(node);
           (obj.list || (obj.list = [])).splice(idx, 0, newData);

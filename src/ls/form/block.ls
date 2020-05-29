@@ -277,6 +277,7 @@ Ctrl = (opt) ->
         @block.[]criteria.push {type: \number}
         @view.criteria.render!
     handler: do
+      "has-criteria": ({node}) ~> node.classList.toggle \d-none, !@block.[]criteria.length
       criteria: do
         list: ~> @block.[]criteria
         action: click: ({node, data, evt, local}) ~>

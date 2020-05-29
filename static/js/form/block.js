@@ -604,6 +604,11 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
           }
         },
         handler: {
+          "has-criteria": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            return node.classList.toggle('d-none', !((ref$ = this$.block).criteria || (ref$.criteria = [])).length);
+          },
           criteria: {
             list: function(){
               var ref$;
