@@ -170,7 +170,8 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
                   data: data,
                   viewMode: viewMode,
                   hub: hub,
-                  form: obj
+                  form: obj,
+                  prj: this$.prj
                 });
               })
               : Promise.resolve();

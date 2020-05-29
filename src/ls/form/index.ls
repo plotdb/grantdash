@@ -84,15 +84,15 @@ Ctrl = (opt) ->
         key: -> it.key
         list: -> obj.list
         init: ({node, data}) ->
-        handler: ({node, data}) ->
+        handler: ({node, data}) ~>
           promise = if !node.block =>
-            bmgr.get(data.name).then (n) ->
+            bmgr.get(data.name).then (n) ~>
               n = n.childNodes.0
               n.parentNode.removeChild n
               node.setAttribute \id, "block-#{data.key}"
               node.innerHTML = ""
               node.appendChild n
-              node.block = new prj-form-block {root: node, data, view-mode, hub, form: obj}
+              node.block = new prj-form-block {root: node, data, view-mode, hub, form: obj, prj: @prj}
           else Promise.resolve!
           promise.then ->
             if node.block =>

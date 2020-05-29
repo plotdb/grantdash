@@ -33,7 +33,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               }
               context.loading = true;
               this$.view.module.render();
-              return ld$.xhr('/d/p/2IJi18049-05bt0AFA03ZOP18/file', {
+              return ld$.xhr("/d/p/" + this$.prj.slug + "/file/" + this$.block.key, {
                 method: 'PUT',
                 body: fd
               }, {
@@ -411,6 +411,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
       ? document.querySelector(opt.root)
       : opt.root;
     this.hub = opt.hub;
+    this.prj = opt.prj;
     this.view = this.root.view = {};
     this.block = opt.data;
     this.form = opt.form || {};

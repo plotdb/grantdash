@@ -119,7 +119,7 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
         })['finally'](function(){
           return ldcvmgr.toggle('publishing', false);
         }).then(function(){
-          return this$.prj.detail = answer;
+          return this$.prj.detail = JSON.parse(JSON.stringify(answer));
         }).then(function(){
           return this$.ctrlForm.render();
         }).then(function(){

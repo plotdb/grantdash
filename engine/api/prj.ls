@@ -33,9 +33,10 @@ api.get "/p/:slug/", aux.signed, (req, res) ->
     .then (r = {}) -> res.send(r.[]rows.0 or {})
     .catch aux.error-handler res
 
-api.put \/p/:slug/file, aux.signed, express-formidable({multiples:true}), (req, res) ->
+api.put \/p/:slug/file/:key, aux.signed, express-formidable({multiples:true}), (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r404 res
+  if !((key = req.params.key) and /^([0-9a-zA-Z+-_]+)$/.exec(key)) => return aux.r404 res
   io.query """select slug from prj where slug = $1""", [slug]
     .then (r={}) ->
       if !(lc.prj = r.[]rows.0) => return aux.reject 404
@@ -51,7 +52,7 @@ api.put \/p/:slug/file, aux.signed, express-formidable({multiples:true}), (req, 
     .then ->
       Promise.all(
         lc.files.map (file, idx) ->
-          fs-extra.copy file.path, path.join(lc.root, "draft.#{idx + 1}.#{file.type}")
+          fs-extra.copy file.path, path.join(lc.root, "draft.#{key}.#{idx}.#{file.type}")
       )
     .then -> res.send {}
     .catch aux.error-handler res

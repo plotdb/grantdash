@@ -22,7 +22,7 @@ module["form-file"] = module-init: ->
           context.loading = true
           @view.module.render!
           ld$.xhr(
-            \/d/p/2IJi18049-05bt0AFA03ZOP18/file
+            "/d/p/#{@prj.slug}/file/#{@block.key}"
             {method: \PUT, body: fd}
             {
               type: \json
@@ -203,6 +203,7 @@ Ctrl = (opt) ->
   @viewing = opt.view-mode
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @hub = opt.hub
+  @prj = opt.prj
   @view = @root.view = {}
   @block = opt.data
   @form = opt.form or {}

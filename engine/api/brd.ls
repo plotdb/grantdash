@@ -58,6 +58,16 @@ api.put \/detail/, aux.signed, (req, res) ->
       io.query """
       update #table set (name,description) = ($1,$2)  where slug = $3
       """, [name,description,slug]
+    .then ->
+      if table != \prj => return
+      root = "users/p/#{slug}"
+      fs-extra.readdir root
+        .then (files) ->
+          ps = files
+            .filter -> /^draft./.exec(it)
+            .map -> ["#root/#it", "#root/#{it.replace(/draft\./, 'publish.')}"]
+            .map -> fs-extra.rename it.0, it.1
+          Promise.all ps
     .then -> res.send {}
     .catch aux.error-handler res
 

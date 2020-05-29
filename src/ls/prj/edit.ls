@@ -65,7 +65,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       ldcvmgr.toggle \publishing, true
       ld$.fetch "/d/detail", {method: \PUT}, {json: data, type: \json}
         .finally -> ldcvmgr.toggle \publishing, false
-        .then ~> @prj.detail = answer
+        .then ~> @prj.detail = JSON.parse(JSON.stringify(answer))
         .then ~> @ctrl-form.render!
         .then -> ldcvmgr.toggle \published, true
         .then -> debounce 2000
