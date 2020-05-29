@@ -1,10 +1,10 @@
 ldc.register \adminGuard,
 <[ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
-adminPrjList prjForm adminEntry]>,
+adminPrjList prjForm adminEntry adminWelcome]>,
 ({ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
-admin-prj-list, prj-form, admin-entry}) ->
+admin-prj-list, prj-form, admin-entry, admin-welcome}) ->
 
   Ctrl = ->
     @loader = loader
@@ -98,6 +98,8 @@ admin-prj-list, prj-form, admin-entry}) ->
       {org,brd} = @hubs
       set-group = ~> @set-group it
       toc = @toc
+
+      @ctrl.welcome = new admin-welcome {root: '[ld-scope=admin-welcome]', toc}
 
       @ctrl.org
         ..info = new admin-info {root: '[ld-scope=org-info]', type: \org, data: toc.org}
