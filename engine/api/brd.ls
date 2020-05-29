@@ -12,7 +12,10 @@ app.get \/b/:bslug/g/:gslug/list, (req, res) ->
   limit = (if isNaN(+limit) => 24 else +limit ) <? 100 >? 1
   if !(bslug and gslug) => return aux.r400 res
   #io.query "select p.* from prj as p where brd = $1 and grp = $2", [bslug, gslug]
-  io.query "select p.* from prj as p"
+  io.query """
+  select p.*,u.displayname as ownername
+  from prj as p, users as u
+  """
     .then (r={}) ->
       res.render \prj/list.pug, {prjs: r.[]rows}
       return null

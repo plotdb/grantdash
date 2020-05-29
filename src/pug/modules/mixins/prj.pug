@@ -8,7 +8,7 @@ mixin prj-list(opt)
         .text-truncate
           .d-flex.align-items-end.mb-1
             h5.mb-0.mr-1.text-truncate #{opt.name || '未命名的計劃'}
-            .text-sm.text-muted By #{opt.ownerName || '未具名'}
+            .text-sm.text-muted By #{opt.ownername || '未具名'}
           .text-sm.text-muted.w-100.text-truncate  #{(opt.description || '').substring(0,100)} ...
 
 mixin prj-list-sm(opt)
@@ -18,7 +18,7 @@ mixin prj-list-sm(opt)
       .text-truncate
         .d-flex.align-items-end.mb-1
           h5.mb-0.mr-1.text-truncate #{opt.name || '未命名的計劃'}
-          .text-sm.text-muted By #{opt.ownerName || '未具名'}
+          .text-sm.text-muted By #{opt.ownername || '未具名'}
         .text-sm.text-muted.w-100.text-truncate  #{(opt.description || '').substring(0,100)} ...
 
 mixin prj-thumb(opt)
@@ -31,7 +31,7 @@ mixin prj-card(opt)
       .aspect-ratio.ratio-4by3.bg-dark.bg-cover.bg-portrait.border-bottom(style=`background-image:url(${opt.thumb})`)
     .card-body
       h5.text-truncate #{opt.name || '未命名的提案'}
-      .text-sm.text-muted.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownerName || '未具名'}]
+      .text-sm.text-muted.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownername || '未具名'}]
       .text-sm.text-muted.mb-2 #{(opt.description || '').substring(0,50)} ...
 
 mixin prj-card-sm(opt)
@@ -40,7 +40,7 @@ mixin prj-card-sm(opt)
       .aspect-ratio.ratio-3by2.bg-dark.bg-cover.bg-portrait.border-bottom(style=`background-image:url(${opt.thumb})`)
     .card-body
       h5.text-truncate #{opt.name || '未命名的提案'}
-      .text-sm.text-muted.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownerName || '未具名'}]
+      .text-sm.text-muted.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownername || '未具名'}]
       .text-sm.text-muted.mb-2 #{(opt.description || '').substring(0,50)} ...
 
 mixin prj-card-noframe(opt)
@@ -51,7 +51,7 @@ mixin prj-card-noframe(opt)
         style=`background-image:url(${opt.thumb})`)
       .text-truncate(style="font-weight:500;font-size:1.25em") #{opt.name || '未命名的提案'}
 
-    .text-muted.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownerName || '未具名'}]
+    .text-muted.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownername || '未具名'}]
     .text-muted.mb-2.flex-grow-1 #{(opt.description || '').substring(0,50)} ...
     .d-flex.flex-wrap.mb-2
       each n in ["獲獎提案","決選入圍","最佳人氣", "許願提案"]

@@ -8,7 +8,11 @@ app = engine.app
 app.get \/p/:slug, (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r400 res
-  io.query """select * from prj where slug = $1""", [slug]
+  io.query """
+  select p.*,u.displayname as ownerName
+  from prj as p, users as u
+  where slug = $1 and p.owner = u.key
+  """, [slug]
     .then (r={}) ->
       if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
       io.query """select name,slug,(detail->'group') as group from brd where brd.key = $1""", [lc.prj.brd]
