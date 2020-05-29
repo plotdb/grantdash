@@ -346,7 +346,9 @@ ldc.register('prjFormBlock', ['prjFormCriteria'], function(arg$){
           map = {
             title: "標題",
             description: "簡介",
-            thumb: "縮圖"
+            thumb: "縮圖",
+            category: "分類",
+            tag: "標籤"
           };
           n = (function(){
             var ref$, ref1$, results$ = [];

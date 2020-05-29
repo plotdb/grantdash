@@ -162,7 +162,7 @@ Ctrl = (opt) ->
       "purpose-menu": ({node}) -> new Dropdown(node)
     handler: do
       "purpose-menu": ({node}) ~>
-        map = {title: "標題", description: "簡介", thumb: "縮圖"}
+        map = {title: "標題", description: "簡介", thumb: "縮圖", category: "分類", tag: "標籤"}
         n = [{k,v} for k,v of @form{}purpose]
           .filter(~> it.v == @block.key)
           .map(-> map[it.k])
