@@ -13,8 +13,7 @@ h4 權限設定
     input.form-control(ld="role-name",placeholder="角色名稱",value="評審")
     .invalid-feedback 不能用這個名稱
   .alert.alert-light.px-2.mb-4.border
-    //-.text-muted(ld="role-desc-all",data-name="") 此列表列出所有出現在權限設定中的用戶，以及他們所擔任角色。
-    //-.text-muted 可以進行初選、決選，擁有存取評選表與總表的權限。
+    .text-muted(ld="role-desc-all",data-name="") 此列表列出所有出現在權限設定中的用戶，以及他們所擔任角色。
     div(ld="roles-desc")
       .text-muted.d-none(ld-each="role-desc",contenteditable="true") 角色的簡單描述 ... 
 
