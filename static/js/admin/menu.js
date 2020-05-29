@@ -93,6 +93,11 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
         }
       },
       handler: {
+        "brd-landing": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.setAttribute('href', "/b/" + toc.brd.slug + "/");
+        },
         "org-menu": function(arg$){
           var node;
           node = arg$.node;
