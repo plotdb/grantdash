@@ -71,7 +71,7 @@ module-list = module-init: ->
     root: @root
     action: click: do
       "list-add": ~>
-        @block.[]data.push { title: "新項目", desc: "關於這個項目的描述 ... ", key: suuuid!  }
+        @block.[]data.push { title: "新項目", desc: "關於這個項目的描述 ... ", key: suuid!  }
         @update!
         @render!
 
