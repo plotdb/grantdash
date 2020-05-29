@@ -31,11 +31,11 @@ p.text-muted 您可以在這裡為設定整個活動的通用資訊，例如名�
 
   .row.align-items-center.mb-4
     .col-md-3.text-right 開始時間
-    .col-md: input.form-control(type="text",name="starttime")
+    .col-md: input.form-control(ld="tail-datetime",type="text",name="starttime")
 
   .row.align-items-center.mb-4
     .col-md-3.text-right 結束時間
-    .col-md: input.form-control(type="text",name="endtime")
+    .col-md: input.form-control(ld="tail-datetime",type="text",name="endtime")
 
   .row.align-items-start.mb-4
     .col-md-3.text-right 活動主圖
@@ -44,7 +44,7 @@ p.text-muted 您可以在這裡為設定整個活動的通用資訊，例如名�
         .w-100.h-100.bg-semi-dark.vertical-center
           .w-100.text-center: .btn.btn-outline-light.btn-upload 上傳 #[input(name="thumbnail",type="file")]
 
-  .row.align-items-center.mb-4
+  //-.row.align-items-center.mb-4
     .col-md-3.text-right 所屬組織
     .col-md
       select.form-control(name="org")
