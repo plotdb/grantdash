@@ -133,6 +133,16 @@ module <<< do
   "form-long-answer": module-textarea
   "form-short-answer": module-textarea
 
+
+purpose-type = do
+  title: <[form-short-answer]>
+  description: <[form-short-answer form-long-answer]>
+  thumb: <[form-file]>
+  category: <[form-radio]>
+  tag: <[form-tag]>
+
+purpose-match = (name, block-name) -> block-name in purpose-type[name]
+
 # {root, mode, data}
 Ctrl = (opt) ->
   @opt = opt
@@ -164,7 +174,7 @@ Ctrl = (opt) ->
         "move-down": ~> @move 1
         purpose: ({node}) ~>
           n = node.getAttribute(\data-name)
-          if n == \thumb and @block.name != \form-file => return
+          if !purpose-match(n, @block.name) => return
           @form{}purpose[n] = v = if @form{}purpose[n] == @block.key => null else @block.key
           if v => for k of @form.purpose => if k != n and @form.purpose[k] == v => @form.purpose[k] = null
           @update!
@@ -182,7 +192,7 @@ Ctrl = (opt) ->
         btn.innerText = if !n => '用途' else "#n"
       purpose: ({node}) ~>
         n = node.getAttribute(\data-name)
-        node.classList.toggle \disabled, (n == \thumb and @block.name != \form-file)
+        node.classList.toggle \disabled, !purpose-match(n, @block.name)
         ld$.find(node, \i, 0).classList.toggle \d-none, @form{}purpose[n] != @block.key
       invalid: ({node}) ~>
         is-valid = (!(@block.{}valid.result?) or @block.valid.result)
