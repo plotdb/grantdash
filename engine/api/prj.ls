@@ -5,6 +5,22 @@ require! <[../aux]>
 api = engine.router.api
 app = engine.app
 
+app.get \/p/:slug, (req, res) ->
+  lc = {}
+  if !(slug = req.params.slug) => return aux.r400 res
+  io.query """select * from prj where slug = $1""", [slug]
+    .then (r={}) ->
+      if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
+      io.query """select name,slug,(detail->'group') as group from brd where brd.key = $1""", [lc.prj.brd]
+    .then (r={}) ->
+      if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
+      lc.grp = grp = (brd.group or []).filter(-> it.key == lc.prj.grp).0
+      if !lc.grp => return aux.reject 400
+      lc.grp = grp = grp{form,info}
+      delete brd.detail
+      res.render \prj/view.pug, lc{prj,grp,brd}
+    .catch aux.error-handler res
+
 api.get "/p/:slug/", aux.signed, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   io.query """
