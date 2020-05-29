@@ -10,7 +10,7 @@ Ctrl = (opt) ->
     list: ld$.find(root, '[ld=form-list]', 0)
     answer: ld$.find(root, '[ld=form-answer]', 0)
   @view-mode = view-mode = opt.view-mode
-  @obj = obj = {list: [], value: {}}
+  @obj = obj = {list: [], value: {answer: {}}}
   @prj = opt.prj
   if @view-mode and opt.form =>
     @obj.list = opt.{}form.list
@@ -33,7 +33,9 @@ Ctrl = (opt) ->
     update-deb: debounce 200, (b) ~> hub.update!
     update: (block) ~>
       if view-mode and block =>
-        obj.value[block.key] = block.value
+        obj.value.answer[block.key] = block.value
+        obj.value.{}info.title = (obj.value.answer[obj.{}purpose.title or \title] or {}).content
+        obj.value.{}info.description = (obj.value.answer[obj.{}purpose.description or \description] or {}).content
         @ops-out ~> obj.value
         @validate block
       else @ops-out ~> {list: @obj.list, purpose: @obj.purpose}
@@ -178,7 +180,7 @@ Ctrl = (opt) ->
             if (node = ld$.find(@node.list, "\#block-#{v.key}",0)) => ldui.scroll-to {node, jump: true}
           submit: ({node}) ~>
             if node.classList.contains \disabled => return
-            @fire \submit, {answer: @obj.value}
+            @fire \submit, @obj.value
 
       handler: do
         nview: ({node}) -> node.classList.toggle \d-none, lc.view
@@ -189,7 +191,7 @@ Ctrl = (opt) ->
         remain: ({node}) -> node.innerText = progress!remain
         "to-fix": ({node}) -> node.classList.toggle \d-none, !progress!remain
         "to-publish": ({node}) ~>
-          touched = (JSON.stringify(@obj.value) != JSON.stringify((@prj.detail or {}).answer))
+          touched = (JSON.stringify(@obj.value) != JSON.stringify(@prj.detail))
           node.classList.toggle \d-none, (!touched or progress!remain)
         submit: ({node}) -> node.classList.toggle \disabled, (progress!remain > 0)
         "brd-name": ({node}) -> node.innerText = if opt.brd => (opt.brd.{}info.name or '') else '未定的活動'
@@ -228,8 +230,8 @@ Ctrl = (opt) ->
                 desc: ({node}) -> node.innerText = data.desc or ''
                 content: ({node}) ->
                   if render-answer[data.name] =>
-                    render-answer[data.name]({node, block: data, data: (obj.value[data.key] or {})})
-                  else node.innerText = (obj.value[data.key] or {}).content or ''
+                    render-answer[data.name]({node, block: data, data: (obj.value.answer[data.key] or {})})
+                  else node.innerText = (obj.value.answer[data.key] or {}).content or ''
 
     view-answer-diff = new ldView do
       root: '[ld-scope=prj-diff] .card-body'
@@ -278,7 +280,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     data = JSON.parse(JSON.stringify(data or {}))
     if @view-mode =>
       @obj.value = data
-      @obj.list.map ~> it.value = data[it.key]
+      @obj.list.map ~> it.value = data.{}answer[it.key]
       @validate-all!
     else @obj.list = (data.list or [])
     @hub.render-deb!

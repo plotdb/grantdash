@@ -43,10 +43,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       id: "prj-#{@slug}"
       watch: (ops,source) ~> @hubs.prj.fire \change, {ops,source}
       create: ~>
-        ret = {}
+        ret = {answer: {}}
         form = @grp.{}form
-        ret{}[form.{}purpose.title or 'title'].content = @prj.name
-        ret{}[form.purpose.description or 'description'].content = @prj.description
+        ret.answer{}[form.{}purpose.title or 'title'].content = @prj.name
+        ret.answer{}[form.purpose.description or 'description'].content = @prj.description
         ret
     }).then (doc) ~> @hubs.prj.doc = doc
 
@@ -59,7 +59,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       brd: @brd
       prj: @prj
     }
-    @ctrl-form.adapt {hub: @hubs.prj, path: ['content']}
+    @ctrl-form.adapt {hub: @hubs.prj, path: []}
     @ctrl-form.on \submit, (answer) ~>
       data = payload: answer, type: \prj, slug: @prj.slug
       ldcvmgr.toggle \publishing, true

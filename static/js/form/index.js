@@ -18,7 +18,9 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
     this.viewMode = viewMode = opt.viewMode;
     this.obj = obj = {
       list: [],
-      value: {}
+      value: {
+        answer: {}
+      }
     };
     this.prj = opt.prj;
     if (this.viewMode && opt.form) {
@@ -55,8 +57,11 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
         return hub.update();
       }),
       update: function(block){
+        var ref$;
         if (viewMode && block) {
-          obj.value[block.key] = block.value;
+          obj.value.answer[block.key] = block.value;
+          ((ref$ = obj.value).info || (ref$.info = {})).title = (obj.value.answer[(obj.purpose || (obj.purpose = {})).title || 'title'] || {}).content;
+          ((ref$ = obj.value).info || (ref$.info = {})).description = (obj.value.answer[(obj.purpose || (obj.purpose = {})).description || 'description'] || {}).content;
           this$.opsOut(function(){
             return obj.value;
           });
@@ -333,9 +338,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
               if (node.classList.contains('disabled')) {
                 return;
               }
-              return this$.fire('submit', {
-                answer: this$.obj.value
-              });
+              return this$.fire('submit', this$.obj.value);
             }
           }
         },
@@ -378,7 +381,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
           "to-publish": function(arg$){
             var node, touched;
             node = arg$.node;
-            touched = JSON.stringify(this$.obj.value) !== JSON.stringify((this$.prj.detail || {}).answer);
+            touched = JSON.stringify(this$.obj.value) !== JSON.stringify(this$.prj.detail);
             return node.classList.toggle('d-none', !touched || progress().remain);
           },
           submit: function(arg$){
@@ -460,10 +463,10 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
                         return renderAnswer[data.name]({
                           node: node,
                           block: data,
-                          data: obj.value[data.key] || {}
+                          data: obj.value.answer[data.key] || {}
                         });
                       } else {
-                        return node.innerText = (obj.value[data.key] || {}).content || '';
+                        return node.innerText = (obj.value.answer[data.key] || {}).content || '';
                       }
                     }
                   }
@@ -593,7 +596,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
       if (this.viewMode) {
         this.obj.value = data;
         this.obj.list.map(function(it){
-          return it.value = data[it.key];
+          return it.value = (data.answer || (data.answer = {}))[it.key];
         });
         this.validateAll();
       } else {

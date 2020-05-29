@@ -77,10 +77,12 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
         },
         create: function(){
           var ret, form, ref$, key$;
-          ret = {};
+          ret = {
+            answer: {}
+          };
           form = (ref$ = this$.grp).form || (ref$.form = {});
-          (ret[key$ = (form.purpose || (form.purpose = {})).title || 'title'] || (ret[key$] = {})).content = this$.prj.name;
-          (ret[key$ = form.purpose.description || 'description'] || (ret[key$] = {})).content = this$.prj.description;
+          ((ref$ = ret.answer)[key$ = (form.purpose || (form.purpose = {})).title || 'title'] || (ref$[key$] = {})).content = this$.prj.name;
+          ((ref$ = ret.answer)[key$ = form.purpose.description || 'description'] || (ref$[key$] = {})).content = this$.prj.description;
           return ret;
         }
       }).then(function(doc){
@@ -99,7 +101,7 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
       });
       this.ctrlForm.adapt({
         hub: this.hubs.prj,
-        path: ['content']
+        path: []
       });
       return this.ctrlForm.on('submit', function(answer){
         var data;
