@@ -51,7 +51,7 @@ api.put \/detail/, aux.signed, (req, res) ->
   tables = <[prj brd org]>
   table = tables[tables.indexOf(type)]
   if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
-  if (info = payload.info) => [name, description] = [info.title, info.description]
+  if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
   io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
     .then ->
       if !name => return
