@@ -115,6 +115,7 @@ ldc.register('prjFormCriteria', [], function(){
       'form-radio': [],
       'form-checkbox': ['count'],
       'form-file': ['file-size', 'file-format', 'file-count'],
+      'form-thumbnail': [],
       'form-budget': ['count'],
       'form-checkpoint': ['count']
     }

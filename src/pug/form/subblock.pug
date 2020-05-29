@@ -101,10 +101,22 @@ mixin criteria
   .p-4.bg-light: .vertical-center: .w-100.text-center
     .btn.btn-outline-primary.btn-upload.my-4 #[span 上傳檔案 ...]#[input(type="file",ld="input-file",multiple)]
     div
-      .progress.my-2.position-relative(ld="loading")
+      .progress.my-2.position-relative.d-none(ld="loading")
         .progress-bar.progress-bar-striped.progress-bar-animated(ld="bar")
         .text-center.position-absolute.w-100(ld="bar-label",style="line-height:1.3em") 0%
-      .py-1.px-2.my-2.bg-white.shadow-sm.d-flex.align-items-center.rounded.text-left(ld-each="file")
+      .py-1.px-2.my-2.bg-white.shadow-sm.rounded.text-left.d-none(ld-each="file"): .d-flex.align-items-center
+        .name.flex-grow-1(ld="name")
+        .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light(ld="type")
+        .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light(ld="size")
+
++form-block({name: "form-thumbnail"})
+  .p-4.bg-light: .vertical-center: .w-100.text-center
+    .btn.btn-outline-primary.btn-upload.my-4 #[span 上傳縮圖 ...]#[input(type="file",ld="input-file")]
+    div
+      .progress.my-2.position-relative.d-none(ld="loading")
+        .progress-bar.progress-bar-striped.progress-bar-animated(ld="bar")
+        .text-center.position-absolute.w-100(ld="bar-label",style="line-height:1.3em") 0%
+      .py-1.px-2.my-2.bg-white.shadow-sm.rounded.text-left.d-none(ld-each="file"): .d-flex.align-items-center
         .name.flex-grow-1(ld="name")
         .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light(ld="type")
         .size.rounded.px-2.text-sm.ml-2.text-muted.bg-light(ld="size")

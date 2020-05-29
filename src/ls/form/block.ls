@@ -4,18 +4,21 @@ schema = prjFormCriteria.schema
 
 settext = (n,v) -> if n.innerText != v => n.innerText = v
 
-
 module = {}
 
-module["form-file"] = module-init: ->
+module-file = module-init: ->
+  if !@viewing => return
   @view.module = view = new ldView do
     context: {}
     root: @root
     init: do
       "input-file": ({node, local, context}) ~>
+        if @block.name == \form-thumbnail => node.setAttribute \accept, 'image/*'
         context.loading = false
         local.ldf = ldf = new ldFile root: node
         ldf.on \load, (files) ~>
+          if @block.name == \form-thubmnail =>
+            files = files.filter -> /^image\//.exec(it.type) and /\.(gif|png|jpg|jpeg)$/.exec(it.name)
           node.value = ''
           fd = new FormData!
           for i from 0 til files.length => fd.append "file[]", files[i].file
@@ -47,6 +50,7 @@ module["form-file"] = module-init: ->
       file: do
         list: ~> @block.{}value.[]list
         init: ({node, data, local}) ->
+          node.classList.toggle \d-none, false
           local.view = new ldView do
             context: data
             root: node
@@ -59,7 +63,9 @@ module["form-file"] = module-init: ->
         handler: ({node,data,local}) ->
           local.view.render!
 
-
+module <<< do
+  "form-file": module-file
+  "form-thumbnail": module-file
 
 module-list = module-init: ->
   if @block.name == \form-checkpoint and @viewing =>
@@ -189,7 +195,7 @@ module <<< do
 purpose-type = do
   title: <[form-short-answer]>
   description: <[form-short-answer form-long-answer]>
-  thumb: <[form-file]>
+  thumb: <[form-thumbnail]>
   category: <[form-radio]>
   tag: <[form-tag]>
 
