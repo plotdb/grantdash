@@ -20,7 +20,7 @@ Ctrl = (opt) ->
           view.render \brd-list-toggle
         "grp-add": ({node}) ~>
           for i from 0 til 100 =>
-            key = "grp-#{Math.random!toString(36)substring(2)}"
+            key = suuid!
             if !@grps.filter(->it.key == key).length => break
           if @grps.filter(->it.key == key).length => throw new ldError(1011)
           @grps.push {key, info: {name: "新分組"}}

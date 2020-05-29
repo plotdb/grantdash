@@ -38,7 +38,7 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
             node = arg$.node;
             for (i$ = 0; i$ < 100; ++i$) {
               i = i$;
-              key = "grp-" + Math.random().toString(36).substring(2);
+              key = suuid();
               if (!this$.grps.filter(fn$).length) {
                 break;
               }
