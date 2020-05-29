@@ -50,7 +50,8 @@ block body
         .col-md
           select.form-control(ld="orgs",name="org")
             option(ld-each="org",value="") 無
-          .my-2.text-sm 您可稍後再設定組織。或者，#[a(href="/new/org/") 現在就建立新組織]
+          .my-2.text-sm 您可稍後再設定組織。
+          //-或者，#[a(href="/new/org/") 現在就建立新組織]
       .row.align-items-center.mb-4.pt-4
         .col-md-3
         .col-md: .btn.btn-lg.btn-primary.disabled(ld="submit") 立刻建立
