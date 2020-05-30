@@ -27,15 +27,12 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
             input: function(arg$){
               var node, local;
               node = arg$.node, local = arg$.local;
-              console.log(node.value);
               return this$.search(node.value);
             }
           },
           click: {
             clear: function(){
-              this$.picked = null;
-              this$.users = [];
-              return this$.render();
+              return this$.clear();
             }
           }
         },
@@ -124,6 +121,11 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
           }
         }
       });
+    },
+    clear: function(){
+      this.picked = null;
+      this.users = [];
+      return this.render();
     },
     _search: function(name){
       var this$ = this;

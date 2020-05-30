@@ -1,7 +1,9 @@
-({sdbAdapter}) <- ldc.register \adminPerm, <[sdbAdapter]>, _
+({sdbAdapter, userSearch}) <- ldc.register \adminPerm, <[sdbAdapter userSearch]>, _
 Ctrl = (opt) ->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
+  @ctrl = search: new userSearch root: ld$.find(@root, '[ld-scope=user-search]',0)
+  @ctrl.search.init!
 
   lc = {type: \list}
   @obj = obj = { idx: -1, cfg: {roles: []}}

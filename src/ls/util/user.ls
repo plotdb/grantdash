@@ -1,5 +1,5 @@
 # userSearch: search for user.
-# ld: 
+# ld:
 #   clear - clear field
 #   input - search input box
 #   picked - picked user node. show if anyone picked
@@ -14,6 +14,9 @@
 
 ({auth, error}) <- ldc.register \userSearch, <[auth error]>, _
 
+# option:
+#   root
+#   delay - delay to search after last type
 Ctrl = (opt) ->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
@@ -27,12 +30,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @view = view = new ldView do
       root: @root
       action: do
-        input: input: ({node, local}) ~>
-          console.log node.value
-          @search node.value
-        click: clear: ~>
-          @ <<< picked: null, users: []
-          @render!
+        input: input: ({node, local}) ~> @search node.value
+        click: clear: ~> @clear!
       handler: do
         picked: ({node}) ~> node.classList.toggle \d-none, !@picked
         "picked-avatar": ({node}) ~> if @picked => node.style.backgroundImage = "url(/s/avatar/#{@picked.key}.png)"
@@ -60,7 +59,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
           render: ({local, data}) ->
             local.view.setContext data
             local.view.render!
-
+  clear: ->
+    @ <<< picked: null, users: []
+    @render!
   _search: (name) ->
     if !(name and name.length >= 3) => return @ <<< users: [], loading: false
     @ <<< users: [], loading: true

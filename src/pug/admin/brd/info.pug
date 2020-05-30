@@ -31,11 +31,15 @@ p.text-muted 您可以在這裡為設定整個活動的通用資訊，例如名�
 
   .row.align-items-center.mb-4
     .col-md-3.text-right 開始時間
-    .col-md: input.form-control(ld="tail-datetime",type="text",name="starttime")
+    .col-md
+      .form-group.mb-0.ld-ext-right
+        input.form-control(ld="tail-datetime",type="text",name="starttime")
 
   .row.align-items-center.mb-4
     .col-md-3.text-right 結束時間
-    .col-md: input.form-control(ld="tail-datetime",type="text",name="endtime")
+    .col-md
+      .form-group.mb-0.ld-ext-right
+        input.form-control(ld="tail-datetime",type="text",name="endtime")
 
   .row.align-items-start.mb-4
     .col-md-3.text-right 活動主圖
