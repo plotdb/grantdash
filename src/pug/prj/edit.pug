@@ -116,7 +116,7 @@ block body
         div: .btn.btn.btn-outline-primary(ld="cancel") 取消並還原
       .d-none(ld="to-fix"): .alert.alert-warning.d-flex.align-items-center.shadow-sm
         .flex-grow-1 您尚有#[span(ld="remain") 數]個欄位須修正，在請修正完成過後，便能發布您的提案。
-        //-div: .btn.btn.btn-warning.mr-2(ld="jump invalid") 跳至待修正項目
+        div: .btn.btn.btn-warning.mr-2(ld="jump invalid") 跳至待修正項目
 
 block script
   +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")

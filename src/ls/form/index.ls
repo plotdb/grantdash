@@ -11,6 +11,7 @@ Ctrl = (opt) ->
     answer: ld$.find(root, '[ld=form-answer]', 0)
   @view-mode = view-mode = opt.view-mode
   @obj = obj = {list: [], value: {answer: {}}}
+  @brd = opt.brd
   @prj = opt.prj
   if @view-mode and opt.form =>
     @obj.list = opt.{}form.list
@@ -68,8 +69,10 @@ Ctrl = (opt) ->
       div.appendChild n.cloneNode(true)
       res div
 
-  @validate-all = debounce ->
-    obj.list.map -> it.valid = prj-form-validation.validate it, true
+  @validate-all = debounce (force) ->
+    obj.list.map ->
+      f = force or !!(it.value and (it.value.content or it.value.list))
+      it.valid = prj-form-validation.validate it, f
     blocks-view.render!
     if viewer => viewer.render!
   @validate = debounce (block) ->
@@ -176,7 +179,7 @@ Ctrl = (opt) ->
             viewer.render!
             view-answer.render!
           invalid: ~>
-            @validate-all!
+            @validate-all true
             if !(v = obj.list.filter(-> it.valid and !it.valid.result).0) => return
             if !v => return
             if (node = ld$.find(@node.list, "\#block-#{v.key}",0)) => ldui.scroll-to {node, jump: true}
@@ -196,7 +199,7 @@ Ctrl = (opt) ->
           touched = (JSON.stringify(@obj.value) != JSON.stringify(@prj.detail))
           node.classList.toggle \d-none, (!touched or progress!remain)
         submit: ({node}) -> node.classList.toggle \disabled, (progress!remain > 0)
-        "brd-name": ({node}) -> node.innerText = if opt.brd => (opt.brd.{}info.name or '') else '未定的活動'
+        "brd-name": ({node}) -> node.innerText = if opt.brd => (opt.brd.name or '') else '未定的活動'
         "grp-name": ({node}) -> node.innerText = if opt.grp => (opt.grp.{}info.name or '') else '未定的分組'
     render-answer = do
       "form-checkpoint": ({node, data, block}) ->

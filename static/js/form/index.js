@@ -22,6 +22,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
         answer: {}
       }
     };
+    this.brd = opt.brd;
     this.prj = opt.prj;
     if (this.viewMode && opt.form) {
       this.obj.list = (opt.form || (opt.form = {})).list;
@@ -125,9 +126,11 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
         });
       }
     };
-    this.validateAll = debounce(function(){
+    this.validateAll = debounce(function(force){
       obj.list.map(function(it){
-        return it.valid = prjFormValidation.validate(it, true);
+        var f;
+        f = force || !!(it.value && (it.value.content || it.value.list));
+        return it.valid = prjFormValidation.validate(it, f);
       });
       blocksView.render();
       if (viewer) {
@@ -317,7 +320,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
             },
             invalid: function(){
               var v, node;
-              this$.validateAll();
+              this$.validateAll(true);
               if (!(v = obj.list.filter(function(it){
                 return it.valid && !it.valid.result;
               })[0])) {
@@ -391,9 +394,9 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
             return node.classList.toggle('disabled', progress().remain > 0);
           },
           "brd-name": function(arg$){
-            var node, ref$;
+            var node;
             node = arg$.node;
-            return node.innerText = opt.brd ? ((ref$ = opt.brd).info || (ref$.info = {})).name || '' : '未定的活動';
+            return node.innerText = opt.brd ? opt.brd.name || '' : '未定的活動';
           },
           "grp-name": function(arg$){
             var node, ref$;
