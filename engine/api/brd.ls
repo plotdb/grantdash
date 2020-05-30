@@ -50,6 +50,7 @@ api.get \/b/:slug/form/, (req, res) ->
     .catch aux.error-handler res
 
 api.put \/detail/, aux.signed, (req, res) ->
+  lc = {}
   {slug, type, payload} = (req.body or {})
   if !(slug and type and payload) => return aux.r400 res
   tables = <[prj brd org]>
@@ -64,12 +65,15 @@ api.put \/detail/, aux.signed, (req, res) ->
       """, [name,description,slug]
     .then ->
       if table != \prj => return
-      root = "users/p/#{slug}"
-      fs-extra.readdir root
+      lc.root = "users/p/#{slug}"
+      fs-extra.path-exists lc.root
+    .then (exists) ->
+      if !exists => return
+      fs-extra.readdir lc.root
         .then (files) ->
           ps = files
             .filter -> /^draft./.exec(it)
-            .map -> ["#root/#it", "#root/#{it.replace(/draft\./, 'publish.')}"]
+            .map -> ["#{lc.root}/#it", "#{lc.root}/#{it.replace(/draft\./, 'publish.')}"]
             .map -> fs-extra.rename it.0, it.1
           Promise.all ps
     .then -> res.send {}
