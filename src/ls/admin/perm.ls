@@ -105,7 +105,7 @@ Ctrl = (opt) ->
             .reduce(((a,b) -> a ++ b), [])
         else (lc.role.list or []).map -> it <<< {perm: lc.role.name}
       handler: ({node, data}) ->
-        ld$.find(node, 'b', 0).innerText = data.name
+        ld$.find(node, 'b', 0).innerText = data.displayname
         if ld$.find(node, '.text-muted', 0) => that.innerText = data.perm
       action: click: ({node, data, evt}) ->
         if !evt.target.classList.contains(\i-close) => return
@@ -118,17 +118,17 @@ Ctrl = (opt) ->
         update-view!
   view-config.action.click <<< do
     "newuser-toggle": ({node}) -> view.getAll(\newuser).map -> it.classList.toggle \d-none
-    "newuser-add": ({node, evt}) ->
+    "newuser-add": ({node, evt}) ~>
       role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0 or {name: ''}
-      user = view.get(\newuser-name).value
+      if !(user = @ctrl.search.get!) => return
       idx = obj.cfg.roles
         .map -> it.list
         .reduce(((a,b) -> a ++ b), [])
-        .map -> it.name
-        .indexOf(user)
+        .map -> it.key
+        .indexOf(user.key)
       if ~idx => return alert("user already exist")
-      role.list.push {name: user, perm: role.name}
-      view.get(\newuser-name).value = ''
+      role.list.push {perm: role.name} <<< user{key,displayname}
+      @ctrl.search.clear!
       update-data!
       update-view!
 
@@ -149,21 +149,6 @@ Ctrl = (opt) ->
     else @ops-out ~> @obj.cfg
 
   view = new ldView view-config
-  /*
-
-  adopter = new Adopter path: ctrl-opt.path
-  adopter.on \change, ({ops, source}) ->
-    if source => return
-    obj.cfg = if adopter.data => JSON.parse(JSON.stringify(adopter.data)) else {}
-    if !obj.cfg.roles => obj.cfg.roles = []
-    update-view!
-  update-data-debounced = debounce 500, -> update-data!
-  update-data = (deb) ->
-    if deb => update-data-debounced!
-    else adopter.update -> JSON.parse(JSON.stringify(obj.cfg))
-
-  return adopter
-  */
 
   @
 

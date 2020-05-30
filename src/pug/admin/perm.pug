@@ -20,9 +20,9 @@ h4 權限設定
   div
     .py-3.px-3(ld="newuser"): .d-inline-block.clickable.text-primary(ld="newuser-toggle") 新增使用者權限 ...
     .card.shadow-sm.mx-2.d-none(ld="newuser"): .card-body.p-2
-      +scope("user-search").d-flex.align-items-center
+      .d-flex.align-items-center
         .input-group
-          .position-relative.flex-grow-1
+          +scope("user-search").position-relative.flex-grow-1
             input.form-control.border-secondary.border-right-0(
             style="border-radius:.25em 0 0 .25em",
             ld="input", placeholder="搜尋使用者 ... ")
@@ -33,23 +33,13 @@ h4 權限設定
                 i.i-close.text-danger.clickable(ld="clear")
             .d-none.ld.ld-fade-in(ld="loading")
               .position-absolute.m-auto.ld.ld-spin.ld-spinner(style="top:0;bottom:0;right:.5em")
-            .p-3.rounded.border.shadow-sm.d-none.ld.ld-float-ttb-in.bg-white.xp15.position-absolute.w-100(
+            .z-float.px-3.rounded.border.shadow-sm.d-none.ld.ld-float-ttb-in.bg-white.xp15.position-absolute.w-100(
             ld="users",style="border-radius: 0 0 .5em .5em")
-              .d-flex.align-items-center.clickable(ld-each="user")
+              .d-flex.align-items-center.clickable.my-2(ld-each="user")
                 .bg-light.rounded.mr-1(ld="avatar",style="width:1em;height:1em")
                 div(ld="name")
 
 
-          .input-group-appned(ld="newuser-role list-view")
-            .dropdown
-              .btn.btn-outline-secondary.dropdown-toggle.rounded-0(ld="newuser-role-picked",data-toggle="dropdown")
-              .dropdown-menu
-                .dropdown-item(ld-each="newuser-role-option")
-          .input-group-append
-            .btn.btn-outline-secondary(ld="newuser-add") 增加
-
-        //-.input-group
-          input.form-control.border-secondary.border-right-0(ld="newuser-name", placeholder="搜尋使用者 ... ")
           .input-group-appned(ld="newuser-role list-view")
             .dropdown
               .btn.btn-outline-secondary.dropdown-toggle.rounded-0(ld="newuser-role-picked",data-toggle="dropdown")

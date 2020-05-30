@@ -216,7 +216,7 @@ ldc.register('adminPerm', ['sdbAdapter', 'userSearch'], function(arg$){
         handler: function(arg$){
           var node, data, that;
           node = arg$.node, data = arg$.data;
-          ld$.find(node, 'b', 0).innerText = data.name;
+          ld$.find(node, 'b', 0).innerText = data.displayname;
           if (that = ld$.find(node, '.text-muted', 0)) {
             return that.innerText = data.perm;
           }
@@ -254,29 +254,30 @@ ldc.register('adminPerm', ['sdbAdapter', 'userSearch'], function(arg$){
         });
       },
       "newuser-add": function(arg$){
-        var node, evt, role, user, idx;
+        var node, evt, role, user, idx, ref$;
         node = arg$.node, evt = arg$.evt;
         role = (lc.type === 'list'
           ? lc.pickedRole
           : lc.role) || obj.cfg.roles[0] || {
           name: ''
         };
-        user = view.get('newuser-name').value;
+        if (!(user = this$.ctrl.search.get())) {
+          return;
+        }
         idx = obj.cfg.roles.map(function(it){
           return it.list;
         }).reduce(function(a, b){
           return a.concat(b);
         }, []).map(function(it){
-          return it.name;
-        }).indexOf(user);
+          return it.key;
+        }).indexOf(user.key);
         if (~idx) {
           return alert("user already exist");
         }
-        role.list.push({
-          name: user,
+        role.list.push((ref$ = {
           perm: role.name
-        });
-        view.get('newuser-name').value = '';
+        }, ref$.key = user.key, ref$.displayname = user.displayname, ref$));
+        this$.ctrl.search.clear();
         updateData();
         return updateView();
       }
@@ -324,21 +325,6 @@ ldc.register('adminPerm', ['sdbAdapter', 'userSearch'], function(arg$){
       }
     };
     view = new ldView(viewConfig);
-    /*
-    
-    adopter = new Adopter path: ctrl-opt.path
-    adopter.on \change, ({ops, source}) ->
-      if source => return
-      obj.cfg = if adopter.data => JSON.parse(JSON.stringify(adopter.data)) else {}
-      if !obj.cfg.roles => obj.cfg.roles = []
-      update-view!
-    update-data-debounced = debounce 500, -> update-data!
-    update-data = (deb) ->
-      if deb => update-data-debounced!
-      else adopter.update -> JSON.parse(JSON.stringify(obj.cfg))
-    
-    return adopter
-    */
     return this;
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {

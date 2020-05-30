@@ -30,7 +30,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @view = view = new ldView do
       root: @root
       action: do
-        input: input: ({node, local}) ~> @search node.value
+        keyup: input: ({evt}) ~> if evt.keyCode == 27 => return @clear!
+        input: input: ({node, local, evt}) ~> @search node.value
         click: clear: ~> @clear!
       handler: do
         picked: ({node}) ~> node.classList.toggle \d-none, !@picked
@@ -59,8 +60,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
           render: ({local, data}) ->
             local.view.setContext data
             local.view.render!
+  get: -> return @picked
   clear: ->
     @ <<< picked: null, users: []
+    @view.get('input').value = ''
     @render!
   _search: (name) ->
     if !(name and name.length >= 3) => return @ <<< users: [], loading: false

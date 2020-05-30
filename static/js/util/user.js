@@ -23,10 +23,19 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
       return this.view = view = new ldView({
         root: this.root,
         action: {
+          keyup: {
+            input: function(arg$){
+              var evt;
+              evt = arg$.evt;
+              if (evt.keyCode === 27) {
+                return this$.clear();
+              }
+            }
+          },
           input: {
             input: function(arg$){
-              var node, local;
-              node = arg$.node, local = arg$.local;
+              var node, local, evt;
+              node = arg$.node, local = arg$.local, evt = arg$.evt;
               return this$.search(node.value);
             }
           },
@@ -122,9 +131,13 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
         }
       });
     },
+    get: function(){
+      return this.picked;
+    },
     clear: function(){
       this.picked = null;
       this.users = [];
+      this.view.get('input').value = '';
       return this.render();
     },
     _search: function(name){
