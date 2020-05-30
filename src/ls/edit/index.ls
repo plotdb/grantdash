@@ -15,12 +15,12 @@
       if first-child(i) => return [n] ++ that
     return
 
-  sdb.get {id: "brd[4].pages", watch: (ops,source) -> hub.pages.fire \change, {ops,source} }
+  sdb.get {id: "brd/4/pages", watch: (ops,source) -> hub.pages.fire \change, {ops,source} }
     .then (doc) ->
       hub.pages.doc = doc
       n = first-child doc.data.tree
       if !n => return
-      sdb.get {id: "brd[4].pages[#{n.join('/')}]", watch: (ops,source) -> hub.file.fire \change, {ops,source} }
+      sdb.get {id: "brd/4/pages[#{n.join('/')}]", watch: (ops,source) -> hub.file.fire \change, {ops,source} }
     .then (doc) ->
       hub.file.doc = doc
 

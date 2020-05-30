@@ -40,7 +40,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   getdoc: ->
     console.log "get project document ..."
     @sdb.get({
-      id: "prj-#{@slug}"
+      id: "prj/#{@slug}"
       watch: (ops,source) ~> @hubs.prj.fire \change, {ops,source}
       create: ~>
         ret = {answer: {}}

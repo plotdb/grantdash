@@ -76,7 +76,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome}) ->
             if !@toc[n].key => return
             console.log "prepare #n document ..."
             @sdb.get({
-              id: "#{n}-#{@toc[n]key}"
+              id: "#{n}/#{@toc[n]slug}"
               watch: (ops,source) ~> @hubs[n]fire \change, {ops,source}
               create: ~> @toc[n]detail
             }).then (doc) ~>

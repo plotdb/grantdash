@@ -36,7 +36,7 @@
     }
   };
   sdb.get({
-    id: "brd[4].pages",
+    id: "brd/4/pages",
     watch: function(ops, source){
       return hub.pages.fire('change', {
         ops: ops,
@@ -51,7 +51,7 @@
       return;
     }
     return sdb.get({
-      id: "brd[4].pages[" + n.join('/') + "]",
+      id: "brd/4/pages[" + n.join('/') + "]",
       watch: function(ops, source){
         return hub.file.fire('change', {
           ops: ops,

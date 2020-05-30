@@ -141,7 +141,7 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
           }
           console.log("prepare " + n + " document ...");
           return this$.sdb.get({
-            id: n + "-" + this$.toc[n].key,
+            id: n + "/" + this$.toc[n].slug,
             watch: function(ops, source){
               return this$.hubs[n].fire('change', {
                 ops: ops,

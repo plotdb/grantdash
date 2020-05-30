@@ -20,16 +20,16 @@ ldc.register \treemenu, <[sharetree loader editor]>, ({sharetree, loader, editor
   hubs = pages: new Hub({sdb}), file: new Hub({sdb})
   fetch = (name) ->
     ldld.on!
-    sdb.get({id: "brd.4.file[#name]"})
+    sdb.get({id: "brd/4/file[#name]"})
       .then (doc) ->
-        console.log "fetch brd.4.file[#name]"
+        console.log "fetch brd/4/file[#name]"
         if hubs.file.doc => hubs.file.doc.destroy!
         hubs.file.doc = doc
         if !lc.editor.adapter => lc.editor.adapt hub: hubs.file, path: []
         else lc.editor.set-doc doc
         ldld.off!
       .catch -> ldld.off!
-  sdb.get({id: 'brd.4.pages'})
+  sdb.get({id: 'brd/4/pages'})
     .then (doc) ->
       hubs.pages.doc = doc
 

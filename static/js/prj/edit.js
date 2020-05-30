@@ -68,7 +68,7 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
       var this$ = this;
       console.log("get project document ...");
       return this.sdb.get({
-        id: "prj-" + this.slug,
+        id: "prj/" + this.slug,
         watch: function(ops, source){
           return this$.hubs.prj.fire('change', {
             ops: ops,

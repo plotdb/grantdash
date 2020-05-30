@@ -4,7 +4,7 @@ require! <[fs fs-extra path crypto LiveScript chokidar moment]>
 require! <[express body-parser express-session connect-multiparty csurf express-rate-limit]>
 require! <[passport passport-local passport-facebook passport-google-oauth20]>
 require! <[nodemailer]>
-require! <[sharedb-wrapper]>
+require! <[sharedb-wrapper permcheck]>
 require! <[./io/postgresql ./api ./ext ./view]>
 require! <[./aux ./watch ../secret ./watch/build/mod]>
 require! 'uglify-js': uglify-js, LiveScript: lsc
@@ -141,9 +141,20 @@ backend = do
     # =========== Sharedb
     if config.{}sharedb.enabled =>
       access = ({user, id, data, type}) -> new Promise (res, rej) ->
+        if type == \readSnapshots =>
+          [table,slug] = id.split('/')
+          pgsql.query "select owner, detail->>'perm' from #table where slug = $1", [slug]
+            .then (r={}) ->
+              if !(ret = r.[]rows.0) => return rej!
+              if req.user.key == ret.owner => return res!
+              perm = ret.{}perm.[]roles
+              role = [{user: [req.user.key]}]
+              action = \admin
+              permcheck {role, perm, action}
+            .catch -> rej!
         # only owner or user with id = 1 can write
         if type == \receive and data and data.a == \op =>
-          if id and +id.split('-').0 != user.key and user.key != 1 => return rej!
+          if id and +id.split('/').0 != user.key and user.key != 1 => return rej!
         if user => res! else rej!
 
       @sharedb = {server, sdb, connect, wss} = sharedb-wrapper {

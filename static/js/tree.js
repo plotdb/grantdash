@@ -65,9 +65,9 @@ ldc.register('treemenu', ['sharetree', 'loader', 'editor'], function(arg$){
   fetch = function(name){
     ldld.on();
     return sdb.get({
-      id: "brd.4.file[" + name + "]"
+      id: "brd/4/file[" + name + "]"
     }).then(function(doc){
-      console.log("fetch brd.4.file[" + name + "]");
+      console.log("fetch brd/4/file[" + name + "]");
       if (hubs.file.doc) {
         hubs.file.doc.destroy();
       }
@@ -86,7 +86,7 @@ ldc.register('treemenu', ['sharetree', 'loader', 'editor'], function(arg$){
     });
   };
   return sdb.get({
-    id: 'brd.4.pages'
+    id: 'brd/4/pages'
   }).then(function(doc){
     var tree;
     hubs.pages.doc = doc;
