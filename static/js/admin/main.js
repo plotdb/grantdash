@@ -134,33 +134,40 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     getdoc: function(){
       var this$ = this;
       return Promise.resolve().then(function(){
-        var ps;
-        ps = ['org', 'brd'].map(function(n){
-          if (!this$.toc[n].key) {
-            return;
-          }
-          console.log("prepare " + n + " document ...");
-          return this$.sdb.get({
-            id: n + "/" + this$.toc[n].slug,
-            watch: function(ops, source){
-              return this$.hubs[n].fire('change', {
-                ops: ops,
-                source: source
+        var read;
+        read = function(n){
+          return new Promise(function(res, rej){
+            if (!this$.toc[n].key) {
+              return res();
+            }
+            console.log("prepare " + n + " document ( id: " + n + "/" + this$.toc[n].slug + " ) ...");
+            return this$.sdb.get({
+              id: n + "/" + this$.toc[n].slug,
+              watch: function(ops, source){
+                return this$.hubs[n].fire('change', {
+                  ops: ops,
+                  source: source
+                });
+              },
+              create: function(){
+                return this$.toc[n].detail;
+              }
+            }).then(function(doc){
+              if (!(this$.hubs[n].doc = doc)) {
+                return rej();
+              }
+              doc.on('op', function(){
+                return this$.render();
               });
-            },
-            create: function(){
-              return this$.toc[n].detail;
-            }
-          }).then(function(doc){
-            if (!(this$.hubs[n].doc = doc)) {
-              return;
-            }
-            return doc.on('op', function(){
-              return this$.render();
+              return res();
+            })['catch'](function(){
+              return rej(new ldError(1012));
             });
           });
+        };
+        return read('org').then(function(){
+          return read('brd');
         });
-        return Promise.all(ps);
       }).then(function(){
         return this$.render();
       });
@@ -354,8 +361,11 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     return loader.off();
   })['catch'](function(e){
     var that;
-    console.log("[Admin Error] Code: ", e.id);
-    console.log("Error Object: ", e.e || e);
+    console.log("[Admin Error] Code: ", e ? e.id : e);
+    console.log("Error Object: ", (e && e.e) || e);
+    if (!e) {
+      return error()(e);
+    }
     if (that = e.stack) {
       console.log(that);
     }

@@ -72,17 +72,21 @@ admin-prj-list, prj-form, admin-entry, admin-welcome}) ->
     getdoc: ->
       Promise.resolve!
         .then ~>
-          ps = <[org brd]>.map (n) ~>
-            if !@toc[n].key => return
-            console.log "prepare #n document ..."
+          read = (n) ~> new Promise (res, rej) ~>
+            if !@toc[n].key => return res!
+            console.log "prepare #n document ( id: #{n}/#{@toc[n]slug} ) ..."
             @sdb.get({
               id: "#{n}/#{@toc[n]slug}"
               watch: (ops,source) ~> @hubs[n]fire \change, {ops,source}
               create: ~> @toc[n]detail
-            }).then (doc) ~>
-              if !(@hubs[n]doc = doc) => return
+            }).then((doc) ~>
+              if !(@hubs[n]doc = doc) => return rej!
               doc.on \op, ~> @render!
-          Promise.all ps
+              res!
+            ).catch -> rej new ldError(1012)
+          # TODO if no org but brd -> clear org and let it edit brd.
+          # vice versa
+          read \org .then -> read \brd
         .then ~> @render!
 
     set-group: (v) ->
@@ -161,9 +165,11 @@ admin-prj-list, prj-form, admin-entry, admin-welcome}) ->
     .then -> console.log "admin initialized."
     .finally -> loader.off!
     .catch (e) ->
-      console.log "[Admin Error] Code: ", e.id
-      console.log "Error Object: ", (e.e or e)
+      console.log "[Admin Error] Code: ", (if e => e.id else e)
+      console.log "Error Object: ", ((e and e.e) or e)
+      if !e => return error!(e)
       if e.stack => console.log that
+      # TODO jump to landing page ?
       if e.id == 1012 => ldcvmgr.toggle \error-403
       else if e.id == 1000 => ldcvmgr.toggle \auth-required
       else if e.id == 1007 => ldcvmgr.toggle \server-down

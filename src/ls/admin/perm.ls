@@ -127,7 +127,7 @@ Ctrl = (opt) ->
         .map -> it.key
         .indexOf(user.key)
       if ~idx => return alert("user already exist")
-      role.list.push {perm: role.name} <<< user{key,displayname}
+      role.list.push {perm: role.name, type: \user} <<< user{key,displayname}
       @ctrl.search.clear!
       update-data!
       update-view!

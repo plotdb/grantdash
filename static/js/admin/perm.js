@@ -275,7 +275,8 @@ ldc.register('adminPerm', ['sdbAdapter', 'userSearch'], function(arg$){
           return alert("user already exist");
         }
         role.list.push((ref$ = {
-          perm: role.name
+          perm: role.name,
+          type: 'user'
         }, ref$.key = user.key, ref$.displayname = user.displayname, ref$));
         this$.ctrl.search.clear();
         updateData();
