@@ -244,9 +244,14 @@ p {
 .dropdown-item {
   font-weight: 300;
 }
-input.form-control {
+.form-block input.form-control,
+.form-group input.form-control {
   border-radius: 0;
   border-width: 0 0 1px 0;
+}
+.input-group > *:not(:last-child) > .form-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 [ld-scope=navbar-editor] .folder-item {
   display: flex;
