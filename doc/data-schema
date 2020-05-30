@@ -4,7 +4,7 @@
  valid: ..?
  info: {}
  stage: {}
- permission: {}
+ perm: {}
  page: {
    navbar: {}
    files: {}
@@ -16,7 +16,7 @@
      criteria: {}
      grade: {}
      form: {}
-     permission: {}
+     perm: {}
      stage: {}
    }
  ]
