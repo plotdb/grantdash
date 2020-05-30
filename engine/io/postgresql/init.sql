@@ -10,14 +10,14 @@ create table if not exists exception (
 
 create table if not exists users (
   key serial primary key,
-  username text not null unique constraint nlen check (char_length(username) <= 100),
-  password text constraint pwlen check (char_length(password) <= 100),
+  username text not null unique constraint users_username_len check (char_length(username) <= 100),
+  password text constraint users_password_len check (char_length(password) <= 100),
   usepasswd boolean,
   verified jsonb,
-  displayname text, constraint displaynamelength check (char_length(displayname) <= 64),
-  description text, constraint displaynamelength check (char_length(description) <= 1024),
-  title text, constraint displaynamelength check (char_length(title) <= 100),
-  tags text, constraint displaynamelength check (char_length(tags) <= 256),
+  displayname text, constraint users_displayname_length check (char_length(displayname) <= 64),
+  description text, constraint users_description_length check (char_length(description) <= 1024),
+  title text, constraint  users_title_length check (char_length(title) <= 100),
+  tags text, constraint users_tags_length check (char_length(tags) <= 256),
   createdtime timestamp,
   lastactive timestamp,
   detail jsonb,
@@ -54,9 +54,9 @@ create type state as enum ('active','pending','deleted','canceled','suspended','
 create table if not exists org (
   key serial primary key,
   owner int references users(key) not null,
-  slug text not null unique,
-  name text not null constraint name_len check (char_length(name) <= 100),
-  description text constraint description_len check (char_length(description) <= 500),
+  slug text not null unique constraint org_slug_len check (char_length(slug) <= 64),
+  name text not null constraint org_name_len check (char_length(name) <= 100),
+  description text constraint org_description_len check (char_length(description) <= 500),
   detail jsonb,
   createdtime timestamp not null default now(),
   state state not null default 'active',
@@ -67,9 +67,9 @@ create table if not exists brd (
   key serial primary key,
   owner int references users(key) not null,
   org int references org(key),
-  slug text not null unique,
-  name text not null constraint name_len check (char_length(name) <= 100),
-  description text constraint description_len check (char_length(description) <= 500),
+  slug text not null unique constraint brd_slug_len check (char_length(slug) <= 64),
+  name text not null constraint brd_name_len check (char_length(name) <= 100),
+  description text constraint brd_description_len check (char_length(description) <= 500),
   detail jsonb,
   starttime timestamp,
   endtime timestamp,
@@ -82,11 +82,11 @@ create table if not exists brd (
 create table if not exists prj (
   key serial primary key,
   owner int references users(key) not null,
-  slug text not null unique,
+  slug text not null unique constraint prj_slug_len check (char_length(slug) <= 64),
   brd int references brd(key),
   grp text,
-  name text not null constraint name_len check (char_length(name) <= 100),
-  description text constraint description_len check (char_length(description) <= 500),
+  name text not null constraint prg_name_len check (char_length(name) <= 100),
+  description text constraint prj_description_len check (char_length(description) <= 500),
   detail jsonb,
   createdtime timestamp not null default now(),
   state state not null default 'active',
@@ -99,7 +99,7 @@ create index if not exists prj_slug on prj (slug);
 
 create table if not exists discus (
   key serial primary key,
-  slug text not null unique constraint slug_len check (char_length(slug) <= 256)
+  slug text not null unique constraint discus_slug_len check (char_length(slug) <= 256)
 );
 
 create table if not exists comment (
