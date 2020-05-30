@@ -57,13 +57,13 @@ api.put \/detail/, aux.signed, (req, res) ->
   table = tables[tables.indexOf(type)]
   if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
   if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
-  io.query "select detail,owner from #table where slug = $1", [slug]
+  io.query "select owner,detail->'perm' as perm from #table where slug = $1", [slug]
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       if req.user.key == ret.owner => return
       perm = ret.{}perm.[]roles
-      role = [{user: [req.user.key]}]
-      action = \admin
+      role = {user: [req.user.key]}
+      action = \owner
       permcheck {role, perm, action}
     .then ->
       io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
