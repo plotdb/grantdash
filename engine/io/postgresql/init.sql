@@ -28,6 +28,8 @@ create table if not exists users (
   deleted boolean
 );
 
+create index idx_user_displayname on users (lower(displayname) varchar_pattern_ops);
+
 create table if not exists mailverifytoken (
   owner int references users(key) on delete cascade,
   token text,

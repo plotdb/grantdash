@@ -8,7 +8,7 @@ app = engine.app
 api.post \/account, aux.signed, (req, res) ->
   if !(name = req.body.name) => return aux.r404 res
   name = "#{name}".substring(0, 32)
-  io.query "select key,displayname from users where displayname ~ $1", [name]
+  io.query "select key,displayname from users where lower(displayname) ~ lower($1)", [name]
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res
   
