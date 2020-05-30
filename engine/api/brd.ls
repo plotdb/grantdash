@@ -1,4 +1,4 @@
-require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror]>
+require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror permcheck]>
 require! <[../aux]>
 (engine,io) <- (->module.exports = it)  _
 
@@ -57,7 +57,16 @@ api.put \/detail/, aux.signed, (req, res) ->
   table = tables[tables.indexOf(type)]
   if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
   if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
-  io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
+  io.query "select detail,owner from #table where slug = $1", [slug]
+    .then (r={}) ->
+      if !(ret = r.[]rows.0) => return aux.reject 404
+      perm = ret.{}perm.[]roles
+      role = [{user: [req.user.key]}]
+      action = \admin
+      if req.user.key == ret.owner => return
+      else permcheck {role, perm, action}
+    .then ->
+      io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
     .then ->
       if !name => return
       io.query """
