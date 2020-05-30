@@ -1,5 +1,5 @@
 require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror permcheck]>
-require! <[../aux]>
+require! <[../aux ./permcache]>
 (engine,io) <- (->module.exports = it)  _
 
 api = engine.router.api
@@ -57,14 +57,8 @@ api.put \/detail/, aux.signed, (req, res) ->
   table = tables[tables.indexOf(type)]
   if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
   if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
-  io.query "select owner,detail->'perm' as perm from #table where slug = $1", [slug]
-    .then (r={}) ->
-      if !(ret = r.[]rows.0) => return aux.reject 404
-      if req.user.key == ret.owner => return
-      perm = ret.{}perm.[]roles
-      role = {user: [req.user.key]}
-      action = \owner
-      permcheck {role, perm, action}
+
+  permcache.check {io, user: req.user, type: table, slug, action: \owner}
     .then ->
       io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
     .then ->
@@ -73,6 +67,7 @@ api.put \/detail/, aux.signed, (req, res) ->
       update #table set (name,description) = ($1,$2)  where slug = $3
       """, [name,description,slug]
     .then ->
+      permcache.invalidate {type: table, slug}
       if table != \prj => return
       lc.root = "users/p/#{slug}"
       fs-extra.path-exists lc.root
