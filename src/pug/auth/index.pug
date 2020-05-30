@@ -7,7 +7,7 @@ block content
   .text-left: +authpanel
 block script
   script: :lsc
-    ldc.register <[auth loader]>, ({auth, loader}) ->
+    ldc.register <[auth loader navtop]>, ({auth, loader, navtop}) ->
       nexturl = (window.location.search or '')
         .replace(/^\?/,'')
         .split(\&)
@@ -18,5 +18,6 @@ block script
       reload = ->
         loader.on!
         window.location.href = nexturl
+      auth.manually-init root: \.authpanel
       auth.fetch {renew: true} .then -> if it.user.key => reload!
       auth.on \auth.signin, -> reload!
