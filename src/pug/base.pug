@@ -20,6 +20,7 @@ html
     block head
   body(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
     //-+script("/js/pack/base.min.js")
+    include modules/mixins/index.pug
     include modules/widget/navtop.pug
     .ldNotify
     block body

@@ -9,52 +9,62 @@ block body
   .w-100.position-relative
     .w-1024.h-100.rwd.mx-auto.typeset.heading-contrast.pt-4.my-3
       .d-flex.mb-4
-        .rounded.bg-dark.mr-4.mt-4(style="width:9.25em;height:9.25em;flex:0 0 auto;background:url(https://grants.g0v.tw//uploads/e55fddeaaf3dfc01b750d433f108fdbc.jpg) center center no-repeat;background-size:cover")
-        .flex-grow-1
-          .text-muted.text-sm #[a(href="/project/list.html") 第三十四屆公民科技獎助金] / 提案
+        .mr-4.mt-4.pr-4: .rounded.bg-dark(style="width:9.25em;height:9.25em;flex:0 0 auto;background:url(https://grants.g0v.tw//uploads/e55fddeaaf3dfc01b750d433f108fdbc.jpg) center center no-repeat;background-size:cover")
+        .flex-grow-1.pr-2
+          .text-muted.text-sm
+            a(href=`/b/${brd.slug}/p/list`) #{brd.name}
+            span &nbsp;/ 提案
           .d-flex.align-items-end.mt-1
             h2.mt-1.mb-0(style="line-height:1em") #{prj.name}
             .ml-2.flex-grow-1
-              each t,$index in ["義肢","開源","協作","台灣","手作"]
+              //-each t,$index in ["義肢","開源","協作","台灣","手作"]
                 .badge.badge-light.text-secondary.mr-2.ld.ld-float-rtl-in(style=`animation-delay:${$index * 0.1}s`)= t
-            .btn.btn-outline-secondary.btn-sm.mx-2 追蹤 #[i.i-eye]
-            .btn.btn-outline-secondary.btn-sm 分享 #[i.i-link]
+            //-.btn.btn-outline-secondary.btn-sm.ml-2 追蹤 #[i.i-eye]
+            a.btn.btn-outline-secondary.btn-sm.ml-2(href=`/p/${prj.slug}/edit`) 編輯 #[i.i-pen]
+            .btn.btn-outline-secondary.btn-sm.ml-2 分享 #[i.i-link]
           .w-100.my-4.rounded-lg(style="height:2px;background:linear-gradient(90deg,#aaebcc,#ddfeef)")
           each p in (prj.description || '').split('\n')
             p #{p}
-          //-
-            p 開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。
-            p 透過各項功能，串起民眾的申覆結果、申覆內容解讀原則、資料申請使用者，形成關心資料開放、協力推動的社群，讓政策推動者導入行政資源，逐項辦理。
     .w-100.pb-4: .w-1024.rwd.mx-auto.typeset.heading-contrast.my-0.py-4
       .d-flex.align-items-center
-        .mr-4.rounded.py-3.border.border-dark(style="width:9.25em;flex:0 0 auto")
-          .text-center
+        .mr-4(style="width:9.25em;flex:0 0 auto")
+          //-.text-center.rounded.py-3.border.border-dark
             label.text-muted 成果授權
             div.font-weight-bold.text-sm CC-BY-NC-SA 4.0
         .d-flex.ml-3.flex-grow-1
-          .mr-4.flex-grow-1
+          .mr-4.flex-grow-1.d-flex.align-items-center
+            .mr-2.text-muted 提案人
+            +user.mr-2(style="width:1.5em!important")
+            span #{prj.ownername}
+          //-.mr-4.flex-grow-1
             label.text-muted.mb-0 提案人
             .sep.my-3.sep-dark
-            //-+avatar-sm
+            .d-flex.align-items-center
+              +user.mr-2
+              span #{prj.ownername}
           .mr-4.flex-grow-1
-            label.text-muted.mb-0 參與者
-            .sep.my-3.sep-dark
-            div: each i in [1,2,3,4,5]
-              //-+avatar-sm.mr-2
-          .mr-4.flex-grow-1
-            label.text-muted.mb-0 徵求志工
-            .sep.my-3.sep-dark
-            div: each i in [1,2,3]
-              .avatar.lg.mr-2.has-tips(
-              style="background:#f1f2f3 url(/assets/img/icon/android.svg);background-size:cover")
-                .hover-tip.bottom.tip-sm Android Dev
-          .flex-grow-1
-            label.text-muted.mb-0.flex-grow-1 關注者
-            .sep.my-3.sep-dark
-            div
-              each i in [0,1,2,3,4,5,6,7,8,9]
+            //-div
+              label.text-muted.mb-0 參與者
+              .sep.my-3.sep-dark
+              div: each i in [1,2,3,4,5]
                 //-+avatar-sm.mr-2
-              span ...
+          .mr-4.flex-grow-1
+            //-div
+              label.text-muted.mb-0 徵求志工
+              .sep.my-3.sep-dark
+              div: each i in [1,2,3]
+                .avatar.lg.mr-2.has-tips(
+                style="background:#f1f2f3 url(/assets/img/icon/android.svg);background-size:cover")
+                  .hover-tip.bottom.tip-sm Android Dev
+
+          .flex-grow-1
+            //-div
+              label.text-muted.mb-0.flex-grow-1 關注者
+              .sep.my-3.sep-dark
+              div
+                each i in [0,1,2,3,4,5,6,7,8,9]
+                  //-+avatar-sm.mr-2
+                span ...
 
 
 
@@ -62,8 +72,8 @@ block body
     .col-md-2: .sticky.pt-2(style="top:0")
       .list-group
         a.list-group-item.clickable.text-secondary(href="#project-detail") 提案細節
-        a.list-group-item.clickable.text-secondary(href="#project-note") 線上共筆
-        a.list-group-item.clickable.text-secondary(href="#project-discuss") 我有問題
+        //-a.list-group-item.clickable.text-secondary(href="#project-note") 線上共筆
+        a.list-group-item.clickable.text-secondary(href="#project-discuss") 討論提問
       .dropdown.my-4
         .btn.btn-outline-secondary.dropdown-toggle.btn-block(data-toggle="dropdown") 修改紀錄
       a.btn.btn-primary.btn-block.text-white(onclick="lda.ldcvmgr.toggle('propose')")
