@@ -7,10 +7,20 @@ block vars
 block body
   include /modules/mixins/index.pug
 
+  - var ghash = {};
+  - (grps || []).map(function(d,i) { ghash[d.key] = d; });
   mixin list
     .w-1024.rwd.mx-auto.d-flex.flex-wrap.justify-content-between
       each prj in prjs
         - prj.showThumb = true
+        - var grp = ghash[prj.grp];
+        -
+          var path = '';
+          if(prj.detail && prj.detail.answer) {
+            var list = (prj.detail.answer[grp.form.purpose.thumb] || {}).list;
+            if(list && list.length) { path = (list[0] || {}).path; }
+          }
+        - prj.thumb = `/dash/org/${brd.org}/prj/${prj.slug}/upload/${path}`
         .py-4.my-4: +prj-card-noframe(prj).mb-4.h-100.border-0.shadow-none
       //-each i in [1,2,3,4,5,6,7,8,9,10,11,12]
       //-each prj in db

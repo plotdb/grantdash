@@ -145,16 +145,18 @@ app.get \/brd/:bslug/grp/:gslug/list, (req, res) ->
   offset = (if isNaN(+offset) => 0 else +offset ) >? 0
   limit = (if isNaN(+limit) => 24 else +limit ) <? 100 >? 1
   if !(bslug and gslug) => return aux.r400 res
-  io.query "select b.name, b.description, b.slug from brd as b where b.slug = $1", [bslug]
+  io.query "select b.name, b.description, b.slug, b.org, b.detail from brd as b where b.slug = $1", [bslug]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
+      lc.grps = lc.brd.detail.group.map -> it{form,key}
+      delete lc.brd.detail
       #io.query "select p.* from prj as p where brd = $1 and grp = $2", [bslug, gslug]
       io.query """
       select p.*,u.displayname as ownername
       from prj as p, users as u
       """
     .then (r={}) ->
-      res.render \prj/list.pug, {prjs: r.[]rows, brd: lc.brd}
+      res.render \prj/list.pug, {prjs: r.[]rows, brd: lc.brd, grps: lc.grps}
       return null
     .catch aux.error-handler res
 

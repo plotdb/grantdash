@@ -4,15 +4,23 @@ block vars
 block body
   - var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
   - var purpose = grp.form.purpose || {};
+  -
+    var path = '';
+    if(prj.detail && prj.detail.answer) {
+      var list = (prj.detail.answer[grp.form.purpose.thumb] || {}).list;
+      if(list && list.length) { path = (list[0] || {}).path; }
+    }
+  - prj.thumb = `/dash/org/${brd.org}/prj/${prj.slug}/upload/${path}`
 
 
   .w-100.position-relative
     .w-1024.h-100.rwd.mx-auto.typeset.heading-contrast.pt-4.my-3
       .d-flex.mb-4
-        .mr-4.mt-4.pr-4: .rounded.bg-dark(style="width:9.25em;height:9.25em;flex:0 0 auto;background:url(https://grants.g0v.tw//uploads/e55fddeaaf3dfc01b750d433f108fdbc.jpg) center center no-repeat;background-size:cover")
+        //-.mr-4.mt-4.pr-4: .rounded.bg-dark(style="width:9.25em;height:9.25em;flex:0 0 auto;background:url(https://grants.g0v.tw//uploads/e55fddeaaf3dfc01b750d433f108fdbc.jpg) center center no-repeat;background-size:cover")
+        .mr-4.mt-4.pr-4: .rounded.bg-dark(style=`width:9.25em;height:9.25em;flex:0 0 auto;background:url(${prj.thumb}) center center no-repeat;background-size:cover`)
         .flex-grow-1.pr-2
           .text-muted.text-sm
-            a(href=`/b/${brd.slug}/p/list`) #{brd.name}
+            a(href=`/brd/${brd.slug}/prj/list`) #{brd.name}
             span &nbsp;/ 提案
           .d-flex.align-items-end.mt-1
             h2.mt-1.mb-0(style="line-height:1em") #{prj.name}
@@ -20,7 +28,7 @@ block body
               //-each t,$index in ["義肢","開源","協作","台灣","手作"]
                 .badge.badge-light.text-secondary.mr-2.ld.ld-float-rtl-in(style=`animation-delay:${$index * 0.1}s`)= t
             //-.btn.btn-outline-secondary.btn-sm.ml-2 追蹤 #[i.i-eye]
-            a.btn.btn-outline-secondary.btn-sm.ml-2(href=`/p/${prj.slug}/edit`) 編輯 #[i.i-pen]
+            a.btn.btn-outline-secondary.btn-sm.ml-2(href=`/prj/${prj.slug}/edit`) 編輯 #[i.i-pen]
             .btn.btn-outline-secondary.btn-sm.ml-2 分享 #[i.i-link]
           .w-100.my-4.rounded-lg(style="height:2px;background:linear-gradient(90deg,#aaebcc,#ddfeef)")
           each p in (prj.description || '').split('\n')
@@ -34,7 +42,7 @@ block body
         .d-flex.ml-3.flex-grow-1
           .mr-4.flex-grow-1.d-flex.align-items-center
             .mr-2.text-muted 提案人
-            +user.mr-2(style="width:1.5em!important")
+            +user({key: prj.owner}).mr-2.rounded-circle(style="width:1.5em!important")
             span #{prj.ownername}
           //-.mr-4.flex-grow-1
             label.text-muted.mb-0 提案人
@@ -76,6 +84,7 @@ block body
         a.list-group-item.clickable.text-secondary(href="#project-discuss") 討論提問
       .dropdown.my-4
         .btn.btn-outline-secondary.dropdown-toggle.btn-block(data-toggle="dropdown") 修改紀錄
+        .dropdown-menu
       a.btn.btn-primary.btn-block.text-white(onclick="lda.ldcvmgr.toggle('propose')")
         | 我也要提案
     .col-md-10
@@ -99,7 +108,7 @@ block body
             - var value = answer[block.key]
             .pb-4
               if value
-                | #{value.content || value.list.join(',')}
+                | #{value.content || value.list.map(function(d,i) { return d.name || d; }).join(',')}
 
 
 

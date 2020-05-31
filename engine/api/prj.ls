@@ -15,7 +15,7 @@ app.get \/prj/:slug, (req, res) ->
   """, [slug]
     .then (r={}) ->
       if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
-      io.query """select name,slug,(detail->'group') as group from brd where brd.slug = $1""", [lc.prj.brd]
+      io.query """select name,slug,org,(detail->'group') as group from brd where brd.slug = $1""", [lc.prj.brd]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
       lc.grp = grp = (brd.group or []).filter(-> it.key == lc.prj.grp).0

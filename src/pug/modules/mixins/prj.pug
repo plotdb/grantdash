@@ -2,7 +2,7 @@
 
 mixin prj-list(opt)
   .w-640&attributes(attributes)
-    a.text-dark.text-no-deco(href=`/p/${opt.slug}`)
+    a.text-dark.text-no-deco(href=`/prj/${opt.slug}`)
       .d-flex.align-items-center
         .rounded.bg-dark.bg-cover.bg-portrait.mr-1(style=`width:3em;height:3em;background-image:url(${opt.thumb});flex:0 0 auto`)
         .text-truncate
@@ -12,7 +12,7 @@ mixin prj-list(opt)
           .text-sm.text-muted.w-100.text-truncate  #{(opt.description || '').substring(0,100)} ...
 
 mixin prj-list-sm(opt)
-  div(style="width:320px")&attributes(attributes): a.text-dark.text-no-deco(href=`/p/${opt.slug}`)
+  div(style="width:320px")&attributes(attributes): a.text-dark.text-no-deco(href=`/prj/${opt.slug}`)
     .d-flex.align-items-center
       .rounded.bg-dark.bg-cover.bg-portrait.mr-1(style=`width:3em;height:3em;flex:1 0 auto;background-image:url(${opt.thumb})`)
       .text-truncate
@@ -22,11 +22,11 @@ mixin prj-list-sm(opt)
         .text-sm.text-muted.w-100.text-truncate  #{(opt.description || '').substring(0,100)} ...
 
 mixin prj-thumb(opt)
-  a.rounded.bg-dark.bg-cover.bg-portrait.mr-1.d-inline-block(href=`/p/${opt.slug}`,
+  a.rounded.bg-dark.bg-cover.bg-portrait.mr-1.d-inline-block(href=`/prj/${opt.slug}`,
   style=`width:3em;height:3em;background-image:url(${opt.thumb})`)&attributes(attributes)
 
 mixin prj-card(opt)
-  a.text-dark.text-no-deco(href=`/p/${opt.slug}`): .card(style="width:300px;overflow:hidden")&attributes(attributes)
+  a.text-dark.text-no-deco(href=`/prj/${opt.slug}`): .card(style="width:300px;overflow:hidden")&attributes(attributes)
     .card-img-top.w-100
       .aspect-ratio.ratio-4by3.bg-dark.bg-cover.bg-portrait.border-bottom(style=`background-image:url(${opt.thumb})`)
     .card-body
@@ -35,7 +35,7 @@ mixin prj-card(opt)
       .text-sm.text-muted.mb-2 #{(opt.description || '').substring(0,50)} ...
 
 mixin prj-card-sm(opt)
-  a.text-dark.text-no-deco(href=`/p/${opt.slug}`): .card(style="width:250px;overflow:hidden")&attributes(attributes)
+  a.text-dark.text-no-deco(href=`/prj/${opt.slug}`): .card(style="width:250px;overflow:hidden")&attributes(attributes)
     .card-img-top.w-100
       .aspect-ratio.ratio-3by2.bg-dark.bg-cover.bg-portrait.border-bottom(style=`background-image:url(${opt.thumb})`)
     .card-body
@@ -45,7 +45,7 @@ mixin prj-card-sm(opt)
 
 mixin prj-card-noframe(opt)
   .d-flex.flex-column(style="width:20em;overflow:hidden")&attributes(attributes)
-    a.text-dark.text-no-deco(href=`/p/${opt.slug}`)
+    a.text-dark.text-no-deco(href=`/prj/${opt.slug}`)
       if opt.showThumb
         .w-100
           .aspect-ratio.ratio-3by2.bg-light.bg-cover.bg-portrait.rounded-lg.mb-3(
