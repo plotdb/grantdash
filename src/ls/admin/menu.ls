@@ -53,7 +53,7 @@ Ctrl = (opt) ->
         list: -> toc.brds-filtered
         handler: ({node, data}) ->
           ld$.find(node, 'span',0).innerText = data.name
-          ld$.find(node, '.text-sm',0).innerText = data.description
+          ld$.find(node, '.text-sm',0).innerText = data.description.substring(0,30) + "..."
           node.setAttribute \href, "/b/#{data.slug}/admin"
       "grp-entry": do
         key: -> it.key

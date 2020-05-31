@@ -133,7 +133,7 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
             var node, data;
             node = arg$.node, data = arg$.data;
             ld$.find(node, 'span', 0).innerText = data.name;
-            ld$.find(node, '.text-sm', 0).innerText = data.description;
+            ld$.find(node, '.text-sm', 0).innerText = data.description.substring(0, 30) + "...";
             return node.setAttribute('href', "/b/" + data.slug + "/admin");
           }
         },
