@@ -33,7 +33,7 @@ mixin footer
         .switch(ld="switch",data-name="show-desc")
 
       .ml-4
-        .dropdown(ld="purpose-menu edit-only")
+        .dropup(ld="purpose-menu edit-only")
           .btn.btn-sm.btn-light.dropdown-toggle(data-toggle="dropdown") 用途
           .dropdown-menu.dropdown-menu-right
             each item in [["標題","title"],["簡介","description"],["縮圖","thumb"],["標籤","tag"],["分類","category"]]
