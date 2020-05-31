@@ -3,11 +3,11 @@ block body
   //-include /ui/data/sample.pug
   include /modules/mixins/index.pug
   include /form/timeline.pug
-  +css("/assets/lib/handsontable/handsontable.min.css")
-  +script("/assets/lib/suuid/suuid.bundle.min.js")
-  +script("/assets/lib/handsontable/handsontable.min.js")
-  +script("/assets/lib/ldui/ldui.min.js")
-  +script("/js/reblock/form-reblock.js")
+  +css("/dash/assets/lib/handsontable/handsontable.min.css")
+  +script("/dash/assets/lib/suuid/suuid.bundle.min.js")
+  +script("/dash/assets/lib/handsontable/handsontable.min.js")
+  +script("/dash/assets/lib/ldui/ldui.min.js")
+  +script("/dash/js/reblock/form-reblock.js")
 
   +scope("prj-diff").ldcv.scroll.ldcvmgr(data-name="prj-diff"): .base.w-640(style="height:90%"): .inner.card.h-100
     .sticky.z-fixed(style="top:0")
@@ -119,14 +119,14 @@ block body
         div: .btn.btn.btn-warning.mr-2(ld="jump invalid") 跳至待修正項目
 
 block script
-  +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
-  +script("/assets/lib/dompurify/2.0.11/purify.min.js")
-  +script("/assets/lib/jsdiff/diff.min.js")
-  +script("/js/form/sample-data.js")
-  +script("/js/form/index.js")
-  +script("/js/form/block.js")
-  +script("/js/form/criteria.js")
-  +script("/js/form/validator.js")
-  +script("/js/util/sdb-adapter.js")
-  +script("/js/util/hub.js")
-  +script("/js/prj/edit.js")
+  +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
+  +script("/dash/assets/lib/dompurify/2.0.11/purify.min.js")
+  +script("/dash/assets/lib/jsdiff/diff.min.js")
+  +script("/dash/js/form/sample-data.js")
+  +script("/dash/js/form/index.js")
+  +script("/dash/js/form/block.js")
+  +script("/dash/js/form/criteria.js")
+  +script("/dash/js/form/validator.js")
+  +script("/dash/js/util/sdb-adapter.js")
+  +script("/dash/js/util/hub.js")
+  +script("/dash/js/prj/edit.js")

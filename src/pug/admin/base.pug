@@ -14,13 +14,13 @@ html
   head
     meta(charset="utf-8")
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    +css("/assets/lib/tail.datetime/0.4.13/css/tail.datetime-harx-light.min.css")
-    +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
-    +css("/assets/lib/ldui/ldui.min.css")
-    +css("/assets/lib/ldui/ext/folder.min.css")
-    +css("/css/index.css")
+    +css("/dash/assets/lib/tail.datetime/0.4.13/css/tail.datetime-harx-light.min.css")
+    +css("/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
+    +css("/dash/assets/lib/ldui/ldui.min.css")
+    +css("/dash/assets/lib/ldui/ext/folder.min.css")
+    +css("/dash/css/index.css")
     block head
-    +script("/assets/lib/ldc/ldc.min.js")
+    +script("/dash/assets/lib/ldc/ldc.min.js")
   body.bg-secondary(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
     include /admin/modules/navtop.pug
     .ldNotify
@@ -31,17 +31,17 @@ html
     if ctrl.foot.shown
       include /modules/widget/foot.pug
 
-    +script("/assets/lib/tail.datetime/0.4.13/js/tail.datetime-full.min.js")
-    +script("/assets/lib/moment.js/2.25.3/moment.min.js")
-    +script("/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")
-    +script("/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
-    +script("/assets/lib/ldui/ldui.min.js")
-    +script("/assets/lib/ldui/ext/folder.min.js")
-    +script("/js/site.js")
-    +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
-    +script("/assets/lib/sharedb-wrapper/client.bundle.min.js")
-    +script("/assets/lib/ctrlz/ctrlz.bundle.min.js")
-    +script("/assets/lib/suuid/suuid.bundle.min.js")
+    +script("/dash/assets/lib/tail.datetime/0.4.13/js/tail.datetime-full.min.js")
+    +script("/dash/assets/lib/moment.js/2.25.3/moment.min.js")
+    +script("/dash/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")
+    +script("/dash/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
+    +script("/dash/assets/lib/ldui/ldui.min.js")
+    +script("/dash/assets/lib/ldui/ext/folder.min.js")
+    +script("/dash/js/site.js")
+    +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
+    +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
+    +script("/dash/assets/lib/ctrlz/ctrlz.bundle.min.js")
+    +script("/dash/assets/lib/suuid/suuid.bundle.min.js")
     //-
       +script("/assets/lib/moment.js/2.25.3/moment.min.js")
       +script("/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")

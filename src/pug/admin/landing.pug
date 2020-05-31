@@ -4,14 +4,14 @@ block vars
   - ctrl.navtop.placeholder = false
   - ctrl.navtop.className = "navbar-dark text-dark"
 block head
-  +css("css/landing/index.css")
+  +css("/dash/css/landing/index.css")
 block body
   include /modules/mixins/index.pug
   //include /project/mixin.pug
   //include /activity/mixin.pug
   //include /modules/cover/authpanel.pug
   .w-100.h-100.bg-dark.text-dark(
-  style="background:url(/assets/img/c/bg/fluid.svg) center center no-repeat;background-size:cover;")
+  style="background:url(/dash/assets/img/c/bg/fluid.svg) center center no-repeat;background-size:cover;")
     .row.h-100.w-100.no-gutters
       .col-md-6: .vertical-center: .w-100
         .pb-4.pl-4.w-75.mx-auto

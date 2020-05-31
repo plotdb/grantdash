@@ -7,8 +7,8 @@ block script
       .position-absolute.w-100.h-100.bg-white.vertical-center.bg-cover(pd="init-loader",
       style="z-index:99999;background:radial-gradient(#fff,#eee,#ddd)")
         .text-center.w-100
-          .mb-4: img.ldlz(data-src="/assets/img/c/logo/grantdash-benchnine.svg")
-          div: img.ldlz(data-src="/assets/img/c/loader/spinner-gold.svg")
+          .mb-4: img.ldlz(data-src="/dash/assets/img/c/logo/grantdash-benchnine.svg")
+          div: img.ldlz(data-src="/dash/assets/img/c/loader/spinner-gold.svg")
 
       //- side menu
       +scope("admin-menu").admin-menu.bg-dark.text-white.text-left
@@ -128,25 +128,25 @@ block script
               .btn.btn-sm.btn-outline-light.ml-4(pd="publish-modification") 發布變更
               //-.btn.btn-sm.btn-outline-light.ml-2(pd="restore-settings") 放棄變更
 
-  +script("/js/util/sdb-adapter.js")
-  +script("/js/util/hub.js")
-  +script("/js/util/user.js")
-  +script("/js/reblock/form-reblock.js")
-  +script("/js/admin/main.js")
-  +script("/js/admin/menu.js")
-  +script("/js/admin/panel.js")
-  +script("/js/admin/info.js")
-  +script("/js/admin/stage.js")
-  +script("/js/admin/perm.js")
-  +script("/js/admin/navbar.js")
-  +script("/js/admin/entry.js")
-  +script("/js/admin/list.js")
-  +script("/js/admin/welcome.js")
-  +script("/js/admin/page.js")
+  +script("/dash/js/util/sdb-adapter.js")
+  +script("/dash/js/util/hub.js")
+  +script("/dash/js/util/user.js")
+  +script("/dash/js/reblock/form-reblock.js")
+  +script("/dash/js/admin/main.js")
+  +script("/dash/js/admin/menu.js")
+  +script("/dash/js/admin/panel.js")
+  +script("/dash/js/admin/info.js")
+  +script("/dash/js/admin/stage.js")
+  +script("/dash/js/admin/perm.js")
+  +script("/dash/js/admin/navbar.js")
+  +script("/dash/js/admin/entry.js")
+  +script("/dash/js/admin/list.js")
+  +script("/dash/js/admin/welcome.js")
+  +script("/dash/js/admin/page.js")
 
   //- form js files
-  +script("/js/form/index.js")
-  +script("/js/form/block.js")
-  +script("/js/form/criteria.js")
-  +script("/js/form/validator.js")
+  +script("/dash/js/form/index.js")
+  +script("/dash/js/form/block.js")
+  +script("/dash/js/form/criteria.js")
+  +script("/dash/js/form/validator.js")
 
