@@ -20,6 +20,8 @@ module-file = module-init: ->
           if @block.name == \form-thubmnail =>
             files = files.filter -> /^image\//.exec(it.type) and /\.(gif|png|jpg|jpeg)$/.exec(it.name)
           node.value = ''
+
+          /*
           fd = new FormData!
           for i from 0 til files.length => fd.append "file[]", files[i].file
           context.loading = true
@@ -36,6 +38,34 @@ module-file = module-init: ->
           )
             .then ~>
               @block.{}value.list = files.map (d,i) -> d.file{name, size, type, key: i}
+              @update!
+            .finally ~>
+              debounce 1000 .then ~>
+                context.loading = false
+                @view.module.render!
+            .catch error!
+          */
+
+          fd = new FormData!
+          for i from 0 til files.length => fd.append "file[]", files[i].file
+          fd.append "files", JSON.stringify([{name: "file", type: "form"}])
+          fd.append \prj, @prj.slug
+          context.loading = true
+          @view.module.render!
+          ld$.xhr(
+            "/dash/api/upload"
+            {method: \POST, body: fd}
+            {
+              type: \json
+              progress: ({percent}) ~>
+                context.percent = percent
+                @view.module.render!
+            }
+          )
+            .then (ret) ~>
+              if !ret.0 => return
+              ret-files = ret.0.files or []
+              @block.{}value.list = files.map (d,i) -> d.file{name, size, type, key: i, path: ret-files[i]}
               @update!
             .finally ~>
               debounce 1000 .then ~>

@@ -1,4 +1,4 @@
-require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror nodegit]>
+require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror nodegit suuid]>
 require! <[../aux ./permcache]>
 (engine,io) <- (->module.exports = it)  _
 
@@ -16,7 +16,7 @@ upload = ({root, files}) -> new Promise (res, rej) ->
       return if e => rej(e) else res {name, type, files: ["#type.png"]}
     else
       id = suuid!
-      ps = list.map (f,i) ->
+      ps = list.map (f,idx) ->
         fn = "#{id}.#{idx}.#{f.type}"
         fs-extra.copy(f.path, path.join(root, 'draft', fn))
           .then -> fn
@@ -27,26 +27,9 @@ upload = ({root, files}) -> new Promise (res, rej) ->
     .then -> res it
     .catch -> rej it
 
-api.post \/upload, aux.signed, express-formidable!, (req, res) ->
-  lc = {}
-  {org,brd,prj,files} = req.fields
-  try
-    files = JSON.parse(files)
-  catch e
-    return aux.r400 res
-  if !(files and Array.isArray(files) and files.length) => return aux.r400 res
-  files = files
-    .map ({name,type}) ->
-      list = req.files["#{name}[]"]
-      list = if Array.isArray(list) => list else [list]
-      list = list
-        .map -> {path: it.path, type: it.type.split(\/).1}
-        .filter -> /([a-zA-Z0-9]{1,6}$)/.exec(it.type)
-      return {name, type, list}
-    .filter -> it.list.length > 0 and it.list.length < 10
-
-  lc.type = type = if prj => \prj else if brd => \brd else if org => \org else null
-  if !type => return aux.r400 res
+slugs = ({io, org, brd, prj}) -> new Promise (res, rej) ->
+  type = if prj => \prj else if brd => \brd else if org => \org else null
+  if !type => return rej(new lderror 400)
   # TODO use left join to speed up
   promise = if type == \prj =>
     io.query """
@@ -69,16 +52,90 @@ api.post \/upload, aux.signed, express-formidable!, (req, res) ->
   promise
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
-      {org,brd,prj} = ret
       root = if type == \prj => "users/org/#{org}/prj/#{prj}/upload"
       else if type == \brd => "users/org/#{org}/brd/#{brd}/upload"
       else if type == \org => "users/org/#{org}/upload"
       else null
       if !root => return aux.reject 400
+      res(ret <<< {type,root})
+    .catch -> rej it
+
+
+api.post \/upload, aux.signed, express-formidable!, (req, res) ->
+  lc = {}
+  {org,brd,prj,files} = req.fields
+  try
+    files = JSON.parse(files)
+  catch e
+    return aux.r400 res
+  if !(files and Array.isArray(files) and files.length) => return aux.r400 res
+  files = files
+    .map ({name,type}) ->
+      list = req.files["#{name}[]"]
+      list = if Array.isArray(list) => list else [list]
+      list = list
+        .map -> {path: it.path, type: it.type.split(\/).1}
+        .filter -> /([a-zA-Z0-9]{1,6}$)/.exec(it.type)
+      return {name, type, list}
+    .filter -> it.list.length > 0 and it.list.length < 10
+
+  slugs {io, org, brd, prj}
+    .then ({type, prj, brd, org, root}) ->
       # TODO verify prj form criteria
       upload {root, files}
     .then -> res.send it
     .catch aux.error-handler res
+
+
+api.put \/detail/, aux.signed, (req, res) ->
+  lc = {}
+  {slug, type, payload} = (req.body or {})
+  if !(slug and type and payload) => return aux.r400 res
+  tables = <[prj brd org]>
+  table = tables[tables.indexOf(type)]
+  if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
+  if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
+
+  permcache.check {io, user: req.user, type: table, slug, action: \owner}
+    .then ->
+      io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
+    .then ->
+      if !name => return
+      io.query """
+      update #table set (name,description) = ($1,$2)  where slug = $3
+      """, [name,description,slug]
+    .then ->
+      permcache.invalidate {type: table, slug}
+      if table != \prj => return
+      slugs {io, prj: slug}
+    .then (ret) ->
+      {root,type,prj,brd,org} = ret
+      release = path.join(root, 'release')
+      draft = path.join(root, 'draft')
+      if !(/^users\//.exec(release) and /^users\//.exec(draft)) => return aux.reject 400 
+      fs-extra.ensure-dir release
+        .then -> fs-extra.remove release
+        .then -> fs-extra.ensure-dir draft
+        .then -> fs-extra.move draft, release
+    .then -> res.send {}
+    .catch aux.error-handler res
+
+    /*
+      lc.root = "users/prj/#{slug}"
+      fs-extra.path-exists lc.root
+    .then (exists) ->
+      if !exists => return
+      fs-extra.readdir lc.root
+        .then (files) ->
+          ps = files
+            .filter -> /^draft./.exec(it)
+            .map -> ["#{lc.root}/#it", "#{lc.root}/#{it.replace(/draft\./, 'publish.')}"]
+            .map -> fs-extra.rename it.0, it.1
+          Promise.all ps
+    .then -> res.send {}
+    .catch aux.error-handler res
+    */
+
 
 app.get \/brd/:bslug/grp/:gslug/list, (req, res) ->
   lc = {}
@@ -171,40 +228,6 @@ api.post \/deploy, aux.signed, (req, res) ->
       if type == \org => 
       deploy {url: git.url, branch: git.branch, root: "users/#type/#slug/static"}
         .catch ->
-    .catch aux.error-handler res
-
-api.put \/detail/, aux.signed, (req, res) ->
-  lc = {}
-  {slug, type, payload} = (req.body or {})
-  if !(slug and type and payload) => return aux.r400 res
-  tables = <[prj brd org]>
-  table = tables[tables.indexOf(type)]
-  if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
-  if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
-
-  permcache.check {io, user: req.user, type: table, slug, action: \owner}
-    .then ->
-      io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
-    .then ->
-      if !name => return
-      io.query """
-      update #table set (name,description) = ($1,$2)  where slug = $3
-      """, [name,description,slug]
-    .then ->
-      permcache.invalidate {type: table, slug}
-      if table != \prj => return
-      lc.root = "users/prj/#{slug}"
-      fs-extra.path-exists lc.root
-    .then (exists) ->
-      if !exists => return
-      fs-extra.readdir lc.root
-        .then (files) ->
-          ps = files
-            .filter -> /^draft./.exec(it)
-            .map -> ["#{lc.root}/#it", "#{lc.root}/#{it.replace(/draft\./, 'publish.')}"]
-            .map -> fs-extra.rename it.0, it.1
-          Promise.all ps
-    .then -> res.send {}
     .catch aux.error-handler res
 
 api.post \/brd, aux.signed, express-formidable!, (req, res) ->

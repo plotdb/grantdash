@@ -37,15 +37,44 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                 });
               }
               node.value = '';
+              /*
+              fd = new FormData!
+              for i from 0 til files.length => fd.append "file[]", files[i].file
+              context.loading = true
+              @view.module.render!
+              ld$.xhr(
+                "/dash/api/prj/#{@prj.slug}/file/#{@block.key}"
+                {method: \PUT, body: fd}
+                {
+                  type: \json
+                  progress: ({percent}) ~>
+                    context.percent = percent
+                    @view.module.render!
+                }
+              )
+                .then ~>
+                  @block.{}value.list = files.map (d,i) -> d.file{name, size, type, key: i}
+                  @update!
+                .finally ~>
+                  debounce 1000 .then ~>
+                    context.loading = false
+                    @view.module.render!
+                .catch error!
+              */
               fd = new FormData();
               for (i$ = 0, to$ = files.length; i$ < to$; ++i$) {
                 i = i$;
                 fd.append("file[]", files[i].file);
               }
+              fd.append("files", JSON.stringify([{
+                name: "file",
+                type: "form"
+              }]));
+              fd.append('prj', this$.prj.slug);
               context.loading = true;
               this$.view.module.render();
-              return ld$.xhr("/dash/api/prj/" + this$.prj.slug + "/file/" + this$.block.key, {
-                method: 'PUT',
+              return ld$.xhr("/dash/api/upload", {
+                method: 'POST',
                 body: fd
               }, {
                 type: 'json',
@@ -55,15 +84,20 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                   context.percent = percent;
                   return this$.view.module.render();
                 }
-              }).then(function(){
-                var ref$;
+              }).then(function(ret){
+                var retFiles, ref$;
+                if (!ret[0]) {
+                  return;
+                }
+                retFiles = ret[0].files || [];
                 ((ref$ = this$.block).value || (ref$.value = {})).list = files.map(function(d, i){
                   var ref$;
                   return {
                     name: (ref$ = d.file).name,
                     size: ref$.size,
                     type: ref$.type,
-                    key: ref$.i
+                    key: ref$.i,
+                    path: ref$[retFiles[i]]
                   };
                 });
                 return this$.update();
