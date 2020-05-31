@@ -11,9 +11,26 @@
 #   user - user node for search result.
 #     avatar - user avatar
 #     name - user name
+# sample pug:
+#  +scope("users")
+#    .p-4.rounded.border.shadow-sm
+#      .position-relative
+#        input.form-control(ld="input",style="border-radius:.25em;border:1px solid #ddd",
+#        placeholder="type user name ... ")
+#        .d-none(ld="picked"): .position-absolute.w-100.h-100(style="top:0;left:0")
+#          .d-flex.align-items-center.p-2.bg-white.form-control.bg-light
+#            .bg-dark.rounded.mr-1(ld="picked-avatar",style="width:1em;height:1em")
+#            .flex-grow-1(ld="picked-name")
+#            i.i-close.text-danger.clickable(ld="clear")
+#        .d-none.ld.ld-fade-in(ld="loading")
+#          .position-absolute.m-auto.ld.ld-spin.ld-spinner(style="top:0;bottom:0;right:.5em")
+#        .p-3.rounded.border.shadow-sm.d-none.ld.ld-float-ttb-in.bg-white.xp15.position-absolute.w-100(
+#        ld="users",style="border-radius: 0 0 .5em .5em")
+#          .d-flex.align-items-center.clickable(ld-each="user")
+#            .bg-light.rounded.mr-1(ld="avatar",style="width:1em;height:1em")
+#            div(ld="name")
 
 ({auth, error}) <- ldc.register \userSearch, <[auth error]>, _
-
 # option:
 #   root
 #   delay - delay to search after last type
