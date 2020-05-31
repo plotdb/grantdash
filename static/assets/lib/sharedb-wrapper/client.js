@@ -7,9 +7,13 @@ var slice$ = [].slice;
     return json0OtDiff(o, n, dostr ? diffMatchPatch : null);
   };
   sharedbWrapper = function(arg$){
-    var url;
-    url = arg$.url;
+    var url, path;
+    url = arg$.url, path = arg$.path;
     this.url = url;
+    this.path = path || '/ws';
+    this.path = path[0] === '/'
+      ? this.path
+      : "/" + this.path;
     this.evtHandler = {};
     this.reconnect();
     return this;
@@ -86,7 +90,7 @@ var slice$ = [].slice;
         if (this$.socket) {
           return res();
         }
-        this$.socket = new WebSocket((this$.url.scheme === 'http' ? 'ws' : 'wss') + "://" + this$.url.domain + "/ws");
+        this$.socket = new WebSocket((this$.url.scheme === 'http' ? 'ws' : 'wss') + "://" + this$.url.domain + this$.path);
         this$.connection = new sharedb.Connection(this$.socket);
         this$.socket.addEventListener('close', function(){
           this$.socket = null;

@@ -53,7 +53,7 @@
         }
         ldld.on();
         val = form.values();
-        return ld$.fetch('/d/me/passwd/', {
+        return ld$.fetch('/dash/api/me/passwd/', {
           method: 'put',
           body: JSON.stringify({
             o: val.oldpasswd,
@@ -119,7 +119,7 @@
               var val, ref$;
               ldld.on();
               val = form.values();
-              return ld$.fetch("/d/user/" + ((ref$ = local.g).user || (ref$.user = {})).key, {
+              return ld$.fetch("/dash/api/user/" + ((ref$ = local.g).user || (ref$.user = {})).key, {
                 method: 'PUT'
               }, {
                 json: {
@@ -161,7 +161,7 @@
                 if (node.classList.contains('disabled')) {
                   return;
                 }
-                return ld$.fetch('/d/me/mail/verify', {
+                return ld$.fetch('/dash/api/me/mail/verify', {
                   method: 'POST'
                 })['catch'](function(){
                   return ldcvmgr.toggle('error');
@@ -182,7 +182,7 @@
               if (node.classList.contains('disabled')) {
                 return;
               }
-              return ld$.fetch('/d/me/passwd/reset', {
+              return ld$.fetch('/dash/api/me/passwd/reset', {
                 method: 'POST',
                 body: JSON.stringify({
                   email: local.g.user.username

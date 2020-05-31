@@ -15,7 +15,7 @@
     };
     return auth.get().then(function(g){
       var view;
-      ld$.fetch('/d/discus', {
+      ld$.fetch('/dash/api/discus', {
         method: 'GET'
       }, {
         params: {
@@ -67,7 +67,7 @@
                 content: ref$.content
               };
               lc.ldld.on();
-              return ld$.fetch('/d/comment', {
+              return ld$.fetch('/dash/api/comment', {
                 method: 'POST'
               }, {
                 type: 'json',

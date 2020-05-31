@@ -20,7 +20,7 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
       var p;
       p = ld$.parent(form.fields[n], '.form-group');
       p.classList.add('running');
-      return ld$.fetch("/d/slug-check/" + type, {
+      return ld$.fetch("/dash/api/slug-check/" + type, {
         method: 'POST'
       }, {
         json: {
@@ -106,7 +106,7 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
             type: 'org'
           };
           return auth.get().then(function(g){
-            return ld$.fetch('/d/me/list/', {
+            return ld$.fetch('/dash/api/me/list/', {
               method: 'POST'
             }, {
               json: payload,
@@ -169,7 +169,7 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
               var fd;
               loader.on();
               fd = form.getfd();
-              return ld$.fetch("/d/" + type + "/", {
+              return ld$.fetch("/dash/api/" + type + "/", {
                 method: 'POST',
                 body: fd
               }, {
@@ -179,9 +179,9 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
                 ldcvmgr.toggle('redirect');
                 return debounce(1000).then(function(){
                   if (type === 'prj') {
-                    return window.location.href = "/prj/" + r.slug + "/edit";
+                    return window.location.href = "/dash/prj/" + r.slug + "/edit";
                   } else {
-                    return window.location.href = "/" + type + "/" + form.values().slug + "/admin";
+                    return window.location.href = "/dash/" + type + "/" + form.values().slug + "/admin";
                   }
                 });
               })['catch'](function(){

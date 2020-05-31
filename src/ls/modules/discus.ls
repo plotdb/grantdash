@@ -6,7 +6,7 @@
       loading: true
       data: {slug: '/', content: {config: {}}}
     auth.get!then (g) ->
-      ld$.fetch \/d/discus, {method: \GET}, {params: {slug: '/'}, type: \json}
+      ld$.fetch \/dash/api/discus, {method: \GET}, {params: {slug: '/'}, type: \json}
         .then (comments) ->
           lc <<< {comments, loading: false}
           view.render!
@@ -32,7 +32,7 @@
               if node.classList.contains \running => return
               payload = lc.data{ slug, reply, content }
               lc.ldld.on!
-              ld$.fetch \/d/comment, {method: \POST}, {type: \json, json: payload}
+              ld$.fetch \/dash/api/comment, {method: \POST}, {type: \json, json: payload}
                 .finally -> lc.ldld.off!
                 .then -> console.log \posted
                 .catch -> console.log "failed"

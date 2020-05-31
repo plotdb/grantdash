@@ -1,8 +1,8 @@
 ldc.register \adminGuard,
-<[ldcvmgr auth loader sdbAdapter error
+<[general ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
 adminPrjList prjForm adminEntry adminWelcome adminPage]>,
-({ldcvmgr, auth, loader, sdbAdapter, error,
+({general, ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
 admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
 
@@ -40,7 +40,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
   Ctrl.prototype = Object.create(Object.prototype) <<< do
     render: -> @view.render!
     fetch: ->
-      [path,type,slug] = /^\/([^/]+)\/([^/]+)\/admin/.exec(window.location.pathname) or []
+      [path,type,slug] = /^\/(?:dash\/)?([^/]+)\/([^/]+)\/admin/.exec(window.location.pathname) or []
       if !type in <[org brd]> => return Promise.reject new ldError 1015
       hint = {}; hint[type] = slug
       console.log "fetch auth data ..."
@@ -49,7 +49,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
         .then (g) ~>
           if !g.user.key => return Promise.reject new ldError({id: 1000})
           console.log "fetch toc information ... "
-          ld$.fetch '/d/toc/', {method: \POST}, {json: hint, type: \json}
+          ld$.fetch '/dash/api/toc/', {method: \POST}, {json: hint, type: \json}
         .then (toc) ~>
           <[org brd brds brdsFiltered grps]>.map -> toc[it] = toc[it] or []
           toc.brdsFiltered = toc.brds or []
@@ -63,6 +63,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
       console.log "prepare sharedb ..."
       @sdb = sdb = new sharedb-wrapper do
         url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
+        path: '/dash/ws'
       @hubs = org: new Hub({sdb}), brd: new Hub({sdb})
       sdb.on \close, ~>
         @loader.on!
@@ -146,7 +147,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
           ps = <[brd org]>.map (type) ~>
             if !(@toc[type]key and @modify[type]dirty) => return Promise.resolve!
             payload = @hubs[type]doc.data
-            ld$.fetch \/d/detail/, {method: \PUT}, {json: {payload, slug: @toc[type]slug, type}, type: \json}
+            ld$.fetch \/dash/api/detail/, {method: \PUT}, {json: {payload, slug: @toc[type]slug, type}, type: \json}
               .then ~>
                 @toc[type]detail = payload
                 @modify[type] <<< data: JSON.stringify(payload), dirty: false

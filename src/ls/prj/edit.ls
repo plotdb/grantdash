@@ -1,4 +1,4 @@
-({auth, prjForm, loader, ldcvmgr, error}) <- ldc.register <[auth prjForm loader ldcvmgr error]>, _
+({general, auth, prjForm, loader, ldcvmgr, error}) <- ldc.register <[general auth prjForm loader ldcvmgr error]>, _
 
 Ctrl = (opt) ->
   @ldcv = new ldCover root: '[ld-scope=prj-diff]'
@@ -17,10 +17,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   fetch: ->
     console.log "fetching project information ..."
     console.log "fetching board form ..."
-    ld$.fetch "/d/prj/#{@slug}", {method: \GET}, {type: \json}
+    ld$.fetch "/dash/api/prj/#{@slug}", {method: \GET}, {type: \json}
       .then ~>
         @prj = it
-        ld$.fetch "/d/brd/#{@prj.brdslug}/form", {method: \GET}, {type: \json}
+        ld$.fetch "/dash/api/brd/#{@prj.brdslug}/form", {method: \GET}, {type: \json}
       .then ~>
         @brd = it
         # TODO choose grp by prj result
@@ -30,6 +30,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     console.log "initializing sharedb connection ..."
     @sdb = sdb = new sharedb-wrapper do
       url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
+      path: '/dash/ws'
     sdb.on \close, ->
       loader.on!
       sdb.reconnect!
@@ -63,7 +64,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @ctrl-form.on \submit, (answer) ~>
       data = payload: answer, type: \prj, slug: @prj.slug
       ldcvmgr.toggle \publishing, true
-      ld$.fetch "/d/detail", {method: \PUT}, {json: data, type: \json}
+      ld$.fetch "/dash/api/detail", {method: \PUT}, {json: data, type: \json}
         .finally -> ldcvmgr.toggle \publishing, false
         .then ~> @prj.detail = JSON.parse(JSON.stringify(answer))
         .then ~> @ctrl-form.render!
@@ -75,7 +76,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   render: -> @view.render!
 
 
-[path,slug] = /^\/prj\/([^/]+)\/edit/.exec(window.location.pathname) or []
+[path,slug] = /^\/(?:dash\/)?prj\/([^/]+)\/edit/.exec(window.location.pathname) or []
 
 ctrl = new Ctrl {prj: slug}
 auth.get!

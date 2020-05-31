@@ -197,7 +197,7 @@ backend = do
     # * user could stil alter cookie's content, so it's necessary to force ajax call for important action
     #   there is no way to prevent user from altering client side content,
     #   so if we want to prevent user from editing our code, we have to go backend for the generation.
-    app.get \/d/global, backend.csrfProtection, (req, res) ->
+    app.get \/dash/api/global, backend.csrfProtection, (req, res) ->
       res.setHeader \content-type, \application/json
       payload = JSON.stringify do
         global: true, csrfToken: req.csrfToken!, production: config.is-production
@@ -207,8 +207,8 @@ backend = do
       res.send payload
 
     app.use \/, express.static(path.join(__dirname, '../static'))
-    app.use \/d, throttling.route.api, router.api
-    app.get "/d/health", (req, res) -> res.json {}
+    app.use \/dash/api, throttling.route.api, router.api
+    app.get "/dash/api/health", (req, res) -> res.json {}
 
     # Must review all APIs
     router.user
@@ -263,7 +263,7 @@ backend = do
         # for api we send a ldError object.
         # 1005 tells frontend a csrftoken-mismatch happened, so client can trigger corresponding panel
         # to resolve this issue.
-        if /^\/d\//.exec(req.originalUrl) => res.send {id: 1005, name: \ldError}
+        if /^\/dash\/api\//.exec(req.originalUrl) => res.send {id: 1005, name: \ldError}
         # otherwise redirect user to login.
         else res.redirect "/auth/?nexturl=#{req.originalUrl}"
       else

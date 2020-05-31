@@ -12,7 +12,7 @@ Ctrl = (opt) ->
   slug-check = debounce 500, (n,v,e) ->
     p = ld$.parent(form.fields[n], '.form-group')
     p.classList.add \running
-    ld$.fetch "/d/slug-check/#type", {method: \POST}, {json: {slug: v}, type: \json}
+    ld$.fetch "/dash/api/slug-check/#type", {method: \POST}, {json: {slug: v}, type: \json}
       .finally -> debounce 1000 .then -> p.classList.remove \running
       .then (r = {}) -> slugs[v] = (if r.result == \free => false else true)
       .catch -> slugs[v] = true
@@ -52,7 +52,7 @@ Ctrl = (opt) ->
         payload = {type: \org}
         auth.get!
           .then (g) ->
-            ld$.fetch \/d/me/list/, {method: \POST}, {json: payload, type: \json}
+            ld$.fetch \/dash/api/me/list/, {method: \POST}, {json: payload, type: \json}
           .then ->
             lc.list = it
             view.render!
@@ -80,13 +80,13 @@ Ctrl = (opt) ->
           .then ->
             loader.on!
             fd = form.getfd!
-            ld$.fetch "/d/#type/", {method: \POST, body: fd}, {type: \json}
+            ld$.fetch "/dash/api/#type/", {method: \POST, body: fd}, {type: \json}
               .then (r) ->
                 loader.off!
                 ldcvmgr.toggle \redirect
                 debounce 1000 .then ->
-                  if type == \prj => window.location.href = "/prj/#{r.slug}/edit"
-                  else window.location.href = "/#type/#{form.values!slug}/admin"
+                  if type == \prj => window.location.href = "/dash/prj/#{r.slug}/edit"
+                  else window.location.href = "/dash/#type/#{form.values!slug}/admin"
               .catch ->
                 loader.off!
                 ldcvmgr.toggle 'error'

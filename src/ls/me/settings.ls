@@ -30,7 +30,7 @@
           if btn.classList.contains(\disabled) => return
           ldld.on!
           val = form.values!
-          ld$.fetch \/d/me/passwd/, {
+          ld$.fetch \/dash/api/me/passwd/, {
             method: \put
             body: JSON.stringify({o: val.oldpasswd, n: val.newpasswd1})
             headers: { 'Content-Type': 'application/json; charset=UTF-8' }
@@ -71,7 +71,7 @@
               ldld.on!
               val = form.values!
               ld$.fetch(
-                "/d/user/#{local.g.{}user.key}"
+                "/dash/api/user/#{local.g.{}user.key}"
                 {method: \PUT}
                 {json: val{description,displayname,title,tags}, type: \text}
               )
@@ -89,7 +89,7 @@
               node.addEventListener \click, ->
                 ldld.on!
                 if node.classList.contains \disabled => return
-                ld$.fetch \/d/me/mail/verify, {method: \POST}
+                ld$.fetch \/dash/api/me/mail/verify, {method: \POST}
                   .catch -> ldcvmgr.toggle \error
                   .then -> debounce 1000
                   .then -> ldld.off!
@@ -98,7 +98,7 @@
           sendResetLink: ({node}) ->
             node.addEventListener \click, ->
               if node.classList.contains \disabled => return
-              ld$.fetch(\/d/me/passwd/reset, {
+              ld$.fetch(\/dash/api/me/passwd/reset, {
                 method: \POST
                 body: JSON.stringify({email: local.g.user.username})
                 headers: {'Content-Type': 'application/json; charset=UTF-8'}

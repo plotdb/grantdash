@@ -89,7 +89,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     auth.get!
       .then ->
         payload = {name}
-        ld$.fetch \/d/account, {method: \POST}, {json: payload, type: \json}
+        ld$.fetch \/dash/api/account, {method: \POST}, {json: payload, type: \json}
       .then ~>
         if !(it and it.length) => @users = [{empty: true}]
         else @users = it

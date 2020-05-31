@@ -153,7 +153,7 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
         payload = {
           name: name
         };
-        return ld$.fetch('/d/account', {
+        return ld$.fetch('/dash/api/account', {
           method: 'POST'
         }, {
           json: payload,

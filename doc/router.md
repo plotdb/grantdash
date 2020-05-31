@@ -9,19 +9,20 @@
    - 在特定 org 下時, 無論網址, 只能存取特定 org 中的資訊.
  - 路徑
    - 組織
-     ? /o/<slug>/admin/     : 組織後台
-     - /o/<slug>/v/<page>/  : 組織公開頁面
-     - /o/<slug>/b/create   : 建立活動
-     - /o/<slug>/list       : 活動列表
+     ? /dash/org/<slug>/admin/     : 組織後台
+     - /dash/org/<slug>/v/<page>/  : 組織公開頁面
+     - /dash/org/<slug>/b/create   : 建立活動
+     - /dash/org/<slug>/list       : 活動列表
    - 活動
-     ? /b/<slug>/admin/     : 活動後台
-     - /b/<slug>/v/<page>   : 活動公開頁面
-     ? /b/<slug>/p/create   : 建立活動 ( 選擇分組? )
-     - /b/<slug>/list       : 提案列表
+     ? /dash/brd/<slug>/admin/     : 活動後台
+     - /dash/brd/<slug>/v/<page>   : 活動公開頁面
+     ? /dash/brd/<slug>/p/create   : 建立活動 ( 選擇分組? )
+     - /dash/brd/<slug>/list       : 提案列表
    - 提案
-     - /p/<id>/             : 提案頁面
+     - /dash/prj/<slug>/             : 提案頁面 ( 瀏覽 )
+     - /dash/prj/<slug>/edit         : 提案頁面 ( 編輯 )
    - 評選
-     ? /b/<slug>/j/
+     ? /dash/brd/<slug>/judge/
    - 用戶 - 參照 servlet
 
 

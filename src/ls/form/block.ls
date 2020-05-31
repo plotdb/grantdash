@@ -25,7 +25,7 @@ module-file = module-init: ->
           context.loading = true
           @view.module.render!
           ld$.xhr(
-            "/d/p/#{@prj.slug}/file/#{@block.key}"
+            "/dash/api/prj/#{@prj.slug}/file/#{@block.key}"
             {method: \PUT, body: fd}
             {
               type: \json

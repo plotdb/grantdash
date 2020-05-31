@@ -18,6 +18,6 @@ block script
       reload = ->
         loader.on!
         window.location.href = nexturl
-      auth.manually-init root: \.authpanel
+      auth.init {api: \/dash/api, root: \.authpanel}
       auth.fetch {renew: true} .then -> if it.user.key => reload!
       auth.on \auth.signin, -> reload!

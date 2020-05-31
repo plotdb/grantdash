@@ -5,7 +5,8 @@
     url: {
       scheme: window.location.protocol.replace(':', ''),
       domain: window.location.host
-    }
+    },
+    path: '/dash/ws'
   });
   sdb.on('close', function(){
     loader.on();

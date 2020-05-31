@@ -1,16 +1,16 @@
-({ldcvmgr, adminInfo, prjCreate, auth, error, loader}) <- ldc.register <[
-ldcvmgr adminInfo prjCreate auth error loader]>, _
+({general, ldcvmgr, adminInfo, prjCreate, auth, error, loader, general}) <- ldc.register <[
+general ldcvmgr adminInfo prjCreate auth error loader general]>, _
 loader.on!
 lc = {}
 
 key = (
-  /^\/brd\/([^/]+)\/prj\/create/.exec(window.location.pathname) or 
-  /^\/brd\/([^/]+)\/grp\/([^/]+)\/prj\/create/.exec(window.location.pathname) or []
+  /^\/(?:dash\/)?brd\/([^/]+)\/prj\/create/.exec(window.location.pathname) or 
+  /^\/(?:dash\/)?brd\/([^/]+)\/grp\/([^/]+)\/prj\/create/.exec(window.location.pathname) or []
 )
 key = brd: key.1, grp: key.2
 
 auth.get!
-  .then -> ld$.fetch "/d/brd/#{key.brd}/form", {method: \GET}, {type: \json}
+  .then -> ld$.fetch "/dash/api/brd/#{key.brd}/form", {method: \GET}, {type: \json}
   .then (brd) ->
     lc.brd = brd
     lc.grps = brd.detail.{}group

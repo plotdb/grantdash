@@ -26,7 +26,7 @@ ldc.register('adminPage', ['error', 'sdbAdapter', 'ldcvmgr'], function(arg$){
               slug: this$.toc[this$.type].slug,
               type: this$.type
             };
-            return ld$.fetch('/d/deploy', {
+            return ld$.fetch('/dash/api/deploy', {
               method: 'POST'
             }, {
               json: payload,

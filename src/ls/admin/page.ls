@@ -12,7 +12,7 @@ Ctrl = (opt) ->
       click: do
         deploy: ~>
           payload = {slug: @toc[@type]slug, type: @type}
-          ld$.fetch \/d/deploy, {method: \POST}, {json: payload, type: \json}
+          ld$.fetch \/dash/api/deploy, {method: \POST}, {json: payload, type: \json}
             .then -> ldcvmgr.toggle \deploying
             .catch -> ldcvmgr.toggle "deploy-failed"
         opt: ({node}) ~>

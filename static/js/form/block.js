@@ -44,7 +44,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               }
               context.loading = true;
               this$.view.module.render();
-              return ld$.xhr("/d/p/" + this$.prj.slug + "/file/" + this$.block.key, {
+              return ld$.xhr("/dash/api/prj/" + this$.prj.slug + "/file/" + this$.block.key, {
                 method: 'PUT',
                 body: fd
               }, {
