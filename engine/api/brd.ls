@@ -87,6 +87,7 @@ api.post \/deploy, aux.signed, (req, res) ->
     .then (git) ->
       # deploy might take a while, so we go back to user first.
       res.send {}
+      type = type.substring(0,1)
       deploy {url: git.url, branch: git.branch, root: "users/#type/#slug/static"}
         .catch ->
     .catch aux.error-handler res
