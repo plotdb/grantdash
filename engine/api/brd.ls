@@ -52,6 +52,7 @@ slugs = ({io, org, brd, prj}) -> new Promise (res, rej) ->
   promise
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
+      {org,prj,brd} = ret
       root = if type == \prj => "users/org/#{org}/prj/#{prj}/upload"
       else if type == \brd => "users/org/#{org}/brd/#{brd}/upload"
       else if type == \org => "users/org/#{org}/upload"
