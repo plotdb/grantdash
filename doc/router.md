@@ -35,18 +35,18 @@
 ## Site Files and Upload Files
 
 用戶網站資料放在 `/users/` 資料夾中, 分以下結構
- - /org/<slug>     - 組織的專屬資料夾
-   - /static/      - 網站資料.
-   - 活動與提案    - 亦放在 org 下, 以避免跨組織存取造成誤會
+ - /org/<slug>        - 組織的專屬資料夾
+   - /static/         - 網站資料.
+   - 活動與提案       - 亦放在 org 下, 以避免跨組織存取造成誤會
      - /brd/<slug>
      - /prj/<slug>
- - /brd/<slug>     - 活動的專屬資料夾
-   - /static/      - 網站資料
-   - /upload       - 活動的上傳資料
- - /prj/<slug>     - 提案的專屬資料夾
-   - /file/draft/  - 編輯中的上傳檔案
-   - /file/<v>/    - 某個版本的上傳檔案
-   - /file/release - 最新已發布的上傳檔案. ( 可以由 <v> 僅做個 symlink, 或完整拷貝過來 )
+ - /brd/<slug>        - 活動的專屬資料夾
+   - /static/         - 網站資料
+   - /upload/         - 活動的上傳資料
+ - /prj/<slug>        - 提案的專屬資料夾
+   - /upload/draft/   - 編輯中的上傳檔案
+   - /upload/<v>/     - 某個版本的上傳檔案
+   - /upload/release/ - 最新已發布的上傳檔案. ( 可以由 <v> 僅做個 symlink, 或完整拷貝過來 )
  - 網站資料:
    - 可透過對應的路徑對應至其為根目錄存取, 如:
      - <domain>/org/<slug> 對應到 /users/org/<slug/static/
