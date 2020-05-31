@@ -29,7 +29,7 @@ api.post \/org, aux.signed, express-formidable!, (req, res) ->
       lc.ret = (r.[]rows or []).0
       if !thumb => return
       new Promise (res, rej) ->
-        root = "static/assets/uploads/org/#slug"
+        root = "users/org/#slug/upload"
         (e) <- fs-extra.ensure-dir root, _
         if e => return rej(e)
         (e,i) <- sharp(thumb).toFile path.join(root, "thumb.png"), _

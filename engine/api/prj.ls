@@ -64,15 +64,20 @@ api.post \/prj/, aux.signed, express-formidable!, (req, res) ->
   if !(brd and grp) => return aux.r400 res
   thumb = (req.files["thumbnail[]"] or {}).path
   slug = suuid!
-  io.query """
-  insert into prj (name,description,brd,grp,slug,owner)
-  values ($1,$2,$3,$4,$5,$6) returning key
-  """, [name, description, brd, grp, slug, req.user.key]
+  io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
+    .then (r={}) ->
+      if !(lc.brd = r.[]rows.0) => return aux.reject 404
+      if !(lc.brd.[]group.filter(->it.key == grp).length) => return aux.reject 404
+      if !(lc.brd.org) => return aux.reject 404
+      io.query """
+      insert into prj (name,description,brd,grp,slug,owner)
+      values ($1,$2,$3,$4,$5,$6) returning key
+      """, [name, description, brd, grp, slug, req.user.key]
     .then (r = {}) ->
       lc.ret = (r.[]rows or []).0
       if !thumb => return
       new Promise (res, rej) ->
-        root = "static/assets/uploads/prj/#slug"
+        root = "users/org/#{lc.brd.org}/prj/#slug/upload"
         (e) <- fs-extra.ensure-dir root, _
         if e => return rej(e)
         (e,i) <- sharp(thumb).toFile path.join(root, "thumb.png"), _

@@ -96,7 +96,7 @@ backend = do
       do
         clientID: config.google.clientID
         clientSecret: config.google.clientSecret
-        callbackURL: "/u/auth/google/callback"
+        callbackURL: "/dash/u/auth/google/callback"
         passReqToCallback: true
         userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
         profileFields: ['id', 'displayName', 'link', 'emails']
@@ -112,7 +112,7 @@ backend = do
       do
         clientID: config.facebook.clientID
         clientSecret: config.facebook.clientSecret
-        callbackURL: "/u/auth/facebook/callback"
+        callbackURL: "/dash/u/auth/facebook/callback"
         profileFields: ['id', 'displayName', 'link', 'emails']
       , (access-token, refresh-token, profile, done) ~>
         if !profile.emails =>
@@ -173,7 +173,7 @@ backend = do
     app.use backend.csrfProtection
 
     router = { user: express.Router!, api: express.Router! }
-    app.use \/u, throttling.route.user, router.user
+    app.use \/dash/u, throttling.route.user, router.user
 
     router.user
       ..post \/signup, throttling.auth.signup, (req, res) ->
@@ -181,12 +181,12 @@ backend = do
         if !email or !displayname or passwd.length < 8 => return aux.r400 res
         authio.user.create email, passwd, true, {displayname}, (config or {})
           .then (user) ->
-            req.logIn user, -> res.redirect \/u/200; return null
+            req.logIn user, -> res.redirect \/dash/u/200; return null
             return null
-          .catch -> res.redirect \/u/403; return null
+          .catch -> res.redirect \/dash/u/403; return null
       ..post \/login, throttling.auth.login, passport.authenticate \local, do
-        successRedirect: \/u/200
-        failureRedirect: \/u/403
+        successRedirect: \/dash/u/200
+        failureRedirect: \/dash/u/403
 
     # =============== USER DATA, VIA AJAX
     # Note: We used to use jsonp, but it might lead to data exploit since jsonp is not protected by CORS.
@@ -206,7 +206,7 @@ backend = do
       res.cookie 'global', payload, { path: '/', secure: true, domain: ".#{config.domain}" }
       res.send payload
 
-    app.use \/, express.static(path.join(__dirname, '../static'))
+    app.use \/dash/, express.static(path.join(__dirname, '../static'))
     app.use \/dash/api, throttling.route.api, router.api
     app.get "/dash/api/health", (req, res) -> res.json {}
 
@@ -215,19 +215,19 @@ backend = do
       ..get \/null, (req, res) -> res.json {}
       ..get \/200, (req,res) -> res.json(req.user)
       ..get \/403, (req,res) -> res.status(403)send!
-      ..get \/login, (req, res) -> res.redirect \/auth/
+      ..get \/login, (req, res) -> res.redirect \/dash/auth/
 
       ..post \/logout, (req, res) ->
         req.logout!
         res.redirect \/
       ..post \/auth/google, passport.authenticate \google, {scope: ['email']}
       ..get \/auth/google/callback, passport.authenticate \google, do
-        successRedirect: \/auth/done/
-        failureRedirect: \/auth/failed/social.html
+        successRedirect: \/dash/auth/done/
+        failureRedirect: \/dash/auth/failed/social.html
       ..post \/auth/facebook, passport.authenticate \facebook, {scope: ['email']}
       ..get \/auth/facebook/callback, passport.authenticate \facebook, do
-        successRedirect: \/auth/done/
-        failureRedirect: \/auth/failed/social.html
+        successRedirect: \/dash/auth/done/
+        failureRedirect: \/dash/auth/failed/social.html
 
     multi = do
       parser: connect-multiparty limit: config.limit
