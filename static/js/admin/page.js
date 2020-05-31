@@ -23,7 +23,7 @@ ldc.register('adminPage', ['error', 'sdbAdapter', 'ldcvmgr'], function(arg$){
           deploy: function(){
             var payload;
             payload = {
-              slug: this$.toc.brd.slug,
+              slug: this$.toc[this$.type].slug,
               type: this$.type
             };
             return ld$.fetch('/d/deploy', {

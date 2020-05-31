@@ -239,6 +239,15 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
         hub: org,
         path: ['perm']
       });
+      x$.page = new adminPage({
+        toc: toc,
+        type: 'org',
+        root: '[data-name=org-page-info] [ld-scope=page-info]'
+      });
+      x$.page.adapt({
+        hub: org,
+        path: ['page', 'info']
+      });
       y$ = this.ctrl.brd;
       y$.info = new adminInfo({
         root: '[ld-scope=brd-info]',

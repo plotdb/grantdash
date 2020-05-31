@@ -11,7 +11,7 @@ Ctrl = (opt) ->
     action: do
       click: do
         deploy: ~>
-          payload = {slug: @toc.brd.slug, type: @type}
+          payload = {slug: @toc[@type]slug, type: @type}
           ld$.fetch \/d/deploy, {method: \POST}, {json: payload, type: \json}
             .then -> ldcvmgr.toggle \deploying
             .catch -> ldcvmgr.toggle "deploy-failed"

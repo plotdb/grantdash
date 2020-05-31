@@ -1,4 +1,4 @@
-require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror permcheck nodegit]>
+require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror nodegit]>
 require! <[../aux ./permcache]>
 (engine,io) <- (->module.exports = it)  _
 
@@ -73,11 +73,13 @@ deploy = ({url, root, branch}) ->
         # checkout branch
         .then -> repo.getBranch "refs/remotes/origin/#{branch}"
         .then (ref) -> repo.checkoutRef ref
+        .catch (e) -> console.log "[Deploy Error]", e
 
 api.post \/deploy, aux.signed, (req, res) ->
   {slug, type} = (req.body or {})
   if !(slug and type and (type in <[org brd]>)) => return aux.r400 res
-  io.query "select detail->'page'->'info' as info from #type where slug = $1", [slug]
+  permcache.check {io, user: req.user, type, slug, action: \owner}
+    .then -> io.query "select detail->'page'->'info' as info from #type where slug = $1", [slug]
     .then (r={}) ->
       if !((ret = r.[]rows.0) and (git = ret.{}info.git)) => return aux.reject 404
       if !(git.url and git.branch) => return aux.reject 404

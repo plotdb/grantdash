@@ -112,6 +112,8 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
         ..navbar.adapt {hub: org, path: <[page navbar]>}
         ..perm = new admin-perm {toc, root: '[data-nav=org-config] [ld-scope=perm-panel]'}
         ..perm.adapt   {hub: org, path: <[perm]>}
+        ..page = new admin-page {toc, type: \org, root: '[data-name=org-page-info] [ld-scope=page-info]'}
+        ..page.adapt {hub: org, path: <[page info]>}
 
       @ctrl.brd
         ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd, data: toc.brd}
