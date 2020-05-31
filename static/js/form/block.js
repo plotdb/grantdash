@@ -91,14 +91,11 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                 }
                 retFiles = ret[0].files || [];
                 ((ref$ = this$.block).value || (ref$.value = {})).list = files.map(function(d, i){
-                  var ref$;
-                  return {
-                    name: (ref$ = d.file).name,
-                    size: ref$.size,
-                    type: ref$.type,
-                    key: ref$.i,
-                    path: ref$[retFiles[i]]
-                  };
+                  var ref$, ref1$;
+                  return ref1$ = {
+                    key: i,
+                    path: retFiles[i]
+                  }, ref1$.name = (ref$ = d.file).name, ref1$.size = ref$.size, ref1$.type = ref$.type, ref1$;
                 });
                 return this$.update();
               })['finally'](function(){

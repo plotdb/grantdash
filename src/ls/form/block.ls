@@ -65,7 +65,8 @@ module-file = module-init: ->
             .then (ret) ~>
               if !ret.0 => return
               ret-files = ret.0.files or []
-              @block.{}value.list = files.map (d,i) -> d.file{name, size, type, key: i, path: ret-files[i]}
+              @block.{}value.list = files.map (d,i) ->
+                {key: i, path: ret-files[i]} <<< d.file{name, size, type}
               @update!
             .finally ~>
               debounce 1000 .then ~>
