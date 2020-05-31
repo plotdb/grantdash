@@ -7,6 +7,7 @@ Ctrl = (opt) ->
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   # committed data in table, if available
   @data = opt.data
+  @toc = opt.toc
   slugs = {}
 
   slug-check = debounce 500, (n,v,e) ->
@@ -53,6 +54,12 @@ Ctrl = (opt) ->
             view.render!
           .catch -> console.log it
     handler: do
+      bg: ({node}) ~>
+        name = node.getAttribute(\data-name)
+        if type == \org =>
+          node.style.backgroundImage = "url(/dash/org/#slug/upload/#{name}.png)"
+        else if type == \brd =>
+          node.style.backgroundImage = "url(/dash/org/#{@toc.org.slug}/brd/#slug/upload/#{name}.png)"
       org: do
         key: -> it.key
         list: -> (lc.list or []) ++ [{name: "無", key: null}]

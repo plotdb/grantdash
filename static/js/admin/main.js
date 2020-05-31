@@ -214,7 +214,8 @@ ldc.register('adminGuard', ['general', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter'
       x$.info = new adminInfo({
         root: '[ld-scope=org-info]',
         type: 'org',
-        data: toc.org
+        data: toc.org,
+        toc: toc
       });
       x$.info.adapt({
         hub: org,
@@ -249,7 +250,8 @@ ldc.register('adminGuard', ['general', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter'
       y$.info = new adminInfo({
         root: '[ld-scope=brd-info]',
         type: 'brd',
-        data: toc.brd
+        data: toc.brd,
+        toc: toc
       });
       y$.info.adapt({
         hub: brd,

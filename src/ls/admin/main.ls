@@ -108,7 +108,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
       @ctrl.welcome = new admin-welcome {root: '[ld-scope=admin-welcome]', toc}
 
       @ctrl.org
-        ..info = new admin-info {root: '[ld-scope=org-info]', type: \org, data: toc.org}
+        ..info = new admin-info {root: '[ld-scope=org-info]', type: \org, data: toc.org, toc}
         ..info.adapt {hub: org, path: <[info]> }
         ..navbar = new admin-navbar {toc, root: '[data-name=org-navbar] [ld-scope=navbar-editor]'}
         ..navbar.adapt {hub: org, path: <[page navbar]>}
@@ -118,7 +118,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
         ..page.adapt {hub: org, path: <[page info]>}
 
       @ctrl.brd
-        ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd, data: toc.brd}
+        ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd, data: toc.brd, toc}
         ..info.adapt   {hub: brd, path: <[info]> }
         ..group = new admin-menu {toc: @toc, set-group}
         ..group.adapt   {hub: brd, path: <[group]>, type: \array}

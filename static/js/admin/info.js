@@ -15,6 +15,7 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
       ? document.querySelector(opt.root)
       : opt.root;
     this.data = opt.data;
+    this.toc = opt.toc;
     slugs = {};
     slugCheck = debounce(500, function(n, v, e){
       var p;
@@ -113,6 +114,16 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
         }
       },
       handler: {
+        bg: function(arg$){
+          var node, name;
+          node = arg$.node;
+          name = node.getAttribute('data-name');
+          if (type === 'org') {
+            return node.style.backgroundImage = "url(/dash/org/" + slug + "/upload/" + name + ".png)";
+          } else if (type === 'brd') {
+            return node.style.backgroundImage = "url(/dash/org/" + this$.toc.org.slug + "/brd/" + slug + "/upload/" + name + ".png)";
+          }
+        },
         org: {
           key: function(it){
             return it.key;

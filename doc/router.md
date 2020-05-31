@@ -49,8 +49,10 @@
    - /upload/release/ - 最新已發布的上傳檔案. ( 可以由 <v> 僅做個 symlink, 或完整拷貝過來 )
  - 網站資料:
    - 可透過對應的路徑對應至其為根目錄存取, 如:
-     - <domain>/org/<slug> 對應到 /users/org/<slug/static/
+     - <domain>/org/<slug> 對應到 /users/org/<slug>/static/
    - 網站根目錄預設對應到 org 的 static, 但應可讓用戶於 org 中設定, 對應到不同活動. org 亦應可設定多重 domain.
+ - 上傳資料:
+   - /dash/org/<slug>/upload/<filename>
 
 
 # Draft Note
