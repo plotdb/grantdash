@@ -1,5 +1,5 @@
-({loader, notify, ldcvmgr, auth, sdbAdapter}) <- ldc.register(
-\adminInfo, <[loader notify ldcvmgr auth sdbAdapter]>, _)
+({error, loader, notify, ldcvmgr, auth, sdbAdapter}) <- ldc.register(
+\adminInfo, <[error loader notify ldcvmgr auth sdbAdapter]>, _)
 Ctrl = (opt) ->
   @opt = opt
   @type = type = opt.type or null
@@ -24,10 +24,6 @@ Ctrl = (opt) ->
     values: if slug => {slug} else {}
     submit: '[ld=submit]'
     afterCheck: (s, f) ->
-      if f.thumbnail and f.thumbnail.value =>
-        if !( p = ld$.parent(f.thumbnail, '.bg') ) => return
-        ldFile.fromFile f.thumbnail.files.0, \dataurl
-          .then (r) -> p.style.backgroundImage = "url(#{r.result})"
       fields = <[name slug description brd grp]>.filter -> f[it]
       # brd and grp information is filled automatically by program so it's either 0 or 2
       <[brd grp]>.map (n) -> s[n] = if f[n] and f[n]value => 0 else 2
@@ -38,7 +34,6 @@ Ctrl = (opt) ->
         if !/^[a-zA-Z0-9-]+$/.exec(v) => return 2
         if slugs[v]? => return if slugs[v] => 2 else 0
         slug-check n,v,e
-
         return 1
       return if !!v => 0 else 2
 
@@ -65,38 +60,64 @@ Ctrl = (opt) ->
           node.innerText = data.name + (if !data.slug => '' else " ( #{data.slug} )")
           node.setAttribute \value, (data.slug or '')
 
-    action: click:
-      delete: ~>
-        p = @adapter.path
-        if p.0 != \group => return
-        if @adapter.doc.data.[]group.length == 1 => return
-        @adapter.doc.submitOp [ {p: ['group',p.1],  od: @adapter.doc.data.group[p.1] } ]
-        @set-path ['group', 0, 'info']
-        @opt.set-group @adapter.doc.data.group.0
+    action: do
+      change: do
+        file: ({node}) ->
+          name = node.getAttribute(\data-name)
+          if !(name in <[thumb banner]>) => return
+          if !( p = ld$.parent(node, '.bg') ) => return
+          if !( btn = ld$.parent(node, '.btn') ) => return
+          if !node.files.length => return
+          ldFile.fromFile node.files.0, \dataurl
+            .then (r) -> p.style.backgroundImage = "url(#{r.result})"
+          btn.classList.toggle \running, true
+          fd = new FormData!
+          fd.append type, slug
+          fd.append "#{name}[]", node.files.0
+          fd.append \files, JSON.stringify([{name: name, type: name}])
+          ld$.fetch \/dash/api/upload, {method: \POST, body: fd}, {type: \json}
+            .finally -> debounce 1000 .then -> btn.classList.toggle \running, false
+            .then ->
+              node.value = ""
+              console.log "uploaded", it
+            .catch (e) ->
+              console.log e
+              error! e
 
-      submit: ({node}) ->
-        if node.classList.contains \disabled => return
-        auth.ensure!
-          .then ->
-            loader.on!
-            fd = form.getfd!
-            ld$.fetch "/dash/api/#type/", {method: \POST, body: fd}, {type: \json}
-              .then (r) ->
-                loader.off!
-                ldcvmgr.toggle \redirect
-                debounce 1000 .then ->
-                  if type == \prj => window.location.href = "/dash/prj/#{r.slug}/edit"
-                  else window.location.href = "/dash/#type/#{form.values!slug}/admin"
-              .catch ->
-                loader.off!
-                ldcvmgr.toggle 'error'
-          .catch -> lda.ldcvmgr.toggle 'auth-required'
+      click: do
+        delete: ~>
+          p = @adapter.path
+          if p.0 != \group => return
+          if @adapter.doc.data.[]group.length == 1 => return
+          @adapter.doc.submitOp [ {p: ['group',p.1],  od: @adapter.doc.data.group[p.1] } ]
+          @set-path ['group', 0, 'info']
+          @opt.set-group @adapter.doc.data.group.0
+
+        submit: ({node}) ->
+          if node.classList.contains \disabled => return
+          auth.ensure!
+            .then ->
+              loader.on!
+              fd = form.getfd!
+              ld$.fetch "/dash/api/#type/", {method: \POST, body: fd}, {type: \json}
+                .then (r) ->
+                  loader.off!
+                  ldcvmgr.toggle \redirect
+                  debounce 1000 .then ->
+                    if type == \prj => window.location.href = "/dash/prj/#{r.slug}/edit"
+                    else window.location.href = "/dash/#type/#{form.values!slug}/admin"
+                .catch ->
+                  loader.off!
+                  ldcvmgr.toggle 'error'
+            .catch -> lda.ldcvmgr.toggle 'auth-required'
 
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
     if source => return
-    for k,v of @form.fields => if !(k in <[slug]>) => @form.fields[k].value = data[k] or ''
+    for k,v of @form.fields => if !(k in <[slug]>) =>
+      if @form.fields[k].getAttribute(\type) == \file => continue
+      @form.fields[k].value = data[k] or ''
 
 return Ctrl

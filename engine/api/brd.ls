@@ -12,12 +12,16 @@ upload = ({root, files}) -> new Promise (res, rej) ->
     if type in <[banner thumb]> =>
       f = list.0
       (res, rej) <- new Promise _
-      (e,i) <- sharp(f.path).toFile path.join(root, "#type.#{f.type}"), _
-      return if e => rej(e) else res!
+      (e,i) <- sharp(f.path).toFile path.join(root, "#type.png"), _
+      return if e => rej(e) else res {name, type, files: ["#type.png"]}
     else
       id = suuid!
-      ps = list.map (f,i) -> fs-extra.copy(f.path, path.join(root, 'draft', "#{id}.#{idx}.#{f.type}"))
+      ps = list.map (f,i) ->
+        fn = "#{id}.#{idx}.#{f.type}"
+        fs-extra.copy(f.path, path.join(root, 'draft', fn))
+          .then -> fn
       Promise.all ps
+        .then (files) -> {name, type, id, files}
 
   Promise.all(ps)
     .then -> res it
@@ -26,15 +30,19 @@ upload = ({root, files}) -> new Promise (res, rej) ->
 api.post \/upload, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {org,brd,prj,files} = req.fields
+  try
+    files = JSON.parse(files)
+  catch e
+    return aux.r400 res
   if !(files and Array.isArray(files) and files.length) => return aux.r400 res
   files = files
     .map ({name,type}) ->
       list = req.files["#{name}[]"]
       list = if Array.isArray(list) => list else [list]
-      list
+      list = list
         .map -> {path: it.path, type: it.type.split(\/).1}
         .filter -> /([a-zA-Z0-9]{1,6}$)/.exec(it.type)
-      reutrn {name, type, list}
+      return {name, type, list}
     .filter -> it.list.length > 0 and it.list.length < 10
 
   lc.type = type = if prj => \prj else if brd => \brd else if org => \org else null
@@ -44,32 +52,32 @@ api.post \/upload, aux.signed, express-formidable!, (req, res) ->
     io.query """
     select o.slug as org, b.slug as brd, p.slug as prj
     from org as o, brd as b, prj as p
-    where prj.slug = $1 and prj.brd = brd.slug and brd.org = org.slug
+    where p.slug = $1 and p.brd = b.slug and b.org = o.slug
     """, [prj]
   else if type == \brd =>
     io.query """
     select o.slug as org, b.slug as brd
     from org as o, brd as b
-    where brd.slug = $1 and brd.org = org.slug
+    where b.slug = $1 and b.org = o.slug
     """, [brd]
   else if type == \org =>
     io.query """
     select o.slug as org
     from org as o
-    where org.slug = $1
+    where o.slug = $1
     """, [org]
   promise
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       {org,brd,prj} = ret
-      lc.root = if type == \prj => "users/org/#{org}/prj/#{prj}/upload"
+      root = if type == \prj => "users/org/#{org}/prj/#{prj}/upload"
       else if type == \brd => "users/org/#{org}/brd/#{brd}/upload"
       else if type == \org => "users/org/#{org}/upload"
       else null
-      if !lc.root => return aux.reject 400
+      if !root => return aux.reject 400
       # TODO verify prj form criteria
       upload {root, files}
-
+    .then -> res.send it
     .catch aux.error-handler res
 
 app.get \/brd/:bslug/grp/:gslug/list, (req, res) ->

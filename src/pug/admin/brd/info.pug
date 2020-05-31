@@ -42,11 +42,24 @@ p.text-muted 您可以在這裡為設定整個活動的通用資訊，例如名�
         input.form-control(ld="tail-datetime",type="text",name="endtime")
 
   .row.align-items-start.mb-4
-    .col-md-3.text-right 活動主圖
+    .col-md-3.text-right 活動頭像圖
+    .col-md: .w-100(style="max-width:200px"): .aspect-ratio.ratio-1by1.bg-secondary.rounded.overflow-hidden
+      .bg-semi-dark.bg.bg-cover.bg-portrait
+        .w-100.h-100.bg-semi-dark.vertical-center: .w-100.text-center
+          .btn.btn-outline-light.btn-upload.ld-ext-right
+            | 上傳
+            input(ld="file", data-name="thumb", type="file")
+            .ld.ld-spin.ld-spinner
+
+  .row.align-items-start.mb-4
+    .col-md-3.text-right 活動橫幅主圖
     .col-md: .w-100: .aspect-ratio.ratio-2by1.bg-secondary.rounded.overflow-hidden
       .bg-semi-dark.bg.bg-cover.bg-portrait
-        .w-100.h-100.bg-semi-dark.vertical-center
-          .w-100.text-center: .btn.btn-outline-light.btn-upload 上傳 #[input(name="thumbnail",type="file")]
+        .w-100.h-100.bg-semi-dark.vertical-center: .w-100.text-center
+          .btn.btn-outline-light.btn-upload.ld-ext-right
+            | 上傳
+            input(ld="file", data-name="banner", type="file")
+            .ld.ld-spin.ld-spinner
 
   //-.row.align-items-center.mb-4
     .col-md-3.text-right 所屬組織
