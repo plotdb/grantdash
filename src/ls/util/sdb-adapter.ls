@@ -43,17 +43,20 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
     if !@sdb or !@doc.submitOp => return
     if typeof(ops) == \function =>
       cur = ops(JSON.parse(JSON.stringify(@data or {})))
-      ops = if !(@get-data!) => [{p: [], oi: (if Array.isArray(cur) => [] else {})}] else []
-      ops ++= @sdb.json.diff((@data or {}), cur)
+      ops = @sdb.json.diff((@data or {}), cur)
       @update ops
     else if Array.isArray(ops) and ops.length =>
       ops.map ~> it.p = @path ++ it.p
       o = @doc.data
       p = []
+      ops-addon = []
       for n in @path =>
         p.push n
-        if !o[n] => ops = [{p: JSON.parse(JSON.stringify(p)), oi: {}}] ++ ops
+        if !o[n] => ops-addon.push do
+          p: JSON.parse(JSON.stringify(p))
+          oi: (if n == @path[* - 1] and Array.isArray(@data) => [] else {})
         o = (o[n] or {})
+      ops = ops-addon ++ ops
       @doc.submitOp ops
 
   watch: ({ops, data, source}) ->

@@ -84,21 +84,13 @@ ldc.register('sdbAdapter', [], function(){
       });
     },
     update: function(ops){
-      var cur, o, p, i$, ref$, len$, n, this$ = this;
+      var cur, o, p, opsAddon, i$, ref$, len$, n, ref1$, this$ = this;
       if (!this.sdb || !this.doc.submitOp) {
         return;
       }
       if (typeof ops === 'function') {
         cur = ops(JSON.parse(JSON.stringify(this.data || {})));
-        ops = !this.getData()
-          ? [{
-            p: [],
-            oi: Array.isArray(cur)
-              ? []
-              : {}
-          }]
-          : [];
-        ops = ops.concat(this.sdb.json.diff(this.data || {}, cur));
+        ops = this.sdb.json.diff(this.data || {}, cur);
         return this.update(ops);
       } else if (Array.isArray(ops) && ops.length) {
         ops.map(function(it){
@@ -106,17 +98,21 @@ ldc.register('sdbAdapter', [], function(){
         });
         o = this.doc.data;
         p = [];
+        opsAddon = [];
         for (i$ = 0, len$ = (ref$ = this.path).length; i$ < len$; ++i$) {
           n = ref$[i$];
           p.push(n);
           if (!o[n]) {
-            ops = [{
+            opsAddon.push({
               p: JSON.parse(JSON.stringify(p)),
-              oi: {}
-            }].concat(ops);
+              oi: n === (ref1$ = this.path)[ref1$.length - 1] && Array.isArray(this.data)
+                ? []
+                : {}
+            });
           }
           o = o[n] || {};
         }
+        ops = opsAddon.concat(ops);
         return this.doc.submitOp(ops);
       }
     },
