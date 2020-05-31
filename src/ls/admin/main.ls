@@ -40,8 +40,9 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
   Ctrl.prototype = Object.create(Object.prototype) <<< do
     render: -> @view.render!
     fetch: ->
-      [path,type,slug] = /^\/([ob])\/([^/]+)\/admin/.exec(window.location.pathname) or []
-      hint = {} <<< (if type => (if type == \o => {org: slug} else {brd: slug}) else {})
+      [path,type,slug] = /^\/([^/]+)\/([^/]+)\/admin/.exec(window.location.pathname) or []
+      if !type in <[org brd]> => return Promise.reject new ldError 1015
+      hint = {}; hint[type] = slug
       console.log "fetch auth data ..."
       auth.fetch!
         .catch (e) -> Promise.reject new ldError({id: 1007, e})

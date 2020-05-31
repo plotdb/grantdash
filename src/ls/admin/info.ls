@@ -2,8 +2,8 @@
 \adminInfo, <[loader notify ldcvmgr auth sdbAdapter]>, _)
 Ctrl = (opt) ->
   @opt = opt
-  @type = type = {org: 'o', prj: 'p', brd: 'b', grp: 'g'}[opt.type] or null
-  if !type => throw new ldError(1015, "admin-info: type is not defined.")
+  @type = type = opt.type or null
+  if !type in <[org brd grp prh]> => if !type => throw new ldError(1015, "admin-info: malform type.")
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   # committed data in table, if available
   @data = opt.data
@@ -63,7 +63,7 @@ Ctrl = (opt) ->
         list: -> (lc.list or []) ++ [{name: "無", key: null}]
         handler: ({node, data}) ->
           node.innerText = data.name + (if !data.slug => '' else " ( #{data.slug} )")
-          node.setAttribute \value, (data.key or '')
+          node.setAttribute \value, (data.slug or '')
 
     action: click:
       delete: ~>
@@ -85,7 +85,7 @@ Ctrl = (opt) ->
                 loader.off!
                 ldcvmgr.toggle \redirect
                 debounce 1000 .then ->
-                  if type == \p => window.location.href = "/p/#{r.slug}/edit"
+                  if type == \prj => window.location.href = "/prj/#{r.slug}/edit"
                   else window.location.href = "/#type/#{form.values!slug}/admin"
               .catch ->
                 loader.off!

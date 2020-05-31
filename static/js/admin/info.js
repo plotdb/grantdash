@@ -3,16 +3,13 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
   var loader, notify, ldcvmgr, auth, sdbAdapter, Ctrl;
   loader = arg$.loader, notify = arg$.notify, ldcvmgr = arg$.ldcvmgr, auth = arg$.auth, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var type, root, slugs, slugCheck, slug, form, lc, view, this$ = this;
+    var type, ref$, root, slugs, slugCheck, slug, form, lc, view, this$ = this;
     this.opt = opt;
-    this.type = type = {
-      org: 'o',
-      prj: 'p',
-      brd: 'b',
-      grp: 'g'
-    }[opt.type] || null;
-    if (!type) {
-      throw new ldError(1015, "admin-info: type is not defined.");
+    this.type = type = opt.type || null;
+    if ((ref$ = !type) === 'org' || ref$ === 'brd' || ref$ === 'grp' || ref$ === 'prh') {
+      if (!type) {
+        throw new ldError(1015, "admin-info: malform type.");
+      }
     }
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
@@ -140,7 +137,7 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
             node.innerText = data.name + (!data.slug
               ? ''
               : " ( " + data.slug + " )");
-            return node.setAttribute('value', data.key || '');
+            return node.setAttribute('value', data.slug || '');
           }
         }
       },
@@ -181,8 +178,8 @@ ldc.register('adminInfo', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter'],
                 loader.off();
                 ldcvmgr.toggle('redirect');
                 return debounce(1000).then(function(){
-                  if (type === 'p') {
-                    return window.location.href = "/p/" + r.slug + "/edit";
+                  if (type === 'prj') {
+                    return window.location.href = "/prj/" + r.slug + "/edit";
                   } else {
                     return window.location.href = "/" + type + "/" + form.values().slug + "/admin";
                   }

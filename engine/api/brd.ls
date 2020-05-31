@@ -5,7 +5,7 @@ require! <[../aux ./permcache]>
 api = engine.router.api
 app = engine.app
 
-app.get \/b/:bslug/g/:gslug/list, (req, res) ->
+app.get \/brd/:bslug/grp/:gslug/list, (req, res) ->
   lc = {}
   {offset,limit} = req.query{offset,limit}
   {bslug,gslug} = req.params{bslug,gslug}
@@ -25,7 +25,7 @@ app.get \/b/:bslug/g/:gslug/list, (req, res) ->
       return null
     .catch aux.error-handler res
 
-app.get \/b/:slug, aux.signed, (req, res) ->
+app.get \/brd/:slug, aux.signed, (req, res) ->
   lc = {}
   if !req.user => return aux.r403 res
   if !(slug = req.params.slug) => return aux.r400 res
@@ -33,13 +33,13 @@ app.get \/b/:slug, aux.signed, (req, res) ->
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 404
       if brd.owner != req.user.key => return aux.reject 403
-      io.query "select * from prj where brd = $1", [brd.key]
+      io.query "select * from prj where brd = $1", [brd.slug]
     .then (r={}) ->
       lc.projects = r.[]rows
       res.render \b/index.pug, lc{brd, projects}
     .catch aux.error-handler res
 
-api.get \/b/:slug/form/, (req, res) ->
+api.get \/brd/:slug/form/, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   io.query "select key,name,description,slug,detail from brd where slug = $1", [slug]
     .then (r={}) ->
@@ -79,7 +79,12 @@ api.post \/deploy, aux.signed, (req, res) ->
   {slug, type} = (req.body or {})
   if !(slug and type and (type in <[org brd]>)) => return aux.r400 res
   permcache.check {io, user: req.user, type, slug, action: \owner}
-    .then -> io.query "select detail->'page'->'info' as info from #type where slug = $1", [slug]
+    .then ->
+      if type == \org => return io.query "select detail->'page'->'info' as info from org where slug = $1", [slug]
+      io.query """
+      select b.detail->'page'->'info' as info, b.org
+      from brd as b where b.slug = $1
+      """, [slug]
     .then (r={}) ->
       if !((ret = r.[]rows.0) and (git = ret.{}info.git)) => return aux.reject 404
       if !(git.url and git.branch) => return aux.reject 404
@@ -88,6 +93,7 @@ api.post \/deploy, aux.signed, (req, res) ->
       # deploy might take a while, so we go back to user first.
       res.send {}
       type = type.substring(0,1)
+      if type == \org => 
       deploy {url: git.url, branch: git.branch, root: "users/#type/#slug/static"}
         .catch ->
     .catch aux.error-handler res
@@ -112,7 +118,7 @@ api.put \/detail/, aux.signed, (req, res) ->
     .then ->
       permcache.invalidate {type: table, slug}
       if table != \prj => return
-      lc.root = "users/p/#{slug}"
+      lc.root = "users/prj/#{slug}"
       fs-extra.path-exists lc.root
     .then (exists) ->
       if !exists => return
@@ -126,10 +132,10 @@ api.put \/detail/, aux.signed, (req, res) ->
     .then -> res.send {}
     .catch aux.error-handler res
 
-api.post \/b, aux.signed, express-formidable!, (req, res) ->
+api.post \/brd, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {name,description,slug,starttime,endtime,org} = req.fields
-  if !name or !/^[a-zA-Z0-9-]+$/.exec(slug) => return aux.r400 res
+  if !name or !/^[a-zA-Z0-9+_-]+$/.exec(slug) => return aux.r400 res
   thumb = (req.files["thumbnail[]"] or {}).path
   detail = {info: {name, description, starttime, endtime}, group: []}
   io.query "select key from brd where slug = $1", [slug]
@@ -143,7 +149,7 @@ api.post \/b, aux.signed, express-formidable!, (req, res) ->
       lc.ret = (r.[]rows or []).0
       if !thumb => return
       new Promise (res, rej) ->
-        root = "static/assets/uploads/b/#slug"
+        root = "static/assets/uploads/brd/#slug"
         (e) <- fs-extra.ensure-dir root, _
         if e => return rej(e)
         (e,i) <- sharp(thumb).toFile path.join(root, "thumb.png"), _
@@ -153,17 +159,18 @@ api.post \/b, aux.signed, express-formidable!, (req, res) ->
 
 # following routes are for both brd and org. put it here in brd.ls temporarily.
 
-app.get \/o/:key/admin, aux.signed, (req, res) ->
-  res.render \admin/index.pug, {org: {key: req.params.key}}
+app.get \/org/:slug/admin, aux.signed, (req, res) ->
+  res.render \admin/index.pug, {org: {slug: req.params.key}}
 
-app.get \/b/:key/admin, aux.signed, (req, res) ->
+app.get \/brd/:slug/admin, aux.signed, (req, res) ->
   lc = {}
-  io.query "select * from brd where key = $1", [req.params.key]
+  if !(slug = req.params.slug) => return aux.r404 res
+  io.query "select * from brd where slug = $1", [slug]
     .then (r={}) ->
       if !(brd = r.[]rows.0) => return aux.reject 404
       if brd.owner != req.user.key => return aux.reject 403
       lc.brd = brd
-      return if !brd.org => Promise.resolve! else io.query "select * from org where key = $1", [brd.org]
+      return if !brd.org => Promise.resolve! else io.query "select * from org where slug = $1", [brd.org]
     .then (r={}) ->
       org = r.{}rows.0
       res.render \admin/index.pug, {org, brd: lc.brd}
@@ -171,8 +178,8 @@ app.get \/b/:key/admin, aux.signed, (req, res) ->
     .catch aux.error-handler res
 
 api.post \/slug-check/:type, (req, res) ->
-  type = {o: \org, b: \brd}[req.params.type] 
-  if !type or !/^[A-Za-z0-9-]+$/.exec(req.body.slug) => return aux.r404!
-  io.query "select key from #type where slug = $1", [req.body.slug or '']
+  [type,slug] = [req.params.type, req.body.slug]
+  if !((type in <[org brd]>) and /^[A-Za-z0-9+_-]+$/.exec(slug)) => return aux.r404 res
+  io.query "select key from #type where slug = $1", [slug]
     .then (r = {}) -> res.send {result: if (r.rows or []).length => 'used' else 'free'}
     .catch aux.error-handler res

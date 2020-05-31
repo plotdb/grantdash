@@ -27,13 +27,13 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
       var this$ = this;
       console.log("fetching project information ...");
       console.log("fetching board form ...");
-      return ld$.fetch("/d/p/" + this.slug, {
+      return ld$.fetch("/d/prj/" + this.slug, {
         method: 'GET'
       }, {
         type: 'json'
       }).then(function(it){
         this$.prj = it;
-        return ld$.fetch("/d/b/" + this$.prj.brdslug + "/form", {
+        return ld$.fetch("/d/brd/" + this$.prj.brdslug + "/form", {
           method: 'GET'
         }, {
           type: 'json'
@@ -135,7 +135,7 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
       return this.view.render();
     }
   });
-  ref$ = /^\/p\/([^/]+)\/edit/.exec(window.location.pathname) || [], path = ref$[0], slug = ref$[1];
+  ref$ = /^\/prj\/([^/]+)\/edit/.exec(window.location.pathname) || [], path = ref$[0], slug = ref$[1];
   ctrl = new Ctrl({
     prj: slug
   });

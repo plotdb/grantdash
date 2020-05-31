@@ -11,12 +11,12 @@ ldc.register('adminWelcome', ['loader', 'notify', 'ldcvmgr', 'auth', 'sdbAdapter
         "org-info": function(arg$){
           var node;
           node = arg$.node;
-          return node.classList.toggle('d-none', !(toc.org && toc.org.key));
+          return node.classList.toggle('d-none', !(toc.org && toc.org.slug));
         },
         "brd-info": function(arg$){
           var node;
           node = arg$.node;
-          return node.classList.toggle('d-none', !(toc.brd && toc.brd.key));
+          return node.classList.toggle('d-none', !(toc.brd && toc.brd.slug));
         }
       }
     });

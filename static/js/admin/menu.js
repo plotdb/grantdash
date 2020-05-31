@@ -96,12 +96,12 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
         "brd-landing": function(arg$){
           var node;
           node = arg$.node;
-          return node.setAttribute('href', "/b/" + toc.brd.slug + "/");
+          return node.setAttribute('href', "/brd/" + toc.brd.slug + "/");
         },
         "org-menu": function(arg$){
           var node;
           node = arg$.node;
-          return node.classList.toggle('d-none', !toc.org.key);
+          return node.classList.toggle('d-none', !toc.org.slug);
         },
         "brd-progress": function(arg$){
           var node;

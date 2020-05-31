@@ -4,13 +4,13 @@ loader.on!
 lc = {}
 
 key = (
-  /^\/b\/([^/]+)\/p\/create/.exec(window.location.pathname) or 
-  /^\/b\/([^/]+)\/g\/([^/]+)\/p\/create/.exec(window.location.pathname) or []
+  /^\/brd\/([^/]+)\/prj\/create/.exec(window.location.pathname) or 
+  /^\/brd\/([^/]+)\/grp\/([^/]+)\/prj\/create/.exec(window.location.pathname) or []
 )
 key = brd: key.1, grp: key.2
 
 auth.get!
-  .then -> ld$.fetch "/d/b/#{key.brd}/form", {method: \GET}, {type: \json}
+  .then -> ld$.fetch "/d/brd/#{key.brd}/form", {method: \GET}, {type: \json}
   .then (brd) ->
     lc.brd = brd
     lc.grps = brd.detail.{}group
@@ -18,7 +18,7 @@ auth.get!
     if !lc.grp => return Promise.reject new Error(1015, "group is not found")
     root = ld$.find('[ld-scope=prj-create]',0)
     n = ld$.find(root, 'input[name=brd]', 0)
-    n.value = lc.brd.key
+    n.value = lc.brd.slug
     show-grp = if lc.grps.length == 1 => false else true
     info = new adminInfo {root: root, type: \prj}
     view = new ldView do

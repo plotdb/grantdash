@@ -108,7 +108,6 @@ ldc.register('adminPage', ['error', 'sdbAdapter', 'ldcvmgr'], function(arg$){
         return;
       }
       this.data = JSON.parse(JSON.stringify(data || {}));
-      console.log(this.data);
       return this.render();
     }
   });

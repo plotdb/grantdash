@@ -51,7 +51,6 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     if source => return
     # empty object will be truncated in data thus we clone it to prevent edited
     @data = JSON.parse JSON.stringify(data or {})
-    console.log @data
     @render!
 
 return Ctrl

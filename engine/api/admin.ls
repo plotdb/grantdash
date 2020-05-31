@@ -14,7 +14,7 @@ api.post \/toc, aux.signed, (req, res) ->
     io.query "select * from brd where slug = $1", [hint.brd]
       .then (r={}) ->
         if !(lc.brd = r.[]rows.0) => return aux.reject 404
-        io.query "select key,name,slug,description,detail from org where key = $1", [lc.brd.org]
+        io.query "select key,name,slug,description,detail from org where slug = $1", [lc.brd.org]
       .then (r={}) -> lc.org = r.[]rows.0 or null
   else if hint.org =>
     io.query "select * from org where slug = $1", [hint.org]
@@ -25,7 +25,7 @@ api.post \/toc, aux.signed, (req, res) ->
         if !(lc.brd = r.[]rows.0) =>
           io.query "select * from org where owner = $1 order by createdtime limit 1", [req.user.key]
             .then (r={}) -> if !(lc.org = r.[]rows.0) => return aux.reject 404
-        else io.query "select * from org where key = $1", [lc.brd.org]
+        else io.query "select * from org where slug = $1", [lc.brd.org]
       .then (r={}) ->
         lc.org = r.[]rows.0 or null
       .then -> if !(lc.brd or lc.org) => return aux.reject 404
@@ -33,7 +33,7 @@ api.post \/toc, aux.signed, (req, res) ->
   promise
     .then ->
       if !lc.org => io.query "select * from brd where org is null"
-      else io.query "select * from brd where org = $1", [lc.org.key]
+      else io.query "select * from brd where org = $1", [lc.org.slug]
     .then (r={}) ->
       lc.brds = r.[]rows
       res.send lc

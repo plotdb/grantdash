@@ -4,13 +4,13 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
   ldcvmgr = arg$.ldcvmgr, adminInfo = arg$.adminInfo, prjCreate = arg$.prjCreate, auth = arg$.auth, error = arg$.error, loader = arg$.loader;
   loader.on();
   lc = {};
-  key = /^\/b\/([^/]+)\/p\/create/.exec(window.location.pathname) || /^\/b\/([^/]+)\/g\/([^/]+)\/p\/create/.exec(window.location.pathname) || [];
+  key = /^\/brd\/([^/]+)\/prj\/create/.exec(window.location.pathname) || /^\/brd\/([^/]+)\/grp\/([^/]+)\/prj\/create/.exec(window.location.pathname) || [];
   key = {
     brd: key[1],
     grp: key[2]
   };
   return auth.get().then(function(){
-    return ld$.fetch("/d/b/" + key.brd + "/form", {
+    return ld$.fetch("/d/brd/" + key.brd + "/form", {
       method: 'GET'
     }, {
       type: 'json'
@@ -27,7 +27,7 @@ ldc.register(['ldcvmgr', 'adminInfo', 'prjCreate', 'auth', 'error', 'loader'], f
     }
     root = ld$.find('[ld-scope=prj-create]', 0);
     n = ld$.find(root, 'input[name=brd]', 0);
-    n.value = lc.brd.key;
+    n.value = lc.brd.slug;
     showGrp = lc.grps.length === 1 ? false : true;
     info = new adminInfo({
       root: root,

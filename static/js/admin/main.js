@@ -58,16 +58,12 @@ ldc.register('adminGuard', ['ldcvmgr', 'auth', 'loader', 'sdbAdapter', 'error', 
     },
     fetch: function(){
       var ref$, path, type, slug, hint, this$ = this;
-      ref$ = /^\/([ob])\/([^/]+)\/admin/.exec(window.location.pathname) || [], path = ref$[0], type = ref$[1], slug = ref$[2];
-      hint = import$({}, type
-        ? type === 'o'
-          ? {
-            org: slug
-          }
-          : {
-            brd: slug
-          }
-        : {});
+      ref$ = /^\/([^/]+)\/([^/]+)\/admin/.exec(window.location.pathname) || [], path = ref$[0], type = ref$[1], slug = ref$[2];
+      if ((ref$ = !type) === 'org' || ref$ === 'brd') {
+        return Promise.reject(new ldError(1015));
+      }
+      hint = {};
+      hint[type] = slug;
       console.log("fetch auth data ...");
       return auth.fetch()['catch'](function(e){
         return Promise.reject(new ldError({

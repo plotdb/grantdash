@@ -66,7 +66,7 @@ create table if not exists org (
 create table if not exists brd (
   key serial primary key,
   owner int references users(key) not null,
-  org int references org(key),
+  org text references org(slug),
   slug text not null unique constraint brd_slug_len check (char_length(slug) <= 64),
   name text not null constraint brd_name_len check (char_length(name) <= 100),
   description text constraint brd_description_len check (char_length(description) <= 500),
@@ -83,7 +83,7 @@ create table if not exists prj (
   key serial primary key,
   owner int references users(key) not null,
   slug text not null unique constraint prj_slug_len check (char_length(slug) <= 64),
-  brd int references brd(key),
+  brd text references brd(slug),
   grp text,
   name text not null constraint prg_name_len check (char_length(name) <= 100),
   description text constraint prj_description_len check (char_length(description) <= 500),

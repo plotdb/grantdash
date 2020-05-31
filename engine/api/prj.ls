@@ -5,7 +5,7 @@ require! <[../aux]>
 api = engine.router.api
 app = engine.app
 
-app.get \/p/:slug, (req, res) ->
+app.get \/prj/:slug, (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r400 res
   io.query """
@@ -15,7 +15,7 @@ app.get \/p/:slug, (req, res) ->
   """, [slug]
     .then (r={}) ->
       if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
-      io.query """select name,slug,(detail->'group') as group from brd where brd.key = $1""", [lc.prj.brd]
+      io.query """select name,slug,(detail->'group') as group from brd where brd.slug = $1""", [lc.prj.brd]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
       lc.grp = grp = (brd.group or []).filter(-> it.key == lc.prj.grp).0
@@ -25,22 +25,22 @@ app.get \/p/:slug, (req, res) ->
       res.render \prj/view.pug, lc{prj,grp,brd}
     .catch aux.error-handler res
 
-api.get "/p/:slug/", aux.signed, (req, res) ->
+api.get "/prj/:slug/", aux.signed, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   io.query """
-  select p.*, b.slug as brdslug from prj as p, brd as b where p.slug = $1 and b.key = p.brd
+  select p.*, b.slug as brdslug from prj as p, brd as b where p.slug = $1 and b.slug = p.brd
   """, [slug]
     .then (r = {}) -> res.send(r.[]rows.0 or {})
     .catch aux.error-handler res
 
-api.put \/p/:slug/file/:key, aux.signed, express-formidable({multiples:true}), (req, res) ->
+api.put \/prj/:slug/file/:key, aux.signed, express-formidable({multiples:true}), (req, res) ->
   lc = {}
-  if !(slug = req.params.slug) => return aux.r404 res
-  if !((key = req.params.key) and /^([0-9a-zA-Z+-_]+)$/.exec(key)) => return aux.r404 res
+  if !(slug = req.params.slug) => return aux.r400 res
+  if !((key = req.params.key) and /^([0-9a-zA-Z+_-]+)$/.exec(key)) => return aux.r404 res
   io.query """select slug from prj where slug = $1""", [slug]
     .then (r={}) ->
       if !(lc.prj = r.[]rows.0) => return aux.reject 404
-      lc.root = "users/p/#{lc.prj.slug}"
+      lc.root = "users/prj/#{lc.prj.slug}"
     .then ->
       lc.files = req.files["file[]"]
       lc.files = if Array.isArray(lc.files) => lc.files else [lc.files]
@@ -58,7 +58,7 @@ api.put \/p/:slug/file/:key, aux.signed, express-formidable({multiples:true}), (
     .catch aux.error-handler res
 
 
-api.post \/p/, aux.signed, express-formidable!, (req, res) ->
+api.post \/prj/, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {name,description,brd,grp} = req.fields
   if !(brd and grp) => return aux.r400 res
@@ -72,7 +72,7 @@ api.post \/p/, aux.signed, express-formidable!, (req, res) ->
       lc.ret = (r.[]rows or []).0
       if !thumb => return
       new Promise (res, rej) ->
-        root = "static/assets/uploads/p/#slug"
+        root = "static/assets/uploads/prj/#slug"
         (e) <- fs-extra.ensure-dir root, _
         if e => return rej(e)
         (e,i) <- sharp(thumb).toFile path.join(root, "thumb.png"), _

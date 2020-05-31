@@ -38,8 +38,8 @@ Ctrl = (opt) ->
         node.folder = new ldui.Folder root: node
         if !toc.brd.key and ("brd-list" in names) => node.folder.toggle true
     handler: do
-      "brd-landing": ({node}) -> node.setAttribute \href, "/b/#{toc.brd.slug}/"
-      "org-menu": ({node}) -> node.classList.toggle \d-none, !toc.org.key
+      "brd-landing": ({node}) -> node.setAttribute \href, "/brd/#{toc.brd.slug}/"
+      "org-menu": ({node}) -> node.classList.toggle \d-none, !toc.org.slug
       "brd-progress": ({node}) -> node.classList.toggle \text-success, true
       "brd-list-toggle": ({node}) ->
         if view => node.classList.toggle \on, view.get("brd-list").classList.contains("show")

@@ -5,5 +5,5 @@ Ctrl = (opt) ->
   @view = new ldView do
     root: opt.root
     handler: do
-      "org-info": ({node}) -> node.classList.toggle \d-none, !(toc.org and toc.org.key)
-      "brd-info": ({node}) -> node.classList.toggle \d-none, !(toc.brd and toc.brd.key)
+      "org-info": ({node}) -> node.classList.toggle \d-none, !(toc.org and toc.org.slug)
+      "brd-info": ({node}) -> node.classList.toggle \d-none, !(toc.brd and toc.brd.slug)
