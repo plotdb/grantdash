@@ -1,50 +1,56 @@
 # URL schema
 
  - 網域
-   - 網域與 org 是一對一對應的. 可以完全客製, 或是使用 subdomain.
+   - org 可設定多個網域. 可以完全客製, 或是使用 subdomain.
+     - 每個網域只能對應到一個 org 或 brd. 這應該在 org 中設定.
    - 可用的網域包括:
      - grantdash.io: 主站
      - <sub>.grantdash.io     - 特定 org 
      - userdomain             - 特定 org
    - 在特定 org 下時, 無論網址, 只能存取特定 org 中的資訊.
  - 路徑
+   - dash scoping - 集中主站網址, 避免與客製頁面衝突.
+     - 在 獨立網域下, 應使用 /dash/ prefix. ( 也因此所有的 js, css, ajax 都以 /dash/ 做 prefix
+     - 但在 grantdash 網域下, 可省略 /dash/ 做 view 的存取. 
+   - 以下網域省略 /dash/ 不寫, 但應依 dash scoping 規則處理
+     - 其中公開頁面列表不需 prefix, 因為他們原本就是要供靜態頁面存取
    - 組織
-     ? /dash/org/<slug>/admin/     : 組織後台
-     - /dash/org/<slug>/v/<page>/  : 組織公開頁面
-     - /dash/org/<slug>/b/create   : 建立活動
-     - /dash/org/<slug>/list       : 活動列表
+     ? /org/<slug>/admin/     : 組織後台
+     - /org/<slug>/           : 組織公開頁面
+     - /org/<slug>/brd/create : 建立活動
+     - /org/<slug>/brd/list   : 活動列表
    - 活動
-     ? /dash/brd/<slug>/admin/     : 活動後台
-     - /dash/brd/<slug>/v/<page>   : 活動公開頁面
-     ? /dash/brd/<slug>/p/create   : 建立活動 ( 選擇分組? )
-     - /dash/brd/<slug>/list       : 提案列表
+     ? /brd/<slug>/admin/     : 活動後台
+     - /brd/<slug>/           : 活動公開頁面
+     ? /brd/<slug>/prj/create : 建立活動 ( 選擇分組? )
+     - /brd/<slug>/prj/list   : 提案列表
    - 提案
-     - /dash/prj/<slug>/             : 提案頁面 ( 瀏覽 )
-     - /dash/prj/<slug>/edit         : 提案頁面 ( 編輯 )
+     - /prj/<slug>/           : 提案頁面 ( 瀏覽 )
+     - /prj/<slug>/edit       : 提案頁面 ( 編輯 )
    - 評選
-     ? /dash/brd/<slug>/judge/
+     ? /brd/<slug>/judge/
    - 用戶 - 參照 servlet
 
 
 ## Site Files and Upload Files
 
 用戶網站資料放在 `/users/` 資料夾中, 分以下結構
- - /users/o/<oid>
-   - /static/ - 網站資料
- - /users/b/<bid>
- - /users/p/<pid>
-
-用戶資料可能會跟主站資料打架. 考慮到這點, 我們必須至少保留一個路徑 `/gd/` 用以取得主站內容. `/gd/` 下的靜態內容直接對應到主站的根目錄中.
-
-同時, 其它動態生成的頁面 ( 由 express 提供的內容 ) 則維持在原本的位置, 使用者必須避開這些資料夾:
-
- - /gd/ - 對應到主站的 /
- - /b/  - brd 頁面. 對應到 /users/b/<bid>
- - /d/
- - /o/
- - /p/
- - /me/
- - /auth/
+ - /org/<slug>     - 組織的專屬資料夾
+   - /static/      - 網站資料.
+   - 活動與提案    - 亦放在 org 下, 以避免跨組織存取造成誤會
+     - /brd/<slug>
+     - /prj/<slug>
+ - /brd/<slug>     - 活動的專屬資料夾
+   - /static/      - 網站資料
+   - /upload       - 活動的上傳資料
+ - /prj/<slug>     - 提案的專屬資料夾
+   - /file/draft/  - 編輯中的上傳檔案
+   - /file/<v>/    - 某個版本的上傳檔案
+   - /file/release - 最新已發布的上傳檔案. ( 可以由 <v> 僅做個 symlink, 或完整拷貝過來 )
+ - 網站資料:
+   - 可透過對應的路徑對應至其為根目錄存取, 如:
+     - <domain>/org/<slug> 對應到 /users/org/<slug/static/
+   - 網站根目錄預設對應到 org 的 static, 但應可讓用戶於 org 中設定, 對應到不同活動. org 亦應可設定多重 domain.
 
 
 # Draft Note
