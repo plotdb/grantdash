@@ -62,6 +62,12 @@ ldc.register('adminPage', ['error', 'sdbAdapter', 'ldcvmgr'], function(arg$){
         }
       },
       handler: {
+        "nav-panel": function(arg$){
+          var node, name;
+          node = arg$.node;
+          name = node.getAttribute('data-name');
+          return node.classList.toggle('d-none', !((this$.data.opt || 'default') === name));
+        },
         "git-url": function(arg$){
           var node, ref$;
           node = arg$.node;

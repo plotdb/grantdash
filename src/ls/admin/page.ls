@@ -30,6 +30,9 @@ Ctrl = (opt) ->
 
 
     handler: do
+      "nav-panel": ({node}) ~>
+        name = node.getAttribute(\data-name)
+        node.classList.toggle \d-none, !((@data.opt or \default) == name)
       "git-url": ({node}) ~> node.value = @data.{}git.url or ''
       "git-branch": ({node}) ~> node.value = @data.{}git.branch or ''
       "opt": ({node}) ~>
