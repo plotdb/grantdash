@@ -47,6 +47,7 @@
     "marked": "^0.7.0",
     "moment": "=2.19.3",
     "moment-timezone": "=0.5.13",
+    "nodegit": "^0.26.5",
     "nodemailer": "^6.3.0",
     "nodemailer-mailgun-transport": "^1.4.0",
     "passport": "=0.2.1",

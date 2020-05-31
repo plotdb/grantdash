@@ -64,6 +64,7 @@ block script
             .folder-toggle.folder-item 客製頁面
             .folder-menu
               //-.folder-item(ld="nav-tab",data-name="brd-navbar") 選單列
+              .folder-item(ld="nav-tab",data-name="brd-page-info") 基本設定
               a.folder-item.d-flex(href="/edit/")
                 .flex-grow-1 頁面編輯器
                 div: i.i-link
@@ -94,6 +95,9 @@ block script
 
             .p-4.d-none(ld="nav-panel",data-nav="main",data-name="brd-config")
               include brd/config.pug
+
+            .p-4.d-none(ld="nav-panel",data-nav="main",data-name="brd-page-info")
+              include page.pug
 
             .p-4.d-none(ld="nav-panel",data-nav="main",data-name="org-navbar")
               include navbar.pug
@@ -134,6 +138,7 @@ block script
   +script("/js/admin/entry.js")
   +script("/js/admin/list.js")
   +script("/js/admin/welcome.js")
+  +script("/js/admin/page.js")
 
   //- form js files
   +script("/js/form/index.js")

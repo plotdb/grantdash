@@ -1,10 +1,10 @@
 ldc.register \adminGuard,
 <[ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
-adminPrjList prjForm adminEntry adminWelcome]>,
+adminPrjList prjForm adminEntry adminWelcome adminPage]>,
 ({ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
-admin-prj-list, prj-form, admin-entry, admin-welcome}) ->
+admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
 
   Ctrl = ->
     @loader = loader
@@ -124,6 +124,8 @@ admin-prj-list, prj-form, admin-entry, admin-welcome}) ->
         ..perm.adapt   {hub: brd, path: <[perm]>}
         ..navbar = new admin-navbar {toc, root: '[data-name=brd-navbar] [ld-scope=navbar-editor]'}
         ..navbar.adapt {hub: brd, path: <[page navbar]>}
+        ..page = new admin-page {toc, type: \brd, root: '[data-name=brd-page-info] [ld-scope=page-info]'}
+        ..page.adapt {hub: brd, path: <[page info]>}
 
       @ctrl.grp
         ..form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}

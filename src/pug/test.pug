@@ -18,24 +18,39 @@ html
       .folder-toggle { display: none }
   body
     +nbr(2)
-    .w-480.mx-auto.rwd
-      +scope("users")
-        .p-4.rounded.border.shadow-sm
-          .position-relative
-            input.form-control(ld="input",style="border-radius:.25em;border:1px solid #ddd",
-            placeholder="type user name ... ")
-            .d-none(ld="picked"): .position-absolute.w-100.h-100(style="top:0;left:0")
-              .d-flex.align-items-center.p-2.bg-white.form-control.bg-light
-                .bg-dark.rounded.mr-1(ld="picked-avatar",style="width:1em;height:1em")
-                .flex-grow-1(ld="picked-name")
-                i.i-close.text-danger.clickable(ld="clear")
-            .d-none.ld.ld-fade-in(ld="loading")
-              .position-absolute.m-auto.ld.ld-spin.ld-spinner(style="top:0;bottom:0;right:.5em")
-            .p-3.rounded.border.shadow-sm.d-none.ld.ld-float-ttb-in.bg-white.xp15.position-absolute.w-100(
-            ld="users",style="border-radius: 0 0 .5em .5em")
-              .d-flex.align-items-center.clickable(ld-each="user")
-                .bg-light.rounded.mr-1(ld="avatar",style="width:1em;height:1em")
-                div(ld="name")
+    .w-768.mx-auto.rwd
+      h4 客製頁面
+      p.text-muted 您可以在這裡為設定整個活動的頁面。
+      hr
+      .row.no-gutters.mb-4
+        .col-md: .mr-4.h-100.py-3.pr-3.rounded
+          h5 不自行客製頁面
+          .text-muted.mb-2 我們將使用預設樣板為您的活動提供基本介紹以及提案列表。
+          .btn.d-block.btn-outline-secondary(ld="opt",data-name="default") 使用這個選項
+        .col-md: .p-3.h-100.rounded
+          h5 使用 Git Repo
+          .text-muted.mb-2 由您提供網站原始碼，我們則透過 Git Clone 的方式為您執行網站部署。
+          .btn.d-block.btn-outline-secondary(ld="opt",data-name="git") 使用這個選項
+        .col-md: .ml-4.h-100.py-3.pl-3.rounded
+          h5 使用線上編輯器
+          .text-muted.mb-2 讓您可以直接透過我們提供的線上編輯器編寫網頁內容與樣式。
+          .btn.d-block.btn-light.disabled(data-name="editor") 尚未開放
+      .py-4
+        h4 使用 Git Repo
+        p 我們需要以下的額外資訊才能為您設定 Git Repo 部署網站。請注意，Git Repo 部署方式僅提供靜態網頁的部署，並不會執行任何額外的程式碼。
+        hr
+        .form-group
+          label Git URL
+          input.form-control.border.rounded(ld="git-url",placeholder="例如, https://github.com/someone/somerepo")
+        .row
+          .col-md
+            .form-group
+              label Git Branch
+              input.form-control.rounded.border(ld="git-branch",placeholder="例如, gh-pages")
+          .col-md
+            label &nbsp;
+            .btn.btn-primary.d-block(ld="deploy") 請求網站更新
+
 
 
     +script("/assets/lib/suuid/suuid.bundle.min.js")

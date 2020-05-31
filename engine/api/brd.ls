@@ -1,4 +1,4 @@
-require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror permcheck]>
+require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror permcheck nodegit]>
 require! <[../aux ./permcache]>
 (engine,io) <- (->module.exports = it)  _
 
@@ -47,6 +47,46 @@ api.get \/b/:slug/form/, (req, res) ->
       ret.detail = ret.detail{group}
       ret.detail.group = ret.detail.group.map -> it{form, info, key}
       res.send ret{key,name,description,slug,detail}
+    .catch aux.error-handler res
+
+deploy = ({url, root, branch}) ->
+  # open repo at certain location
+  nodegit.Repository.open root
+    # repo not found. create one ....
+    .catch -> nodegit.Repository.init root, 0
+    .then (repo) ->
+      repo.getRemotes!
+        .then (rs) ->
+          Promise.all( rs.map (r) ->
+            if r.url! == url => return true
+            nodegit.Remote.delete repo, r.name! .finally -> return false
+          )
+        .then (rs) ->
+          # url isn't found in current remotes
+          if !rs.reduce(((a,b) -> a or b), false) =>
+            # single-branch workaround - https://github.com/nodegit/nodegit/issues/1669
+            remote = nodegit.Remote.createWithFetchspec(
+              repo, \origin, url, "+refs/heads/#branch:refs/remotes/origin/#branch"
+            )
+        # now we got repo. fetch any new data ..
+        .then -> repo.fetchAll!
+        # checkout branch
+        .then -> repo.getBranch "refs/remotes/origin/#{branch}"
+        .then (ref) -> repo.checkoutRef ref
+
+api.post \/deploy, aux.signed, (req, res) ->
+  {slug, type} = (req.body or {})
+  if !(slug and type and (type in <[org brd]>)) => return aux.r400 res
+  io.query "select detail->'page'->'info' as info from #type where slug = $1", [slug]
+    .then (r={}) ->
+      if !((ret = r.[]rows.0) and (git = ret.{}info.git)) => return aux.reject 404
+      if !(git.url and git.branch) => return aux.reject 404
+      return git
+    .then (git) ->
+      # deploy might take a while, so we go back to user first.
+      res.send {}
+      deploy {url: git.url, branch: git.branch, root: "users/#type/#slug/static"}
+        .catch ->
     .catch aux.error-handler res
 
 api.put \/detail/, aux.signed, (req, res) ->
