@@ -1,0 +1,80 @@
+extends /base.pug
+block vars
+  - ctrl.navtop.shown = true
+  - ctrl.navtop.placeholder = false
+  - ctrl.navtop.className = "navbar-dark text-dark"
+block head
+  +css("/dash/css/landing/index.css")
+block body
+  include /modules/mixins/index.pug
+  //include /project/mixin.pug
+  //include /activity/mixin.pug
+  //include /modules/cover/authpanel.pug
+  .w-100.h-100.bg-dark.text-dark(
+  style="background:url(/dash/assets/img/c/bg/fluid.svg) center center no-repeat;background-size:cover;")
+    .row.h-100.w-100.no-gutters
+      .col-md-6: .vertical-center: .w-100
+        .pb-4.pl-4.w-75.mx-auto
+          h1.display-4.font-weight-bold Grant Dash
+          p.semi-opaque.mb-4 獎助金 / 黑客松 / 競賽提案系統
+          a.btn.btn-outline-dark.mr-2(href="/dash/new/brd/") 建立活動
+          a.btn.btn-outline-dark(href="#learn-more") 了解更多
+      .col-md-6: .vertical-center: .w-100.text-center.px-4
+        .rounded.border.bg-white.shadow-sm.p-4: .aspect-ratio.ratio-3by2
+      //-  
+        .text-light.mb-4 近期活動
+        .d-flex.w-100.rwd.justify-content-center.text-dark.mb-4.pb-4
+          +brd-card-sm({}).m-2
+          +brd-card-sm({}).m-2
+
+  #learn-more.w-100.pt-4(style="background:center 300px no-repeat;background-size:cover")
+    .text-center.mb-4.pb-4
+      h2.font-weight-bold.mt-4 簡單地建立您的活動網站
+      p.text-muted 不需費時的開發與高昂的費用，馬上就能開始接受報名與提案
+    .card.mx-auto.shadow(style="width:640px;height:300px;border-radius:10px 10px 0 0"): .card-body
+  .w-100.bg-dark.p-4.text-white: .m-4.p-4
+    .row
+      .col-md: .vertical-center: .w-100
+        .text-left
+          .card.shadow(style="width:480px;height:320px"): .card-body
+      .col-md: .vertical-center: .w-100
+        h2.font-weight-bold.mt-4 先進的評選系統
+        .sep.sep-light
+        p Grant Dash 採用 #[a(href="https://zh.wikipedia.org/wiki/%E5%AD%94%E5%A4%9A%E5%A1%9E%E6%8A%95%E7%A5%A8%E6%B3%95") Condorcet 排名演算法]，評審可自由地依自己喜好的方式評分，Grant Dash 自動地整合所有分數、並依相對優劣的方式確保最終名次為正確結果。主辦單位不再須費心計算。
+  .w-100.bg-secondary.p-4.text-light: .m-4.p-4
+    .row
+      .col-md: .vertical-center: .w-100
+        h2.font-weight-bold.mt-4 協作式提案編輯
+        hr
+        p Grant Dash 採用 Collaborative Editing 技術，支援提案即時共同編輯，無論是單人提案或多人組隊的活動，都能帶給參與者最好的使用體驗。
+      .col-md: .vertical-center: .w-100
+        .text-right
+          .card.shadow(style="width:480px;height:320px"): .card-body
+  //-.w-1200.rwd.mx-auto.p-4: .m-4.p-4
+    .text-center.my-4
+      h2.font-weight-bold.mb-0 實用案例
+      p.text-muted 不確定嗎？來看看別人怎麼用
+    .d-flex.justify-content-center.flex-wrap
+      each i in [1,2,3,4,5,6]
+        +brd-card-sm({}).m-4
+    .m-4.p-4.text-center: .btn.btn-outline-dark 更多案例...
+  .w-100.bg-light.p-4: .m-4.p-4
+    .text-center
+      h2.font-weight-bold.mt-4 何不現在就試試
+      p.text-muted 建立活動網站，真的比你想像的還要簡單！
+      .my-4.py-4: a.btn.btn-success.btn-lg(href="/dash/new/brd/") 建立活動
+    //-.card.shadow.mx-auto(style="max-width:480px"): .card-body.form
+      .form-group
+        label 活動名稱
+        input.form-control(placeholder="例如：第四屆總統杯黑客松")
+      .form-group
+        label 活動簡介
+        textarea.form-control(rows="5",placeholder="用 50 ~ 100 字介紹一下這個活動是在做什麼吧！")
+      .form-group
+        a.btn.btn-success(href="/dash/brd-create.html") 建立活動
+
+block script
+  script: :lsc
+    smoothScroll!
+    ldc.register \main, <[auth]>, ({auth}) ->
+    ldc.app \main
