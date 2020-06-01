@@ -88,7 +88,7 @@ block body
       a.btn.btn-primary.btn-block.text-white(onclick="lda.ldcvmgr.toggle('propose')")
         | 我也要提案
     .col-md-10
-      .p-4.border.shadow.bg-white.rounded: .p-2
+      #project-detail.p-4.border.shadow.bg-white.rounded.mb-4: .p-2
         if !purpose.title && answer.title
           .pb-4.mb-4
             h4 提案名稱
@@ -111,4 +111,9 @@ block body
                 | #{value.content || value.list.map(function(d,i) { return d.name || d; }).join(',')}
 
 
+      h3#project-discuss.mt-4 討論提問
+      .p-4.border.shadow.bg-white.rounded: .p-2
+        include /modules/widget/discus.pug
 
+block script
+  +script("/dash/js/modules/discus.js")

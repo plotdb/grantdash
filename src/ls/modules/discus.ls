@@ -1,6 +1,5 @@
 (->
   ldc.register \discus, <[auth]>, ({auth}) ->
-
     marked-options = {} # {render: (new marked.Renderer!) <<< {heading: (text, leve) -> text}}
     lc = do
       loading: true
@@ -41,7 +40,7 @@
         handler: do
           loading: ({node}) ->
             node.classList.toggle \d-none, !(lc.loading xor ('off' in node.getAttribute(\ld).split(' ')))
-          avatar: ({node}) -> node.style.backgroundImage = "url(/s/avatar/#{g.user.key}.png)"
+          avatar: ({node}) -> node.style.backgroundImage = "url(/dash/s/avatar/#{g.user.key}.png)"
           preview: ({node}) ->
             revert = ("off" in node.getAttribute(\ld).split(" "))
             state = !(lc.preview and lc.use-markdown) xor revert
@@ -59,7 +58,7 @@
               view = new ldView do
                 root: node
                 handler: do
-                  avatar: ({node}) -> node.style.backgroundImage = "url(/s/avatar/#{data.owner}.png)"
+                  avatar: ({node}) -> node.style.backgroundImage = "url(/dash/s/avatar/#{data.owner}.png)"
                   author: ({node}) -> node.innerText = data.displayname
                   role: ({node}) ->
                     node.classList.toggle \d-none, !data.role
@@ -71,9 +70,6 @@
                       node.innerHTML = marked(data.content.body)
                     else
                       node.innerText = data.content.body
-
-
-
 
   ldc.app \discus
 )!

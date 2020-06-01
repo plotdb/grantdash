@@ -17,7 +17,9 @@ if ctrl.navtop.shown
         li.nav-item.d-none(ld="signup"): a.nav-link 註冊
         li.nav-item.d-none(ld="login"): a.nav-link 登入
         li.nav-item.dropdown(ld="profile")
-          a.nav-link.dropdown-toggle(href="#",data-toggle="dropdown"): .avatar(ld="avatar")
+          a.nav-link.dropdown-toggle.d-flex.align-items-center(href="#",data-toggle="dropdown")
+            .avatar.mr-2(ld="avatar")
+            span(ld="displayname")
           .dropdown-menu.dropdown-menu-right.shadow-sm
             a.dropdown-item(href="/dash/me/") 個人頁面
             .dropdown-divider

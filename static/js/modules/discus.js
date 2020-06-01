@@ -100,7 +100,7 @@
           avatar: function(arg$){
             var node;
             node = arg$.node;
-            return node.style.backgroundImage = "url(/s/avatar/" + g.user.key + ".png)";
+            return node.style.backgroundImage = "url(/dash/s/avatar/" + g.user.key + ".png)";
           },
           preview: function(arg$){
             var node, revert, state, ref$;
@@ -146,7 +146,7 @@
                   avatar: function(arg$){
                     var node;
                     node = arg$.node;
-                    return node.style.backgroundImage = "url(/s/avatar/" + data.owner + ".png)";
+                    return node.style.backgroundImage = "url(/dash/s/avatar/" + data.owner + ".png)";
                   },
                   author: function(arg$){
                     var node;

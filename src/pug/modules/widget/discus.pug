@@ -1,0 +1,56 @@
+//- module
+- var opt = {}
++scope("discus")
+  .comment.media.mb-2.p-2.position-relative(ld="loading")
+    .avatar.mr-3(style="width:3.25em"): .aspect-ratio.ratio-1by1.bg-light(ld="avatar")
+    .media-body
+      .w-100.bg-light.mb-2.pb-3.ld.ld-dim
+      .w-100.bg-light.mb-2.pb-3.ld.ld-dim.x2
+      .w-50.bg-light.mb-2.pb-3.ld.ld-dim.xhalf
+  .d-none(ld="loading off")
+    .comment.media.mb-2.p-2.position-relative(ld-each="comment",class=(opt.thread ? "thread" : ""))
+      //-.btn-group.position-absolute.shadow-sm.bg-white.ctrl(style="top:-.75em;right:1em")
+        .btn.btn-sm.btn-outline-secondary #[i.i-heart]
+        .btn.btn-sm.btn-outline-secondary #[i.i-clone]
+        .btn.btn-sm.btn-outline-secondary #[i.i-pen]
+        .btn.btn-sm.btn-outline-secondary #[i.i-lock]
+        .btn.btn-sm.btn-outline-secondary #[i.i-close]
+      .avatar.mr-3(style="width:3.25em")
+        .aspect-ratio.ratio-1by1.rounded.bg-dark.w-100.bg-cover(ld="avatar")
+      .media-body
+        .d-flex.align-items-center
+          b.my-0(ld="author") #{opt.author}
+          .text-sm.text-muted.ml-1(ld="role") ． #[span #{opt.role}]
+          .text-sm.text-muted.ml-1 ． #[span(ld="date") #{opt.date}]
+          //-.text-sm.text-muted.ml-1 ．回覆
+        .content.my-1(ld="content")
+
+        //-.d-flex.text-muted
+          .mr-1 #[i.i-dart-up]
+          .mr-1 | #[i.i-dart-down]
+          .mr-1 ．回覆
+
+        if opt.more
+          a.d-flex.align-items-center(href="#")
+            div.mr-1(style="width:1em"): .aspect-ratio.ratio-1by1.rounded-sm.bg-dark.w-100
+            div.mr-1(style="width:1em"): .aspect-ratio.ratio-1by1.rounded-sm.bg-dark.w-100
+            //-div 回覆
+
+  .media.mb-4.p-2.position-relative
+    .avatar.mr-2(style="width:3.25em"): .aspect-ratio.ratio-1by1.rounded.bg-dark.w-100.bg-cover(ld="avatar")
+    .media-body
+      .position-relative
+      textarea.form-control.mb-2(rows="4",ld="input preview off")
+      .w-100.bg-light.rounded.mb-2.p-3.d-none(ld="preview panel",style="min-height:200px")
+      .d-flex
+        .flex-grow-1.d-flex.align-items-center
+          //-.btn.btn-outline-secondary(ld="link"): i.i-link
+          //-.btn.btn-text(ld="attach"): i.i-doc
+          .d-flex.align-items-center.text-sm.text-muted.mx-4
+            input.mr-1(type="checkbox",ld="use-markdown")
+            div 啟用 Markdown 語法 ( #[a(href="#") 語法說明] )
+          .d-none(ld="if-markdown"): .d-flex.align-items-center.text-sm.text-muted.mr-4
+            input.mr-1(type="checkbox",ld="toggle-preview")
+            div 預覽
+        div: .btn.btn-outline-secondary.ld.ld-ext-right(ld="post") 送出留言 #[.ld.ld-spinner.ld-spin]
+

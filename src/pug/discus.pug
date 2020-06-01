@@ -14,6 +14,7 @@ block head
     .comment h5 { font-size: 1.1em!important  }
     .comment h6 { font-size: 1.05em!important }
 block body
+
   - var opt = {}
   .w-1024.mx-auto.rwd.typeset.heading-contrast
     +scope("discus")
@@ -40,16 +41,17 @@ block body
               .text-sm.text-muted.ml-1 ． #[span(ld="date") #{opt.date}]
               //-.text-sm.text-muted.ml-1 ．回覆
             .content.my-1(ld="content")
-              p Hello World!
+
             //-.d-flex.text-muted
               .mr-1 #[i.i-dart-up]
               .mr-1 | #[i.i-dart-down]
               .mr-1 ．回覆
+
             if opt.more
               a.d-flex.align-items-center(href="#")
                 div.mr-1(style="width:1em"): .aspect-ratio.ratio-1by1.rounded-sm.bg-dark.w-100
                 div.mr-1(style="width:1em"): .aspect-ratio.ratio-1by1.rounded-sm.bg-dark.w-100
-                div 四則回覆
+                //-div 回覆
 
       .media.mb-4.p-2.position-relative
         .avatar.mr-2(style="width:3.25em"): .aspect-ratio.ratio-1by1.rounded.bg-dark.w-100.bg-cover(ld="avatar")
