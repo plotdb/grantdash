@@ -12,10 +12,10 @@ html
   head
     meta(charset="utf-8")
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    +css("/assets/lib/tagify/3.9.1/tagify.css")
-    +css("/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
-    +css("/assets/lib/ldui/ldui.min.css")
-    +css("/css/index.css")
+    +css("/dash/assets/lib/tagify/3.9.1/tagify.css")
+    +css("/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
+    +css("/dash/assets/lib/ldui/ldui.min.css")
+    +css("/dash/css/index.css")
     block head
   body(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
     //-+script("/js/pack/base.min.js")
@@ -31,12 +31,12 @@ html
       include /modules/widget/foot.pug
 
     block script
-    +script("/assets/lib/moment.js/2.25.3/moment.min.js")
-    +script("/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")
-    +script("/assets/lib/clipboard.js/2.0.4/clipboard.min.js")
-    +script("/assets/lib/tagify/3.9.1/tagify.min.js")
-    +script("/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
-    +script("/assets/lib/ldui/ldui.min.js")
-    +script("/assets/lib/ldc/ldc.min.js")
-    +script("/assets/lib/ldsite/0.0.2/ldsite.min.js")
-    +script("/js/site.js")
+    +script("/dash/assets/lib/moment.js/2.25.3/moment.min.js")
+    +script("/dash/assets/lib/moment-timezone.js/0.5.31/moment-timezone.min.js")
+    +script("/dash/assets/lib/clipboard.js/2.0.4/clipboard.min.js")
+    +script("/dash/assets/lib/tagify/3.9.1/tagify.min.js")
+    +script("/dash/assets/lib/bootstrap.native/2.0.27/bootstrap-native-v4.min.js")
+    +script("/dash/assets/lib/ldui/ldui.min.js")
+    +script("/dash/assets/lib/ldc/ldc.min.js")
+    +script("/dash/js/site.js")
+    +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
