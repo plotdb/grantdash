@@ -6,19 +6,19 @@ api = engine.router.api
 app = engine.app
 
 upload = ({root, files}) -> new Promise (res, rej) ->
-  (e) <- fs-extra.ensure-dir path.join(root, 'draft'), _
+  (e) <- fs-extra.ensure-dir path.join(root, \upload, \draft), _
   if e => return rej(e)
   ps = files.map ({name, type, list}) ->
     if type in <[banner thumb]> =>
       f = list.0
       (res, rej) <- new Promise _
-      (e,i) <- sharp(f.path).toFile path.join(root, "#type.png"), _
+      (e,i) <- sharp(f.path).toFile path.join(root, \upload, \draft, "#type.png"), _
       return if e => rej(e) else res {name, type, files: ["#type.png"]}
     else
       id = suuid!
       ps = list.map (f,idx) ->
         fn = "#{id}.#{idx}.#{f.type}"
-        fs-extra.copy(f.path, path.join(root, 'draft', fn))
+        fs-extra.copy(f.path, path.join(root, \upload, \draft, fn))
           .then -> fn
       Promise.all ps
         .then (files) -> {name, type, id, files}
@@ -53,9 +53,9 @@ slugs = ({io, org, brd, prj}) -> new Promise (res, rej) ->
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       {org,prj,brd} = ret
-      root = if type == \prj => "users/org/#{org}/prj/#{prj}/upload"
-      else if type == \brd => "users/org/#{org}/brd/#{brd}/upload"
-      else if type == \org => "users/org/#{org}/upload"
+      root = if type == \prj => "users/org/#{org}/prj/#{prj}"
+      else if type == \brd => "users/org/#{org}/brd/#{brd}"
+      else if type == \org => "users/org/#{org}"
       else null
       if !root => return aux.reject 400
       res(ret <<< {type,root})
@@ -107,12 +107,13 @@ api.put \/detail/, aux.signed, (req, res) ->
       """, [name,description,slug]
     .then ->
       permcache.invalidate {type: table, slug}
-      if table != \prj => return
-      slugs {io, prj: slug}
+      opt = {io}
+      opt[table] = slug
+      slugs opt
         .then (ret) ->
           {root,type,prj,brd,org} = ret
-          release = path.join(root, 'release')
-          draft = path.join(root, 'draft')
+          release = path.join(root, \upload, \release)
+          draft = path.join(root, \upload, \draft)
           if !(/^users\//.exec(release) and /^users\//.exec(draft)) => return aux.reject 400
           fs-extra.ensure-dir release
             .then -> fs-extra.remove release
@@ -120,22 +121,6 @@ api.put \/detail/, aux.signed, (req, res) ->
             .then -> fs-extra.move draft, release
     .then -> res.send {}
     .catch aux.error-handler res
-
-    /*
-      lc.root = "users/prj/#{slug}"
-      fs-extra.path-exists lc.root
-    .then (exists) ->
-      if !exists => return
-      fs-extra.readdir lc.root
-        .then (files) ->
-          ps = files
-            .filter -> /^draft./.exec(it)
-            .map -> ["#{lc.root}/#it", "#{lc.root}/#{it.replace(/draft\./, 'publish.')}"]
-            .map -> fs-extra.rename it.0, it.1
-          Promise.all ps
-    .then -> res.send {}
-    .catch aux.error-handler res
-    */
 
 
 app.get \/brd/:bslug/grp/:gslug/list, (req, res) ->
@@ -171,7 +156,7 @@ app.get \/brd/:slug, aux.signed, (req, res) ->
       io.query "select * from prj where brd = $1", [brd.slug]
     .then (r={}) ->
       lc.projects = r.[]rows
-      res.render \b/index.pug, lc{brd, projects}
+      res.render \brd/index.pug, lc{brd, projects}
     .catch aux.error-handler res
 
 api.get \/brd/:slug/form/, (req, res) ->
@@ -211,6 +196,7 @@ deploy = ({url, root, branch}) ->
         .catch (e) -> console.log "[Deploy Error]", e
 
 api.post \/deploy, aux.signed, (req, res) ->
+  lc = {}
   {slug, type} = (req.body or {})
   if !(slug and type and (type in <[org brd]>)) => return aux.r400 res
   permcache.check {io, user: req.user, type, slug, action: \owner}
@@ -221,23 +207,23 @@ api.post \/deploy, aux.signed, (req, res) ->
       from brd as b where b.slug = $1
       """, [slug]
     .then (r={}) ->
-      if !((ret = r.[]rows.0) and (git = ret.{}info.git)) => return aux.reject 404
+      if !((ret = r.[]rows.0) and (lc.git = git = ret.{}info.git)) => return aux.reject 404
       if !(git.url and git.branch) => return aux.reject 404
-      return git
-    .then (git) ->
       # deploy might take a while, so we go back to user first.
       res.send {}
-      type = type.substring(0,1)
-      if type == \org =>
-      deploy {url: git.url, branch: git.branch, root: "users/#type/#slug/static"}
-        .catch ->
+      opt = {io}
+      opt[type] = slug
+      slugs opt
+    .then (ret) ->
+      {root,prj,org,brd} = ret
+      deploy {url: lc.git.url, branch: lc.git.branch, root: path.join(root, \static)}
+        .catch -> console.log "deploy failed ( #root ): ", it
     .catch aux.error-handler res
 
 api.post \/brd, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {name,description,slug,starttime,endtime,org} = req.fields
   if !name or !org or !/^[a-zA-Z0-9+_-]+$/.exec(slug) => return aux.r400 res
-  thumb = (req.files["thumbnail[]"] or {}).path
   detail = {info: {name, description, starttime, endtime}, group: []}
   io.query "select key from brd where slug = $1", [slug]
     .then (r={}) ->
@@ -250,15 +236,7 @@ api.post \/brd, aux.signed, express-formidable!, (req, res) ->
       values ($1,$2,$3,$4,$5,$6,$7,$8) returning key
       """, [name, description, slug, (starttime or null), (endtime or null), org, req.user.key, detail]
     .then (r = {}) ->
-      lc.ret = (r.[]rows or []).0
-      if !thumb => return
-      new Promise (res, rej) ->
-        root = "users/org/#{org}/brd/#{slug}/upload"
-        (e) <- fs-extra.ensure-dir root, _
-        if e => return rej(e)
-        (e,i) <- sharp(thumb).toFile path.join(root, "thumb.png"), _
-        if e => rej(e) else res!
-    .then -> res.send lc.ret
+      res.send((r.[]rows or []).0)
     .catch aux.error-handler res
 
 # following routes are for both brd and org. put it here in brd.ls temporarily.
