@@ -8,6 +8,8 @@
    - /brd/<slug>/list       - 提案列表
    - /prj/<slug>            - 提案
    - /prj/edit              - 提案編輯
+ - without prefix
+   - /                      - 對應到用戶客製的主頁
 
 
 # URL schema

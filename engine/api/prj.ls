@@ -85,3 +85,14 @@ api.post \/prj/, aux.signed, express-formidable!, (req, res) ->
         if e => rej(e) else res!
     .then -> res.send (lc.ret or {}) <<< {slug}
     .catch aux.error-handler res
+
+api.get \/brd/:slug/prj/list/, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  io.query(
+  """
+  select p.name, p.description, p.owner, u.displayname as ownername, p.slug
+  from prj as p, users as u where p.brd = $1 and p.owner = u.key
+  """, [slug]
+  )
+    .then (r={}) -> res.send(r.[]rows)
+    .catch aux.error-handler res
