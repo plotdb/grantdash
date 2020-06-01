@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    style(type="text/css"): :stylus
+  body
+    .d-flex
+      .flex-grow-1 sch00l
+      div 選單
+    button(pd="grantdash-propose") 提案按鈕
+    button(pd="grantdash-login") 登入按鈕
+    button(pd="grantdash-signup") 註冊按鈕
+    button(pd="grantdash-project-list-link") 到提案列表
+    div(pd="grantdash-projest-list")
+      div(pd-each="grantdash-project-list-item")
+        div(ld="title") 標題
+        div(ld="description") 簡介
+        div(ld="thumb") 縮圖
+  script(src="/dash/assets/lib/ldui/ldui.min.js")
+  script(src="/dash/js/sch001/index.js")
+
