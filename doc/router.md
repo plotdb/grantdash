@@ -1,3 +1,15 @@
+# 主要需要公開的網址
+ - prefix with /dash/
+   - /                      - 資訊頁
+   - /auth/                 - 登入頁面
+   - /new/brd/              - 新活動
+   - /new/org/              - 新組織 ( disabled for specific domain )
+   - /admin/                - 主控台 ( 預設不載入活動, 讓用戶選擇 )
+   - /brd/<slug>/list       - 提案列表
+   - /prj/<slug>            - 提案
+   - /prj/edit              - 提案編輯
+
+
 # URL schema
 
  - 網域
