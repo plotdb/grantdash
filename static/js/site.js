@@ -2,7 +2,8 @@
 (function(){
   ldc.register('ldsite', [], function(){
     return {
-      api: 'dash/api'
+      api: '/dash/api',
+      ldcvmgrRoot: '/dash/modules/cover'
     };
   });
   ldc.register('general', ['auth'], function(arg$){
