@@ -26,10 +26,12 @@ ldc.register <[auth]>, ({auth}) ->
               context: data
               root: node
               handler: do
-                title: ({node, context}) -> node.innerText = context.title
+                title: ({node, context}) -> node.innerText = context.name
                 description: ({node, context}) -> node.innerText = context.description
                 thumb: ({node, context}) -> if context.thumb => node.style.backgroundImage = "url(#{context.thumb})"
-          handler: ({local, data}) ->
+          handler: ({node, local, data}) ->
+            node.setAttribute \href, "/dash/prj/#{data.slug}"
+
             local.view.setContext data
             local.view.render!
     ld$.fetch "/dash/api/brd/g0v-unith1n/prj/list", {method: \GET}, {type: \json}

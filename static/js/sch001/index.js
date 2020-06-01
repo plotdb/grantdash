@@ -65,7 +65,7 @@ ldc.register(['auth'], function(arg$){
                 title: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.innerText = context.title;
+                  return node.innerText = context.name;
                 },
                 description: function(arg$){
                   var node, context;
@@ -83,8 +83,9 @@ ldc.register(['auth'], function(arg$){
             });
           },
           handler: function(arg$){
-            var local, data;
-            local = arg$.local, data = arg$.data;
+            var node, local, data;
+            node = arg$.node, local = arg$.local, data = arg$.data;
+            node.setAttribute('href', "/dash/prj/" + data.slug);
             local.view.setContext(data);
             return local.view.render();
           }

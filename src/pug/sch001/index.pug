@@ -2,19 +2,33 @@ doctype html
 html
   head
     style(type="text/css"): :stylus
+      .prjs
+        display: flex
+        flex-wrap: wrap
+      .prj
+        margin: .5em
+        padding: .25em
+        width: 30%
+      .title
+        font-size: 1.3em
+        font-weight: bold
+      .thumb
+        width: 100%
+        height: 200px
+        background-color: #444
   body
     .d-flex
       .flex-grow-1 sch00l
       div 選單
     button(pd="grantdash-propose") 提案按鈕
-    button(pd="grantdash-login") 登入按鈕
+    a(pd="grantdash-login") 登入按鈕
     button(pd="grantdash-logout") 登出按鈕
     button(pd="grantdash-project-list-link") 到提案列表
-    div(pd="grantdash-projest-list")
-      div(pd-each="grantdash-project-list-item")
-        div(ld="title") 標題
-        div(ld="description") 簡介
-        div(ld="thumb") 縮圖
+    .prjs(pd="grantdash-projest-list")
+      a.prj(pd-each="grantdash-project-list-item")
+        .thumb(ld="thumb")
+        .title(ld="title") 標題
+        .desc(ld="description") 簡介
 
   script(src="/dash/assets/lib/ldui/ldui.min.js")
   script(src="/dash/assets/lib/ldc/ldc.min.js")
