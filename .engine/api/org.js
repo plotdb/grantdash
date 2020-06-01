@@ -17,29 +17,35 @@
     var api, app;
     api = engine.router.api;
     app = engine.app;
-    api.post('/o/:key/board/list', function(req, res){
-      var key, offset, limit;
-      if (isNaN(key = +req.params.key)) {
+    api.post('/org/:slug/brd/list', function(req, res){
+      var slug, offset, limit;
+      if (!(slug = req.params.slug)) {
         return aux.r400(res);
       }
       offset = req.query.offset || 0;
       limit = req.query.limit || 30;
-      return io.query("select key,name,description from board where org = $1 offset $2 limit $3", [key, offset, limit]).then(function(r){
+      return io.query("select key,name,description from board where org = $1 offset $2 limit $3", [slug, offset, limit]).then(function(r){
         r == null && (r = {});
         return res.send(r);
       })['catch'](aux.errorHandler(res));
     });
-    return api.post('/o', aux.signed, expressFormidable(), function(req, res){
-      var lc, ref$, name, description, slug, thumb;
+    api.post('/org', aux.signed, expressFormidable(), function(req, res){
+      var lc, ref$, name, description, slug, thumb, detail;
       lc = {};
       ref$ = req.fields, name = ref$.name, description = ref$.description, slug = ref$.slug;
       thumb = (req.files["thumbnail[]"] || {}).path;
+      detail = {
+        info: {
+          name: name,
+          description: description
+        }
+      };
       return io.query("select key from org where slug = $1", [slug]).then(function(r){
         r == null && (r = {});
         if (r.rows && r.rows.length) {
           return aux.reject(new lderror(1011));
         }
-        return io.query("insert into org (name,description,slug,owner)\nvalues ($1,$2,$3,$4) returning key", [name, description, slug, req.user.key]);
+        return io.query("insert into org (name,description,slug,owner,detail)\nvalues ($1,$2,$3,$4,$5) returning key", [name, description, slug, req.user.key, detail]);
       }).then(function(r){
         r == null && (r = {});
         lc.ret = ((r.rows || (r.rows = [])) || [])[0];
@@ -48,7 +54,7 @@
         }
         return new Promise(function(res, rej){
           var root;
-          root = "static/assets/uploads/o/" + slug;
+          root = "users/org/" + slug + "/upload";
           return fsExtra.ensureDir(root, function(e){
             if (e) {
               return rej(e);
@@ -64,6 +70,12 @@
         });
       }).then(function(){
         return res.send(lc.ret);
+      })['catch'](aux.errorHandler(res));
+    });
+    return api.post('/org/list', aux.signed, function(req, res){
+      return io.query("select key,name,slug from org where owner = $1", [req.user.key]).then(function(r){
+        r == null && (r = {});
+        return res.send(r.rows || (r.rows = []));
       })['catch'](aux.errorHandler(res));
     });
   });

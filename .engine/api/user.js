@@ -61,7 +61,7 @@
         return res.json('{}');
       }
       id = req.user.key;
-      return io.query("select key,displayname,description from users where key = $1", [id]).then(function(r){
+      return io.query("select key,displayname,description,title,tags from users where key = $1", [id]).then(function(r){
         r == null && (r = {});
         if (!r.rows || !r.rows.length) {
           return aux.reject(404);
@@ -76,7 +76,7 @@
     renderProfile = function(req, res, id){
       var ret;
       ret = {};
-      return io.query("select key,displayname, description from users where key = $1", [id]).then(function(r){
+      return io.query("select key,displayname,description,createdtime,title,tags from users where key = $1", [id]).then(function(r){
         r == null && (r = {});
         if (!r.rows || !r.rows.length) {
           return aux.reject(404);
@@ -90,7 +90,7 @@
       return renderProfile(req, res, req.user.key);
     }));
     app.get('/user/:id', aux.numid(true, function(req, res){
-      return io.query("select key,displayname,description,createdtime,plan from users where key = $1 and deleted is not true", [req.params.id]).then(function(r){
+      return io.query("select key,displayname,description,createdtime,plan,title,tags from users where key = $1 and deleted is not true", [req.params.id]).then(function(r){
         r == null && (r = {});
         if (!r.rows || !r.rows.length) {
           return aux.reject(404);
@@ -106,30 +106,25 @@
       });
     }));
     api.put('/user/:id', aux.numid(false, function(req, res){
-      var ref$, displayname, description, public_email;
+      var ref$, displayname, description, title, tags;
       if (!req.user || req.user.key !== +req.params.id) {
         return aux.r403(res);
       }
       ref$ = {
         displayname: (ref$ = req.body).displayname,
         description: ref$.description,
-        public_email: ref$.public_email
-      }, displayname = ref$.displayname, description = ref$.description, public_email = ref$.public_email;
+        title: ref$.title,
+        tags: ref$.tags
+      }, displayname = ref$.displayname, description = ref$.description, title = ref$.title, tags = ref$.tags;
       displayname = (displayname + "").trim();
       description = (description + "").trim();
-      public_email = !public_email;
-      if (displayname.length > 30 || displayname.length < 1) {
-        return aux.r400(res, "profile.displayname.length");
-      }
-      if (description.length > 200) {
-        return aux.r400(res, "profile.description.toolong");
-      }
-      return io.query("update users set (displayname,description,public_email) = ($1,$2,$3) where key = $4", [displayname, description, public_email, req.user.key]).then(function(){
+      return io.query("update users set (displayname,description,title,tags) = ($1,$2,$3,$4) where key = $5", [displayname, description, title, tags, req.user.key]).then(function(){
         var ref$;
         ref$ = req.user;
         ref$.displayname = displayname;
         ref$.description = description;
-        ref$.public_email = public_email;
+        ref$.title = title;
+        ref$.tags = tags;
         req.login(req.user, function(){
           return res.send();
         });
@@ -218,13 +213,19 @@
         return res.send();
       })['catch'](aux.errorHandler(res));
     });
-    return api.post('/me/o/list', aux.signed, function(req, res){
-      var offset, limit;
-      offset = req.query.offset || 0;
-      limit = req.query.limit || 30;
-      return io.query("select key,name,description from org where owner = $1 offset $2 limit $3", [req.user.key, offset, limit]).then(function(r){
+    return api.post('/me/list', aux.signed, function(req, res){
+      var offset, limit, type, tables, table;
+      offset = req.body.offset || 0;
+      limit = req.body.limit || 100;
+      type = req.body.type;
+      tables = ['prj', 'brd', 'org'];
+      table = tables[tables.indexOf(type)];
+      if (!(table = tables[tables.indexOf(type)])) {
+        return aux.r400(res);
+      }
+      return io.query("select key,name,description,slug from " + table + " where owner = $1 offset $2 limit $3", [req.user.key, offset, limit]).then(function(r){
         r == null && (r = {});
-        return res.send(r);
+        return res.send(r.rows || []);
       })['catch'](aux.errorHandler(res));
     });
   });
