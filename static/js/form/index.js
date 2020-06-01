@@ -58,11 +58,15 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
         return hub.update();
       }),
       update: function(block){
-        var ref$;
+        var x$;
         if (viewMode && block) {
           obj.value.answer[block.key] = block.value;
-          ((ref$ = obj.value).info || (ref$.info = {})).title = (obj.value.answer[(obj.purpose || (obj.purpose = {})).title || 'title'] || {}).content;
-          ((ref$ = obj.value).info || (ref$.info = {})).description = (obj.value.answer[(obj.purpose || (obj.purpose = {})).description || 'description'] || {}).content;
+          x$ = obj.value.info;
+          x$.title = (obj.value.answer[(obj.purpose || (obj.purpose = {})).title || 'title'] || {}).content;
+          x$.description = (obj.value.answer[(obj.purpose || (obj.purpose = {})).description || 'description'] || {}).content;
+          x$.category = ((obj.value.answer[(obj.purpose || (obj.purpose = {})).category || 'category'] || {}).list || [])[0];
+          x$.tag = (obj.value.answer[(obj.purpose || (obj.purpose = {})).tag || 'tag'] || {}).list;
+          console.log(obj);
           this$.opsOut(function(){
             return obj.value;
           });

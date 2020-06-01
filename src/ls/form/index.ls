@@ -35,8 +35,14 @@ Ctrl = (opt) ->
     update: (block) ~>
       if view-mode and block =>
         obj.value.answer[block.key] = block.value
-        obj.value.{}info.title = (obj.value.answer[obj.{}purpose.title or \title] or {}).content
-        obj.value.{}info.description = (obj.value.answer[obj.{}purpose.description or \description] or {}).content
+        obj.value.info
+          ..title = (obj.value.answer[obj.{}purpose.title or \title] or {}).content
+          ..description = (obj.value.answer[obj.{}purpose.description or \description] or {}).content
+          ..category = ((obj.value.answer[obj.{}purpose.category or \category] or {}).list or []).0
+          ..tag = (obj.value.answer[obj.{}purpose.tag or \tag] or {}).list
+        console.log obj
+        
+
         @ops-out ~> obj.value
         @validate block
       else @ops-out ~> {list: @obj.list, purpose: @obj.purpose}

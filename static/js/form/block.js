@@ -37,39 +37,26 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                 });
               }
               node.value = '';
-              /*
-              fd = new FormData!
-              for i from 0 til files.length => fd.append "file[]", files[i].file
-              context.loading = true
-              @view.module.render!
-              ld$.xhr(
-                "/dash/api/prj/#{@prj.slug}/file/#{@block.key}"
-                {method: \PUT, body: fd}
-                {
-                  type: \json
-                  progress: ({percent}) ~>
-                    context.percent = percent
-                    @view.module.render!
-                }
-              )
-                .then ~>
-                  @block.{}value.list = files.map (d,i) -> d.file{name, size, type, key: i}
-                  @update!
-                .finally ~>
-                  debounce 1000 .then ~>
-                    context.loading = false
-                    @view.module.render!
-                .catch error!
-              */
-              fd = new FormData();
-              for (i$ = 0, to$ = files.length; i$ < to$; ++i$) {
-                i = i$;
-                fd.append("file[]", files[i].file);
+              if (!files.length) {
+                return;
               }
-              fd.append("files", JSON.stringify([{
-                name: "file",
-                type: "form"
-              }]));
+              fd = new FormData();
+              if (this$.block.name === 'form-thumbnail') {
+                fd.append("thumb[]", files[0].file);
+                fd.append("files", JSON.stringify([{
+                  name: "thumb",
+                  type: "thumb"
+                }]));
+              } else {
+                for (i$ = 0, to$ = files.length; i$ < to$; ++i$) {
+                  i = i$;
+                  fd.append("file[]", files[i].file);
+                }
+                fd.append("files", JSON.stringify([{
+                  name: "file",
+                  type: "form"
+                }]));
+              }
               fd.append('prj', this$.prj.slug);
               context.loading = true;
               this$.view.module.render();
@@ -254,6 +241,9 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                     ison = isRadio
                       ? true
                       : !in$(data.title, list);
+                    if (isRadio) {
+                      list = [];
+                    }
                     if (ison) {
                       list.push(data.title);
                       if (isRadio) {
@@ -440,6 +430,35 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
     "form-long-answer": moduleTextarea,
     "form-short-answer": moduleTextarea
   });
+  module["form-tag"] = {
+    moduleInit: function(){
+      var view, this$ = this;
+      console.log(1);
+      return this.view.module = view = new ldView({
+        root: this.root,
+        action: {
+          change: {
+            "input-field": function(arg$){
+              var node, local, ref$;
+              node = arg$.node, local = arg$.local;
+              ((ref$ = this$.block).value || (ref$.value = {})).list = local.tagify.value.map(function(it){
+                return it.value;
+              });
+              return this$.update();
+            }
+          }
+        },
+        init: {
+          "input-field": function(arg$){
+            var node, local, ref$;
+            node = arg$.node, local = arg$.local;
+            local.tagify = new Tagify(node);
+            return local.tagify.addTags(((ref$ = this$.block).value || (ref$.value = {})).list || []);
+          }
+        }
+      });
+    }
+  };
   purposeType = {
     title: ['form-short-answer'],
     description: ['form-short-answer', 'form-long-answer'],

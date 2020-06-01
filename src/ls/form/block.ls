@@ -18,37 +18,17 @@ module-file = module-init: ->
         local.ldf = ldf = new ldFile root: node
         ldf.on \load, (files) ~>
           if @block.name == \form-thubmnail =>
-            files = files.filter -> /^image\//.exec(it.type) and /\.(gif|png|jpg|jpeg)$/.exec(it.name)
+            files = files.filter(-> /^image\//.exec(it.type) and /\.(gif|png|jpg|jpeg)$/.exec(it.name))
           node.value = ''
-
-          /*
-          fd = new FormData!
-          for i from 0 til files.length => fd.append "file[]", files[i].file
-          context.loading = true
-          @view.module.render!
-          ld$.xhr(
-            "/dash/api/prj/#{@prj.slug}/file/#{@block.key}"
-            {method: \PUT, body: fd}
-            {
-              type: \json
-              progress: ({percent}) ~>
-                context.percent = percent
-                @view.module.render!
-            }
-          )
-            .then ~>
-              @block.{}value.list = files.map (d,i) -> d.file{name, size, type, key: i}
-              @update!
-            .finally ~>
-              debounce 1000 .then ~>
-                context.loading = false
-                @view.module.render!
-            .catch error!
-          */
+          if !files.length => return
 
           fd = new FormData!
-          for i from 0 til files.length => fd.append "file[]", files[i].file
-          fd.append "files", JSON.stringify([{name: "file", type: "form"}])
+          if @block.name == \form-thumbnail =>
+            fd.append "thumb[]", files.0.file
+            fd.append "files", JSON.stringify([{name: "thumb", type: "thumb"}])
+          else
+            for i from 0 til files.length => fd.append "file[]", files[i].file
+            fd.append "files", JSON.stringify([{name: "file", type: "form"}])
           fd.append \prj, @prj.slug
           context.loading = true
           @view.module.render!
@@ -136,6 +116,7 @@ module-list = module-init: ->
           else
             list = val.list or []
             ison = if is-radio => true else !(data.title in list)
+            if is-radio => list = []
             if ison =>
               list.push data.title
               if is-radio => val.other = false
@@ -221,6 +202,25 @@ module-textarea = module-init: ->
 module <<< do
   "form-long-answer": module-textarea
   "form-short-answer": module-textarea
+
+
+module["form-tag"] = module-init: ->
+  console.log 1
+  @view.module = view = new ldView do
+    root: @root
+    action: do
+      change: do
+        "input-field": ({node,local}) ~>
+          @block.{}value.list = local.tagify.value.map(-> it.value)
+          @update!
+
+    init: 
+      "input-field": ({node,local}) ~> 
+        local.tagify = new Tagify node
+        local.tagify.addTags(@block.{}value.list or [])
+
+
+
 
 
 purpose-type = do

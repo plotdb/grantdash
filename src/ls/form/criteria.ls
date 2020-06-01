@@ -45,5 +45,6 @@ schema = do
     'form-thumbnail': []
     'form-budget': <[count]>
     'form-checkpoint': <[count]>
+    'form-tag': <[count]>
 
 return {schema}

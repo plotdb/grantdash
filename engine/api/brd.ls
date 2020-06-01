@@ -92,23 +92,25 @@ api.put \/detail/, aux.signed, (req, res) ->
   lc = {}
   {slug, type, payload} = (req.body or {})
   if !(slug and type and payload) => return aux.r400 res
-  tables = <[prj brd org]>
-  table = tables[tables.indexOf(type)]
-  if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
+  if !(type in <[prj brd org]>) => return aux.r400 res
   if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
-
-  permcache.check {io, user: req.user, type: table, slug, action: \owner}
+  permcache.check {io, user: req.user, type: type, slug, action: \owner}
     .then ->
-      io.query "update #table set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
+      io.query "update #type set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
     .then ->
       if !name => return
-      io.query """
-      update #table set (name,description) = ($1,$2)  where slug = $3
-      """, [name,description,slug]
+      if type == \prj
+        io.query """
+        update prj set (name,description,category,tag) = ($1,$2,$3,$4)  where slug = $5
+        """, [name,description,(info.category or ''),JSON.stringify((info.tag or [])),slug]
+      else
+        io.query """
+        update #type set (name,description) = ($1,$2)  where slug = $3
+        """, [name,description,slug]
     .then ->
-      permcache.invalidate {type: table, slug}
+      permcache.invalidate {type: type, slug}
       opt = {io}
-      opt[table] = slug
+      opt[type] = slug
       slugs opt
         .then (ret) ->
           {root,type,prj,brd,org} = ret
@@ -126,6 +128,7 @@ api.put \/detail/, aux.signed, (req, res) ->
 app.get \/brd/:slug/list, (req, res) ->
   lc = {}
   {offset,limit} = req.query{offset,limit}
+  {keyword,tag,category} = req.query{keyword, category, tag}
   slug = req.params.slug
   offset = (if isNaN(+offset) => 0 else +offset ) >? 0
   limit = (if isNaN(+limit) => 24 else +limit ) <? 100 >? 1
@@ -135,11 +138,21 @@ app.get \/brd/:slug/list, (req, res) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
       lc.grps = lc.brd.detail.group.map -> it{form,key}
       delete lc.brd.detail
-      #io.query "select p.* from prj as p where brd = $1 and grp = $2", [slug, gslug]
-      io.query """
-      select p.*,u.displayname as ownername
-      from prj as p, users as u
-      """
+      idx1 = 3 + ([tag].filter(-> it).length)
+      idx2 = 3 + ([tag,category].filter(-> it).length)
+      io.query(
+        [
+        """
+        select p.*,u.displayname as ownername
+        from prj as p, users as u
+        where u.key = p.owner
+        """,
+        "and tag ? $3" if tag
+        "and category = $#idx1" if category
+        "and name ~ $#idx2" if keyword
+        "offset $1 limit $2"
+        ].filter(->it).join(' '), [offset, limit] ++ ([tag, category, keyword].filter(->it))
+      )
     .then (r={}) ->
       res.render \prj/list.pug, {prjs: r.[]rows, brd: lc.brd, grps: lc.grps}
       return null

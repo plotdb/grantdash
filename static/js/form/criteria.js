@@ -117,7 +117,8 @@ ldc.register('prjFormCriteria', [], function(){
       'form-file': ['file-size', 'file-format', 'file-count'],
       'form-thumbnail': [],
       'form-budget': ['count'],
-      'form-checkpoint': ['count']
+      'form-checkpoint': ['count'],
+      'form-tag': ['count']
     }
   };
   return {

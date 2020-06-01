@@ -14,16 +14,8 @@ block body
       each prj in prjs
 
         - prj.showThumb = true
-        - var grp = ghash[prj.grp];
-        if grp
-          -
-            var path = '';
-            if(prj.detail && prj.detail.answer) {
-              var list = (prj.detail.answer[grp.form.purpose.thumb] || {}).list;
-              if(list && list.length) { path = (list[0] || {}).path; }
-            }
-          - prj.thumb = `/dash/org/${brd.org}/prj/${prj.slug}/upload/${path}`
-          .py-4.my-4: +prj-card-noframe(prj).mb-4.h-100.border-0.shadow-none
+        - prj.thumb = `/dash/org/${brd.org}/prj/${prj.slug}/upload/thumb.png`
+        .py-4.my-4: +prj-card-noframe(prj).mb-4.h-100.border-0.shadow-none
 
       .py-4.my-4.flex-placeholder: +prj-card-noframe({}).mb-4.h-100.border-0.shadow-none
     .w-1024.rwd.mx-auto.text-center.my-4.py-4
@@ -32,39 +24,39 @@ block body
           .btn.btn-outline-secondary(class=(i==1?"active":"")) #{i}
 
   +scope("project-list")
-    //-.w-1024.rwd.mx-auto.my-4
-      .btn-group
-        .btn.btn-outline-dark.active(ld="style",data-value="center") 置中標頭
-        .btn.btn-outline-dark(ld="style",data-value="side") 靠左標頭
-        .btn.btn-outline-dark(ld="style",data-value="simple") 簡式標頭
-
-    //-.d-none(ld="panel center")
-      .w-1024.rwd.mx-auto.mt-4.pt-4.mb-4: +prj-list-head-center
-      +list
-
     .d-block(ld="panel side")
       .w-1024.rwd.mx-auto.pt-4
         .w-100.text-light.bg-dark.mb-4.rounded(style=`height:300px;background:url(/dash/org/${brd.org}/brd/${brd.slug}/upload/banner.png) center center no-repeat;background-size:cover`)
-          .vertical-center: .w-50.text-left.ml-4.p-4.bg-semi-dark
-            h3.font-weight-light #{brd.name}
-            p.text-sm.mb-4(style="max-width:400px;opacity:.65") #{(brd.description || '').substring(0,100)} ...
-            a.btn.btn-outline-light(href=`/brd/${brd.slug}/`) 關於此計畫
-            a.btn.btn-outline-light.ml-2(href=`/brd/${brd.slug}/prj/create`) 我要提案
-        +prj-list-ctrl
+          .vertical-center.rounded(style="background-color:rgba(0,0,0,.3)")
+            .w-50.text-left.ml-4.p-4.text-shadow-sm
+              h3.font-weight-light #{brd.name}
+              p.text-sm.mb-4(style="max-width:400px;opacity:.65") #{(brd.description || '').substring(0,100)} ...
+              a.btn.btn-outline-light(href=`/brd/${brd.slug}/`) 關於此計畫
+              a.btn.btn-outline-light.ml-2(href=`/dash/brd/${brd.slug}/prj/create`) 我要提案
+        .d-flex.w-100.justify-content-between.py-2
+          div
+            .btn-group
+              //-.btn.btn-outline-secondary 許願池
+              //-.btn.btn-outline-secondary 得獎提案
+              .btn.btn-outline-primary.active 全部提案 #[i.i-check]
+          div
+            .input-group
+              input.form-control(ld="search-input",placeholder="搜尋提案...")
+              .input-group-append
+                .btn.btn-outline-secondary(ld="search") 搜尋 #[i.i-search]
+
       +list
 
 block script
   script: :lsc
-    ldc.register <[]>, ->
+    ldc.register <[util]>, ({util}) ->
       lc = {}
       view = new ldView do
         root: '[ld-scope=project-list]'
         action: click: do
-          style: ({node}) ->
-            lc.type = type = node.getAttribute('data-value')
-            view.getAll(\style).map -> it.classList.remove \active
-            node.classList.add \active
-            view.render!
+          search: ->
+            name = view.get("search-input").value or ''
+            if name => window.location.href = window.location.pathname + "?keyword=#name"
         handler: do
-          panel: ({node}) ->
-            node.classList.toggle \d-none, !~node.getAttribute(\ld).indexOf(lc.type or 'center') 
+          "search-input": ({node}) ->
+            node.value = (util.parse-querystring("keyword") or '')
