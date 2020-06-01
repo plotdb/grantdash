@@ -293,7 +293,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       @obj.value = data
       @obj.list.map ~> it.value = data.{}answer[it.key]
       @validate-all!
-    else @obj.list = (data.list or [])
+    else
+      @obj.list = (data.list or [])
+      @obj.purpose = (data.purpose or {})
     @hub.render-deb!
   render: -> @hub.render!
 

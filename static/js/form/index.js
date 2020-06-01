@@ -609,6 +609,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
         this.validateAll();
       } else {
         this.obj.list = data.list || [];
+        this.obj.purpose = data.purpose || {};
       }
       return this.hub.renderDeb();
     },
