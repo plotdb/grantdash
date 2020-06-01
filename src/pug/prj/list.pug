@@ -47,12 +47,12 @@ block body
 
     .d-block(ld="panel side")
       .w-1024.rwd.mx-auto.pt-4
-        .w-100.text-light.bg-dark.mb-4.rounded(style="height:300px;background:url(/assets/img/dev/landing.jpg) center center no-repeat;background-size:cover")
-          .vertical-center: .w-50.text-left.ml-4.pl-4
+        .w-100.text-light.bg-dark.mb-4.rounded(style=`height:300px;background:url(/dash/org/${brd.org}/brd/${brd.slug}/upload/banner.png) center center no-repeat;background-size:cover`)
+          .vertical-center: .w-50.text-left.ml-4.p-4.bg-semi-dark
             h3.font-weight-light #{brd.name}
             p.text-sm.mb-4(style="max-width:400px;opacity:.65") #{(brd.description || '').substring(0,100)} ...
-            a.btn.btn-outline-light(href=`/b/${brd.slug}`) 關於此計畫
-            a.btn.btn-outline-light.ml-2(href=`/b/${brd.slug}/p/create`) 我要提案
+            a.btn.btn-outline-light(href=`/brd/${brd.slug}/`) 關於此計畫
+            a.btn.btn-outline-light.ml-2(href=`/brd/${brd.slug}/prj/create`) 我要提案
         +prj-list-ctrl
       +list
 

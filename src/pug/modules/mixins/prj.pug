@@ -54,15 +54,16 @@ mixin prj-card-noframe(opt)
 
     .text-muted.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownername || '未具名'}]
     .text-muted.mb-2.flex-grow-1 #{(opt.description || '').substring(0,50)} ...
-    .d-flex.flex-wrap.mb-2
-      each n in ["獲獎提案","決選入圍","最佳人氣", "許願提案"]
-        if Math.random() > 0.9
-          .text-sm.bg-danger.text-white.mr-2.my-2.px-2.py-1.rounded: b #{n}
-    .mb-2(style="border-top:2px solid #eee")
-    .d-flex.align-items-center.text-muted.text-sm
-      .flex-grow-1 #[i.i-eye.mr-2] 21
-      .flex-grow-1 #[i.i-heart.mr-2] 5
-      div 開放政府
+    //-
+      .d-flex.flex-wrap.mb-2
+        each n in ["獲獎提案","決選入圍","最佳人氣", "許願提案"]
+          if Math.random() > 0.9
+            .text-sm.bg-danger.text-white.mr-2.my-2.px-2.py-1.rounded: b #{n}
+      .mb-2(style="border-top:2px solid #eee")
+      .d-flex.align-items-center.text-muted.text-sm
+        .flex-grow-1 #[i.i-eye.mr-2] 21
+        .flex-grow-1 #[i.i-heart.mr-2] 5
+        div 開放政府
 
     //-
       hr.my-2
