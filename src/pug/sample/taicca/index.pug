@@ -1,0 +1,50 @@
+doctype html
+include /../../static/assets/lib/ldui/pug/ldui.pug
+html
+  head
+    +css("/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css")
+    +css("/dash/assets/lib/ldui/ldui.min.css")
+    style(type="text/css"): :stylus
+
+      @import url('https://fonts.googleapis.com/css?family=Noto+Sans+TC:300,500,700|Roboto:300,500,700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300&display=swap');
+      @font-face
+        font-family: 'ldi'
+        font-weight: normal
+        font-style: normal
+        src:
+          url('/dash/assets/lib/ldui/fonts/ldi.ttf?x74ll4') format('truetype'),
+          url('/dash/assets/lib/ldui/fonts/ldi.woff?x74ll4') format('woff'),
+          url('/dash/assets/lib/ldui/fonts/ldi.svg?x74ll4#ldi') format('svg')
+      html,body { font-family: 'Noto Sans TC'; font-weight: 300 }
+      h1,h2,h3 { font-family: 'Noto Sans TC'; font-weight: 700!important }
+      .typeset { font-family: 'Noto Sans TC'; font-weight: 300 }
+      .typeset
+        h1,h2,h3 { font-family: 'Noto Sans TC'; font-weight: 700!important }
+
+  body
+    .d-flex.justify-content-center.my-4
+      .mx-3 關於 #[i.i-chevron-down.text-danger] ABOUT
+      .mx-3 服務 #[i.i-chevron-down.text-danger] SERVICES
+      .mx-3 動態 #[i.i-chevron-down.text-danger] LATEST
+      .mx-3 公開資訊 #[i.i-chevron-down.text-danger] INFO
+      .mx-3 問題 #[i.i-chevron-down.text-danger] FAQ
+    .w-1024.mx-auto.rwd.typeset.heading-contrast
+      img.w-100.my-4.rounded-lg(src="/dash/assets/img/sample/taicca/banner.png")
+      .my-4.py-4
+        b.text-danger.text-lg 內容策進力
+        h2.my-0 VR Grant 沉浸式內容國際合資合製
+      .text-muted.my-4 2020-03-24
+              
+      p 台灣VR 內容過去三年來在國際影展頻頻獲獎，創意與技術力的緊密結合，讓台灣快速躋身世界領先群，台灣VR 內容在國際上發光發熱，無非為原創作品數量創新高，與美、日、法及阿根廷等國跨領域合作啟發出許多火花及新創意靈感，以及政府的推波助瀾。
+
+      p 本院看重VR內容近年在世界各地的爆發力，首波於109年，以三年為期，擬定「沉浸式內容國際合資或合製補助申請要點」，申請範圍含「原型開發」及「製作」兩種類型，推動更多 VR360、互動式、多人連線、XR、體感、沉浸式聲音和複合式內容場域體驗等創意內容的產製，在國際上宣傳台灣的技術與創新，進而使台灣成為VR內容創新基地。
+
+      p 未來將有更多獎勵補助方案，希望鼓勵創作者與產製者探索嶄新說故事之工具與方法 ; 在發展新的內容規格之同時，推動內容研發，使各產製者能開發製作更具開創性的計劃，以達成發展創新技術、工具、IP以及商業模式等之目標，期望透過跨國合製及合資，在國際間開展未來產業，結合文化與科技，串連創作、孵化、場域、及國際通路，期望啟動更多可能性。
+      .py-4: .btn.btn-lg.btn-outline-danger 線上提案
+
+      h4 聯絡窗口：
+      .mb-2 王專員 (Specialist WANG) (02) 1234-5678 #123, wang@site.dev
+      .mb-2 齊專員 (Specialist CHI) (02) 1234-6789 #234, chi@site.dev
+
+
