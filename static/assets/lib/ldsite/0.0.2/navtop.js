@@ -17,10 +17,13 @@
       lc.user = g.user || (g.user = {});
       return view.render();
     };
+    console.log(1);
     navbar = document.querySelector('#nav-top nav');
+    console.log(2, navbar);
     if (!navbar) {
       return;
     }
+    console.log(3, ld$.find(navbar, '[ld-scope]', 0));
     view = new ldView({
       root: ld$.find(navbar, '[ld-scope]', 0),
       action: {
@@ -65,6 +68,7 @@
         avatar: function(arg$){
           var node;
           node = arg$.node;
+          console.log(4);
           if (lc.signed) {
             return node.style.backgroundImage = "url(" + avatarUrl(lc.user.key) + ")";
           }

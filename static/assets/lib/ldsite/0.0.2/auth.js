@@ -61,16 +61,13 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
     authpanel = lc.authpanel = (that = dom)
       ? that
       : ld$.find(document, '.authpanel', 0);
-    console.log('here', authpanel);
     if (!lc.authpanel || lc.inited) {
       return;
     }
-    console.log('ok');
     lc.inited = true;
     acts = ld$.find(authpanel, '[data-action]');
     authpanel.addEventListener('click', function(e){
       var n, act;
-      console.log('clck');
       if (!e || !(n = e.target) || !e.target.getAttribute) {
         return;
       }

@@ -61,16 +61,13 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
     authpanel = lc.authpanel = (that = dom)
       ? that
       : ld$.find(document, '.authpanel', 0);
-    console.log('here', authpanel);
     if (!lc.authpanel || lc.inited) {
       return;
     }
-    console.log('ok');
     lc.inited = true;
     acts = ld$.find(authpanel, '[data-action]');
     authpanel.addEventListener('click', function(e){
       var n, act;
-      console.log('clck');
       if (!e || !(n = e.target) || !e.target.getAttribute) {
         return;
       }
@@ -764,10 +761,13 @@ function in$(x, xs){
       lc.user = g.user || (g.user = {});
       return view.render();
     };
+    console.log(1);
     navbar = document.querySelector('#nav-top nav');
+    console.log(2, navbar);
     if (!navbar) {
       return;
     }
+    console.log(3, ld$.find(navbar, '[ld-scope]', 0));
     view = new ldView({
       root: ld$.find(navbar, '[ld-scope]', 0),
       action: {
@@ -812,6 +812,7 @@ function in$(x, xs){
         avatar: function(arg$){
           var node;
           node = arg$.node;
+          console.log(4);
           if (lc.signed) {
             return node.style.backgroundImage = "url(" + avatarUrl(lc.user.key) + ")";
           }

@@ -11,7 +11,8 @@ block script
           div: img.ldlz(data-src="/dash/assets/img/c/loader/spinner-gold.svg")
 
       //- side menu
-      +scope("admin-menu").admin-menu.bg-dark.text-white.text-left
+      +scope("admin-menu").admin-menu.bg-dark.text-white.text-left(
+      style="background:linear-gradient(0deg,#141a20,#343a40)")
         .sticky.z-fixed.bg-dark.d-flex.flex-column.no-select(
         style="top:0;transition:height .25s ease-in-out")
           div
