@@ -111,7 +111,9 @@
         });
       });
     };
-    api.post('/upload', aux.signed, expressFormidable(), function(req, res){
+    api.post('/upload', aux.signed, expressFormidable({
+      multiples: true
+    }), function(req, res){
       var lc, ref$, org, brd, prj, files, e;
       lc = {};
       ref$ = req.fields, org = ref$.org, brd = ref$.brd, prj = ref$.prj, files = ref$.files;
@@ -164,15 +166,13 @@
       })['catch'](aux.errorHandler(res));
     });
     api.put('/detail/', aux.signed, function(req, res){
-      var lc, ref$, slug, type, payload, tables, table, info, name, description;
+      var lc, ref$, slug, type, payload, info, name, description;
       lc = {};
       ref$ = req.body || {}, slug = ref$.slug, type = ref$.type, payload = ref$.payload;
       if (!(slug && type && payload)) {
         return aux.r400(res);
       }
-      tables = ['prj', 'brd', 'org'];
-      table = tables[tables.indexOf(type)];
-      if (!(table = tables[tables.indexOf(type)])) {
+      if (!(type === 'prj' || type === 'brd' || type === 'org')) {
         return aux.r400(res);
       }
       if (info = payload.info) {
@@ -181,26 +181,30 @@
       return permcache.check({
         io: io,
         user: req.user,
-        type: table,
+        type: type,
         slug: slug,
         action: 'owner'
       }).then(function(){
-        return io.query("update " + table + " set detail = $1 where slug = $2", [JSON.stringify(payload), slug]);
+        return io.query("update " + type + " set detail = $1 where slug = $2", [JSON.stringify(payload), slug]);
       }).then(function(){
         if (!name) {
           return;
         }
-        return io.query("update " + table + " set (name,description) = ($1,$2)  where slug = $3", [name, description, slug]);
+        if (type === 'prj') {
+          return io.query("update prj set (name,description,category,tag) = ($1,$2,$3,$4)  where slug = $5", [name, description, info.category || '', JSON.stringify(info.tag || []), slug]);
+        } else {
+          return io.query("update " + type + " set (name,description) = ($1,$2)  where slug = $3", [name, description, slug]);
+        }
       }).then(function(){
         var opt;
         permcache.invalidate({
-          type: table,
+          type: type,
           slug: slug
         });
         opt = {
           io: io
         };
-        opt[table] = slug;
+        opt[type] = slug;
         return slugs(opt).then(function(ret){
           var root, type, prj, brd, org, release, draft;
           root = ret.root, type = ret.type, prj = ret.prj, brd = ret.brd, org = ret.org;
@@ -221,27 +225,30 @@
         return res.send({});
       })['catch'](aux.errorHandler(res));
     });
-    app.get('/brd/:bslug/grp/:gslug/list', function(req, res){
-      var lc, ref$, offset, limit, bslug, gslug, ref1$;
+    app.get('/brd/:slug/list', function(req, res){
+      var lc, ref$, offset, limit, keyword, tag, category, slug, ref1$;
       lc = {};
       ref$ = {
         offset: (ref$ = req.query).offset,
         limit: ref$.limit
       }, offset = ref$.offset, limit = ref$.limit;
       ref$ = {
-        bslug: (ref$ = req.params).bslug,
-        gslug: ref$.gslug
-      }, bslug = ref$.bslug, gslug = ref$.gslug;
+        keyword: (ref$ = req.query).keyword,
+        category: ref$.category,
+        tag: ref$.tag
+      }, keyword = ref$.keyword, tag = ref$.tag, category = ref$.category;
+      slug = req.params.slug;
       offset = (ref$ = isNaN(+offset)
         ? 0
         : +offset) > 0 ? ref$ : 0;
       limit = (ref$ = (ref1$ = isNaN(+limit)
         ? 24
         : +limit) < 100 ? ref1$ : 100) > 1 ? ref$ : 1;
-      if (!(bslug && gslug)) {
+      if (!slug) {
         return aux.r400(res);
       }
-      return io.query("select b.name, b.description, b.slug, b.org, b.detail from brd as b where b.slug = $1", [bslug]).then(function(r){
+      return io.query("select b.name, b.description, b.slug, b.org, b.detail from brd as b where b.slug = $1", [slug]).then(function(r){
+        var idx1, idx2;
         r == null && (r = {});
         if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
@@ -253,7 +260,17 @@
           };
         });
         delete lc.brd.detail;
-        return io.query("select p.*,u.displayname as ownername\nfrom prj as p, users as u");
+        idx1 = 3 + [tag].filter(function(it){
+          return it;
+        }).length;
+        idx2 = 3 + [tag, category].filter(function(it){
+          return it;
+        }).length;
+        return io.query(["select p.*,u.displayname as ownername\nfrom prj as p, users as u\nwhere u.key = p.owner", tag ? "and tag ? $3" : void 8, category ? "and category = $" + idx1 : void 8, keyword ? "and name ~ $" + idx2 : void 8, "offset $1 limit $2"].filter(function(it){
+          return it;
+        }).join(' '), [offset, limit].concat([tag, category, keyword].filter(function(it){
+          return it;
+        })));
       }).then(function(r){
         r == null && (r = {});
         res.render('prj/list.pug', {

@@ -257,7 +257,7 @@
           user: express.Router(),
           api: express.Router()
         };
-        app.use('/dash/u', throttling.route.user, router.user);
+        router.api.use('/u', throttling.route.user, router.user);
         x$ = router.user;
         x$.post('/signup', throttling.auth.signup, function(req, res){
           var ref$, email, displayname, passwd, config;
@@ -274,20 +274,20 @@
             displayname: displayname
           }, config || {}).then(function(user){
             req.logIn(user, function(){
-              res.redirect('/dash/u/200');
+              res.redirect('/dash/api/u/200');
               return null;
             });
             return null;
           })['catch'](function(){
-            res.redirect('/dash/u/403');
+            res.redirect('/dash/api/u/403');
             return null;
           });
         });
         x$.post('/login', throttling.auth.login, passport.authenticate('local', {
-          successRedirect: '/dash/u/200',
-          failureRedirect: '/dash/u/403'
+          successRedirect: '/dash/api/u/200',
+          failureRedirect: '/dash/api/u/403'
         }));
-        app.get('/dash/api/global', backend.csrfProtection, function(req, res){
+        app.get('/api/global', backend.csrfProtection, function(req, res){
           var payload, ref$;
           res.setHeader('content-type', 'application/json');
           payload = JSON.stringify({
@@ -313,9 +313,9 @@
           });
           return res.send(payload);
         });
-        app.use('/dash/', express['static'](path.join(__dirname, '../static')));
-        app.use('/dash/api', throttling.route.api, router.api);
-        app.get("/dash/api/health", function(req, res){
+        app.use('/', express['static'](path.join(__dirname, '../static')));
+        app.use('/api', throttling.route.api, router.api);
+        app.get("/api/health", function(req, res){
           return res.json({});
         });
         y$ = router.user;
@@ -390,7 +390,7 @@
             }
             if (err.code === 'EBADCSRFTOKEN') {
               res.status(403);
-              if (/^\/dash\/api\//.exec(req.originalUrl)) {
+              if (/^\/api\//.exec(req.originalUrl)) {
                 return res.send({
                   id: 1005,
                   name: 'ldError'

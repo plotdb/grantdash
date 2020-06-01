@@ -65,49 +65,32 @@
         return res.send((r.rows || (r.rows = []))[0] || {});
       })['catch'](aux.errorHandler(res));
     });
-    api.put('/prj/:slug/file/:key', aux.signed, expressFormidable({
-      multiples: true
-    }), function(req, res){
-      var lc, slug, key;
-      lc = {};
-      if (!(slug = req.params.slug)) {
-        return aux.r400(res);
-      }
-      if (!((key = req.params.key) && /^([0-9a-zA-Z+_-]+)$/.exec(key))) {
-        return aux.r404(res);
-      }
-      return io.query("select slug from prj where slug = $1", [slug]).then(function(r){
-        r == null && (r = {});
-        if (!(lc.prj = (r.rows || (r.rows = []))[0])) {
-          return aux.reject(404);
-        }
-        return lc.root = "users/prj/" + lc.prj.slug;
-      }).then(function(){
-        lc.files = req.files["file[]"];
-        lc.files = Array.isArray(lc.files)
-          ? lc.files
-          : [lc.files];
-        if (lc.files.length > 100 || lc.files.length < 1) {
-          return aux.reject(400);
-        }
-        lc.files = lc.files.map(function(it){
-          return {
-            path: it.path,
-            type: it.type.split('/')[1]
-          };
-        }).filter(function(it){
-          return /([a-zA-Z0-9]+$)/.exec(it.type);
-        });
-        return fsExtra.ensureDir(lc.root);
-      }).then(function(){
-        return Promise.all(lc.files.map(function(file, idx){
-          return fsExtra.copy(file.path, path.join(lc.root, "draft." + key + "." + idx + "." + file.type));
-        }));
-      }).then(function(){
-        return res.send({});
-      })['catch'](aux.errorHandler(res));
-    });
-    return api.post('/prj/', aux.signed, expressFormidable(), function(req, res){
+    /*
+    api.put \/prj/:slug/file/:key, aux.signed, express-formidable({multiples:true}), (req, res) ->
+      lc = {}
+      if !(slug = req.params.slug) => return aux.r400 res
+      if !((key = req.params.key) and /^([0-9a-zA-Z+_-]+)$/.exec(key)) => return aux.r404 res
+      io.query """select slug from prj where slug = $1""", [slug]
+        .then (r={}) ->
+          if !(lc.prj = r.[]rows.0) => return aux.reject 404
+          lc.root = "users/prj/#{lc.prj.slug}"
+        .then ->
+          lc.files = req.files["file[]"]
+          lc.files = if Array.isArray(lc.files) => lc.files else [lc.files]
+          if lc.files.length > 100 or lc.files.length < 1 => return aux.reject 400
+          lc.files = lc.files
+            .map -> {path: it.path, type: it.type.split(\/).1}
+            .filter -> /([a-zA-Z0-9]+$)/.exec(it.type)
+          fs-extra.ensure-dir lc.root
+        .then ->
+          Promise.all(
+            lc.files.map (file, idx) ->
+              fs-extra.copy file.path, path.join(lc.root, "draft.#{key}.#{idx}.#{file.type}")
+          )
+        .then -> res.send {}
+        .catch aux.error-handler res
+    */
+    api.post('/prj/', aux.signed, expressFormidable(), function(req, res){
       var lc, ref$, name, description, brd, grp, thumb, slug;
       lc = {};
       ref$ = req.fields, name = ref$.name, description = ref$.description, brd = ref$.brd, grp = ref$.grp;
@@ -156,6 +139,16 @@
       }).then(function(){
         var ref$;
         return res.send((ref$ = lc.ret || {}, ref$.slug = slug, ref$));
+      })['catch'](aux.errorHandler(res));
+    });
+    return api.get('/brd/:slug/prj/list/', function(req, res){
+      var slug;
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      return io.query("select p.name, p.description, p.owner, u.displayname as ownername, p.slug\nfrom prj as p, users as u where p.brd = $1 and p.owner = u.key", [slug]).then(function(r){
+        r == null && (r = {});
+        return res.send(r.rows || (r.rows = []));
       })['catch'](aux.errorHandler(res));
     });
   });

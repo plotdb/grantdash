@@ -199,7 +199,7 @@
     needlogin: function(cb){
       return function(req, res){
         if (!(req.user && req.user.key > 0)) {
-          return res.status(403).redirect("/auth/?nexturl=" + req.originalUrl);
+          return res.status(403).redirect("/dash/auth/?nexturl=/dash" + req.originalUrl);
         }
         return cb(req, res);
       };
