@@ -173,7 +173,7 @@ backend = do
     app.use backend.csrfProtection
 
     router = { user: express.Router!, api: express.Router! }
-    app.use \/dash/u, throttling.route.user, router.user
+    router.api.use \/u, throttling.route.user, router.user
 
     router.user
       ..post \/signup, throttling.auth.signup, (req, res) ->
@@ -181,12 +181,12 @@ backend = do
         if !email or !displayname or passwd.length < 8 => return aux.r400 res
         authio.user.create email, passwd, true, {displayname}, (config or {})
           .then (user) ->
-            req.logIn user, -> res.redirect \/dash/u/200; return null
+            req.logIn user, -> res.redirect \/dash/api/u/200; return null
             return null
-          .catch -> res.redirect \/dash/u/403; return null
+          .catch -> res.redirect \/dash/api/u/403; return null
       ..post \/login, throttling.auth.login, passport.authenticate \local, do
-        successRedirect: \/dash/u/200
-        failureRedirect: \/dash/u/403
+        successRedirect: \/dash/api/u/200
+        failureRedirect: \/dash/api/u/403
 
     # =============== USER DATA, VIA AJAX
     # Note: We used to use jsonp, but it might lead to data exploit since jsonp is not protected by CORS.
@@ -197,7 +197,7 @@ backend = do
     # * user could stil alter cookie's content, so it's necessary to force ajax call for important action
     #   there is no way to prevent user from altering client side content,
     #   so if we want to prevent user from editing our code, we have to go backend for the generation.
-    app.get \/dash/api/global, backend.csrfProtection, (req, res) ->
+    app.get \/api/global, backend.csrfProtection, (req, res) ->
       res.setHeader \content-type, \application/json
       payload = JSON.stringify do
         global: true, csrfToken: req.csrfToken!, production: config.is-production
@@ -206,9 +206,9 @@ backend = do
       res.cookie 'global', payload, { path: '/', secure: true, domain: ".#{config.domain}" }
       res.send payload
 
-    app.use \/dash/, express.static(path.join(__dirname, '../static'))
-    app.use \/dash/api, throttling.route.api, router.api
-    app.get "/dash/api/health", (req, res) -> res.json {}
+    app.use \/, express.static(path.join(__dirname, '../static'))
+    app.use \/api, throttling.route.api, router.api
+    app.get "/api/health", (req, res) -> res.json {}
 
     # Must review all APIs
     router.user
@@ -263,7 +263,7 @@ backend = do
         # for api we send a ldError object.
         # 1005 tells frontend a csrftoken-mismatch happened, so client can trigger corresponding panel
         # to resolve this issue.
-        if /^\/dash\/api\//.exec(req.originalUrl) => res.send {id: 1005, name: \ldError}
+        if /^\/api\//.exec(req.originalUrl) => res.send {id: 1005, name: \ldError}
         # otherwise redirect user to login.
         else res.redirect "/auth/?nexturl=#{req.originalUrl}"
       else

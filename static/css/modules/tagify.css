@@ -7,4 +7,5 @@
 }
 .tagify__input {
   font-weight: 300;
+  overflow: hidden;
 }

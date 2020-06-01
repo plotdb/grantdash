@@ -637,6 +637,8 @@ var vars = {root: ""}
 ;pug_debug_line = 4;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 ctrl.navtop.className = "navbar-light bg-semi-light";
 ;pug_debug_line = 5;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+ctrl.navtop.placeholder = false;
+;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 var meta = { title: "設定" };
 ;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003Chtml\u003E";
@@ -1023,39 +1025,39 @@ pug_html = pug_html + (pug_escape(null == (pug_interp = opt.description || '關�
 
 
 ;pug_debug_line = 3;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_mixins["prj-list"] = pug_interp = function(opt){
-var block = (this && this.block), attributes = (this && this.attributes) || {};
-;pug_debug_line = 4;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv" + (pug_attrs(pug_merge([{"class": "w-640"},attributes]), true)) + "\u003E";
-;pug_debug_line = 5;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"text-dark text-no-deco\""+pug_attr("href", `/prj/${opt.slug}`, true, true)) + "\u003E";
-;pug_debug_line = 6;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
-;pug_debug_line = 7;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv" + (" class=\"rounded bg-dark bg-cover bg-portrait mr-1\""+pug_attr("style", pug_style(`width:3em;height:3em;background-image:url(${opt.thumb});flex:0 0 auto`), true, true)) + "\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-truncate\"\u003E";
-;pug_debug_line = 9;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-end mb-1\"\u003E";
-;pug_debug_line = 10;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Ch5 class=\"mb-0 mr-1 text-truncate\"\u003E";
-;pug_debug_line = 10;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = opt.name || '未命名的計劃') ? "" : pug_interp)) + "\u003C\u002Fh5\u003E";
-;pug_debug_line = 11;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-sm text-muted\"\u003E";
-;pug_debug_line = 11;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "By ";
-;pug_debug_line = 11;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = opt.ownername || '未具名') ? "" : pug_interp)) + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-sm text-muted w-100 text-truncate\"\u003E";
-;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + " ";
-;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = (opt.description || '').substring(0,100)) ? "" : pug_interp));
-;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + " ...\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
 
 
@@ -1939,39 +1941,39 @@ pug_html = pug_html + (pug_escape(null == (pug_interp = opt.description || '關�
 
 
 ;pug_debug_line = 3;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_mixins["prj-list"] = pug_interp = function(opt){
-var block = (this && this.block), attributes = (this && this.attributes) || {};
-;pug_debug_line = 4;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv" + (pug_attrs(pug_merge([{"class": "w-640"},attributes]), true)) + "\u003E";
-;pug_debug_line = 5;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"text-dark text-no-deco\""+pug_attr("href", `/prj/${opt.slug}`, true, true)) + "\u003E";
-;pug_debug_line = 6;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
-;pug_debug_line = 7;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv" + (" class=\"rounded bg-dark bg-cover bg-portrait mr-1\""+pug_attr("style", pug_style(`width:3em;height:3em;background-image:url(${opt.thumb});flex:0 0 auto`), true, true)) + "\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-truncate\"\u003E";
-;pug_debug_line = 9;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-end mb-1\"\u003E";
-;pug_debug_line = 10;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Ch5 class=\"mb-0 mr-1 text-truncate\"\u003E";
-;pug_debug_line = 10;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = opt.name || '未命名的計劃') ? "" : pug_interp)) + "\u003C\u002Fh5\u003E";
-;pug_debug_line = 11;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-sm text-muted\"\u003E";
-;pug_debug_line = 11;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "By ";
-;pug_debug_line = 11;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = opt.ownername || '未具名') ? "" : pug_interp)) + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-sm text-muted w-100 text-truncate\"\u003E";
-;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + " ";
-;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = (opt.description || '').substring(0,100)) ? "" : pug_interp));
-;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
-pug_html = pug_html + " ...\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fprj.pug";
 
 
@@ -2420,66 +2422,66 @@ pug_html = pug_html + "\u003Ci class=\"i-close ml-4\"\u003E\u003C\u002Fi\u003E\u
 
 
 
-;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"w-1024 rwd mx-auto\"\u003E";
 ;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"w-1024 rwd mx-auto\"\u003E";
+;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-flex justify-content-center\"\u003E";
-;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"mr-4\"\u003E";
-;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"sticky\" style=\"height:100vh;top:0\"\u003E";
-;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"vertical-center\"\u003E";
-;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"w-100 text-center\"\u003E";
 ;pug_debug_line = 11;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"card mx-auto shadow\" style=\"font-family:arial;width:300px\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"mr-4\"\u003E";
+;pug_debug_line = 11;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"sticky\" style=\"height:100vh;top:0\"\u003E";
+;pug_debug_line = 11;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"vertical-center\"\u003E";
+;pug_debug_line = 11;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"w-100 text-center\"\u003E";
 ;pug_debug_line = 12;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"card mx-auto shadow\" style=\"font-family:arial;width:300px\"\u003E";
+;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"card-body p-4\"\u003E";
-;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"mx-auto mb-4\" style=\"margin-top:-25%;width:140px\"\u003E";
-;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv" + (" class=\"rounded-circle bg-secondary aspect-ratio ratio-1by1 ldlz shadow ldlz\""+pug_attr("data-src", `/s/avatar/${user.key}.png`, true, true)) + "\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"mx-auto mb-4\" style=\"margin-top:-25%;width:140px\"\u003E";
+;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv" + (" class=\"rounded-circle bg-secondary aspect-ratio ratio-1by1 ldlz shadow ldlz\""+pug_attr("data-src", `/s/avatar/${user.key}.png`, true, true)) + "\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 15;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"text-center\"\u003E";
-;pug_debug_line = 15;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-lg text-center\"\u003E";
-;pug_debug_line = 15;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cb\u003E";
-;pug_debug_line = 15;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = user.displayname) ? "" : pug_interp)) + "\u003C\u002Fb\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"text-lg text-center\"\u003E";
+;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cb\u003E";
+;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + (pug_escape(null == (pug_interp = user.displayname) ? "" : pug_interp)) + "\u003C\u002Fb\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 17;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"text-muted mb-4\"\u003E";
-;pug_debug_line = 17;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 18;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"my-2\"\u003E";
-;pug_debug_line = 17;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 18;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = user.title || '尚無抬頭') ? "" : pug_interp)) + "\u003C\u002Fdiv\u003E";
-;pug_debug_line = 18;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-sm\"\u003E";
-;pug_debug_line = 18;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = new Date(user.createdtime).toLocaleString()) ? "" : pug_interp));
-;pug_debug_line = 18;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + " 加入這裡\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"text-sm\"\u003E";
+;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + (pug_escape(null == (pug_interp = new Date(user.createdtime).toLocaleString()) ? "" : pug_interp));
+;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + " 加入這裡\u003C\u002Fdiv\u003E";
+;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Chr\u003E";
-;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cp class=\"text-sm text-center\"\u003E";
-;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = user.description || '尚未準備自我介紹...') ? "" : pug_interp)) + "\u003C\u002Fp\u003E";
 ;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Chr\u003E";
+pug_html = pug_html + "\u003Cp class=\"text-sm text-center\"\u003E";
+;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + (pug_escape(null == (pug_interp = user.description || '尚未準備自我介紹...') ? "" : pug_interp)) + "\u003C\u002Fp\u003E";
 ;pug_debug_line = 22;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"tags\"\u003E";
+pug_html = pug_html + "\u003Chr\u003E";
 ;pug_debug_line = 23;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"tags\"\u003E";
+;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 // iterate (user.tags || '').split(',')
 ;(function(){
   var $$obj = (user.tags || '').split(',');
   if ('number' == typeof $$obj.length) {
       for (var pug_index13 = 0, $$l = $$obj.length; pug_index13 < $$l; pug_index13++) {
         var tag = $$obj[pug_index13];
-;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"badge badge-secondary mr-1\"\u003E";
-;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = tag) ? "" : pug_interp)) + "\u003C\u002Fdiv\u003E";
       }
   } else {
@@ -2487,49 +2489,35 @@ pug_html = pug_html + (pug_escape(null == (pug_interp = tag) ? "" : pug_interp))
     for (var pug_index13 in $$obj) {
       $$l++;
       var tag = $$obj[pug_index13];
-;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"badge badge-secondary mr-1\"\u003E";
-;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = tag) ? "" : pug_interp)) + "\u003C\u002Fdiv\u003E";
     }
   }
 }).call(this);
 
 pug_html = pug_html + "\u003C\u002Fdiv\u003E";
-;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 26;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"mt-4\"\u003E";
-;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"btn btn-sm btn-primary rounded-pill px-4 mx-2\"\u003E";
-;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "設定\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 28;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"ml-4 flex-grow-1\"\u003E";
+pug_html = pug_html + "\u003Ca class=\"btn btn-sm btn-primary rounded-pill px-4 mx-2\" href=\"\u002Fdash\u002Fme\u002Fsettings\"\u003E";
 ;pug_debug_line = 28;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv style=\"padding-top:100px\"\u003E";
+pug_html = pug_html + "設定\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"typeset heading-contrast\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"ml-4 flex-grow-1\"\u003E";
+;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv style=\"padding-top:100px\"\u003E";
 ;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"sticky\" style=\"top:55px\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"typeset heading-contrast\"\u003E";
 ;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"sticky\" style=\"top:55px\"\u003E";
+;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-flex bg-white p-4 border-bottom\"\u003E";
-;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"mx-3\"\u003E";
-;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "焦點 ";
-;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Csup class=\"text-white bg-danger rounded-lg px-1\"\u003E";
-;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "3\u003C\u002Fsup\u003E";
-;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003C\u002Fdiv\u003E";
-;pug_debug_line = 33;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"mx-3\"\u003E";
-;pug_debug_line = 33;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "專案\u003C\u002Fdiv\u003E";
-;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"mx-3\"\u003E";
-;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "追蹤\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 35;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"mx-3\"\u003E";
 ;pug_debug_line = 35;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
@@ -2538,113 +2526,78 @@ pug_html = pug_html + "組織\u003C\u002Fdiv\u003E";
 pug_html = pug_html + "\u003Cdiv class=\"mx-3\"\u003E";
 ;pug_debug_line = 36;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "活動\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 38;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
 ;pug_debug_line = 39;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
-;pug_debug_line = 40;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
 ;pug_debug_line = 40;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ci class=\"i-check text-success\"\u003E\u003C\u002Fi\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
 ;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
+;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Ci class=\"i-check text-success\"\u003E\u003C\u002Fi\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"flex-grow-1\"\u003E";
-;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ch5\u003E";
-;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "2020 沉浸式內容國際合資合製補助案 \u003C\u002Fh5\u003E";
-;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cp class=\"text-muted\"\u003E";
-;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "提案評選中 ( 2020\u002F05\u002F20 截止 )\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
-;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"btn btn-outline-primary\"\u003E";
-;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "前往評選表\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 46;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
 ;pug_debug_line = 47;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
-;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
 ;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ci class=\"i-check text-success\"\u003E\u003C\u002Fi\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
 ;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"flex-grow-1\"\u003E";
-;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ch5\u003E";
-;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "Johnny 查核了你的提案\u003C\u002Fh5\u003E";
-;pug_debug_line = 51;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cp class=\"text-muted\"\u003E";
-;pug_debug_line = 51;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "於 15 分鐘前：「所以我說那個醬汁呢？ ... 」\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
-;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"btn btn-outline-primary\"\u003E";
-;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "前往評論\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 54;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
-;pug_debug_line = 55;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
-;pug_debug_line = 56;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
-;pug_debug_line = 56;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ci class=\"i-check text-success\"\u003E\u003C\u002Fi\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 57;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"flex-grow-1\"\u003E";
-;pug_debug_line = 58;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 51;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ch5\u003E";
-;pug_debug_line = 58;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "2019 沉浸式內容國際合資合製補助案\u003C\u002Fh5\u003E";
-;pug_debug_line = 59;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 51;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "Johnny 查核了你的提案\u003C\u002Fh5\u003E";
+;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cp class=\"text-muted\"\u003E";
-;pug_debug_line = 59;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "提案即將截止 ( 於 50 分鐘後 )\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 60;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "於 15 分鐘前：「所以我說那個醬汁呢？ ... 」\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 53;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
-;pug_debug_line = 60;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 53;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"btn btn-outline-primary\"\u003E";
+;pug_debug_line = 53;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "前往評論\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 55;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
+;pug_debug_line = 56;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
+;pug_debug_line = 57;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
+;pug_debug_line = 57;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Ci class=\"i-check text-success\"\u003E\u003C\u002Fi\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 58;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"flex-grow-1\"\u003E";
+;pug_debug_line = 59;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Ch5\u003E";
+;pug_debug_line = 59;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "2019 沉浸式內容國際合資合製補助案\u003C\u002Fh5\u003E";
 ;pug_debug_line = 60;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "前往主控台\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 62;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-none\"\u003E";
-;pug_debug_line = 63;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ch4\u003E";
-;pug_debug_line = 63;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "提案人\u003C\u002Fh4\u003E";
-;pug_debug_line = 64;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_mixins["prj-list"].call({
-attributes: {"class": "mb-4"}
-}, {name: "開源神手計劃", description: "開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。透過各項功能，串起民眾的申覆結果、申覆內 ..."});
-;pug_debug_line = 65;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cbr\u003E";
-;pug_debug_line = 66;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ch4\u003E";
-;pug_debug_line = 66;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "貢獻者\u003C\u002Fh4\u003E";
-;pug_debug_line = 67;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_mixins["prj-list"].call({
-attributes: {"class": "mb-4"}
-}, {name: "開源神手計劃", description: "開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。透過各項功能，串起民眾的申覆結果、申覆內 ..."});
-;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_mixins["prj-list"].call({
-attributes: {"class": "mb-4"}
-}, {name: "開源神手計劃", description: "開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。透過各項功能，串起民眾的申覆結果、申覆內 ..."});
-;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cbr\u003E";
-;pug_debug_line = 72;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ch4\u003E";
-;pug_debug_line = 72;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "關注中\u003C\u002Fh4\u003E";
-;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_mixins["prj-list"].call({
-attributes: {"class": "mb-4"}
-}, {name: "開源神手計劃", description: "開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。透過各項功能，串起民眾的申覆結果、申覆內 ..."});
-pug_html = pug_html + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cp class=\"text-muted\"\u003E";
+;pug_debug_line = 60;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "提案即將截止 ( 於 50 分鐘後 )\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
+;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-outline-primary\"\u003E";
+;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "前往主控台\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 27;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 if (ctrl.cover.authpanel) {
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";

@@ -175,6 +175,7 @@ p {
 }
 .tagify__input {
   font-weight: 300;
+  overflow: hidden;
 }
 [ld-scope=prj-diff] .text-added {
   background: #dfd;

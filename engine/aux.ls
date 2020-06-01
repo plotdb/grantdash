@@ -75,7 +75,8 @@ base = do
     cb req, res
 
   needlogin: (cb) -> (req, res) ->
-    if !(req.user and req.user.key > 0) => return res.status(403).redirect "/auth/?nexturl=#{req.originalUrl}"
+    if !(req.user and req.user.key > 0) =>
+      return res.status(403).redirect "/dash/auth/?nexturl=/dash/#{req.originalUrl}"
     cb req, res
 
   merge-config: (a,b) ->

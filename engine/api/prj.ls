@@ -33,6 +33,7 @@ api.get "/prj/:slug/", aux.signed, (req, res) ->
     .then (r = {}) -> res.send(r.[]rows.0 or {})
     .catch aux.error-handler res
 
+/*
 api.put \/prj/:slug/file/:key, aux.signed, express-formidable({multiples:true}), (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r400 res
@@ -56,7 +57,7 @@ api.put \/prj/:slug/file/:key, aux.signed, express-formidable({multiples:true}),
       )
     .then -> res.send {}
     .catch aux.error-handler res
-
+*/
 
 api.post \/prj/, aux.signed, express-formidable!, (req, res) ->
   lc = {}

@@ -62,7 +62,7 @@ slugs = ({io, org, brd, prj}) -> new Promise (res, rej) ->
     .catch -> rej it
 
 
-api.post \/upload, aux.signed, express-formidable!, (req, res) ->
+api.post \/upload, aux.signed, express-formidable({multiples:true}), (req, res) ->
   lc = {}
   {org,brd,prj,files} = req.fields
   try

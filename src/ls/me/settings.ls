@@ -1,7 +1,6 @@
 (->
-  ldc.register \change-password, <[auth notify]>, ({auth, notify}) ->
+  ldc.register \change-password, <[error auth notify]>, ({error, auth, notify}) ->
     local = {}
-    console.log (ClipboardJS?)
     auth.get {authed: true}
       .then (g) ->
         local = g
@@ -64,53 +63,77 @@
         new Tagify form.fields.tags, do
           originalInputValueFormat: (vals) -> vals.map(-> it.value).join \,
 
-        view = new ldView root: document.body, handler: do
-          updateBasicData: ({node}) ->
-            ldld = new ldLoader root: node
-            node.addEventListener \click, ->
-              ldld.on!
-              val = form.values!
-              ld$.fetch(
-                "/dash/api/user/#{local.g.{}user.key}"
-                {method: \PUT}
-                {json: val{description,displayname,title,tags}, type: \text}
-              )
-                .catch -> ldcvmgr.toggle \error; console.log it
-                .then -> auth.fetch {renew: true}
-                .then -> debounce 500
-                .then -> notify.send \success, \updated.
-                .then -> debounce 500
-                .then -> ldld.off!
-          mailVerify: ({node}) ->
-            ldld = new ldLoader root: node
-            if local.user.verified =>
-              node.innerText = "Verified in #{moment(local.user.verified.date).format("YYYY/MM/DD")}"
-            else
+        view = new ldView do
+          root: document.body
+          action: change: do
+            "avatar": ({node}) ->
+              if !( bg = ld$.parent(node, '.bg') ) => return
+              if !( btn = ld$.parent(node, '.btn') ) => return
+              if !node.files.length => return
+              ldFile.fromFile node.files.0, \dataurl
+                .then (r) -> bg.style.backgroundImage = "url(#{r.result})"
+              btn.classList.toggle \running, true
+              fd = new FormData!
+              fd.append "avatar", node.files.0
+              ld$.fetch \/dash/api/user/avatar, {method: \POST, body: fd}, {type: \json}
+                .finally ->
+                  debounce 1000 .then -> btn.classList.toggle \running, false
+                  node.value = ''
+                .then ->
+                  node.value = ""
+                  console.log "uploaded", it
+                .catch (e) ->
+                  console.log e
+                  error! e
+
+
+          handler: do
+            updateBasicData: ({node}) ->
+              ldld = new ldLoader root: node
               node.addEventListener \click, ->
                 ldld.on!
-                if node.classList.contains \disabled => return
-                ld$.fetch \/dash/api/me/mail/verify, {method: \POST}
-                  .catch -> ldcvmgr.toggle \error
-                  .then -> debounce 1000
+                val = form.values!
+                ld$.fetch(
+                  "/dash/api/user/#{local.g.{}user.key}"
+                  {method: \PUT}
+                  {json: val{description,displayname,title,tags}, type: \text}
+                )
+                  .catch -> ldcvmgr.toggle \error; console.log it
+                  .then -> auth.fetch {renew: true}
+                  .then -> debounce 500
+                  .then -> notify.send \success, \updated.
+                  .then -> debounce 500
                   .then -> ldld.off!
-                  .then -> ldcvmgr.toggle \verification-mail-sent
+            mailVerify: ({node}) ->
+              ldld = new ldLoader root: node
+              if local.user.verified =>
+                node.innerText = "Verified in #{moment(local.user.verified.date).format("YYYY/MM/DD")}"
+              else
+                node.addEventListener \click, ->
+                  ldld.on!
+                  if node.classList.contains \disabled => return
+                  ld$.fetch \/dash/api/me/mail/verify, {method: \POST}
+                    .catch -> ldcvmgr.toggle \error
+                    .then -> debounce 1000
+                    .then -> ldld.off!
+                    .then -> ldcvmgr.toggle \verification-mail-sent
 
-          sendResetLink: ({node}) ->
-            node.addEventListener \click, ->
-              if node.classList.contains \disabled => return
-              ld$.fetch(\/dash/api/me/passwd/reset, {
-                method: \POST
-                body: JSON.stringify({email: local.g.user.username})
-                headers: {'Content-Type': 'application/json; charset=UTF-8'}
-              }, {})
-                .then ->
-                  node.innerHTML = 'Link Sent.<i class="i-check"></i>'
-                  node.classList.add \disabled
+            sendResetLink: ({node}) ->
+              node.addEventListener \click, ->
+                if node.classList.contains \disabled => return
+                ld$.fetch(\/dash/api/me/passwd/reset, {
+                  method: \POST
+                  body: JSON.stringify({email: local.g.user.username})
+                  headers: {'Content-Type': 'application/json; charset=UTF-8'}
+                }, {})
+                  .then ->
+                    node.innerHTML = 'Link Sent.<i class="i-check"></i>'
+                    node.classList.add \disabled
 
-          copyUid: ({node}) ->
-            c = new ClipboardJS(node)
-            c.on \success, ->
-              node.classList.add \tip-on
-              debounce 2000 .then -> node.classList.remove \tip-on
+            copyUid: ({node}) ->
+              c = new ClipboardJS(node)
+              c.on \success, ->
+                node.classList.add \tip-on
+                debounce 2000 .then -> node.classList.remove \tip-on
 
 )!

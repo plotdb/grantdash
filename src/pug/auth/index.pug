@@ -7,7 +7,7 @@ block content
   .text-left: +authpanel
 block script
   script: :lsc
-    ldc.register <[auth loader navtop]>, ({auth, loader, navtop}) ->
+    ldc.register <[general auth loader navtop]>, ({general, auth, loader, navtop}) ->
       nexturl = (window.location.search or '')
         .replace(/^\?/,'')
         .split(\&)

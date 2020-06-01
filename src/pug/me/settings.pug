@@ -50,14 +50,25 @@ block body
                     | 寄發認證信 #[i.i-mail.ml-2] #[.ld.ld-spin.ld-ring]
           .form-group.mb-4
             label 描述 #[small.text-muted / 會顯示在個人檔案中]
-            textarea.form-control(name="description",rows="1",placeholder="談談關於你的事吧")= user.description
-          .form-group.mb-4
-            label 職業 #[small.text-muted / 會顯示在個人檔案中]
-            input.form-control(name="title",placeholder="你是做什麼的呢？",value=user.title)
-          .form-group.mb-4
-            label 關鍵字 #[small.text-muted / 會顯示在個人檔案中]
-            textarea.form-control(name="tags",rows="1",
-            placeholder="寫幾個跟你有關的關鍵詞吧")= user.tags
+            textarea.form-control(name="description",rows="3",placeholder="談談關於你的事吧")= user.description
+          .row
+            .col-md
+              .form-group.mb-4
+                label 職業 #[small.text-muted / 會顯示在個人檔案中]
+                input.form-control(name="title",placeholder="你是做什麼的呢？",value=user.title)
+              .form-group.mb-4
+                label 關鍵字 #[small.text-muted / 會顯示在個人檔案中]
+                textarea.form-control(name="tags",rows="1",
+                placeholder="寫幾個跟你有關的關鍵詞吧")= user.tags
+            .col-md
+              .w-100: .aspect-ratio.ratio-2by1.bg-light.bg.bg-portrait(
+              style=`background-image:url(/dash/s/avatar/${user.key}.png)`)
+                .w-100.h-100.vertical-center: .text-center.w-100
+                  .btn.btn-outline-light.bg-semi-dark.btn-upload.ld-ext-right
+                    | 上傳
+                    input(ld="avatar",type="file")
+                    .ld.ld-spin.ld-spinner
+
           .form-group.mt-4
             .btn.btn-primary.ld-ext-right(ld="updateBasicData") 更新基本資訊 #[.ld.ld-spin.ld-ring]
         +nbr(2)
@@ -106,5 +117,4 @@ block body
         //-include /modules/cover/delete-account.pug
 
 block script
-  //-+script("/js/me/sidepanel.js")
-  +script("/js/me/settings.js")
+  +script("/dash/js/me/settings.js")

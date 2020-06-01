@@ -1,4 +1,4 @@
-require! <[fs fs-extra crypto read-chunk sharp]>
+require! <[fs fs-extra crypto read-chunk sharp express-formidable]>
 require! <[../aux]>
 (engine,io) <- (->module.exports = it)  _
 
@@ -98,16 +98,16 @@ api.put \/user/:id, aux.numid false, (req, res) ->
       req.login req.user, -> res.send!
       return null
 
-app.put \/me/avatar, engine.multi.parser, (req, res) ->
+api.post \/user/avatar, aux.signed, express-formidable({multiples:true}), (req, res) ->
   if !req.user => return aux.r403 res
-  if !req.files.image => return aux.r400 res
+  if !req.files.avatar => return aux.r400 res
   fs-extra.ensure-dir "static/s/avatar/" 
     .then ->
-      sharp req.files.image.path
+      sharp req.files.avatar.path
         .resize 200,200
         .toFile "static/s/avatar/#{req.user.key}.png", (err, info) ->
           if err => return aux.r500 res, "#{err}"
-          res.send!
+          res.send {}
     .catch -> aux.r500 res
 
 api.post \/me/sync/, (req, res) ->
