@@ -62,7 +62,7 @@ block body
                 placeholder="寫幾個跟你有關的關鍵詞吧")= user.tags
             .col-md
               .w-100: .aspect-ratio.ratio-2by1.bg-light.bg.bg-portrait(
-              style=`background-image:url(/dash/s/avatar/${user.key}.png)`)
+              style=`background-image:url(/dash/s/avatar/${user.key}.png);background-size:contain`)
                 .w-100.h-100.vertical-center: .text-center.w-100
                   .btn.btn-outline-light.bg-semi-dark.btn-upload.ld-ext-right
                     | 上傳
