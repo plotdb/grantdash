@@ -71,10 +71,17 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
         }
       },
       handler: {
-        "brd-landing": function(arg$){
-          var node;
+        "brd-page": function(arg$){
+          var node, name;
           node = arg$.node;
-          return node.setAttribute('href', "/brd/" + toc.brd.slug + "/");
+          name = node.getAttribute('data-name');
+          if (name === 'landing') {
+            return node.setAttribute('href', "/brd/" + toc.brd.slug + "/");
+          } else if (name === 'list') {
+            return node.setAttribute('href', "/dash/brd/" + toc.brd.slug + "/prj/list");
+          } else if (name === 'new-prj') {
+            return node.setAttribute('href', "/dash/brd/" + toc.brd.slug + "/prj/create");
+          }
         },
         "org-menu": function(arg$){
           var node;

@@ -31,7 +31,11 @@ Ctrl = (opt) ->
         node.folder = new ldui.Folder root: node
         if !toc.brd.key and ("brd-list" in names) => node.folder.toggle true
     handler: do
-      "brd-landing": ({node}) -> node.setAttribute \href, "/brd/#{toc.brd.slug}/"
+      "brd-page": ({node}) ->
+        name = node.getAttribute(\data-name)
+        if name == \landing => node.setAttribute \href, "/brd/#{toc.brd.slug}/"
+        else if name == \list => node.setAttribute \href, "/dash/brd/#{toc.brd.slug}/prj/list"
+        else if name == \new-prj => node.setAttribute \href, "/dash/brd/#{toc.brd.slug}/prj/create"
       "org-menu": ({node}) -> node.classList.toggle \d-none, !toc.org.slug
       "brd-progress": ({node}) -> node.classList.toggle \text-success, true
       "brd-list-toggle": ({node}) ->
