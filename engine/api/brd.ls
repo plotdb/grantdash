@@ -109,15 +109,15 @@ api.put \/detail/, aux.signed, (req, res) ->
       permcache.invalidate {type: table, slug}
       if table != \prj => return
       slugs {io, prj: slug}
-    .then (ret) ->
-      {root,type,prj,brd,org} = ret
-      release = path.join(root, 'release')
-      draft = path.join(root, 'draft')
-      if !(/^users\//.exec(release) and /^users\//.exec(draft)) => return aux.reject 400 
-      fs-extra.ensure-dir release
-        .then -> fs-extra.remove release
-        .then -> fs-extra.ensure-dir draft
-        .then -> fs-extra.move draft, release
+        .then (ret) ->
+          {root,type,prj,brd,org} = ret
+          release = path.join(root, 'release')
+          draft = path.join(root, 'draft')
+          if !(/^users\//.exec(release) and /^users\//.exec(draft)) => return aux.reject 400
+          fs-extra.ensure-dir release
+            .then -> fs-extra.remove release
+            .then -> fs-extra.ensure-dir draft
+            .then -> fs-extra.move draft, release
     .then -> res.send {}
     .catch aux.error-handler res
 
@@ -228,7 +228,7 @@ api.post \/deploy, aux.signed, (req, res) ->
       # deploy might take a while, so we go back to user first.
       res.send {}
       type = type.substring(0,1)
-      if type == \org => 
+      if type == \org =>
       deploy {url: git.url, branch: git.branch, root: "users/#type/#slug/static"}
         .catch ->
     .catch aux.error-handler res
