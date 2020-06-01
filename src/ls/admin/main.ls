@@ -104,6 +104,8 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
       {org,brd} = @hubs
       set-group = ~> @set-group it
       toc = @toc
+      delete-group = ~>
+        @ctrl.brd.group.delete-group it
 
       @ctrl.welcome = new admin-welcome {root: '[ld-scope=admin-welcome]', toc}
 
@@ -133,7 +135,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
 
       @ctrl.grp
         ..form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}
-        ..info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group}
+        ..info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group, delete-group}
         ..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]'}
         ..grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}

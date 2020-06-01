@@ -4,8 +4,8 @@ Ctrl = (opt) ->
   @opt = opt
   @toc = toc = opt.toc
   @grps = []
-  update = debounce 500, ~> @ops-out ~> @grps
-  set-group = (grp) -> opt.set-group grp
+  @update = update = debounce 500, ~> @ops-out ~> @grps
+  @set-group = set-group = (grp) -> opt.set-group grp
   search = debounce (val) ->
     toc.brds-filtered = toc.brds.filter -> ~it.name.indexOf(val)
     view.render!
@@ -18,14 +18,7 @@ Ctrl = (opt) ->
         "brd-bar": ({node}) ->
           ret = view.get("brd-list").folder.toggle!
           view.render \brd-list-toggle
-        "grp-add": ({node}) ~>
-          for i from 0 til 100 =>
-            key = suuid!
-            if !@grps.filter(->it.key == key).length => break
-          if @grps.filter(->it.key == key).length => throw new ldError(1011)
-          @grps.push {key, info: {name: "新分組"}}
-          view.render 'grp-entry'
-          update!now!
+        "grp-add": ({node}) ~> @add-group!
 
       input: do
         "brd-search": ({node}) -> search node.value
@@ -73,6 +66,23 @@ Ctrl = (opt) ->
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+  delete-group: (v) ->
+    if !(grp = @grps.filter(->it.key == v).0) => return
+    if @grps.length == 1 => return
+    @grps.splice @grps.indexOf(grp), 1
+    @set-group @grps.0
+    @view.render 'grp-entry'
+    @update!now!
+
+  add-group: ->
+    for i from 0 til 100 =>
+      key = suuid!
+      if !@grps.filter(->it.key == key).length => break
+    if @grps.filter(->it.key == key).length => throw new ldError(1011)
+    @grps.push {key, info: {name: "新分組"}}
+    @view.render 'grp-entry'
+    @update!now!
+
   ops-in: ({data,ops,source}) ->
     @grps = JSON.parse JSON.stringify(data or [])
     if !Array.isArray(data) => @grps = []

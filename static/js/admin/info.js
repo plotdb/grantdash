@@ -142,6 +142,12 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
               : " ( " + data.slug + " )");
             return node.setAttribute('value', data.slug || '');
           }
+        },
+        "delete-group": function(arg$){
+          var node, disabled;
+          node = arg$.node;
+          disabled = !(this$.adapter && this$.adapter.doc && this$.adapter.doc.data.group && this$.adapter.doc.data.group.length > 1);
+          return node.classList.toggle('disabled', disabled);
         }
       },
       action: {
@@ -192,21 +198,16 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
           }
         },
         click: {
-          'delete': function(){
-            var p, ref$;
-            p = this$.adapter.path;
-            if (p[0] !== 'group') {
+          "delete-group": function(arg$){
+            var node, grp;
+            node = arg$.node;
+            if (node.classList.contains('disabled')) {
               return;
             }
-            if (((ref$ = this$.adapter.doc.data).group || (ref$.group = [])).length === 1) {
+            if (!(grp = this$.adapter.doc.data.group[this$.adapter.path[1]])) {
               return;
             }
-            this$.adapter.doc.submitOp([{
-              p: ['group', p[1]],
-              od: this$.adapter.doc.data.group[p[1]]
-            }]);
-            this$.setPath(['group', 0, 'info']);
-            return this$.opt.setGroup(this$.adapter.doc.data.group[0]);
+            return this$.opt.deleteGroup(grp.key);
           },
           submit: function(arg$){
             var node;

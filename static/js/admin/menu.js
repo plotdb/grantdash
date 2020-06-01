@@ -7,12 +7,12 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
     this.opt = opt;
     this.toc = toc = opt.toc;
     this.grps = [];
-    update = debounce(500, function(){
+    this.update = update = debounce(500, function(){
       return this$.opsOut(function(){
         return this$.grps;
       });
     });
-    setGroup = function(grp){
+    this.setGroup = setGroup = function(grp){
       return opt.setGroup(grp);
     };
     search = debounce(function(val){
@@ -34,31 +34,9 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
             return view.render('brd-list-toggle');
           },
           "grp-add": function(arg$){
-            var node, i$, i, key;
+            var node;
             node = arg$.node;
-            for (i$ = 0; i$ < 100; ++i$) {
-              i = i$;
-              key = suuid();
-              if (!this$.grps.filter(fn$).length) {
-                break;
-              }
-            }
-            if (this$.grps.filter(function(it){
-              return it.key === key;
-            }).length) {
-              throw new ldError(1011);
-            }
-            this$.grps.push({
-              key: key,
-              info: {
-                name: "新分組"
-              }
-            });
-            view.render('grp-entry');
-            return update().now();
-            function fn$(it){
-              return it.key === key;
-            }
+            return this$.addGroup();
           }
         },
         input: {
@@ -184,6 +162,47 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
     return this;
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
+    deleteGroup: function(v){
+      var grp;
+      if (!(grp = this.grps.filter(function(it){
+        return it.key === v;
+      })[0])) {
+        return;
+      }
+      if (this.grps.length === 1) {
+        return;
+      }
+      this.grps.splice(this.grps.indexOf(grp), 1);
+      this.setGroup(this.grps[0]);
+      this.view.render('grp-entry');
+      return this.update().now();
+    },
+    addGroup: function(){
+      var i$, i, key;
+      for (i$ = 0; i$ < 100; ++i$) {
+        i = i$;
+        key = suuid();
+        if (!this.grps.filter(fn$).length) {
+          break;
+        }
+      }
+      if (this.grps.filter(function(it){
+        return it.key === key;
+      }).length) {
+        throw new ldError(1011);
+      }
+      this.grps.push({
+        key: key,
+        info: {
+          name: "新分組"
+        }
+      });
+      this.view.render('grp-entry');
+      return this.update().now();
+      function fn$(it){
+        return it.key === key;
+      }
+    },
     opsIn: function(arg$){
       var data, ops, source;
       data = arg$.data, ops = arg$.ops, source = arg$.source;

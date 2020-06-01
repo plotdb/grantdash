@@ -66,6 +66,9 @@ Ctrl = (opt) ->
         handler: ({node, data}) ->
           node.innerText = data.name + (if !data.slug => '' else " ( #{data.slug} )")
           node.setAttribute \value, (data.slug or '')
+      "delete-group": ({node}) ~>
+        disabled = !(@adapter and @adapter.doc and @adapter.doc.data.group and @adapter.doc.data.group.length > 1)
+        node.classList.toggle \disabled, disabled
 
     action: do
       change: do
@@ -92,13 +95,10 @@ Ctrl = (opt) ->
               error! e
 
       click: do
-        delete: ~>
-          p = @adapter.path
-          if p.0 != \group => return
-          if @adapter.doc.data.[]group.length == 1 => return
-          @adapter.doc.submitOp [ {p: ['group',p.1],  od: @adapter.doc.data.group[p.1] } ]
-          @set-path ['group', 0, 'info']
-          @opt.set-group @adapter.doc.data.group.0
+        "delete-group": ({node}) ~>
+          if node.classList.contains \disabled => return
+          if !(grp = @adapter.doc.data.group[@adapter.path.1]) => return
+          @opt.delete-group grp.key
 
         submit: ({node}) ->
           if node.classList.contains \disabled => return

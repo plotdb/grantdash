@@ -200,12 +200,15 @@ ldc.register('adminGuard', ['general', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter'
       });
     },
     initCtrl: function(){
-      var ref$, org, brd, setGroup, toc, x$, y$, z$, this$ = this;
+      var ref$, org, brd, setGroup, toc, deleteGroup, x$, y$, z$, this$ = this;
       ref$ = this.hubs, org = ref$.org, brd = ref$.brd;
       setGroup = function(it){
         return this$.setGroup(it);
       };
       toc = this.toc;
+      deleteGroup = function(it){
+        return this$.ctrl.brd.group.deleteGroup(it);
+      };
       this.ctrl.welcome = new adminWelcome({
         root: '[ld-scope=admin-welcome]',
         toc: toc
@@ -308,7 +311,8 @@ ldc.register('adminGuard', ['general', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter'
       z$.info = new adminInfo({
         root: '[ld-scope=grp-info-panel]',
         type: 'grp',
-        setGroup: setGroup
+        setGroup: setGroup,
+        deleteGroup: deleteGroup
       });
       z$.perm = new adminPerm({
         toc: toc,
