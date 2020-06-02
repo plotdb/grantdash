@@ -1,4 +1,4 @@
-# Grant Dash 網址規則
+# Grant Dash API
 
 要透過客製網址使用 Grant Dash, 您可以將您的網址透過 DNS 設定 CNAME 指向 grantdash.io 的方式來達成。設定完成並建立好入口頁面以後，您便可透過您的網址連上您的入口頁面。
 
