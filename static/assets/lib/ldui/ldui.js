@@ -12250,10 +12250,17 @@ smoothScroll = function(opt){
     ? opt.offset
     : -80;
   return ld$.find(document, "*[data-scrollto]").map(function(d, i){
-    var t;
+    var t, jump;
     t = d.getAttribute('data-scrollto');
+    jump = getComputedStyle(document.body).scrollBehavior === 'smooth';
     return d.addEventListener('click', function(e){
-      scrollto(ld$.find(document, t, 0), delay, offset);
+      console.log('h1');
+      ldui.scrollTo({
+        node: ld$.find(document, t, 0),
+        delay: delay,
+        offset: offset,
+        jump: jump
+      });
       return e.preventDefault();
     });
   });
