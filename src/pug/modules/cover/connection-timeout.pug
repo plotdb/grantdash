@@ -1,0 +1,12 @@
+include /modules/common.pug
+.ldcv.ldcvmgr(data-name="connection-timeout",data-lock="true"): .base.w-640.rwd: .inner.card
+  .card-body.text-center: .p-4
+    h1 Oooops!
+    p 系統主機一直沒有回應。
+    br
+    .m-auto.text-left.text-muted
+      p 網頁試著要與系統主機通訊，但儘管等了好一段時間，主機仍然沒有回應，或者回傳的資料有出現問題。這代表主機可能暫時性的忙碌中，或者出了一點狀況。
+      p 您可以稍候再重試一次，看看是否只是因為網路連線不穩，或是暫時性的主機忙碌。或者，您也可以試著 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 聯絡我們] 來回報這個問題。
+      br
+      .btn.btn-primary.btn-block.btn-lg.mr-2(data-ldcv-set="") 再試一次吧？ 
+
