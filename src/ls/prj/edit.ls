@@ -7,8 +7,8 @@ Ctrl = (opt) ->
     init-render: false
     root: '[ld-scope=prj-form-use]'
     handler: do
-      "init-loader": ({node}) ->
-        node.classList.toggle \d-none, true
+      "init-loader": ({node}) -> node.classList.toggle \d-none, true
+      "content": ({node}) -> node.classList.toggle \d-none, false
   @slug = opt.prj
   @prj = {}
   @
@@ -20,7 +20,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     ld$.fetch "/dash/api/prj/#{@slug}", {method: \GET}, {type: \json}
       .then ~>
         @prj = it
-        ld$.fetch "/dash/api/brd/#{@prj.brdslug}/form", {method: \GET}, {type: \json}
+        ld$.fetch "/dash/api/brd/#{@prj.brd}/form", {method: \GET}, {type: \json}
       .then ~>
         @brd = it
         # TODO choose grp by prj result

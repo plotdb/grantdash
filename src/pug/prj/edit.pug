@@ -34,7 +34,8 @@ block body
   +scope("prj-form-use").w-1024.mx-auto.rwd.typeset.heading-contrast
     .d-flex
       .mr-4.p-4.rounded.border(style="background:linear-gradient(315deg,#f4f5f6,#fff);min-height:calc(100vh - 7em)")
-        .pb-4.mb-4.h-100
+        .h-100(pd="init-loader",style="width:250px")
+        .pb-4.mb-4.h-100.d-none(pd="content")
           h3.my-0.d-none(ld="nview") 編輯提案
           h3.my-0(ld="view") 預覽提案
           hr
@@ -74,8 +75,8 @@ block body
             .mb-4
               label.mb-1 提案人
               .d-flex.align-items-center
-                +user.mr-2
-                span Kirby Wu
+                +user.mr-2(ld="owner-avatar")
+                span(ld="owner-name")
             .mb-4
               label.mb-1 提案發表於
               .font-weight-bold(ld="brd-name")

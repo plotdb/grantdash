@@ -28,7 +28,9 @@ app.get \/prj/:slug, (req, res) ->
 api.get "/prj/:slug/", aux.signed, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   io.query """
-  select p.*, b.slug as brdslug from prj as p, brd as b where p.slug = $1 and b.slug = p.brd
+  select p.*, u.displayname as ownername
+  from prj as p, users as u
+  where p.slug = $1 and u.key = p.owner
   """, [slug]
     .then (r = {}) -> res.send(r.[]rows.0 or {})
     .catch aux.error-handler res

@@ -15,6 +15,11 @@ ldc.register(['general', 'auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], funct
           var node;
           node = arg$.node;
           return node.classList.toggle('d-none', true);
+        },
+        "content": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.classList.toggle('d-none', false);
         }
       }
     });
@@ -33,7 +38,7 @@ ldc.register(['general', 'auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], funct
         type: 'json'
       }).then(function(it){
         this$.prj = it;
-        return ld$.fetch("/dash/api/brd/" + this$.prj.brdslug + "/form", {
+        return ld$.fetch("/dash/api/brd/" + this$.prj.brd + "/form", {
           method: 'GET'
         }, {
           type: 'json'

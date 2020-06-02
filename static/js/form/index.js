@@ -406,6 +406,16 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
             var node, ref$;
             node = arg$.node;
             return node.innerText = opt.grp ? ((ref$ = opt.grp).info || (ref$.info = {})).name || '' : '未定的分組';
+          },
+          "owner-avatar": function(arg$){
+            var node;
+            node = arg$.node;
+            return ld$.find(node, 'div', 0).style.backgroundImage = "url(/dash/s/avatar/" + this$.prj.owner + ".png)";
+          },
+          "owner-name": function(arg$){
+            var node;
+            node = arg$.node;
+            return node.innerText = this$.prj.ownername;
           }
         }
       });
