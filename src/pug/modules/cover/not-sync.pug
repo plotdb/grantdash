@@ -1,0 +1,12 @@
+include /modules/common.pug
+.ldcv.ldcvmgr(data-name="not-sync"): .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
+  h1 糟糕，有東西出錯了！
+  p 若您繼續編輯，資料可能會遺失
+  br
+  .m-auto.text-left.text-muted
+    p 到目前為止您的編輯資料都有正確更新，但系統在執行您剛剛最後一個的編輯時出了些差錯。因此，若您繼續編輯，接下來的改動可能會因無法存檔而遺失。
+    p 會發生這個問題有可能是因為網路狀況不穩、主機崩潰或是您運氣不好踩到了程式的 Bug ，建議您確認一下網路的狀況，若問題持續未改善，請 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 直接聯繫我們] 看看我們能否盡快為您排除這個問題。
+    br
+    .row.no-gutters
+      .col-md.mr-2: .btn.btn-outline-dark.btn-block.btn-lg.mr-2(data-ldcv-set="") 關閉對話框
+      .col-md.ml-2: .btn.btn-primary.btn-block.btn-lg.mr-2(onclick="lda.ldcvmgr.toggle('contact')") 聯繫我們

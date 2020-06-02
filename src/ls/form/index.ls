@@ -1,5 +1,5 @@
-({ldcvmgr, prj-form-criteria, prj-form-block, prj-form-validation, sdbAdapter}) <- ldc.register \prjForm,
-<[ldcvmgr prjFormCriteria prjFormBlock prjFormValidation sdbAdapter]>, _
+({error, ldcvmgr, prj-form-criteria, prj-form-block, prj-form-validation, sdbAdapter}) <- ldc.register \prjForm,
+<[error ldcvmgr prjFormCriteria prjFormBlock prjFormValidation sdbAdapter]>, _
 
 Ctrl = (opt) ->
   @opt = opt
@@ -33,18 +33,20 @@ Ctrl = (opt) ->
   @hub = hub = do
     update-deb: debounce 200, (b) ~> hub.update!
     update: (block) ~>
-      if view-mode and block =>
-        obj.value.answer[block.key] = block.value
-        obj.value.info
-          ..title = (obj.value.answer[obj.{}purpose.title or \title] or {}).content
-          ..description = (obj.value.answer[obj.{}purpose.description or \description] or {}).content
-          ..category = ((obj.value.answer[obj.{}purpose.category or \category] or {}).list or []).0
-          ..tag = (obj.value.answer[obj.{}purpose.tag or \tag] or {}).list
-        
-
-        @ops-out ~> obj.value
-        @validate block
-      else @ops-out ~> {list: @obj.list, purpose: @obj.purpose}
+      try
+        if view-mode and block =>
+          obj.value.answer[block.key] = block.value
+          obj.value.{}info
+            ..title = (obj.value.answer[obj.{}purpose.title or \title] or {}).content
+            ..description = (obj.value.answer[obj.{}purpose.description or \description] or {}).content
+            ..category = ((obj.value.answer[obj.{}purpose.category or \category] or {}).list or []).0
+            ..tag = (obj.value.answer[obj.{}purpose.tag or \tag] or {}).list
+          @ops-out ~> obj.value
+          @validate block
+        else @ops-out ~> {list: @obj.list, purpose: @obj.purpose}
+      catch e
+        console.log e
+        ldcvmgr.get("not-sync")
     render-deb: debounce 200, -> hub.render!
     render: ->
       blocks-view.render!
