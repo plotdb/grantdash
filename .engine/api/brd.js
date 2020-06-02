@@ -368,7 +368,9 @@
         }).then(function(){
           return repo.getBranch("refs/remotes/origin/" + branch);
         }).then(function(ref){
-          return repo.checkoutRef(ref);
+          return repo.checkoutRef(ref, {
+            checkoutStrategy: 2
+          });
         })['catch'](function(e){
           return console.log("[Deploy Error]", e);
         });

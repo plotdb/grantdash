@@ -211,7 +211,7 @@ deploy = ({url, root, branch}) ->
         .then -> repo.fetchAll!
         # checkout branch
         .then -> repo.getBranch "refs/remotes/origin/#{branch}"
-        .then (ref) -> repo.checkoutRef ref
+        .then (ref) -> repo.checkoutRef ref, {checkoutStrategy: 2} # force checkout
         .catch (e) -> console.log "[Deploy Error]", e
 
 api.post \/deploy, aux.signed, (req, res) ->
