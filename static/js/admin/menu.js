@@ -78,7 +78,7 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
           if (name === 'landing') {
             return node.setAttribute('href', "/brd/" + toc.brd.slug + "/");
           } else if (name === 'list') {
-            return node.setAttribute('href', "/dash/brd/" + toc.brd.slug + "/prj/list");
+            return node.setAttribute('href', "/dash/brd/" + toc.brd.slug + "/list");
           } else if (name === 'new-prj') {
             return node.setAttribute('href', "/dash/brd/" + toc.brd.slug + "/prj/create");
           }
