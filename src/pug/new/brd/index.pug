@@ -55,8 +55,8 @@ block body
   +script("https://cdn.jsdelivr.net/npm/tail.datetime@0.4.13/js/tail.datetime-full.min.js")
 
 block script
-  +script("/js/util/sdb-adapter.js")
-  +script("/js/admin/info.js")
+  +script("/dash/js/util/sdb-adapter.js")
+  +script("/dash/js/admin/info.js")
   script: :lsc
     ldc.register <[adminInfo]>, ({admin-info}) ->
       new admin-info root: '[ld-scope=brd-info]', type: \brd

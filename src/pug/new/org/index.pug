@@ -40,8 +40,8 @@ block body
         .col-md: .btn.btn-lg.btn-primary.disabled(ld="submit") 立刻建立
 
 block script
-  +script("/js/admin/info.js")
-  +script("/js/util/sdb-adapter.js")
+  +script("/dash/js/admin/info.js")
+  +script("/dash/js/util/sdb-adapter.js")
   script: :lsc
     ldc.register <[adminInfo]>, ({admin-info}) ->
       new admin-info root: '[ld-scope=org-info]', type: \org
