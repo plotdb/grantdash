@@ -24,6 +24,9 @@ Ctrl = (opt) ->
         "git-url": ({node}) ~>
           @data.{}git.url = node.value or ''
           @update!
+        "custom-css-url": ({node}) ~>
+          @data.{}generic.css-url = node.value or ''
+          @update!
         "git-branch": ({node}) ~>
           @data.{}git.branch = node.value or ''
           @update!
@@ -34,6 +37,7 @@ Ctrl = (opt) ->
         name = node.getAttribute(\data-name)
         node.classList.toggle \d-none, !((@data.opt or \default) == name)
       "git-url": ({node}) ~> node.value = @data.{}git.url or ''
+      "custom-css-url": ({node}) ~> node.value = @data.{}generic.css-url or ''
       "git-branch": ({node}) ~> node.value = @data.{}git.branch or ''
       "opt": ({node}) ~>
         name = node.getAttribute(\data-name)

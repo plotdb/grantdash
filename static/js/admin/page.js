@@ -53,6 +53,12 @@ ldc.register('adminPage', ['error', 'sdbAdapter', 'ldcvmgr'], function(arg$){
             ((ref$ = this$.data).git || (ref$.git = {})).url = node.value || '';
             return this$.update();
           },
+          "custom-css-url": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            ((ref$ = this$.data).generic || (ref$.generic = {})).cssUrl = node.value || '';
+            return this$.update();
+          },
           "git-branch": function(arg$){
             var node, ref$;
             node = arg$.node;
@@ -72,6 +78,11 @@ ldc.register('adminPage', ['error', 'sdbAdapter', 'ldcvmgr'], function(arg$){
           var node, ref$;
           node = arg$.node;
           return node.value = ((ref$ = this$.data).git || (ref$.git = {})).url || '';
+        },
+        "custom-css-url": function(arg$){
+          var node, ref$;
+          node = arg$.node;
+          return node.value = ((ref$ = this$.data).generic || (ref$.generic = {})).cssUrl || '';
         },
         "git-branch": function(arg$){
           var node, ref$;

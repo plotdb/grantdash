@@ -137,24 +137,25 @@ app.get \/brd/:slug/list, (req, res) ->
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
       lc.grps = lc.brd.detail.group.map -> it{form,key}
+      lc.page-info = lc.brd.detail.{}page.{}info.{}generic
       delete lc.brd.detail
-      idx1 = 3 + ([tag].filter(-> it).length)
-      idx2 = 3 + ([tag,category].filter(-> it).length)
+      idx1 = 4 + ([tag].filter(-> it).length)
+      idx2 = 4 + ([tag,category].filter(-> it).length)
       io.query(
         [
         """
         select p.*,u.displayname as ownername
         from prj as p, users as u
-        where u.key = p.owner
+        where u.key = p.owner and p.brd = $3
         """,
-        "and tag ? $3" if tag
+        "and tag ? $4" if tag
         "and category = $#idx1" if category
         "and name ~ $#idx2" if keyword
         "offset $1 limit $2"
-        ].filter(->it).join(' '), [offset, limit] ++ ([tag, category, keyword].filter(->it))
+        ].filter(->it).join(' '), [offset, limit, slug] ++ ([tag, category, keyword].filter(->it))
       )
     .then (r={}) ->
-      res.render \prj/list.pug, {prjs: r.[]rows, brd: lc.brd, grps: lc.grps}
+      res.render \prj/list.pug, {prjs: r.[]rows, brd: lc.brd, grps: lc.grps, page-info: lc.page-info}
       return null
     .catch aux.error-handler res
 

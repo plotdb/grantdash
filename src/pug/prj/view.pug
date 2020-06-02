@@ -3,7 +3,10 @@ extends /base.pug
 block vars
   - ctrl.navtop.placeholder = false;
 block head
-  +css("/dash/css/custom/index.css")
+  if pageInfo && pageInfo.cssUrl
+    +css(pageInfo.cssUrl)
+  else
+    +css("/dash/css/custom/index.css")
 block body
   - var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
   - var purpose = grp.form.purpose || {};

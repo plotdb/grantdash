@@ -4,34 +4,48 @@ p.text-muted 您可以在這裡為設定整個活動的頁面。
 hr
 +scope("page-info")
   .row.no-gutters.mb-4
-    .col-md: .mr-4.h-100.py-3.pr-3.rounded
+    .col-md: .mr-4.h-100.pr-3.rounded
       h5 使用預設頁面
       .text-muted.mb-2 我們將使用預設樣板為您的活動提供基本介紹以及提案列表。
       .btn.d-block.btn-outline-secondary(ld="nav-tab opt",data-nav="page-info",data-name="default") 使用這個選項
-    .col-md: .p-3.h-100.rounded
+    .col-md: .px-3.h-100.rounded
       h5 使用 Git Repo
       .text-muted.mb-2 由您提供網站原始碼，我們則透過 Git Clone 的方式為您執行網站部署。
       .btn.d-block.btn-outline-secondary(ld="nav-tab opt",data-nav="page-info",data-name="git") 使用這個選項
-    .col-md: .ml-4.h-100.py-3.pl-3.rounded
+    .col-md: .ml-4.h-100.pl-3.rounded
       h5 使用線上編輯器
       .text-muted.mb-2 讓您可以直接透過我們提供的線上編輯器編寫網頁內容與樣式。
       .btn.d-block.btn-light.disabled(data-name="editor") 尚未開放
   hr.my-2
   .py-4(ld="nav-panel",data-nav="page-info",data-name="default")
     h4 使用預設頁面
-    p 您的頁面將由 Grant Dash 自動生成。我們會使用組織或活動的基本資訊 ( 名稱、簡介、縮圖等 ) 產生基本的入口頁面，>並提供適當的提案列表供訪客瀏覽。
-  .py-4(ld="nav-panel",data-nav="page-info",data-name="git")
-    h4 使用 Git Repo
-    p 我們需要以下的額外資訊才能為您設定 Git Repo 部署網站。請注意，Git Repo 部署方式僅提供靜態網頁的部署，並不會執行任何額外的程式碼。
+    p 您的頁面將由 Grant Dash 自動生成。我們會使用組織或活動的基本資訊 ( 名稱、簡介、縮圖等 ) 產生基本的入口頁面，並提供適當的提案列表供訪客瀏覽。
     hr
     .form-group
-      label Git URL
-      input.form-control.border.rounded(ld="git-url",placeholder="例如, https://github.com/someone/somerepo")
+      label 客製樣式表網址
+      input.form-control.border.rounded(ld="custom-css-url", placeholder="例如, https://some.site/index.css")
+
+  .py-4(ld="nav-panel",data-nav="page-info",data-name="git")
     .row
+      .col-md-7
+        h4 使用 Git Repo
+        p 我們需要以下的資訊來設定 Git Repo 。此方式僅提供靜態網頁的部署，並不會執行任何額外的程式碼。
+      .col-md-5
+        .form-group
+          label 部署網站
+          .btn.btn-outline-dark.d-block.flex-nowrap(ld="deploy")
+            i.i-upload.text-lg
+            .text-sm 請求網站更新
+    hr
+    .row
+      .col-md
+        .form-group
+          label Git URL
+          input.form-control.border.rounded(ld="git-url",placeholder="例如, https://github.com/someone/somerepo")
       .col-md
         .form-group
           label Git Branch
           input.form-control.rounded.border(ld="git-branch",placeholder="例如, gh-pages")
-      .col-md
-        label &nbsp;
-        .btn.btn-primary.d-block(ld="deploy") 請求網站更新
+    .form-group
+      label 客製樣式表網址
+      input.form-control.border.rounded(ld="custom-css-url", placeholder="例如, https://some.site/index.css")

@@ -5,7 +5,10 @@ block vars
   - ctrl.navtop.shown = true;
   - ctrl.navtop.className = ""
 block head
-  +css("/dash/css/custom/index.css")
+  if pageInfo && pageInfo.cssUrl
+    +css(pageInfo.cssUrl)
+  else
+    +css("/dash/css/custom/index.css")
 block body
   include /modules/mixins/index.pug
 
