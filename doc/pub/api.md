@@ -15,7 +15,7 @@
 
  * `/brd/<id>`          - 特定活動的入口頁. 例如: https://custom.domain/brd/my-event-1
  * `/dash/auth/`        - 登入系統的表單介面。若需要引導用戶登入網站，可將用戶重導向至此.
-   - 若您需要用戶登入完成後連回特定頁面，可使用 nexturl 參數，如：
+   - 若您需要用戶登入完成後連回特定頁面，可使用 `nexturl` 參數，如：
      https://custom.domain/dash/auth/?nexturl=/brd/my-event-1
  * `/brd/<id>/list`     - 特定活動的提案列表. 您可帶以下參數做提案篩選:
    - `keyword`      - 名稱
