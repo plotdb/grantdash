@@ -3,47 +3,58 @@ extends /base.pug
 block vars
   - ctrl.navtop.placeholder = true;
   - ctrl.navtop.shown = true;
-  - ctrl.navtop.className = "navbar-light bg-semi-light"
+  - ctrl.navtop.className = ""
+block head
+  +css("/dash/css/custom/sch001.css")
 block body
   include /modules/mixins/index.pug
 
   - var ghash = {};
   - (grps || []).map(function(d,i) { ghash[d.key] = d; });
+  mixin card(opt)
+    .gd-prj-card&attributes(attributes)
+      a(href=`/prj/${opt.slug}`)
+        if opt.showThumb
+          .w-100
+            .gd-prj-card-thumb.aspect-ratio.ratio-3by2(
+            style=`background-image:url(${opt.thumb})`)
+        .gd-prj-card-name.text-truncate(style="font-weight:500;font-size:1.25em") #{opt.name || '未命名的提案'}
+      .gd-prj-card-owner.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownername || '未具名'}]
+      .gd-prj-card-description.mb-2.flex-grow-1 #{(opt.description || '').substring(0,50)} ...
+
   mixin list
     .w-1024.rwd.mx-auto.d-flex.flex-wrap.justify-content-between
       each prj in prjs
-
         - prj.showThumb = true
         - prj.thumb = `/dash/org/${brd.org}/prj/${prj.slug}/upload/thumb.png`
-        .py-4.my-4: +prj-card-noframe(prj).mb-4.h-100.border-0.shadow-none
-
-      .py-4.my-4.flex-placeholder: +prj-card-noframe({}).mb-4.h-100.border-0.shadow-none
-    .w-1024.rwd.mx-auto.text-center.my-4.py-4
+        +card(prj)
+      +card({}).flex-placeholder
+    .gd-prj-list-pagination.w-1024.rwd.mx-auto.text-center.my-4.py-4
       .btn-group.mx-auto
         each i in [1,2,3,4,5,6]
-          .btn.btn-outline-secondary(class=(i==1?"active":"")) #{i}
+          .btn(class=(i==1?"active":"")) #{i}
 
   +scope("project-list")
     .d-block(ld="panel side")
       .w-1024.rwd.mx-auto.pt-4
-        .w-100.text-light.bg-dark.mb-4.rounded(style=`height:300px;background:url(/dash/org/${brd.org}/brd/${brd.slug}/upload/banner.png) center center no-repeat;background-size:cover`)
-          .vertical-center.rounded(style="background-color:rgba(0,0,0,.3)")
-            .w-50.text-left.ml-4.p-4.text-shadow-sm
-              h3.font-weight-light #{brd.name}
-              p.text-sm.mb-4(style="max-width:400px;opacity:.65") #{(brd.description || '').substring(0,100)} ...
-              a.btn.btn-outline-light(href=`/brd/${brd.slug}/`) 關於此計畫
-              a.btn.btn-outline-light.ml-2(href=`/dash/brd/${brd.slug}/prj/create`) 我要提案
-        .d-flex.w-100.justify-content-between.py-2
+        .gd-prj-list-banner(style=`background-image:url(/dash/org/${brd.org}/brd/${brd.slug}/upload/banner.png)`)
+          .vertical-center
+            .gd-prj-list-info
+              h3 #{brd.name}
+              p.desc #{(brd.description || '').substring(0,100)} ...
+              a.btn(href=`/brd/${brd.slug}/`) 關於此計畫
+              a.btn.ml-2(href=`/dash/brd/${brd.slug}/prj/create`) 我要提案
+        .gd-prj-list-ctrl
           div
             .btn-group
               //-.btn.btn-outline-secondary 許願池
               //-.btn.btn-outline-secondary 得獎提案
-              .btn.btn-outline-primary.active 全部提案 #[i.i-check]
+              .btn.active 全部提案
           div
-            .input-group
+            .gd-prj-list-search-box.input-group
               input.form-control(ld="search-input",placeholder="搜尋提案...")
               .input-group-append
-                .btn.btn-outline-secondary(ld="search") 搜尋 #[i.i-search]
+                .btn(ld="search") 搜尋 #[i.i-search]
 
       +list
 
