@@ -2,6 +2,7 @@ extends base.pug
 block vars
  - ctrl.cover.authpanel = false;
  - ctrl.navtop.placeholder = false;
+ - ctrl.navtop.shown = false;
 block content
   include /modules/widget/authpanel.pug
   .text-left: +authpanel

@@ -18,13 +18,12 @@ mixin authpanel
           if block
             block
           else
-            h3.mb-4.font-weight-bold(style="line-height:1em")
-              | 登入您的#[br]Grant Dash 帳號
-            p.text-sm 公民科技獎助金提案系統由 Grant Dash 提供。登入 Grant Dash 以建立提案。
+            h3.mb-2.font-weight-bold(style="line-height:1em") 登入系統
+            .text-muted 您可以在登入之後進行提案、系統管理或評選工作。
 
-      //-.position-absolute.text-sm(style="bottom:20px;right:20px")
-        span Service Provided by Grant Dash
-        img(src="/assets/img/c/logo/battledash.svg",style="height:1.3em;vertical-align:-.2em")
+      .position-absolute.text-sm(style="bottom:20px;right:20px")
+        span Powered by Grant Dash
+        //-img(src="/assets/img/c/logo/battledash.svg",style="height:1.3em;vertical-align:-.2em")
     .form.bg-white.w-50.h-100.d-flex.flex-column(style="margin-left:50%")
       ul.nav.nav-tabs.pt-2.bg-light(
       onclick="this.parentNode.classList.toggle('login');this.parentNode.classList.toggle('signup')")
@@ -63,4 +62,3 @@ mixin authpanel
             .col-sm: .btn.btn-primary.btn-block.btn-sm(onclick="lda.auth.fb()") #[i.i-fb] Facebook
             .col-sm: .btn.btn-outline-dark.btn-block.btn-sm(onclick="lda.auth.google()") #[i.i-google] Google
 
-  //-+script("/js/modules/core/auth.js")
