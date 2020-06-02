@@ -1,5 +1,5 @@
 //- module
 mixin user(opt)
-  - var url = (opt && opt.key ? `/s/avatar/${opt.key}.png` : '/dash/assets/img/avatar.svg')
+  - var url = (opt && opt.key ? `/dash/s/avatar/${opt.key}.png` : '/dash/assets/img/avatar.svg')
   .d-inline-block(style="width:2em")&attributes(attributes)
     .aspect-ratio.ratio-1by1.rounded-circle.bg-cover(style=`background:#444 url(${url}) center center no-repeat`)
