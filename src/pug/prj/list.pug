@@ -5,7 +5,7 @@ block vars
   - ctrl.navtop.shown = true;
   - ctrl.navtop.className = ""
 block head
-  +css("/dash/css/custom/sch001.css")
+  +css("/dash/css/custom/index.css")
 block body
   include /modules/mixins/index.pug
 
@@ -13,13 +13,13 @@ block body
   - (grps || []).map(function(d,i) { ghash[d.key] = d; });
   mixin card(opt)
     .gd-prj-card&attributes(attributes)
-      a(href=`/prj/${opt.slug}`)
+      a(href=`/dash/prj/${opt.slug}`)
         if opt.showThumb
           .w-100
             .gd-prj-card-thumb.aspect-ratio.ratio-3by2(
             style=`background-image:url(${opt.thumb})`)
         .gd-prj-card-name.text-truncate(style="font-weight:500;font-size:1.25em") #{opt.name || '未命名的提案'}
-      .gd-prj-card-owner.mb-2 By #[a(href=`/user/${opt.owner}`) #{opt.ownername || '未具名'}]
+      .gd-prj-card-owner.mb-2 By #[a(href=`/dash/user/${opt.owner}`) #{opt.ownername || '未具名'}]
       .gd-prj-card-description.mb-2.flex-grow-1 #{(opt.description || '').substring(0,50)} ...
 
   mixin list
