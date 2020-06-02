@@ -39,7 +39,8 @@ api.post \/comment/, (req, res) ->
         """, [lc.slug]
     .then (r={}) ->
       ret = (r.[]rows.0 or {})
-      lc <<< distance: ((ret.distance or 0) + 1), discus: ret.discus
+      distance = (if isNaN(+ret.distance) => 0 else +ret.distance)
+      lc <<< distance: (distance + 1), discus: ret.discus
       lc.state = \active
       if !lc.discus =>
         io.query "select key from discus where slug = $1", [lc.slug]
