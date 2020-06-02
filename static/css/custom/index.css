@@ -165,7 +165,7 @@ body {
   flex: 0 0 auto;
 }
 .gd-prj-view-header.simple .info {
-  flex: 1 0 auto;
+  flex: 1 0 0;
   padding-right: 0.5em;
 }
 .gd-prj-view-header.simple .brd {
