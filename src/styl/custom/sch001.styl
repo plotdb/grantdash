@@ -2,6 +2,15 @@ body
   background: #012e44 url(https://sch001.g0v.dev/assets/img/main_1920x1080_b-01.jpg) center top fixed;
   background-size: cover
 
+#nav-top
+  nav.navbar
+    width: 1024px
+    text-shadow: 0 1px 3px rgba(0,0,0,.1)
+    background: none
+    margin: auto
+    a.nav-link, a.navbar-brand
+      color: #fff
+
 .gd-prj-list-banner
   box-shadow: 0 10px 20px rgba(0,0,0,.2)
   color: #eee
@@ -113,9 +122,137 @@ body
     border: 1px solid #fff
     color: #444
 
+.gd-prj-view
+  width: 100%
+  position: relative
+  margin: 0
+  padding: 6em 0 1.5em
+  background-color: #012e44;
+  background-image: url(https://sch001.g0v.dev/assets/img/main_1920x1080_b-01.jpg)
+  background-position: center bottom
+  background-repeat: no-repeat
+  background-size: cover
+  .inner
+    width: 1024px
+    height: 100%
+    margin: auto
+    padding-top: 1.5em
+    margin-top: 1em
 
-#nav-top nav.navbar
-  background: rgba(0,0,0,.05)
-  a.nav-link, a.navbar-brand
+@media(max-width: 1024px)
+  .gd-prj-view .inner
+    width: 95%
+
+.gd-prj-view-header.simple
+  display: flex
+  margin-bottom: 2.5em
+  color: #fff
+  .thumb
+    border-radius: .25em
+    background-color: #222
+    background-size: cover
+    background-position: center center
+    background-repeat: no-repeat
+    margin: 1.5em 3em 0 0
+    width: 9.25em
+    height: 9.25em
+    flex: 0 0 auto
+    box-shadow: 0 10px 40px rgba(0,0,0,.3)
+
+  .info
+    flex: 1 0 auto
+    padding-right: .5em
+
+  .brd
+    font-size: .85em
+    color: #777
+
+  .title
+    display: flex
+    align-items: flex-end
+    margin-top: .25em
+    h2
+      margin: .25em 0 0
+      line-height: 1em
+  .tags
+    line-height: 1em
+    margin-left: 1em
+    flex: 1 0 auto
+  .tags a
+    text-decoration: none
+    color: #444
+    margin-right: .5em
+    background: #e0e1e2
+    padding: .1em .4em
+    animation: ld-float-rtl-in 1s linear
+    animation-fill-mode: forwards
+    opacity: .05
+    transform: matrix(1,0,0,1,14.925,0)
+    font-size: .8em
+    border-radius: .25em
+
+  .btn
+    border: 1px solid #fff
     color: #fff
+  .btn:hover
+    border: 1px solid #fff
+    background: #fff
+    color: #222
+  .user
+    display: flex
+    margin: 1.5em 0
+    flex: 1 0 auto
+    .item
+      margin-right: 1.5em
+      flex: 1 0 auto
+      display: flex
+      align-items: center
+      .label
+        opacity: .8
+        margin-right: 1em
+      .name
+        color: #fff
+      .avatar
+        width: 1.25em
+        height: 1.25em
+        border-radius: 50%
+        margin-right: .5em
+        display: inline-block
+        background-color: #777
 
+  .hr
+    width: 100%
+    margin: 1.5em 0
+    height: 2px
+    background linear-gradient(90deg,#aaebcc,#ddfeef)
+  .brief p
+    color: #fff
+  a
+    color: #fff
+    text-decoration: underline
+
+
+.gd-prj-view-body.simple
+  width: 100%
+  background: #eeeff0
+  padding-top: 1.5em
+  border-top: 1px solid #ccc
+  margin: 0
+  padding: 2em 0 4em
+  .inner
+    width: 1024px
+    height: 100%
+    margin: auto
+  .block
+    padding: 1.5em
+    border: 1px solid #ccc
+    box-shadow: 0 4px 8px rgba(0,0,0,.3)
+    background: #fff
+    border-radius: .25em
+    margin-bottom: 1.5em
+  .caption
+    padding: 1.5em 0
+    h3
+      margin-top: 1.5em
+    p
+      opacity: .9
