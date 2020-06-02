@@ -40,7 +40,6 @@ Ctrl = (opt) ->
           ..description = (obj.value.answer[obj.{}purpose.description or \description] or {}).content
           ..category = ((obj.value.answer[obj.{}purpose.category or \category] or {}).list or []).0
           ..tag = (obj.value.answer[obj.{}purpose.tag or \tag] or {}).list
-        console.log obj
         
 
         @ops-out ~> obj.value
@@ -176,6 +175,7 @@ Ctrl = (opt) ->
 
     viewer = new ldView do
       root: root
+      init-render: false
       action: do
         input: do
           history: -> ldcvmgr.toggle 'prj-diff'

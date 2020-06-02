@@ -66,7 +66,6 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
           x$.description = (obj.value.answer[(obj.purpose || (obj.purpose = {})).description || 'description'] || {}).content;
           x$.category = ((obj.value.answer[(obj.purpose || (obj.purpose = {})).category || 'category'] || {}).list || [])[0];
           x$.tag = (obj.value.answer[(obj.purpose || (obj.purpose = {})).tag || 'tag'] || {}).list;
-          console.log(obj);
           this$.opsOut(function(){
             return obj.value;
           });
@@ -310,6 +309,7 @@ ldc.register('prjForm', ['ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 'prjFormV
       };
       viewer = new ldView({
         root: root,
+        initRender: false,
         action: {
           input: {
             history: function(){
