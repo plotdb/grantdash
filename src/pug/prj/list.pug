@@ -33,9 +33,7 @@ block body
         +card(prj)
       +card({}).flex-placeholder
     .gd-prj-list-pagination.w-1024.rwd.mx-auto.text-center.my-4.py-4
-      .btn-group.mx-auto
-        each i in [1,2,3,4,5,6]
-          .btn(class=(i==1?"active":"")) #{i}
+      .btn-group.mx-auto: a.btn(ld-each="pagination")
 
   +scope("project-list")
     .d-block(ld="panel side")
@@ -62,8 +60,12 @@ block body
       +list
 
 block script
+  +register-locals("prjs")
   script: :lsc
-    ldc.register <[util]>, ({util}) ->
+    ldc.register <[util viewLocals]>, ({util, viewLocals}) ->
+      full-count = (viewLocals.0 or {}).full_count
+      prj = viewLocals.0 or {}
+      console.log viewLocals.0
       lc = {}
       view = new ldView do
         root: '[ld-scope=project-list]'
@@ -74,3 +76,9 @@ block script
         handler: do
           "search-input": ({node}) ->
             node.value = (util.parse-querystring("keyword") or '')
+          pagination: do
+            list: -> [0 til Math.ceil(full-count/24)]
+            handler: ({node, data}) ->
+              node.innerText = (data + 1)
+              offset = data * 24
+              node.setAttribute \href, "/dash/brd/#{prj.brd}/list?offset=#offset"

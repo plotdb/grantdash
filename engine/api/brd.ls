@@ -144,6 +144,7 @@ app.get \/brd/:slug/list, (req, res) ->
       io.query(
         [
         """
+        with cte as (
         select p.*,u.displayname as ownername
         from prj as p, users as u
         where u.key = p.owner and p.brd = $3
@@ -151,7 +152,11 @@ app.get \/brd/:slug/list, (req, res) ->
         "and tag ? $4" if tag
         "and category = $#idx1" if category
         "and name ~ $#idx2" if keyword
-        "offset $1 limit $2"
+        """) select * from (
+          table cte limit $2 offset $1
+        ) sub
+        right join (select count(*) from cte) c(full_count) on true
+        """
         ].filter(->it).join(' '), [offset, limit, slug] ++ ([tag, category, keyword].filter(->it))
       )
     .then (r={}) ->
