@@ -50,10 +50,13 @@
           ? io.query("select c.* from comment as c\nwhere key = $1 and c.deleted is not true and c.state = 'active'", [lc.reply])
           : io.query("select count(c.key) as distance, d.key as discus\nfrom comment as c, discus as d where d.slug = $1 and d.key = c.discus group by d.key", [lc.slug]);
       }).then(function(r){
-        var ret;
+        var ret, distance;
         r == null && (r = {});
         ret = (r.rows || (r.rows = []))[0] || {};
-        lc.distance = (ret.distance || 0) + 1;
+        distance = isNaN(+ret.distance)
+          ? 0
+          : +ret.distance;
+        lc.distance = distance + 1;
         lc.discus = ret.discus;
         lc.state = 'active';
         if (!lc.discus) {

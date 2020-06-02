@@ -248,7 +248,7 @@
         return aux.r400(res);
       }
       return io.query("select b.name, b.description, b.slug, b.org, b.detail from brd as b where b.slug = $1", [slug]).then(function(r){
-        var idx1, idx2;
+        var ref$, ref1$, ref2$, idx1, idx2;
         r == null && (r = {});
         if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
@@ -259,16 +259,17 @@
             key: it.key
           };
         });
+        lc.pageInfo = (ref$ = (ref1$ = (ref2$ = lc.brd.detail).page || (ref2$.page = {})).info || (ref1$.info = {})).generic || (ref$.generic = {});
         delete lc.brd.detail;
-        idx1 = 3 + [tag].filter(function(it){
+        idx1 = 4 + [tag].filter(function(it){
           return it;
         }).length;
-        idx2 = 3 + [tag, category].filter(function(it){
+        idx2 = 4 + [tag, category].filter(function(it){
           return it;
         }).length;
-        return io.query(["select p.*,u.displayname as ownername\nfrom prj as p, users as u\nwhere u.key = p.owner", tag ? "and tag ? $3" : void 8, category ? "and category = $" + idx1 : void 8, keyword ? "and name ~ $" + idx2 : void 8, "offset $1 limit $2"].filter(function(it){
+        return io.query(["with cte as (\nselect p.*,u.displayname as ownername\nfrom prj as p, users as u\nwhere u.key = p.owner and p.brd = $3", tag ? "and tag ? $4" : void 8, category ? "and category = $" + idx1 : void 8, keyword ? "and name ~ $" + idx2 : void 8, ") select * from (\n  table cte limit $2 offset $1\n) sub\nright join (select count(*) from cte) c(full_count) on true"].filter(function(it){
           return it;
-        }).join(' '), [offset, limit].concat([tag, category, keyword].filter(function(it){
+        }).join(' '), [offset, limit, slug].concat([tag, category, keyword].filter(function(it){
           return it;
         })));
       }).then(function(r){
@@ -276,7 +277,8 @@
         res.render('prj/list.pug', {
           prjs: r.rows || (r.rows = []),
           brd: lc.brd,
-          grps: lc.grps
+          grps: lc.grps,
+          pageInfo: lc.pageInfo
         });
         return null;
       })['catch'](aux.errorHandler(res));

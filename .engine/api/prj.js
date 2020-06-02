@@ -30,16 +30,17 @@
         if (!(lc.prj = prj = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
-        return io.query("select name,slug,org,(detail->'group') as group from brd where brd.slug = $1", [lc.prj.brd]);
+        return io.query("select name,slug,org,detail from brd where brd.slug = $1", [lc.prj.brd]);
       }).then(function(r){
-        var brd, grp;
+        var brd, grp, ref$, ref1$, ref2$;
         r == null && (r = {});
         if (!(lc.brd = brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(400);
         }
-        lc.grp = grp = (brd.group || []).filter(function(it){
+        lc.grp = grp = (((ref$ = brd.detail || (brd.detail = {})).group || (ref$.group = {})) || []).filter(function(it){
           return it.key === lc.prj.grp;
         })[0];
+        lc.pageInfo = (ref$ = (ref1$ = (ref2$ = brd.detail || (brd.detail = {})).page || (ref2$.page = {})).info || (ref1$.info = {})).generic || (ref$.generic = {});
         if (!lc.grp) {
           return aux.reject(400);
         }
@@ -51,7 +52,8 @@
         return res.render('prj/view.pug', {
           prj: lc.prj,
           grp: lc.grp,
-          brd: lc.brd
+          brd: lc.brd,
+          pageInfo: lc.pageInfo
         });
       })['catch'](aux.errorHandler(res));
     });
@@ -60,7 +62,7 @@
       if (!(slug = req.params.slug)) {
         return aux.r400(res);
       }
-      return io.query("select p.*, b.slug as brdslug from prj as p, brd as b where p.slug = $1 and b.slug = p.brd", [slug]).then(function(r){
+      return io.query("select p.*, u.displayname as ownername\nfrom prj as p, users as u\nwhere p.slug = $1 and u.key = p.owner", [slug]).then(function(r){
         r == null && (r = {});
         return res.send((r.rows || (r.rows = []))[0] || {});
       })['catch'](aux.errorHandler(res));
