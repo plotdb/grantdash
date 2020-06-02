@@ -62,13 +62,16 @@ block script
           .folder.show(ld="folder")
             .folder-toggle.folder-item 活動頁面
             .folder-menu
-              a.folder-item.d-flex(ld="brd-page",data-name="landing",href="#")
+              a.folder-item.d-flex(ld="brd-page",data-name="landing",
+              href="#",target="_blank",rel="noopener noreferrer")
                 .flex-grow-1 入口網頁
                 div: i.i-link
-              a.folder-item.d-flex(ld="brd-page",data-name="list",href="#")
+              a.folder-item.d-flex(ld="brd-page",data-name="list",
+              href="#",target="_blank",rel="noopener noreferrer")
                 .flex-grow-1 提案列表
                 div: i.i-link
-              a.folder-item.d-flex(ld="brd-page",data-name="new-prj",href="#")
+              a.folder-item.d-flex(ld="brd-page",data-name="new-prj",
+              href="#",target="_blank",rel="noopener noreferrer")
                 .flex-grow-1 建新提案
                 div: i.i-link
 
