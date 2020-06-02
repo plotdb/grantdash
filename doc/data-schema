@@ -71,3 +71,15 @@ name could be `org`, `brd` or `prj`. `slug` is a slug of the corresponding objec
      - decs
    - other      - 用於多選、單選。若為真，代表用戶選填了其它資料。
    - otherValue - 在 other = true 時, 代表用戶選擇了自己田填了的這個值。
+
+# Form Answer
+
+ * info
+ * answer
+   - content
+   - useMarkdown
+   - list
+     - Array of string or objects
+   - other
+   - otherValue
+
