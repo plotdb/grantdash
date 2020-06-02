@@ -3,7 +3,7 @@ block vars
   - ctrl.navtop.placeholder = false;
   - ctrl.navtop.shown = false;
   - view = false;
-  include /ui/data/sample.pug
+  //-include /ui/data/sample.pug
   include /modules/mixins/index.pug
 block head
   style: :stylus
@@ -70,11 +70,11 @@ block body
 
         .flex-grow-1
           div(ld="view")
-            each item in data.schema
+            //-each item in data.schema
               +form-answer(item)
           div(ld="nview")
             +scope("project-edit").flex-grow-1
-              each item in data.schema
+              //-each item in data.schema
                 if item.type == "short-answer"
                   +form-short-answer(item)
                 else if item.type == "long-answer"
