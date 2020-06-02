@@ -3,7 +3,14 @@ ldc.register('prjView', ['auth', 'error', 'viewLocals'], function(arg$){
   var auth, error, viewLocals;
   auth = arg$.auth, error = arg$.error, viewLocals = arg$.viewLocals;
   return auth.get().then(function(g){
-    var view;
+    var prj, grp, answers, ref$, blocks, bhash, view;
+    prj = viewLocals.prj, grp = viewLocals.grp;
+    answers = (ref$ = prj.detail || (prj.detail = {})).answer || (ref$.answer = {});
+    blocks = (ref$ = grp.form || (grp.form = {})).list || (ref$.list = []);
+    bhash = {};
+    blocks.map(function(it){
+      return bhash[it.key] = it;
+    });
     return view = new ldView({
       root: document.body,
       init: {
@@ -29,6 +36,27 @@ ldc.register('prjView', ['auth', 'error', 'viewLocals'], function(arg$){
           var node;
           node = arg$.node;
           return node.classList.toggle('d-none', g.user.key !== viewLocals.owner);
+        },
+        answer: function(arg$){
+          var node, key, block, answer, list;
+          node = arg$.node;
+          key = node.getAttribute('data-key');
+          block = bhash[key];
+          if (!(answer = answers[key] || {}) || !(block = bhash[key])) {
+            return;
+          }
+          if (answer.content) {
+            if (answer.useMarkdown) {
+              return node.innerHTML = DOMPurify.sanitize(marked(answer.content));
+            } else {
+              return node.innerText = answer.content;
+            }
+          } else if (answer.list) {
+            list = answer.list.concat(answer.otherValue && answer.other
+              ? [answer.otherValue]
+              : []);
+            return node.innerHTML = DOMPurify.sanitize(list.join("<br>"));
+          }
         }
       }
     });

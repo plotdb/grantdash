@@ -79,7 +79,8 @@ block body
             p.text-muted #{block.desc}
             hr
             - var value = answer[block.key]
-            .pb-4
+            .pb-4(ld="answer",data-key=block.key)
+              //- TODO useMarkdown
               if value
                 | #{value.content || value.list.map(function(d,i) { return d.name || d; }).join(',')}
 
@@ -93,4 +94,4 @@ block body
 block script
   +script("/dash/js/prj/view.js")
   +script("/dash/js/util/discus.js")
-  +register-locals("prj")
+  +register-locals()
