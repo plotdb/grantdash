@@ -1,11 +1,12 @@
 (->
-  ldc.register \discus, <[auth]>, ({auth}) ->
+  ldc.register \discus, <[auth error]>, ({auth, error}) ->
     marked-options = {} # {render: (new marked.Renderer!) <<< {heading: (text, leve) -> text}}
     lc = do
       loading: true
-      data: {slug: '/', content: {config: {}}}
+      data: {slug: window.location.pathname, content: {config: {}}}
     auth.get!then (g) ->
-      ld$.fetch \/dash/api/discus, {method: \GET}, {params: {slug: '/'}, type: \json}
+      lc.global = g
+      ld$.fetch \/dash/api/discus, {method: \GET}, {params: {slug: lc.data.slug}, type: \json}
         .then (comments) ->
           lc <<< {comments, loading: false}
           view.render!
@@ -31,10 +32,20 @@
               if node.classList.contains \running => return
               payload = lc.data{ slug, reply, content }
               lc.ldld.on!
-              ld$.fetch \/dash/api/comment, {method: \POST}, {type: \json, json: payload}
+              debounce 1000
+                .then -> ld$.fetch \/dash/api/comment, {method: \POST}, {type: \json, json: payload}
                 .finally -> lc.ldld.off!
-                .then -> console.log \posted
-                .catch -> console.log "failed"
+                .then ->
+                  lc.comments.push {
+                    owner: lc.global.user.key
+                    displayname: lc.global.user.displayname
+                    distance: lc.comments.length
+                    state: \active
+                    deleted: false
+                  } <<< payload
+                  view.get('input').value = ''
+                  view.render!
+                .catch error!
         init:
           post: ({node}) -> lc.ldld = new ldLoader root: node
         handler: do
