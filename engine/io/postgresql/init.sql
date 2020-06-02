@@ -88,7 +88,7 @@ create table if not exists prj (
   name text not null constraint prg_name_len check (char_length(name) <= 100),
   description text constraint prj_description_len check (char_length(description) <= 500),
   category text,
-  tags jsonb,
+  tag jsonb,
   detail jsonb,
   createdtime timestamp not null default now(),
   state state not null default 'active',
