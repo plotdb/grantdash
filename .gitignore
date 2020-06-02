@@ -8,3 +8,4 @@ static/assets/uploads
 doc/memo
 users
 static/s/
+config/nginx/domains/production/
