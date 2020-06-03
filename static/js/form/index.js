@@ -253,7 +253,7 @@ ldc.register('prjForm', ['error', 'ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 
             newData.criteria = [];
           }
           node._data = newData;
-          idx = Array.from(node.parentNode).indexOf(node);
+          idx = Array.from(node.parentNode.childNodes).indexOf(node);
           (obj.list || (obj.list = [])).splice(idx, 0, newData);
           blocksView.bindEachNode({
             name: 'block',

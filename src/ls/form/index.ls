@@ -134,7 +134,7 @@ Ctrl = (opt) ->
         else new-data.criteria = []
 
         node._data = new-data
-        idx = Array.from(node.parentNode).indexOf(node)
+        idx = Array.from(node.parentNode.childNodes).indexOf(node)
         obj.[]list.splice idx, 0, new-data
         blocks-view.bind-each-node {name: \block, container: node.parentNode, node: node}
         blocks-view.render!
