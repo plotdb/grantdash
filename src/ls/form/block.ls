@@ -138,12 +138,13 @@ module-list = module-init: ->
                 "other-value": ({node}) ~>
                   @block.{}value.other-value = node.value
                 data: ({node}) ~>
-                  v = data[node.getAttribute(\data-name)] = node.innerText
-                  node.innerText = v
+                  data[node.getAttribute(\data-name)] = editable-input node
+                  @update!
               click: do
                 "other-enabled": ({node, evt}) ~>
                   @block.{}config.other-enabled = !@block.{}config.other-enabled
                   node.classList.toggle \on
+                  @update!
                   @render!
                 delete: ({node, evt}) ~>
                   @block.data.splice @block.data.indexOf(data), 1
@@ -249,12 +250,10 @@ Ctrl = (opt) ->
     action:
       input: do
         title: ({node, evt}) ~>
-          @block.title = node.innerText
-          node.innerText = @block.title
+          @block.title = editable-input node
           @update!
         desc: ({node, evt}) ~>
-          @block.desc = node.innerText
-          node.innerText = @block.desc
+          @block.desc = editable-input node
           @update!
       click: do
         switch: ({node, evt}) ~>

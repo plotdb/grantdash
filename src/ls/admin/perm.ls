@@ -72,7 +72,7 @@ Ctrl = (opt) ->
     "role-desc": do
       list: -> obj.cfg.roles
       action: keyup: ({node, data}) ->
-        data.desc = node.innerText
+        data.desc = editable-input node
         update-data true
       handler: ({node, data}) ->
         node.innerText = data.desc or ''

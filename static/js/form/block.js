@@ -285,10 +285,10 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                       return ((ref$ = this$.block).value || (ref$.value = {})).otherValue = node.value;
                     },
                     data: function(arg$){
-                      var node, v;
+                      var node;
                       node = arg$.node;
-                      v = data[node.getAttribute('data-name')] = node.innerText;
-                      return node.innerText = v;
+                      data[node.getAttribute('data-name')] = editableInput(node);
+                      return this$.update();
                     }
                   },
                   click: {
@@ -297,6 +297,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                       node = arg$.node, evt = arg$.evt;
                       ((ref$ = this$.block).config || (ref$.config = {})).otherEnabled = !((ref$ = this$.block).config || (ref$.config = {})).otherEnabled;
                       node.classList.toggle('on');
+                      this$.update();
                       return this$.render();
                     },
                     'delete': function(arg$){
@@ -488,15 +489,13 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
           title: function(arg$){
             var node, evt;
             node = arg$.node, evt = arg$.evt;
-            this$.block.title = node.innerText;
-            node.innerText = this$.block.title;
+            this$.block.title = editableInput(node);
             return this$.update();
           },
           desc: function(arg$){
             var node, evt;
             node = arg$.node, evt = arg$.evt;
-            this$.block.desc = node.innerText;
-            node.innerText = this$.block.desc;
+            this$.block.desc = editableInput(node);
             return this$.update();
           }
         },

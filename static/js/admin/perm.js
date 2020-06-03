@@ -150,7 +150,7 @@ ldc.register('adminPerm', ['sdbAdapter', 'userSearch'], function(arg$){
           keyup: function(arg$){
             var node, data;
             node = arg$.node, data = arg$.data;
-            data.desc = node.innerText;
+            data.desc = editableInput(node);
             return updateData(true);
           }
         },
