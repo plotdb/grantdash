@@ -137,7 +137,9 @@ module-list = module-init: ->
               input: do
                 "other-value": ({node}) ~>
                   @block.{}value.other-value = node.value
-                data: ({node}) ~> data[node.getAttribute(\data-name)] = node.innerText
+                data: ({node}) ~>
+                  v = data[node.getAttribute(\data-name)] = node.innerText
+                  node.innerText = v
               click: do
                 "other-enabled": ({node, evt}) ~>
                   @block.{}config.other-enabled = !@block.{}config.other-enabled
@@ -249,9 +251,11 @@ Ctrl = (opt) ->
       input: do
         title: ({node, evt}) ~>
           @block.title = node.innerText
+          node.innerText = @block.title
           @update!
         desc: ({node, evt}) ~>
           @block.desc = node.innerText
+          node.innerText = @block.desc
           @update!
       click: do
         switch: ({node, evt}) ~>

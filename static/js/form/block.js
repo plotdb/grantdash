@@ -285,9 +285,10 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                       return ((ref$ = this$.block).value || (ref$.value = {})).otherValue = node.value;
                     },
                     data: function(arg$){
-                      var node;
+                      var node, v;
                       node = arg$.node;
-                      return data[node.getAttribute('data-name')] = node.innerText;
+                      v = data[node.getAttribute('data-name')] = node.innerText;
+                      return node.innerText = v;
                     }
                   },
                   click: {
@@ -489,12 +490,14 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
             var node, evt;
             node = arg$.node, evt = arg$.evt;
             this$.block.title = node.innerText;
+            node.innerText = this$.block.title;
             return this$.update();
           },
           desc: function(arg$){
             var node, evt;
             node = arg$.node, evt = arg$.evt;
             this$.block.desc = node.innerText;
+            node.innerText = this$.block.desc;
             return this$.update();
           }
         },
