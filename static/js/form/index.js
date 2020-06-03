@@ -97,6 +97,9 @@ ldc.register('prjForm', ['error', 'ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 
       move: function(block, dir){
         var idx;
         idx = obj.list.indexOf(block);
+        if (idx + dir < 0 || idx + idx >= obj.list.length) {
+          return;
+        }
         obj.list.splice(idx, 1);
         obj.list.splice(idx + dir, 0, block);
         this.update();
