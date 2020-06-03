@@ -53,7 +53,7 @@ Ctrl = (opt) ->
       if viewer => viewer.render!
     move: (block, dir) ->
       idx = obj.list.indexOf(block)
-      if idx + dir < 0 or idx + idx >= obj.list.length => return
+      if idx + dir < 0 or idx + dir >= obj.list.length => return
       obj.list.splice idx, 1
       obj.list.splice idx + dir, 0, block
       @update!
