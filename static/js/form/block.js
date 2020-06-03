@@ -434,7 +434,6 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
   module["form-tag"] = {
     moduleInit: function(){
       var view, this$ = this;
-      console.log(1);
       return this.view.module = view = new ldView({
         root: this.root,
         action: {

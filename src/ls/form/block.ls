@@ -207,7 +207,6 @@ module <<< do
 
 
 module["form-tag"] = module-init: ->
-  console.log 1
   @view.module = view = new ldView do
     root: @root
     action: do
