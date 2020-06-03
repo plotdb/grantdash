@@ -293,7 +293,6 @@ p {
   outline: 0;
 }
 [contenteditable="true"].single-line {
-  white-space: nowrap;
   overflow: hidden;
 }
 [contenteditable="true"].single-line br {
@@ -302,6 +301,11 @@ p {
 [contenteditable="true"].single-line * {
   display: inline;
   white-space: nowrap;
+}
+[editable]:empty:before {
+  content: "請在此填入內容 ...";
+  display: inline;
+  opacity: 0.5;
 }
 .folder-item [contenteditable="true"]:focus {
   box-shadow: none;
