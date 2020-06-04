@@ -42,6 +42,13 @@
 .form-block i.active[type=checkbox][ld=state]:before
   content: "\f034"
 
+@keyframes form-block-hint-fresh
+  0%
+    outline: 5px solid rgba(255,255,0,1)
+  100%
+    outline: 0px solid rgba(255,255,255,0)
+.form-block.hint-fresh
+  animation: form-block-hint-fresh 2s 1 forwards
 
 [ld-scope=prj-form-use]
   .form-block

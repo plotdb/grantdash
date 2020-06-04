@@ -175,6 +175,9 @@
 .form-block i.active[type=checkbox][ld=state]:before {
   content: "\f034";
 }
+.form-block.hint-fresh {
+  animation: form-block-hint-fresh 2s 1 forwards;
+}
 [ld-scope=prj-form-use] .form-block {
   border: none;
   box-shadow: 0;
@@ -187,6 +190,38 @@
 }
 [ld-scope=prj-form-use] .card.invalid[ld=block] {
   border-left-color: #f00;
+}
+@-moz-keyframes form-block-hint-fresh {
+  0% {
+    outline: 5px solid #ff0;
+  }
+  100% {
+    outline: 0px solid rgba(255,255,255,0);
+  }
+}
+@-webkit-keyframes form-block-hint-fresh {
+  0% {
+    outline: 5px solid #ff0;
+  }
+  100% {
+    outline: 0px solid rgba(255,255,255,0);
+  }
+}
+@-o-keyframes form-block-hint-fresh {
+  0% {
+    outline: 5px solid #ff0;
+  }
+  100% {
+    outline: 0px solid rgba(255,255,255,0);
+  }
+}
+@keyframes form-block-hint-fresh {
+  0% {
+    outline: 5px solid #ff0;
+  }
+  100% {
+    outline: 0px solid rgba(255,255,255,0);
+  }
 }
 .folder-item:hover {
   color: currentColor;
