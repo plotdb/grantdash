@@ -266,10 +266,11 @@ app.get \/org/:slug/admin, aux.signed, (req, res) ->
 app.get \/brd/:slug/admin, aux.signed, (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r404 res
-  io.query "select * from brd where slug = $1", [slug]
+  permcache.check {io, user: req.user, type: \brd, slug: slug, action: \owner}
+    .then ->
+      io.query "select * from brd where slug = $1", [slug]
     .then (r={}) ->
       if !(brd = r.[]rows.0) => return aux.reject 404
-      if brd.owner != req.user.key => return aux.reject 403
       lc.brd = brd
       return if !brd.org => Promise.resolve! else io.query "select * from org where slug = $1", [brd.org]
     .then (r={}) ->
