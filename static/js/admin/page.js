@@ -100,6 +100,11 @@ ldc.register('adminPage', ['error', 'sdbAdapter', 'ldcvmgr'], function(arg$){
           node = arg$.node;
           return node.value = ((ref$ = this$.data).git || (ref$.git = {})).branch || '';
         },
+        "git-secret": function(arg$){
+          var node, ref$;
+          node = arg$.node;
+          return node.value = ((ref$ = this$.data).git || (ref$.git = {})).secret || '';
+        },
         "opt": function(arg$){
           var node, name, hit;
           node = arg$.node;

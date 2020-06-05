@@ -45,6 +45,7 @@ Ctrl = (opt) ->
       "git-url": ({node}) ~> node.value = @data.{}git.url or ''
       "custom-css-url": ({node}) ~> node.value = @data.{}generic.css-url or ''
       "git-branch": ({node}) ~> node.value = @data.{}git.branch or ''
+      "git-secret": ({node}) ~> node.value = @data.{}git.secret or ''
       "opt": ({node}) ~>
         name = node.getAttribute(\data-name)
         hit = ((@data.opt or \default) == name)
