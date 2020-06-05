@@ -51,18 +51,18 @@
             git: it.git
           };
         }));
-        return Promise.all(list.map(function(){
-          return Promise.resolve().then(function(it){
-            if (hmacDigest(req.rawBody, it.secret)) {
-              return slugs(it).then(function(ret){
+        return Promise.all(list.map(function(d){
+          return Promise.resolve().then(function(){
+            if (hmacDigest(req.rawBody, d.secret)) {
+              return slugs(d).then(function(ret){
                 var root, prj, org, brd;
                 root = ret.root, prj = ret.prj, org = ret.org, brd = ret.brd;
                 if (!root) {
                   return;
                 }
                 return deploy({
-                  url: it.git.url,
-                  branch: it.git.branch,
+                  url: d.git.url,
+                  branch: d.git.branch,
                   root: path.join(root, 'static')
                 });
               });

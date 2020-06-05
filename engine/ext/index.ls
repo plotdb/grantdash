@@ -43,13 +43,13 @@ module.exports = (engine, io) ->
           lc.org.map(-> {io, org: it.slug, git: it.git})
         )
         Promise.all(
-          list.map ->
+          list.map (d) ->
             Promise.resolve!then ->
-              if hmac-digest(req.raw-body, it.secret) =>
-                slugs(it) .then (ret) ->
+              if hmac-digest(req.raw-body, d.secret) =>
+                slugs(d) .then (ret) ->
                   {root,prj,org,brd} = ret
                   if !root => return
-                  deploy {url: it.git.url, branch: it.git.branch, root: path.join(root, \static)}
+                  deploy {url: d.git.url, branch: d.git.branch, root: path.join(root, \static)}
 
         )
       .then -> # done.
