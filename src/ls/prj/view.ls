@@ -1,7 +1,7 @@
 ldc.register \prjView, <[auth error viewLocals]>, ({auth, error, viewLocals}) ->
   auth.get!
     .then (g) ->
-      {prj,grp} = viewLocals
+      {prj,brd,grp} = viewLocals
       answers = prj.{}detail.{}answer
       blocks = grp.{}form.[]list
       bhash = {}
@@ -27,8 +27,28 @@ ldc.register \prjView, <[auth error viewLocals]>, ({auth, error, viewLocals}) ->
                 node.innerHTML = DOMPurify.sanitize(marked(answer.content))
               else node.innerText = answer.content
             else if answer.list =>
-              list = (answer.list ++ if answer.otherValue and answer.other => [answer.otherValue] else [])
-              node.innerHTML = DOMPurify.sanitize(list.join "<br>")
+              if block.name in <[form-file form-thumbnail]>
+                ret = (answer.list or [])
+                  .map (f) ->
+                    """
+                    <li><a href="/dash/org/#{brd.org}/prj/#{prj.slug}/upload/#{f.path}">
+                    #{htmlentities(f.name)}
+                    </a></li>
+                    """
+                  .join ('')
+                node.innerHTML = DOMPurify.sanitize(ret)
+              else if block.name == \form-checkpoint
+                ret = (answer.list or [])
+                  .map (d) ->
+                    """
+                    <p><div><b><big>#{htmlentities(d.title)}</big></b></div>
+                    <div>#{htmlentities(d.desc)}</div></p>
+                    """
+                  .join('')
+                node.innerHTML = "<blockquote style='margin-left:1em'>#{DOMPurify.sanitize(ret)}</blockquote>"
+              else
+                list = (answer.list ++ if answer.otherValue and answer.other => [answer.otherValue] else [])
+                node.innerHTML = DOMPurify.sanitize(list.join "<br>")
 
      
     .catch error!

@@ -23,9 +23,9 @@ block body
         p.text-muted #{block.desc}
         hr
         - var value = answer[block.key]
-        .pb-4
-          if value
-            | #{value.content || value.list.join(',')}
+        .pb-4(ld="answer",data-key=block.key)
 
-
-
+block script
+  +script("/dash/js/prj/view.js")
+  +script("/dash/js/util/htmlentities.js")
+  +register-locals()

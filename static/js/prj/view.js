@@ -3,8 +3,8 @@ ldc.register('prjView', ['auth', 'error', 'viewLocals'], function(arg$){
   var auth, error, viewLocals;
   auth = arg$.auth, error = arg$.error, viewLocals = arg$.viewLocals;
   return auth.get().then(function(g){
-    var prj, grp, answers, ref$, blocks, bhash, view;
-    prj = viewLocals.prj, grp = viewLocals.grp;
+    var prj, brd, grp, answers, ref$, blocks, bhash, view;
+    prj = viewLocals.prj, brd = viewLocals.brd, grp = viewLocals.grp;
     answers = (ref$ = prj.detail || (prj.detail = {})).answer || (ref$.answer = {});
     blocks = (ref$ = grp.form || (grp.form = {})).list || (ref$.list = []);
     bhash = {};
@@ -38,7 +38,7 @@ ldc.register('prjView', ['auth', 'error', 'viewLocals'], function(arg$){
           return node.classList.toggle('d-none', g.user.key !== viewLocals.owner);
         },
         answer: function(arg$){
-          var node, key, block, answer, list;
+          var node, key, block, answer, ref$, ret, list;
           node = arg$.node;
           key = node.getAttribute('data-key');
           block = bhash[key];
@@ -52,10 +52,22 @@ ldc.register('prjView', ['auth', 'error', 'viewLocals'], function(arg$){
               return node.innerText = answer.content;
             }
           } else if (answer.list) {
-            list = answer.list.concat(answer.otherValue && answer.other
-              ? [answer.otherValue]
-              : []);
-            return node.innerHTML = DOMPurify.sanitize(list.join("<br>"));
+            if ((ref$ = block.name) === 'form-file' || ref$ === 'form-thumbnail') {
+              ret = (answer.list || []).map(function(f){
+                return "<li><a href=\"/dash/org/" + brd.org + "/prj/" + prj.slug + "/upload/" + f.path + "\">\n" + htmlentities(f.name) + "\n</a></li>";
+              }).join('');
+              return node.innerHTML = DOMPurify.sanitize(ret);
+            } else if (block.name === 'form-checkpoint') {
+              ret = (answer.list || []).map(function(d){
+                return "<p><div><b><big>" + htmlentities(d.title) + "</big></b></div>\n<div>" + htmlentities(d.desc) + "</div></p>";
+              }).join('');
+              return node.innerHTML = "<blockquote style='margin-left:1em'>" + DOMPurify.sanitize(ret) + "</blockquote>";
+            } else {
+              list = answer.list.concat(answer.otherValue && answer.other
+                ? [answer.otherValue]
+                : []);
+              return node.innerHTML = DOMPurify.sanitize(list.join("<br>"));
+            }
           }
         }
       }

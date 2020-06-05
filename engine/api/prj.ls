@@ -23,7 +23,9 @@ app.get \/prj/:slug, (req, res) ->
       if !lc.grp => return aux.reject 400
       lc.grp = grp = grp{form,info}
       delete brd.detail
-      res.render \prj/view.pug, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, grp}}
+      view = if (req.{}query.simple)? => \prj/view-standalone.pug
+      else \prj/view.pug
+      res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}}
     .catch aux.error-handler res
 
 api.get "/prj/:slug/", aux.signed, (req, res) ->
