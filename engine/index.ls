@@ -62,7 +62,12 @@ backend = do
       res.setHeader \X-Content-Security-Policy, csp
       next!
 
-    app.use body-parser.json limit: config.limit
+    app.use body-parser.json do
+      limit: config.limit
+      # github webhook use `x-hub-signature` for hmac digest
+      verify: (req, res, buf, encoding) ->
+        if req.headers["x-hub-signature"] => req.raw-body = buf.toString!
+
     app.use body-parser.urlencoded extended: true, limit: config.limit
 
     # make pug cache compiled function so we don't have to compile pug file each time
