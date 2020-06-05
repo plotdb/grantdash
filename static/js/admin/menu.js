@@ -119,7 +119,7 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
             node = arg$.node, data = arg$.data;
             ld$.find(node, 'span', 0).innerText = data.name;
             ld$.find(node, '.text-sm', 0).innerText = data.description.substring(0, 30) + "...";
-            return node.setAttribute('href', "/b/" + data.slug + "/admin");
+            return node.setAttribute('href', "/dash/brd/" + data.slug + "/admin");
           }
         },
         "grp-entry": {
