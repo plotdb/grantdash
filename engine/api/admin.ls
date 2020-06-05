@@ -1,4 +1,4 @@
-require! <[fs path lderror ../aux]>
+require! <[fs path lderror ../aux ./permcache]>
 (engine,io) <- (->module.exports = it) _
 
 api = engine.router.api
@@ -10,22 +10,30 @@ api = engine.router.api
 api.post \/toc, aux.signed, (req, res) ->
   hint = req.body{org, brd}
   lc = {}
+  perm-opt = {io, user: req.user, action: \owner}
   promise = (if hint.brd =>
-    io.query "select * from brd where slug = $1", [hint.brd]
+    permcache.check {} <<< perm-opt <<< {type: \brd, slug: hint.brd}
+      .then -> io.query "select * from brd where slug = $1", [hint.brd]
       .then (r={}) ->
         if !(lc.brd = r.[]rows.0) => return aux.reject 404
-        io.query "select key,name,slug,description,detail from org where slug = $1", [lc.brd.org]
+        permcache.check {} <<< perm-opt <<< {type: \org, slug: lc.brd.org}
+          .then -> io.query "select key,name,slug,description,detail from org where slug = $1", [lc.brd.org]
+          .catch -> # simply ignore
       .then (r={}) -> lc.org = r.[]rows.0 or null
   else if hint.org =>
-    io.query "select * from org where slug = $1", [hint.org]
+    permcache.check {} <<< perm-opt <<< {type: \org, slug: hint.org}
+      .then -> io.query "select * from org where slug = $1", [hint.org]
       .then (r={}) -> if !(lc.org = r.[]rows.0) => return aux.reject 404
-  else 
+  else
     io.query "select * from brd where owner = $1 order by createdtime desc limit 1", [req.user.key]
       .then (r={}) ->
         if !(lc.brd = r.[]rows.0) =>
           io.query "select * from org where owner = $1 order by createdtime limit 1", [req.user.key]
             .then (r={}) -> if !(lc.org = r.[]rows.0) => return aux.reject 404
-        else io.query "select * from org where slug = $1", [lc.brd.org]
+        else
+          permcache.check {} <<< perm-opt <<< {type: \org, slug: lc.brd.org}
+            .then -> io.query "select * from org where slug = $1", [lc.brd.org]
+            .catch -> # simply ignore
       .then (r={}) ->
         lc.org = r.[]rows.0 or null
       .then -> if !(lc.brd or lc.org) => return aux.reject 404

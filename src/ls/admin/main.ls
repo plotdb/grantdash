@@ -80,6 +80,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
           read = (n) ~> new Promise (res, rej) ~>
             if !@toc[n].key => return res!
             console.log "prepare #n document ( id: #{n}/#{@toc[n]slug} ) ..."
+            @hubs[n]doc = null
             @sdb.get({
               id: "#{n}/#{@toc[n]slug}"
               watch: (ops,source) ~> @hubs[n]fire \change, {ops,source}
@@ -88,10 +89,12 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
               if !(@hubs[n]doc = doc) => return rej!
               doc.on \op, ~> @render!
               res!
-            ).catch -> rej new ldError(1012)
+            ).catch -> console.log "getdoc #n failed."
+            @hubs[n]doc
           # TODO if no org but brd -> clear org and let it edit brd.
           # vice versa
-          read \org .then -> read \brd
+          Promise.all [read(\org), read(\brd)]
+        .then ~> if !(@hubs.org.doc or @hubs.brd.doc) => return Promise.reject(new ldError(1012))
         .then ~> @render!
 
     set-group: (v, force-adapt = false) ->

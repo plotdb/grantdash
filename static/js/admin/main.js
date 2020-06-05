@@ -145,7 +145,8 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
               return res();
             }
             console.log("prepare " + n + " document ( id: " + n + "/" + this$.toc[n].slug + " ) ...");
-            return this$.sdb.get({
+            this$.hubs[n].doc = null;
+            this$.sdb.get({
               id: n + "/" + this$.toc[n].slug,
               watch: function(ops, source){
                 return this$.hubs[n].fire('change', {
@@ -165,13 +166,16 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
               });
               return res();
             })['catch'](function(){
-              return rej(new ldError(1012));
+              return console.log("getdoc " + n + " failed.");
             });
+            return this$.hubs[n].doc;
           });
         };
-        return read('org').then(function(){
-          return read('brd');
-        });
+        return Promise.all([read('org'), read('brd')]);
+      }).then(function(){
+        if (!(this$.hubs.org.doc || this$.hubs.brd.doc)) {
+          return Promise.reject(new ldError(1012));
+        }
       }).then(function(){
         return this$.render();
       });
