@@ -49,7 +49,7 @@ ldc.register(['general', 'auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], funct
       });
     },
     sharedb: function(){
-      var sdb;
+      var sdb, this$ = this;
       console.log("initializing sharedb connection ...");
       this.sdb = sdb = new sharedbWrapper({
         url: {
@@ -60,7 +60,15 @@ ldc.register(['general', 'auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], funct
       });
       sdb.on('close', function(){
         loader.on();
-        return sdb.reconnect().then(function(){}).then(function(){
+        return sdb.reconnect().then(function(){
+          return this$.getdoc();
+        }).then(function(){
+          return this$.adapt();
+        }).then(function(){
+          return this$.render();
+        }).then(function(){
+          return console.log("re-inited.");
+        }).then(function(){
           return loader.off();
         });
       });
@@ -95,6 +103,12 @@ ldc.register(['general', 'auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], funct
         return this$.hubs.prj.doc = doc;
       });
     },
+    adapt: function(){
+      return this.ctrlForm.adapt({
+        hub: this.hubs.prj,
+        path: []
+      });
+    },
     initForm: function(){
       var ref$, this$ = this;
       this.ctrlForm = new prjForm({
@@ -105,11 +119,7 @@ ldc.register(['general', 'auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], funct
         brd: this.brd,
         prj: this.prj
       });
-      this.ctrlForm.adapt({
-        hub: this.hubs.prj,
-        path: []
-      });
-      return this.ctrlForm.on('submit', function(answer){
+      this.ctrlForm.on('submit', function(answer){
         var data;
         data = {
           payload: answer,
@@ -136,6 +146,7 @@ ldc.register(['general', 'auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], funct
           return ldcvmgr.toggle('published', false);
         })['catch'](error());
       });
+      return this.adapt();
     },
     render: function(){
       return this.view.render();
@@ -155,6 +166,8 @@ ldc.register(['general', 'auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], funct
     return ctrl.initForm();
   }).then(function(){
     return ctrl.render();
+  }).then(function(){
+    return console.log("inited.");
   }).then(function(){
     return loader.off();
   })['catch'](error());

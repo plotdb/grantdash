@@ -31,10 +31,13 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @sdb = sdb = new sharedb-wrapper do
       url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
       path: '/dash/ws'
-    sdb.on \close, ->
+    sdb.on \close, ~>
       loader.on!
       sdb.reconnect!
-        .then -> #prepare!
+        .then ~> @getdoc!
+        .then ~> @adapt!
+        .then ~> @render!
+        .then -> console.log "re-inited."
         .then -> loader.off!
     @hubs = prj: new Hub({sdb})
 
@@ -51,6 +54,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
         ret
     }).then (doc) ~> @hubs.prj.doc = doc
 
+  adapt: ->
+    @ctrl-form.adapt {hub: @hubs.prj, path: []}
   init-form: ->
     @ctrl-form = new prjForm {
       root: '[ld-scope=prj-form-use]'
@@ -60,7 +65,6 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       brd: @brd
       prj: @prj
     }
-    @ctrl-form.adapt {hub: @hubs.prj, path: []}
     @ctrl-form.on \submit, (answer) ~>
       data = payload: answer, type: \prj, slug: @prj.slug
       ldcvmgr.toggle \publishing, true
@@ -72,6 +76,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
         .then -> debounce 2000
         .finally -> ldcvmgr.toggle \published, false
         .catch error!
+    @adapt!
 
   render: -> @view.render!
 
@@ -85,5 +90,6 @@ auth.get!
   .then -> ctrl.getdoc!
   .then -> ctrl.init-form!
   .then -> ctrl.render!
+  .then -> console.log "inited."
   .then -> loader.off!
   .catch error!
