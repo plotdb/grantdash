@@ -614,11 +614,14 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
           }
         },
         desc: function(arg$){
-          var node;
+          var node, ref$;
           node = arg$.node;
           settext(node, this$.block.desc || '');
           if (this$.viewing) {
-            return node.removeAttribute('editable');
+            node.removeAttribute('editable');
+          }
+          if (this$.viewing && !((ref$ = this$.block).config || (ref$.config = {}))["show-desc"]) {
+            return node.classList.add('d-none');
           }
         },
         'switch': function(arg$){

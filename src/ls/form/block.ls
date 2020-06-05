@@ -299,6 +299,7 @@ Ctrl = (opt) ->
       desc: ({node}) ~>
         settext node, (@block.desc or '')
         if @viewing => node.removeAttribute \editable
+        if @viewing and !@block.{}config["show-desc"] => node.classList.add \d-none
       switch: ({node}) ~> node.classList.toggle \on, !!@block.{}config[node.getAttribute(\data-name)]
       "edit-only": ({node}) ~> if @viewing => node.remove!
       "list-input": ({node}) ~> node.setAttribute \name, "input-#{@block.key}"
