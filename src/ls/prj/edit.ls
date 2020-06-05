@@ -1,4 +1,4 @@
-({general, auth, prjForm, loader, ldcvmgr, error}) <- ldc.register <[general auth prjForm loader ldcvmgr error]>, _
+({auth, prjForm, loader, ldcvmgr, error}) <- ldc.register <[auth prjForm loader ldcvmgr error]>, _
 
 Ctrl = (opt) ->
   @ldcv = new ldCover root: '[ld-scope=prj-diff]'
