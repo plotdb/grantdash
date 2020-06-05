@@ -69,6 +69,8 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
         @loader.on!
         sdb.reconnect!
           .then ~> @getdoc!
+          .then ~> @adapt!
+          .then -> console.log "admin initialized."
           .then ~> @loader.off!
 
     getdoc: ->
@@ -91,14 +93,31 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
           read \org .then -> read \brd
         .then ~> @render!
 
-    set-group: (v) ->
+    set-group: (v, force-adapt = false) ->
       idx = 0
+      @grp = v
       @hubs.brd.doc.data.group.map (d,i) -> if d.key == v.key => idx := i
       (k) <~ [k for k of @ctrl.grp].map _
       if !@ctrl.grp[k].adapt => return
       p = ['group', idx, k]
-      if !@ctrl.grp[k].adapted! => @ctrl.grp[k].adapt {hub: @hubs.brd, path: p}
+      if !@ctrl.grp[k].adapted! or force-adapt => @ctrl.grp[k].adapt {hub: @hubs.brd, path: p}
       else @ctrl.grp[k].set-path p
+
+    adapt: ->
+      {org,brd} = @hubs
+      @ctrl.org
+        ..info.adapt {hub: org, path: <[info]> }
+        ..navbar.adapt {hub: org, path: <[page navbar]>}
+        ..perm.adapt   {hub: org, path: <[perm]>}
+        ..page.adapt {hub: org, path: <[page info]>}
+      @ctrl.brd
+        ..info.adapt   {hub: brd, path: <[info]> }
+        ..group.adapt   {hub: brd, path: <[group]>, type: \array}
+        ..stage.adapt  {hub: brd, path: <[stage]>}
+        ..perm.adapt   {hub: brd, path: <[perm]>}
+        ..navbar.adapt {hub: brd, path: <[page navbar]>}
+        ..page.adapt {hub: brd, path: <[page info]>}
+      if @grp => @set-group that, true
 
     init-ctrl: ->
       {org,brd} = @hubs
@@ -111,27 +130,17 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
 
       @ctrl.org
         ..info = new admin-info {root: '[ld-scope=org-info]', type: \org, data: toc.org, toc}
-        ..info.adapt {hub: org, path: <[info]> }
         ..navbar = new admin-navbar {toc, root: '[data-name=org-navbar] [ld-scope=navbar-editor]'}
-        ..navbar.adapt {hub: org, path: <[page navbar]>}
         ..perm = new admin-perm {toc, root: '[data-nav=org-config] [ld-scope=perm-panel]'}
-        ..perm.adapt   {hub: org, path: <[perm]>}
         ..page = new admin-page {toc, type: \org, root: '[data-name=org-page-info] [ld-scope=page-info]'}
-        ..page.adapt {hub: org, path: <[page info]>}
 
       @ctrl.brd
         ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd, data: toc.brd, toc}
-        ..info.adapt   {hub: brd, path: <[info]> }
         ..group = new admin-menu {toc: @toc, set-group}
-        ..group.adapt   {hub: brd, path: <[group]>, type: \array}
         ..stage = new admin-stage {toc, root: '[ld-scope=brd-stage]'}
-        ..stage.adapt  {hub: brd, path: <[stage]>}
         ..perm = new admin-perm {toc, root: '[data-nav=brd-config] [ld-scope=perm-panel]'}
-        ..perm.adapt   {hub: brd, path: <[perm]>}
         ..navbar = new admin-navbar {toc, root: '[data-name=brd-navbar] [ld-scope=navbar-editor]'}
-        ..navbar.adapt {hub: brd, path: <[page navbar]>}
         ..page = new admin-page {toc, type: \brd, root: '[data-name=brd-page-info] [ld-scope=page-info]'}
-        ..page.adapt {hub: brd, path: <[page info]>}
 
       @ctrl.grp
         ..form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}
@@ -170,6 +179,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
     .then -> ctrl.sharedb!
     .then -> ctrl.getdoc!
     .then -> ctrl.init-ctrl!
+    .then -> ctrl.adapt!
     .then -> console.log "admin initialized."
     .finally -> loader.off!
     .catch (e) ->

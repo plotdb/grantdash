@@ -124,6 +124,10 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
         return sdb.reconnect().then(function(){
           return this$.getdoc();
         }).then(function(){
+          return this$.adapt();
+        }).then(function(){
+          return console.log("admin initialized.");
+        }).then(function(){
           return this$.loader.off();
         });
       });
@@ -169,9 +173,11 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
         return this$.render();
       });
     },
-    setGroup: function(v){
+    setGroup: function(v, forceAdapt){
       var idx, k, this$ = this;
+      forceAdapt == null && (forceAdapt = false);
       idx = 0;
+      this.grp = v;
       this.hubs.brd.doc.data.group.map(function(d, i){
         if (d.key === v.key) {
           return idx = i;
@@ -189,7 +195,7 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
           return;
         }
         p = ['group', idx, k];
-        if (!this$.ctrl.grp[k].adapted()) {
+        if (!this$.ctrl.grp[k].adapted() || forceAdapt) {
           return this$.ctrl.grp[k].adapt({
             hub: this$.hubs.brd,
             path: p
@@ -198,6 +204,56 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
           return this$.ctrl.grp[k].setPath(p);
         }
       });
+    },
+    adapt: function(){
+      var ref$, org, brd, x$, y$, that;
+      ref$ = this.hubs, org = ref$.org, brd = ref$.brd;
+      x$ = this.ctrl.org;
+      x$.info.adapt({
+        hub: org,
+        path: ['info']
+      });
+      x$.navbar.adapt({
+        hub: org,
+        path: ['page', 'navbar']
+      });
+      x$.perm.adapt({
+        hub: org,
+        path: ['perm']
+      });
+      x$.page.adapt({
+        hub: org,
+        path: ['page', 'info']
+      });
+      y$ = this.ctrl.brd;
+      y$.info.adapt({
+        hub: brd,
+        path: ['info']
+      });
+      y$.group.adapt({
+        hub: brd,
+        path: ['group'],
+        type: 'array'
+      });
+      y$.stage.adapt({
+        hub: brd,
+        path: ['stage']
+      });
+      y$.perm.adapt({
+        hub: brd,
+        path: ['perm']
+      });
+      y$.navbar.adapt({
+        hub: brd,
+        path: ['page', 'navbar']
+      });
+      y$.page.adapt({
+        hub: brd,
+        path: ['page', 'info']
+      });
+      if (that = this.grp) {
+        return this.setGroup(that, true);
+      }
     },
     initCtrl: function(){
       var ref$, org, brd, setGroup, toc, deleteGroup, x$, y$, z$, this$ = this;
@@ -220,34 +276,18 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
         data: toc.org,
         toc: toc
       });
-      x$.info.adapt({
-        hub: org,
-        path: ['info']
-      });
       x$.navbar = new adminNavbar({
         toc: toc,
         root: '[data-name=org-navbar] [ld-scope=navbar-editor]'
-      });
-      x$.navbar.adapt({
-        hub: org,
-        path: ['page', 'navbar']
       });
       x$.perm = new adminPerm({
         toc: toc,
         root: '[data-nav=org-config] [ld-scope=perm-panel]'
       });
-      x$.perm.adapt({
-        hub: org,
-        path: ['perm']
-      });
       x$.page = new adminPage({
         toc: toc,
         type: 'org',
         root: '[data-name=org-page-info] [ld-scope=page-info]'
-      });
-      x$.page.adapt({
-        hub: org,
-        path: ['page', 'info']
       });
       y$ = this.ctrl.brd;
       y$.info = new adminInfo({
@@ -256,51 +296,26 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
         data: toc.brd,
         toc: toc
       });
-      y$.info.adapt({
-        hub: brd,
-        path: ['info']
-      });
       y$.group = new adminMenu({
         toc: this.toc,
         setGroup: setGroup
-      });
-      y$.group.adapt({
-        hub: brd,
-        path: ['group'],
-        type: 'array'
       });
       y$.stage = new adminStage({
         toc: toc,
         root: '[ld-scope=brd-stage]'
       });
-      y$.stage.adapt({
-        hub: brd,
-        path: ['stage']
-      });
       y$.perm = new adminPerm({
         toc: toc,
         root: '[data-nav=brd-config] [ld-scope=perm-panel]'
-      });
-      y$.perm.adapt({
-        hub: brd,
-        path: ['perm']
       });
       y$.navbar = new adminNavbar({
         toc: toc,
         root: '[data-name=brd-navbar] [ld-scope=navbar-editor]'
       });
-      y$.navbar.adapt({
-        hub: brd,
-        path: ['page', 'navbar']
-      });
       y$.page = new adminPage({
         toc: toc,
         type: 'brd',
         root: '[data-name=brd-page-info] [ld-scope=page-info]'
-      });
-      y$.page.adapt({
-        hub: brd,
-        path: ['page', 'info']
       });
       z$ = this.ctrl.grp;
       z$.form = new prjForm({
@@ -376,6 +391,8 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
     return ctrl.getdoc();
   }).then(function(){
     return ctrl.initCtrl();
+  }).then(function(){
+    return ctrl.adapt();
   }).then(function(){
     return console.log("admin initialized.");
   })['finally'](function(){
