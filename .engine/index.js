@@ -251,12 +251,15 @@
           });
           return null;
         });
+        this$.router = router = {
+          user: express.Router(),
+          api: express.Router(),
+          ext: express.Router()
+        };
+        app.use('/ext', throttling.route.external, router.ext);
+        ext(this$, pgsql);
         backend.csrfProtection = csurf();
         app.use(backend.csrfProtection);
-        router = {
-          user: express.Router(),
-          api: express.Router()
-        };
         router.api.use('/u', throttling.route.user, router.user);
         x$ = router.user;
         x$.post('/signup', throttling.auth.signup, function(req, res){
@@ -376,7 +379,6 @@
         this$.config = config;
         this$.app = app;
         this$.express = express;
-        this$.router = router;
         this$.multi = multi;
         this$.pgsql = pgsql;
         api(this$, pgsql);

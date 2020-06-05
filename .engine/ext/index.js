@@ -3,8 +3,8 @@
   var express;
   express = require('express');
   module.exports = function(engine, io){
-    var router;
-    router = new express.Router();
-    return router;
+    return engine.router.ext.post('/deploy', function(req, res){
+      return res.send({});
+    });
   };
 }).call(this);

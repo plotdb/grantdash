@@ -32,7 +32,7 @@
         }
         return io.query("select name,slug,org,detail from brd where brd.slug = $1", [lc.prj.brd]);
       }).then(function(r){
-        var brd, grp, ref$, ref1$, ref2$;
+        var brd, grp, ref$, ref1$, ref2$, view;
         r == null && (r = {});
         if (!(lc.brd = brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(400);
@@ -49,12 +49,17 @@
           info: grp.info
         };
         delete brd.detail;
-        return res.render('prj/view.pug', {
+        view = (req.query || (req.query = {})).simple != null ? 'prj/view-standalone.pug' : 'prj/view.pug';
+        return res.render(view, (ref$ = {
           prj: lc.prj,
           grp: lc.grp,
           brd: lc.brd,
           pageInfo: lc.pageInfo
-        });
+        }, ref$.exports = {
+          prj: lc.prj,
+          brd: lc.brd,
+          grp: lc.grp
+        }, ref$));
       })['catch'](aux.errorHandler(res));
     });
     api.get("/prj/:slug/", aux.signed, function(req, res){

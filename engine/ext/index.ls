@@ -1,5 +1,4 @@
 require! <[express]>
 
 module.exports = (engine, io) ->
-  router = new express.Router()
-  router
+  engine.router.ext.post \/deploy, (req, res) -> res.send {}

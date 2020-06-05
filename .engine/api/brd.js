@@ -467,14 +467,19 @@
       if (!(slug = req.params.slug)) {
         return aux.r404(res);
       }
-      return io.query("select * from brd where slug = $1", [slug]).then(function(r){
+      return permcache.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: slug,
+        action: 'owner'
+      }).then(function(){
+        return io.query("select * from brd where slug = $1", [slug]);
+      }).then(function(r){
         var brd;
         r == null && (r = {});
         if (!(brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
-        }
-        if (brd.owner !== req.user.key) {
-          return aux.reject(403);
         }
         lc.brd = brd;
         return !brd.org

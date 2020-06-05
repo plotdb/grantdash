@@ -164,7 +164,10 @@ backend = do
       return null
 
     # ============ Routing
-    #app.use \/e, throttling.route.external, ext(@, pgsql) # External API
+    @router = router = { user: express.Router!, api: express.Router!, ext: express.Router! }
+
+    app.use \/ext, throttling.route.external, router.ext # External API
+    ext(@, pgsql)
 
     # ============ CSRF
     # put it here to secure login with csrf
@@ -172,7 +175,6 @@ backend = do
     backend.csrfProtection = csurf!
     app.use backend.csrfProtection
 
-    router = { user: express.Router!, api: express.Router! }
     router.api.use \/u, throttling.route.user, router.user
 
     router.user
@@ -237,7 +239,7 @@ backend = do
         if cb => cb req, res, next
         @clean req, res, next
 
-    @ <<< {config, app, express, router, multi, pgsql}
+    @ <<< {config, app, express, multi, pgsql}
 
     api @, pgsql
     app.use (req, res, next) ~> aux.r404 res, "", true
