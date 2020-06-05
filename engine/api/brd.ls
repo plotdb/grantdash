@@ -92,21 +92,15 @@ api.put \/detail/, aux.signed, (req, res) ->
     .then -> res.send {}
     .catch aux.error-handler res
 
-
-app.get \/brd/:slug/list, (req, res) ->
-  lc = {}
-  {offset,limit} = req.query{offset,limit}
-  {keyword,tag,category} = req.query{keyword, category, tag}
-  slug = req.params.slug
-  offset = (if isNaN(+offset) => 0 else +offset ) >? 0
-  limit = (if isNaN(+limit) => 24 else +limit ) <? 100 >? 1
-  if !slug => return aux.r400 res
-  io.query "select b.name, b.description, b.slug, b.org, b.detail from brd as b where b.slug = $1", [slug]
-    .then (r={}) ->
-      if !(lc.brd = r.[]rows.0) => return aux.reject 404
-      lc.grps = lc.brd.detail.group.map -> it{form,key}
-      lc.page-info = lc.brd.detail.{}page.{}info.{}generic
-      delete lc.brd.detail
+get-prj-list = (req, res) ->
+  Promise.resolve!
+    .then ->
+      {offset,limit} = req.query{offset,limit}
+      {keyword,tag,category} = req.query{keyword, category, tag}
+      slug = req.params.slug
+      offset = (if isNaN(+offset) => 0 else +offset ) >? 0
+      limit = (if isNaN(+limit) => 24 else +limit ) <? 100 >? 1
+      if !slug => return aux.reject 400
       idx1 = 4 + ([tag].filter(-> it).length)
       idx2 = 4 + ([tag,category].filter(-> it).length)
       io.query(
@@ -127,8 +121,25 @@ app.get \/brd/:slug/list, (req, res) ->
         """
         ].filter(->it).join(' '), [offset, limit, slug] ++ ([tag, category, keyword].filter(->it))
       )
+    .then (r={}) -> return r.[]rows
+
+api.get \/brd/:slug/list, (req, res) ->
+  get-prj-list req, res
+    .then -> res.send it
+    .catch aux.error-handler res
+
+app.get \/brd/:slug/list, (req, res) ->
+  lc = {}
+  get-prj-list req, res
+    .then (ret) ->
+      lc.prjs = ret
+      io.query "select b.name, b.description, b.slug, b.org, b.detail from brd as b where b.slug = $1", [slug]
     .then (r={}) ->
-      res.render \prj/list.pug, {prjs: r.[]rows, brd: lc.brd, grps: lc.grps, page-info: lc.page-info}
+      if !(lc.brd = r.[]rows.0) => return aux.reject 404
+      lc.grps = lc.brd.detail.group.map -> it{form,key}
+      lc.page-info = lc.brd.detail.{}page.{}info.{}generic
+      delete lc.brd.detail
+      res.render \prj/list.pug, lc
       return null
     .catch aux.error-handler res
 

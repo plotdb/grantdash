@@ -347,7 +347,8 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
         root: '[ld-scope=criteria-panel]'
       });
       z$.list = new adminPrjList({
-        root: '[ld-scope=prj-list]'
+        root: '[ld-scope=prj-list]',
+        toc: toc
       });
       return z$;
     },

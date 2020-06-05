@@ -152,7 +152,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
         ..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]'}
         ..grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
-        ..list = new admin-prj-list {root: '[ld-scope=prj-list]'}
+        ..list = new admin-prj-list {root: '[ld-scope=prj-list]', toc}
 
 
     publish: ->

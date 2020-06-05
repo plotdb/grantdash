@@ -34,8 +34,12 @@
       if nav == \main =>
         lc.cur <<< {nav, name, func: lc.tab[lc.cur.name]}
       else lc.cur <<< { func: lc.tab[lc.cur.name] = name}
+      api.fire \active, {nav, name, panel}
 
     ld$.find '.admin-sidemenu .folder' .map ->
       new ldui.Folder root: it
-    return api = {}
+    return api = do
+      evt-handler: {}
+      on: (n, cb) -> @evt-handler.[][n].push cb
+      fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
 )!
