@@ -2,9 +2,9 @@ require! <[express crypto path ../api/common]>
 
 {slugs, deploy} = common
 
-hmac-digest = (content, key) ->
+hmac-digest = (sig, content, key) ->
   try
-    v1 = Buffer.from(req.headers['x-hub-signature'])
+    v1 = Buffer.from(sig)
     v2 = Buffer.from(
       "sha1=" + crypto.createHmac('sha1', key)
         .update(content)
@@ -45,7 +45,7 @@ module.exports = (engine, io) ->
         Promise.all(
           list.map (d) ->
             Promise.resolve!then ->
-              if hmac-digest(req.raw-body, d.git.secret) =>
+              if hmac-digest(req.headers['x-hub-signature'], req.raw-body, d.git.secret) =>
                 slugs(d) .then (ret) ->
                   {root,prj,org,brd} = ret
                   if !root => return

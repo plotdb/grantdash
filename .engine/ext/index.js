@@ -6,10 +6,10 @@
   path = require('path');
   common = require('../api/common');
   slugs = common.slugs, deploy = common.deploy;
-  hmacDigest = function(content, key){
+  hmacDigest = function(sig, content, key){
     var v1, v2, e;
     try {
-      v1 = Buffer.from(req.headers['x-hub-signature']);
+      v1 = Buffer.from(sig);
       v2 = Buffer.from("sha1=" + crypto.createHmac('sha1', key).update(content).digest('hex'));
       if (crypto.timingSafeEqual(v1, v2)) {
         return true;
@@ -53,7 +53,7 @@
         }));
         return Promise.all(list.map(function(d){
           return Promise.resolve().then(function(){
-            if (hmacDigest(req.rawBody, d.git.secret)) {
+            if (hmacDigest(req.headers['x-hub-signature'], req.rawBody, d.git.secret)) {
               return slugs(d).then(function(ret){
                 var root, prj, org, brd;
                 root = ret.root, prj = ret.prj, org = ret.org, brd = ret.brd;
