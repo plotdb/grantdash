@@ -74,15 +74,13 @@ block body
             .pb-4 #{answer.description.content}
 
         each block in grp.form.list
-          .pb-4.mb-4
-            h4 #{block.title}
-            p.text-muted #{block.desc}
-            hr
-            - var value = answer[block.key]
-            .pb-4(ld="answer",data-key=block.key)
-              //- TODO useMarkdown
-              if value
-                | #{value.content || value.list.map(function(d,i) { return d.name || d; }).join(',')}
+          if !(block.config && !block.config.public)
+            .pb-4.mb-4
+              h4 #{block.title}
+              p.text-muted #{block.desc}
+              hr
+              - var value = answer[block.key]
+              .pb-4(ld="answer",data-key=block.key)
 
 
       .caption
