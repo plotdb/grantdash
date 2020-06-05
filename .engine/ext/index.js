@@ -53,7 +53,7 @@
         }));
         return Promise.all(list.map(function(d){
           return Promise.resolve().then(function(){
-            if (hmacDigest(req.rawBody, d.secret)) {
+            if (hmacDigest(req.rawBody, d.git.secret)) {
               return slugs(d).then(function(ret){
                 var root, prj, org, brd;
                 root = ret.root, prj = ret.prj, org = ret.org, brd = ret.brd;
