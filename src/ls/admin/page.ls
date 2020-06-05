@@ -20,6 +20,9 @@ Ctrl = (opt) ->
           @data.opt = name
           @update!now!
           @view.render!
+        "git-secret-gen": ~>
+          @data.{}git.secret = @view.get('git-secret').value = suuid!
+          @update!
       input: do
         "git-url": ({node}) ~>
           @data.{}git.url = node.value or ''
@@ -29,6 +32,9 @@ Ctrl = (opt) ->
           @update!
         "git-branch": ({node}) ~>
           @data.{}git.branch = node.value or ''
+          @update!
+        "git-secret": ({node}) ~>
+          @data.{}git.secret = node.value or ''
           @update!
 
 

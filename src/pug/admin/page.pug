@@ -46,6 +46,12 @@ hr
         .form-group
           label Git Branch
           input.form-control.rounded.border(ld="git-branch",placeholder="例如, gh-pages")
+      .col-md
+        .form-group
+          label Secret
+          .input-group
+            input.form-control.rounded.border(ld="git-secret",placeholder="隨機的字串即可")
+            .input-group-append: .btn.btn-outline-secondary(ld="git-secret-gen") 隨機生成
     .form-group
       label 客製樣式表網址
       input.form-control.border.rounded(ld="custom-css-url", placeholder="例如, https://some.site/index.css")

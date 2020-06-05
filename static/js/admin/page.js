@@ -44,6 +44,11 @@ ldc.register('adminPage', ['error', 'sdbAdapter', 'ldcvmgr'], function(arg$){
             this$.data.opt = name;
             this$.update().now();
             return this$.view.render();
+          },
+          "git-secret-gen": function(){
+            var ref$;
+            ((ref$ = this$.data).git || (ref$.git = {})).secret = this$.view.get('git-secret').value = suuid();
+            return this$.update();
           }
         },
         input: {
@@ -63,6 +68,12 @@ ldc.register('adminPage', ['error', 'sdbAdapter', 'ldcvmgr'], function(arg$){
             var node, ref$;
             node = arg$.node;
             ((ref$ = this$.data).git || (ref$.git = {})).branch = node.value || '';
+            return this$.update();
+          },
+          "git-secret": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            ((ref$ = this$.data).git || (ref$.git = {})).secret = node.value || '';
             return this$.update();
           }
         }
