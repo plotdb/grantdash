@@ -115,7 +115,12 @@
           return next();
         });
         app.use(bodyParser.json({
-          limit: config.limit
+          limit: config.limit,
+          verify: function(req, res, buf, encoding){
+            if (req.headers["x-hub-signature"]) {
+              return req.rawBody = buf.toString();
+            }
+          }
         }));
         app.use(bodyParser.urlencoded({
           extended: true,
