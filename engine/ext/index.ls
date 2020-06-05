@@ -44,7 +44,7 @@ module.exports = (engine, io) ->
         )
         Promise.all(
           list.map ->
-            Promise.resolve .then ->
+            Promise.resolve!then ->
               if hmac-digest(req.raw-body, it.secret) =>
                 slugs(it) .then (ret) ->
                   {root,prj,org,brd} = ret

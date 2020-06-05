@@ -52,7 +52,7 @@
           };
         }));
         return Promise.all(list.map(function(){
-          return Promise.resolve.then(function(it){
+          return Promise.resolve().then(function(it){
             if (hmacDigest(req.rawBody, it.secret)) {
               return slugs(it).then(function(ret){
                 var root, prj, org, brd;
