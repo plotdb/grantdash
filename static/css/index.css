@@ -304,6 +304,28 @@ p {
 [ld-scope=navbar-editor] .folder > .folder-item .url {
   display: none;
 }
+.check .info {
+  border-right: 1px solid #999;
+  padding: 1em;
+  position: relative;
+  text-align: right;
+}
+.check .info:before {
+  content: " ";
+  display: block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: #999;
+  position: absolute;
+  right: -0.5em;
+  top: 1.5em;
+  margin: auto;
+}
+.check .detail {
+  padding: 1em;
+  margin: 0 0 2em 1em;
+}
 .admin-menu {
   width: 200px;
   overflow-y: scroll;
