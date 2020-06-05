@@ -51,6 +51,12 @@ var slice$ = [].slice;
           doc.subscribe(function(ops, source){
             return res(doc);
           });
+          doc.on('error', function(err){
+            return this$.fire('error', {
+              doc: doc,
+              err: err
+            });
+          });
           if (watch != null) {
             doc.on('op', function(ops, source){
               return watch(ops, source);

@@ -31,6 +31,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @sdb = sdb = new sharedb-wrapper do
       url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
       path: '/dash/ws'
+    sdb.on \error, -> ldcvmgr.toggle \not-sync
     sdb.on \close, ~>
       loader.on!
       sdb.reconnect!

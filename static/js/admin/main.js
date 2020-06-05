@@ -119,6 +119,9 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
           sdb: sdb
         })
       };
+      sdb.on('error', function(){
+        return ldcvmgr.toggle('not-sync');
+      });
       return sdb.on('close', function(){
         this$.loader.on();
         return sdb.reconnect().then(function(){

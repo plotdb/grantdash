@@ -65,6 +65,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
         url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
         path: '/dash/ws'
       @hubs = org: new Hub({sdb}), brd: new Hub({sdb})
+      sdb.on \error, -> ldcvmgr.toggle \not-sync
       sdb.on \close, ~>
         @loader.on!
         sdb.reconnect!

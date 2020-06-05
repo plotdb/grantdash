@@ -58,6 +58,9 @@ ldc.register(['general', 'auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], funct
         },
         path: '/dash/ws'
       });
+      sdb.on('error', function(){
+        return ldcvmgr.toggle('not-sync');
+      });
       sdb.on('close', function(){
         loader.on();
         return sdb.reconnect().then(function(){
