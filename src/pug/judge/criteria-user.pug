@@ -1,0 +1,243 @@
+extends /base.pug
+block vars
+  - ctrl.navtop.shown = false
+  - ctrl.navtop.placeholder = false
+  - ctrl.navtop.className = "navbar-light bg-semi-light"
+  - ctrl.foot.shown = false
+  - isall = false
+  -
+    var prjs = [
+      ["開放 SaaS 平台"],
+      ["線上資料庫"],
+      ["選舉指南"],
+      ["點對點分散式網路"],
+      ["剩食大平台"],
+      ["求職小幫手"],
+      ["美國台灣觀測協會"],
+      ["國會監視器"],
+      ["協作資料夾 2.0"],
+      ["線上課程平台"],
+      ["協作式筆記系統"],
+      ["剩食資料庫系統"],
+      ["社區食倉"],
+      ["文字工作者大平台"],
+      ["自動逐字稿輔助編寫平台"],
+      ["司法透視鏡 - 一起監督司法"],
+      ["台灣ㄟ姻仔"],
+      ["農業微型監視儀"],
+      ["台灣在地化分散式字點"],
+      ["xota.co"],
+      ["從 AM2.5 到 PM2.5"],
+      ["新聞儀表板"],
+      ["山林間測快手"],
+      ["台灣在地化地圖計畫"],
+      ["資訊透明度量表"],
+      ["智慧漸凍人補助器"],
+      ["離職書產生器"]
+    ]
+
+block head
+  style(type="text/css"): :stylus
+    .table .toggle:hover
+      background: #eeeff0
+      cursor: pointer
+    tr.check
+      background: #fafbfc
+      color: #444
+    tr.active
+      background: #ff9!important
+      box-shadow: inset 0 0 10px 2px rgba(255,255,255,1)
+    .handsontable
+      font-size: 14px
+      td, th
+        vertical-align: middle
+        text-align: center
+    .handsontable td.auto
+      background: #f9fafb
+      color: #47b
+block body
+  //include /ui/mixins/index.pug
+
+  .h-100.w-100.d-flex.flex-column
+    .p-2.d-flex
+      .flex-grow-1.p-2
+        span.mr-4 沉浸式內容國際合資合製補助計畫
+        span #[i.i-radio.text-success] 資格審查表 - 王小明
+      div
+        .p-2 Kirby #[i.i-dart-down]
+
+    .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
+      .d-flex.flex-column(style="flex:1 1 50%")
+
+        .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow:scroll")
+          #example.w-100
+
+            .sticky(style="top:0")
+              .p-2.bg-white.d-flex.text-muted.text-sm.justify-content-end
+                .flex-grow-1.d-flex
+                  .mx-3 總計 #[span.text-danger 50]
+                  .mx-3 通過 #[span.text-danger 42]
+                  .mx-3 待審 #[span.text-danger 4]
+                  .mx-3 退件 #[span.text-danger 4]
+                .mx-3 #[i.i-circle] / 待驗證
+                .mx-3 #[i.i-check.text-success] / 通過
+                .mx-3 #[i.i-close.text-danger] / 不符合
+                .mx-3 #[i.i-doc.text-danger] / 帶附註
+              table.table.w-100.bg-light.border-bottom.mb-0.shadow-sm
+                tr
+                  td.text-center(style="width:2em"): i.i-circle
+                  td.text-center(style="width:2em"): i.i-doc
+                  td.text-right(style="width:4em") 編號
+                  td
+                    .d-flex.align-items-end
+                      .flex-grow-1 提案名稱
+                      .text-sm.text-primary.clickable(ld="criteria") #[i.i-question] 審核條件
+                  if isall
+                    td.text-center(style="width:4em") 通過
+                    td.text-center(style="width:4em") 待審
+                    td.text-center(style="width:4em") 不符
+                    td.text-center(style="width:4em") 細節
+                  else
+                    td.text-center(style="width:4em") 開源
+                    td.text-center(style="width:4em") 協作
+                    td.text-center(style="width:4em") 重用
+                    td.text-center(style="width:4em") 評論
+
+            table.table.w-100.mb-0
+              tr
+                td.text-center.p-0(style="width:2em")
+                td.text-center.p-0(style="width:2em")
+                td.text-right.p-0(style="width:4em")
+                td.p-0
+                if isall
+                  td.text-center.p-0(style="width:4em")
+                  td.text-center.p-0(style="width:4em")
+                  td.text-center.p-0(style="width:4em")
+                  td.text-center.p-0(style="width:4em")
+                else
+                  td.text-center.p-0(style="width:4em")
+                  td.text-center.p-0(style="width:4em")
+                  td.text-center.p-0(style="width:4em")
+                  td.text-center.p-0(style="width:4em")
+
+              each item,$index in prjs
+                tr(class=($index == 1 ? "active" : (Math.random() > 0.2 ? "check" : (Math.random() > 0.5 ? "pend" : "fail"))))
+                  td.text-center
+                    if Math.random() > 0.2
+                      i.i-check.text-success
+                    else if Math.random() > 0.5
+                      i.i-circle.text-secondary
+                    else
+                      i.i-close.text-danger
+                  td.text-center
+                    if Math.random() > 0.8
+                      span.ml-1.text-danger: i.i-doc
+
+                  td.text-right(style="width:4em") #{$index + 1}
+                  td
+                    span #{item[0]}
+                  if isall
+                    td.text-center= Math.round(Math.random() * 1) + 2
+                    td.text-danger.text-center= Math.round(Math.random() * 2) + 1
+                    td.text-danger.text-center= Math.round(Math.random() * 3) + 0
+                    td.text-center.clickable(ld="detail") #[i.i-pen]
+
+                  else
+
+                    each i in [1,2,3]
+                      td.text-center.toggle
+                        if Math.random() > 0.2
+                          i.i-check.text-success
+                        else if Math.random() > 0.5
+                          i.i-circle.text-secondary
+                        else
+                          i.i-close.text-danger
+                    td.text-center.clickable(ld="comment") #[i.i-pen]
+
+
+        .px-4.py-2.w-100
+          .d-flex.align-items-center
+            .mr-4
+              .text-muted.text-sm 距資格審查截止還有
+              .text-danger 2 天 15 小時 20 分
+            .mr-4.flex-grow-1
+              .text-muted.text-sm 完成度 / #[span.text-danger 70%]
+              .progress.my-1(style="width:100%")
+                .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(style="width:40%")
+                .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(style="width:20%")
+                .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(style="width:10%")
+            div: .btn.btn-outline-dark 提交審查結果
+
+
+
+      div(style="flex:1 1 50%")
+        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0
+          iframe.border-0.w-100.h-100(src="/ui/project/view.html")
+          //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
+            embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
+
+
+
+
+  div
+
+    #review-criteria.ldcv: .base.w-480: .inner.card.shadow-sm
+      .card-body
+        h3 審核資格
+        hr
+        h5 開源
+        p 開源（開放原始碼）是指將成果用開放授權的方式公開出來，讓其他人可以直接使用、改作、加入協作或發展出更新的版本。好處是過程透明、更容易協作，成果共享。從這個影片可以看到更多關於開源運動的介紹。
+        h5 協作
+        p 公民科技（Civic Tech）是以打造新的科技工具來促進公民參與的新實踐，以增進溝通、群眾共識與公民參與，同時也有運用開放資料增強政府的透明度、國會監督與政府課責等面向。公民科技的表現形多元，多以網路平台、線上服務、手機或桌面 APP，瀏覽器外掛、實體裝置等，首要對象即是公民社會，並為了提升公共利益而產生。
+        hr
+        .text-right
+          .btn.btn-primary 關閉
+
+    #review-comment.ldcv: .base.w-480: .inner.card.shadow-sm
+      .card-header.shadow-sm.position-relative.z-float
+        p.mb-0 資格審核附註
+        h4.mb-0 點對點分散式網路
+      textarea.form-control.border-0.rounded-0(rows="5",placeholder="在這裡輸入您的附註 ... ")
+      .card-footer
+        .d-flex.justify-content-between
+          .btn.btn-outline-secondary 捨棄
+          .btn.btn-primary(data-ldcv-set="") 完成
+
+    #review-detail.ldcv: .base.w-480: .inner.card.shadow-sm
+      .card-header.shadow-sm.position-relative.z-float
+        p.mb-0 資格審核附註
+        h4.mb-0 點對點分散式網路
+      .card-body
+        .d-flex
+          .mr-4.pr-4
+            .mb-2: b 通過 #[i.i-check.text-success]
+            each i in [1,2,3]
+              +user.mr-2
+          .mr-4.pr-4
+            .mb-2: b 待驗證 #[i.i-circle]
+            each i in [1]
+              +user.mr-2
+          div
+            .mb-2: b 不符 #[i.i-close.text-danger]
+            each i in [1,2]
+              +user.mr-2
+        hr
+        each i in [1,2,3]
+          div: b Kirby Wu:
+          .border-left.pl-2.mb-4 開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。
+      .card-footer
+        .d-flex.justify-content-between
+          .btn.btn-primary(data-ldcv-set="") 關閉
+
+block script
+  script: :lsc
+    ldcv-comment = new ldCover root: \#review-comment
+    ldcv-detail = new ldCover root: \#review-detail
+    ldcv-criteria = new ldCover root: \#review-criteria
+    view = new ldView do
+      root: document.body
+      action: click: do
+        comment: ({node}) -> ldcv-comment.toggle!
+        detail: ({node}) -> ldcv-detail.toggle!
+        criteria: ({node}) -> ldcv-criteria.toggle!
+
