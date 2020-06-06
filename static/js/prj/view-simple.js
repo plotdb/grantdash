@@ -61,6 +61,14 @@ ldc.register('prjViewSimple', [], function(){
     return this;
   };
   Ctrl.prototype = import$(Object.create(Object.prototype), {
+    update: function(arg$){
+      var form, answer, prj;
+      form = arg$.form, answer = arg$.answer, prj = arg$.prj;
+      this.form = form;
+      this.answer = answer;
+      this.prj = prj;
+      return this.render();
+    },
     render: function(){
       return this.view.render();
     }

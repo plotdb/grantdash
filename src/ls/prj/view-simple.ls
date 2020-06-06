@@ -26,7 +26,11 @@ Ctrl = (opt) ->
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< do
+  update: ({form, answer, prj}) ->
+    @ <<< {form, answer, prj}
+    @render!
   render: -> @view.render!
+
 Ctrl.render = ({block, answer, prj, brd, org}) ->
   result = {}
   if !(block and answer) => return
