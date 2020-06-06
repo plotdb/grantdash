@@ -46,6 +46,7 @@ Ctrl = (opt) ->
       "count-todo": ({node}) ~> @progress.1 or 0
       reviewer: ({node}) ~> @user.displayname
     handler: do
+      "for-all": ({node}) -> node.classList.toggle \d-none, true
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
       "progress-accept": ({node}) ~> node.style.width = "#{100 * (@progress.0 or 0) / (@prjs.length or 1)}%"
@@ -73,7 +74,13 @@ Ctrl = (opt) ->
               name: ({node, context}) ->
                 view.get("iframe").setAttribute \src, "/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
+
+            text: do
+              "count-accept": ({node}) ~> 0
+              "count-reject": ({node}) ~> 0
+              "count-todo": ({node}) ~> 0
             handler: do
+              "for-all": ({node}) -> node.classList.toggle \d-none, true
               "has-comment": ({node, context}) ~> node.classList.toggle \invisible, !@data[context.slug].comment
               state: ({node, context}) ~>
                 val = @criteria.reduce(

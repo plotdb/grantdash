@@ -109,6 +109,11 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
         }
       },
       handler: {
+        "for-all": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.classList.toggle('d-none', true);
+        },
         "comment-name": function(arg$){
           var node;
           node = arg$.node;
@@ -171,7 +176,29 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
                   }
                 }
               },
+              text: {
+                "count-accept": function(arg$){
+                  var node;
+                  node = arg$.node;
+                  return 0;
+                },
+                "count-reject": function(arg$){
+                  var node;
+                  node = arg$.node;
+                  return 0;
+                },
+                "count-todo": function(arg$){
+                  var node;
+                  node = arg$.node;
+                  return 0;
+                }
+              },
               handler: {
+                "for-all": function(arg$){
+                  var node;
+                  node = arg$.node;
+                  return node.classList.toggle('d-none', true);
+                },
                 "has-comment": function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;

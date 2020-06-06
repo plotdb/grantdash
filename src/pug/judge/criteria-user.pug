@@ -5,37 +5,6 @@ block vars
   - ctrl.navtop.className = "navbar-light bg-semi-light"
   - ctrl.foot.shown = false
   - isall = false
-  -
-    var prjs = [
-      ["開放 SaaS 平台"],
-      ["線上資料庫"],
-      ["選舉指南"],
-      ["點對點分散式網路"],
-      ["剩食大平台"],
-      ["求職小幫手"],
-      ["美國台灣觀測協會"],
-      ["國會監視器"],
-      ["協作資料夾 2.0"],
-      ["線上課程平台"],
-      ["協作式筆記系統"],
-      ["剩食資料庫系統"],
-      ["社區食倉"],
-      ["文字工作者大平台"],
-      ["自動逐字稿輔助編寫平台"],
-      ["司法透視鏡 - 一起監督司法"],
-      ["台灣ㄟ姻仔"],
-      ["農業微型監視儀"],
-      ["台灣在地化分散式字點"],
-      ["xota.co"],
-      ["從 AM2.5 到 PM2.5"],
-      ["新聞儀表板"],
-      ["山林間測快手"],
-      ["台灣在地化地圖計畫"],
-      ["資訊透明度量表"],
-      ["智慧漸凍人補助器"],
-      ["離職書產生器"]
-    ]
-
 block head
   style(type="text/css"): :stylus
     .table .toggle:hover
@@ -56,8 +25,6 @@ block head
       background: #f9fafb
       color: #47b
 block body
-  //include /ui/mixins/index.pug
-
   .h-100.w-100.d-flex.flex-column
     .p-2.d-flex
       .flex-grow-1.p-2
@@ -92,43 +59,30 @@ block body
                     .d-flex.align-items-end
                       .flex-grow-1 提案名稱
                       .text-sm.text-primary.clickable(ld="criteria") #[i.i-question] 審核條件
-                  if isall
-                    td.text-center(style="width:4em") 通過
-                    td.text-center(style="width:4em") 待審
-                    td.text-center(style="width:4em") 不符
-                    td.text-center(style="width:4em") 細節
-                  else
-                    td.text-center(ld-each="header-criteria",style="width:4em")
-                    td.text-center(style="width:4em") 評論
+                  td.text-center(ld="for-all",style="width:4em") 通過
+                  td.text-center(ld="for-all",style="width:4em") 待審
+                  td.text-center(ld="for-all",style="width:4em") 不符
+                  td.text-center(ld="for-all",style="width:4em") 細節
+                  td.text-center(ld="for-one",ld-each="header-criteria",style="width:4em")
+                  td.text-center(ld="for-one",style="width:4em") 評論
 
             table.table.w-100.mb-0
-              tr
-                td.text-center.p-0(style="width:2em")
-                td.text-center.p-0(style="width:2em")
-                td.text-right.p-0(style="width:4em")
-                td.p-0
-                if isall
-                  td.text-center.p-0(style="width:4em")
-                  td.text-center.p-0(style="width:4em")
-                  td.text-center.p-0(style="width:4em")
-                  td.text-center.p-0(style="width:4em")
-                else
-                  td.text-center.p-0(style="width:4em")
-                  td.text-center.p-0(style="width:4em")
-                  td.text-center.p-0(style="width:4em")
-                  td.text-center.p-0(style="width:4em")
 
               tr.d-none(ld-each="project")
                 //- 狀態圖示
-                td: i(ld="state")
+                td(style="width:2em"): i(ld="state")
                 //- 註解圖示
-                td: i.i-doc.text-primary.invisible(ld="has-comment comment")
-                td.text-right: span(ld="key")
-                td.clickable: span(ld="name")
-                //- 資格清單
-                td.text-center.clickable(ld-each="criteria"): i
+                td(style="width:2em"): i.i-doc.text-primary.invisible(ld="has-comment comment")
+                td(style="width:4em").text-right: span(ld="key")
+                td.clickable: span.text-underline(ld="name")
+                //- 資格清單 ( 個人用 )
+                td.text-center.clickable(ld-each="criteria",style="width:4em"): i
+                //- 審查結果 ( 總表用 )
+                td.text-center.clickable(ld="count-accept for-all",style="width:4em")
+                td.text-center.clickable(ld="count-todo for-all",style="width:4em")
+                td.text-center.clickable(ld="count-reject for-all",style="width:4em")
                 //- 評論按鈕
-                td.text-center.clickable(ld="comment"): i.i-pen
+                td.text-center.clickable(ld="comment",style="width:4em"): i.i-pen
 
 
         .px-4.py-2.w-100
