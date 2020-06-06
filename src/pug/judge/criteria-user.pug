@@ -120,7 +120,19 @@ block body
                   td.text-center.p-0(style="width:4em")
                   td.text-center.p-0(style="width:4em")
 
-              each item,$index in prjs
+              tr(ld-each="project")
+                //- 狀態圖示
+                td: i(ld="state")
+                //- 註解圖示
+                td: i.i-check
+                td.text-right: span(ld="key")
+                td: span(ld="name")
+                //- 資格清單
+                td.text-center.clickable(ld-each="qualify"): i
+                //- 評論按鈕
+                td.text-center.clickable(ld="comment"): i.i-pen
+
+              //-each item,$index in prjs
                 tr(class=($index == 1 ? "active" : (Math.random() > 0.2 ? "check" : (Math.random() > 0.5 ? "pend" : "fail"))))
                   td.text-center
                     if Math.random() > 0.2
@@ -197,7 +209,8 @@ block body
       .card-header.shadow-sm.position-relative.z-float
         p.mb-0 資格審核附註
         h4.mb-0 點對點分散式網路
-      textarea.form-control.border-0.rounded-0(rows="5",placeholder="在這裡輸入您的附註 ... ")
+      textarea.form-control.border-0.rounded-0(ld="comment",
+      rows="5",placeholder="在這裡輸入您的附註 ... ")
       .card-footer
         .d-flex.justify-content-between
           .btn.btn-outline-secondary 捨棄
@@ -230,14 +243,4 @@ block body
           .btn.btn-primary(data-ldcv-set="") 關閉
 
 block script
-  script: :lsc
-    ldcv-comment = new ldCover root: \#review-comment
-    ldcv-detail = new ldCover root: \#review-detail
-    ldcv-criteria = new ldCover root: \#review-criteria
-    view = new ldView do
-      root: document.body
-      action: click: do
-        comment: ({node}) -> ldcv-comment.toggle!
-        detail: ({node}) -> ldcv-detail.toggle!
-        criteria: ({node}) -> ldcv-criteria.toggle!
-
+  +script("/js/judge/criteria-user.js")

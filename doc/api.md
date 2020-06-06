@@ -1,3 +1,17 @@
+# Internal APIs
+
+all APIs are prefixed with `/dash/api`.
+
+# POBs ( Project, Organization and Boards )
+
+ - /brd/<slug>/list - list all projects, given board and (optionally) group slug. parameters:
+   - offset, limit - pagination control.
+   - keyword, category, tag, group - filter
+
+ - /prj/<slug> - project detail.
+
+
+
 # User Specific
 
  * api
