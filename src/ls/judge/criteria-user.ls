@@ -57,10 +57,9 @@ Ctrl = (opt) ->
         list: ~> @criteria
         handler: ({node, data}) ~> node.innerText = data.name
       project: do
-        list: ~>
-          @prjs.map ~>
-          @prjs
+        list: ~> @prjs
         init: ({node, local, data}) ~>
+          root = node
           node.classList.remove \d-none
           local.view = new ldView do
             root: node
@@ -68,12 +67,16 @@ Ctrl = (opt) ->
             action: click: do
               comment: ({node, context}) ~>
                 @active = context
+
                 view.get(\comment).value = (@data{}[@active.slug].comment or '')
                 @ldcv.comment.toggle!
                 @view.render \comment-name
               name: ({node, context}) ->
                 view.get("iframe").setAttribute \src, "/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
+                if @active-node => @active-node.classList.remove \active
+                @active-node = root
+                @active-node.classList.add \active
 
             text: do
               "count-accept": ({node}) ~> 0
@@ -107,7 +110,7 @@ Ctrl = (opt) ->
                   v = @data{}[context.slug].{}value[data.key]
                   v = if v? => v else 1
                   clsset local.icon, v
-        handler: ({local, data}) ->
+        handler: ({node, local, data}) ~>
           local.view.setContext data
           local.view.render!
   @

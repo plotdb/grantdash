@@ -148,12 +148,12 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
         },
         project: {
           list: function(){
-            this$.prjs.map(function(){});
             return this$.prjs;
           },
           init: function(arg$){
-            var node, local, data;
+            var node, local, data, root;
             node = arg$.node, local = arg$.local, data = arg$.data;
+            root = node;
             node.classList.remove('d-none');
             return local.view = new ldView({
               root: node,
@@ -172,7 +172,12 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
                     var node, context;
                     node = arg$.node, context = arg$.context;
                     view.get("iframe").setAttribute('src', "/prj/" + context.slug + "?simple");
-                    return view.get("iframe-placeholder").classList.add('d-none');
+                    view.get("iframe-placeholder").classList.add('d-none');
+                    if (this.activeNode) {
+                      this.activeNode.classList.remove('active');
+                    }
+                    this.activeNode = root;
+                    return this.activeNode.classList.add('active');
                   }
                 }
               },
@@ -259,8 +264,8 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
             });
           },
           handler: function(arg$){
-            var local, data;
-            local = arg$.local, data = arg$.data;
+            var node, local, data;
+            node = arg$.node, local = arg$.local, data = arg$.data;
             local.view.setContext(data);
             return local.view.render();
           }
