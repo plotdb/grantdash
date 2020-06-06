@@ -162,6 +162,12 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
                     view.get('comment').value = ((ref$ = this$.data)[key$ = this$.active.slug] || (ref$[key$] = {})).comment || '';
                     this$.ldcv.comment.toggle();
                     return this$.view.render('comment-name');
+                  },
+                  name: function(arg$){
+                    var node, context;
+                    node = arg$.node, context = arg$.context;
+                    view.get("iframe").setAttribute('src', "/prj/" + context.slug + "?simple");
+                    return view.get("iframe-placeholder").classList.add('d-none');
                   }
                 }
               },

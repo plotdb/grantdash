@@ -124,7 +124,7 @@ block body
                 //- 註解圖示
                 td: i.i-doc.text-primary.invisible(ld="has-comment comment")
                 td.text-right: span(ld="key")
-                td: span(ld="name")
+                td.clickable: span(ld="name")
                 //- 資格清單
                 td.text-center.clickable(ld-each="criteria"): i
                 //- 評論按鈕
@@ -146,10 +146,14 @@ block body
 
 
       div(style="flex:1 1 50%")
-        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0
-          //-iframe.border-0.w-100.h-100(src="/ui/project/view.html")
-          //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
-            embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
+        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em")
+          .card-body.p-0.position-relative
+            iframe.border-0.w-100.h-100(ld="iframe")
+            .w-100.h-100.vertical-center.position-absolute.z-float.bg-light(
+            ld="iframe-placeholder",style="top:0;left:0")
+              .w-100.text-center.text-muted 點擊提案名稱來瀏覽提案內容
+            //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
+              embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
 
 
 

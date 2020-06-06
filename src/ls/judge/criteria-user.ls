@@ -70,6 +70,9 @@ Ctrl = (opt) ->
                 view.get(\comment).value = (@data{}[@active.slug].comment or '')
                 @ldcv.comment.toggle!
                 @view.render \comment-name
+              name: ({node, context}) ->
+                view.get("iframe").setAttribute \src, "/prj/#{context.slug}?simple"
+                view.get("iframe-placeholder").classList.add \d-none
             handler: do
               "has-comment": ({node, context}) ~> node.classList.toggle \invisible, !@data[context.slug].comment
               state: ({node, context}) ~>
