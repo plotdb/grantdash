@@ -14,44 +14,86 @@ clsset = (node, val) ->
 
 Ctrl = (opt) ->
   @loader = loader
-  /*
-  view = new ldView do
-    root: document.body
-    action: input: do
-      comment: ->
+  @ <<< opt{brd, grp}
+  @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
+  @prjs = []
+  @data = {}
+  @user = opt.user
+  @criteria = [{name: "開源", key: 1}, {name: "協作", key: 2}, {name: "參與", key: 3}]
+  @_update = debounce ~> @ops-out ~> @data
+
+  @ldcv = do
+    comment: new ldCover root: ld$.find(root, '[ld=comment-ldcv]', 0)
+    detail: new ldCover root: ld$.find(root, '[ld=detail-ldcv]', 0)
+    criteria: new ldCover root: ld$.find(root, '[ld=criteria-ldcv]', 0)
+
+  @view = view = new ldView do
+    root: root
+    action: do
+      input: do
+        comment: ({node}) ~>
+          if !@active => return
+          @active.comment = node.value
+          @update debounced: true
+      click: do
+        detail: ({node}) ~> @ldcv.detail.toggle!
+        criteria: ({node}) ~> @ldcv.criteria.toggle!
     handler: do
-      comment: 
       project: do
-        list: ~> @list
-        init: ({node, local, data}) ->
-          data.qualify = <[開源 協作 重用]>.map -> {name: it, value: 1}
+        list: ~>
+          @prjs.map ~>
+          @prjs
+        init: ({node, local, data}) ~>
           local.view = new ldView do
             root: node
             context: data
             action: click: do
-              comment: ({node}) -> ldcv-comment.toggle!
+              comment: ({node, context}) ~>
+                @active = @data{}[context.slug]
+                view.get(\comment).value = (@active.comment or '')
+                @ldcv.comment.toggle!
             handler: do
-              state: ({node, context}) ->
-                val = context.qualify.reduce(((a, b) -> Math.max(a, b.value)), 0)
+              state: ({node, context}) ~>
+                val = @criteria.reduce(
+                  (a, b) ~>
+                    v = @data{}[context.slug].{}value[b.key]
+                    Math.max(a, if v? => v else 1)
+                  0
+                )
                 clsset node, val
               name: ({node, context}) ->
                 node.innerText = context.name
               key: ({node, context}) -> node.innerText = context.key
-              qualify: do
-                list: -> data.qualify
+              criteria: do
+                list: ({context}) ~> @criteria
                 init: ({node, local}) -> local.icon = ld$.find(node, 'i', 0)
-                action: click: ({node, data}) ->
-                  data.value = ( data.value + 2 ) % 3
+                action: click: ({node, data, context}) ~>
+                  v = @data{}[context.slug].{}value[data.key]
+                  v = if v? => v else 1
+                  v = ( v + 2 ) % 3
+                  @data[context.slug].value[data.key] = v
+                  @update!
                   local.view.render!
-                handler: ({local, data}) -> clsset local.icon, data.value
+                handler: ({local, data, context}) ~>
+                  v = @data{}[context.slug].{}value[data.key]
+                  v = if v? => v else 1
+                  clsset local.icon, v
         handler: ({local, data}) ->
           local.view.setContext data
           local.view.render!
-  */
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   render: -> @view.render!
+  update: (opt={}) ->
+    if !opt.debounced => @_update!now! else @_update!
+
+  fetch: ->
+    ld$.fetch '/dash/api/brd/sch001/list', {method: \GET}, {type: \json}
+      .then ~>
+        @prjs = it
+        @render!
+
   sharedb: ->
     console.log "prepare sharedb ..."
     @sdb = sdb = new sharedb-wrapper do
@@ -69,27 +111,34 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   getdoc: ->
     @hub.doc = null
     @sdb.get({
-      id: "brd/#brd/grp/#grp/judge/criteria"
+      id: "brd/#{@brd}/grp/#{@grp}/judge/criteria"
       watch: (ops,source) ~> @hub.fire \change, {ops,source}
       create: ~> {}
     })
-      .then((doc) ~>
+      .then (doc) ~>
+        @hub.doc = doc
         doc.on \op, ~> @render!
-        @adapter {hub, path: []}
-      .catch -> console.log "getdoc #n failed."
+        @adapt {hub: @hub, path: ['user', @user.key]}
+      .catch -> console.log "getdoc failed.", it
 
   ops-in: ({data,ops,source}) ->
+    if source => return
+    @data = JSON.parse(JSON.stringify(data))
+    @render!
 
-ctrl = new Ctrl {}
-
-ld$.fetch '/dash/api/brd/sch001/list', {method: \GET}, {type: \json}
-  .then ->
-    list = it
+auth.get!
+  .then (g) ->
+    ctrl = new Ctrl do
+      user: g.user
+      root: document.body
+      brd: \sch001
+      grp: \4rFUP+03IS05ZD09ku03KMlsh
+    Promise.resolve!
+      .then -> ctrl.sharedb!
+      .then -> ctrl.getdoc!
+      .then -> ctrl.fetch!
 
 /*
-ldcv-comment = new ldCover root: \#review-comment
-ldcv-detail = new ldCover root: \#review-detail
-ldcv-criteria = new ldCover root: \#review-criteria
 main-view = new ldView do
   root: document.body
   action: click: do
