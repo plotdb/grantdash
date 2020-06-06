@@ -40,7 +40,7 @@ Ctrl = (opt) ->
 
   lc = {}
 
-  view = new ldView do
+  @view = view = new ldView do
     root: root
     init: do
       "tail-datetime": ({node}) -> tail.DateTime(node)
@@ -126,5 +126,6 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     for k,v of @form.fields => if !(k in <[slug]>) =>
       if @form.fields[k].getAttribute(\type) == \file => continue
       @form.fields[k].value = data[k] or ''
+    @view.render!
 
 return Ctrl

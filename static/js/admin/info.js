@@ -85,7 +85,7 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
       }
     });
     lc = {};
-    view = new ldView({
+    this.view = view = new ldView({
       root: root,
       init: {
         "tail-datetime": function(arg$){
@@ -249,7 +249,7 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
     opsIn: function(arg$){
-      var data, ops, source, k, ref$, v, results$ = [];
+      var data, ops, source, k, ref$, v;
       data = arg$.data, ops = arg$.ops, source = arg$.source;
       if (source) {
         return;
@@ -260,10 +260,10 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
           if (this.form.fields[k].getAttribute('type') === 'file') {
             continue;
           }
-          results$.push(this.form.fields[k].value = data[k] || '');
+          this.form.fields[k].value = data[k] || '';
         }
       }
-      return results$;
+      return this.view.render();
     }
   });
   return Ctrl;
