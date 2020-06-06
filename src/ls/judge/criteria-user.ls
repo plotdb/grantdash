@@ -3,7 +3,7 @@
 
 clsmap = [
   <[i-check text-success]>
-  <[i-circle text-warning]>
+  <[i-circle text-secondary]>
   <[i-close text-danger]>
 ]
 clsset = (node, val) ->
@@ -18,6 +18,7 @@ Ctrl = (opt) ->
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @prjs = []
   @data = {}
+  @progress = {}
   @user = opt.user
   @criteria = [{name: "開源", key: 1}, {name: "協作", key: 2}, {name: "參與", key: 3}]
   @_update = debounce ~> @ops-out ~> @data
@@ -33,26 +34,44 @@ Ctrl = (opt) ->
       input: do
         comment: ({node}) ~>
           if !@active => return
-          @active.comment = node.value
+          @data{}[@active.slug].comment = node.value
           @update debounced: true
       click: do
         detail: ({node}) ~> @ldcv.detail.toggle!
         criteria: ({node}) ~> @ldcv.criteria.toggle!
+    text: do
+      "count-total": ({node}) ~> @prjs.length or 0
+      "count-accept": ({node}) ~> @progress.0 or 0
+      "count-reject": ({node}) ~> @progress.2 or 0
+      "count-todo": ({node}) ~> @progress.1 or 0
+      reviewer: ({node}) ~> @user.displayname
     handler: do
+      "comment-name": ({node}) ~>
+        if @active => node.innerText = @active.name or ''
+      "progress-accept": ({node}) ~> node.style.width = "#{100 * (@progress.0 or 0) / (@prjs.length or 1)}%"
+      "progress-reject": ({node}) ~> node.style.width = "#{100 * (@progress.2 or 0) / (@prjs.length or 1)}%"
+      progress: ({node}) ~>
+        node.innerText = Math.round(100 * ((@progress.0 or 0) + (@progress.2 or 0)) / (@prjs.length or 1))
+      "header-criteria": do
+        list: ~> @criteria
+        handler: ({node, data}) ~> node.innerText = data.name
       project: do
         list: ~>
           @prjs.map ~>
           @prjs
         init: ({node, local, data}) ~>
+          node.classList.remove \d-none
           local.view = new ldView do
             root: node
             context: data
             action: click: do
               comment: ({node, context}) ~>
-                @active = @data{}[context.slug]
-                view.get(\comment).value = (@active.comment or '')
+                @active = context
+                view.get(\comment).value = (@data{}[@active.slug].comment or '')
                 @ldcv.comment.toggle!
+                @view.render \comment-name
             handler: do
+              "has-comment": ({node, context}) ~> node.classList.toggle \invisible, !@data[context.slug].comment
               state: ({node, context}) ~>
                 val = @criteria.reduce(
                   (a, b) ~>
@@ -84,7 +103,9 @@ Ctrl = (opt) ->
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
-  render: -> @view.render!
+  render: ->
+    @get-progress!
+    @view.render!
   update: (opt={}) ->
     if !opt.debounced => @_update!now! else @_update!
 
@@ -120,6 +141,17 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         doc.on \op, ~> @render!
         @adapt {hub: @hub, path: ['user', @user.key]}
       .catch -> console.log "getdoc failed.", it
+  get-progress: ->
+    val = {0: 0, 1: 0, 2: 0}
+    @prjs.map (p) ~>
+      v = @criteria.reduce(
+        (a, b) ~>
+          v = @data{}[p.slug].{}value[b.key]
+          Math.max(a, if v? => v else 1)
+        0
+      )
+      val[v]++
+    @progress = val
 
   ops-in: ({data,ops,source}) ->
     if source => return
@@ -137,12 +169,3 @@ auth.get!
       .then -> ctrl.sharedb!
       .then -> ctrl.getdoc!
       .then -> ctrl.fetch!
-
-/*
-main-view = new ldView do
-  root: document.body
-  action: click: do
-    comment: ({node}) -> ldcv-comment.toggle!
-    detail: ({node}) -> ldcv-detail.toggle!
-    criteria: ({node}) -> ldcv-criteria.toggle!
-*/

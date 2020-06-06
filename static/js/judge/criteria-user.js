@@ -2,7 +2,7 @@
 ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAdapter'], function(arg$){
   var error, loader, auth, ldcvmgr, sdbAdapter, clsmap, clsset, Ctrl;
   error = arg$.error, loader = arg$.loader, auth = arg$.auth, ldcvmgr = arg$.ldcvmgr, sdbAdapter = arg$.sdbAdapter;
-  clsmap = [['i-check', 'text-success'], ['i-circle', 'text-warning'], ['i-close', 'text-danger']];
+  clsmap = [['i-check', 'text-success'], ['i-circle', 'text-secondary'], ['i-close', 'text-danger']];
   clsset = function(node, val){
     var newcls, oldcls;
     newcls = clsmap[val];
@@ -22,6 +22,7 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
       : opt.root;
     this.prjs = [];
     this.data = {};
+    this.progress = {};
     this.user = opt.user;
     this.criteria = [
       {
@@ -56,12 +57,12 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
       action: {
         input: {
           comment: function(arg$){
-            var node;
+            var node, ref$, key$;
             node = arg$.node;
             if (!this$.active) {
               return;
             }
-            this$.active.comment = node.value;
+            ((ref$ = this$.data)[key$ = this$.active.slug] || (ref$[key$] = {})).comment = node.value;
             return this$.update({
               debounced: true
             });
@@ -80,7 +81,66 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
           }
         }
       },
+      text: {
+        "count-total": function(arg$){
+          var node;
+          node = arg$.node;
+          return this$.prjs.length || 0;
+        },
+        "count-accept": function(arg$){
+          var node;
+          node = arg$.node;
+          return this$.progress[0] || 0;
+        },
+        "count-reject": function(arg$){
+          var node;
+          node = arg$.node;
+          return this$.progress[2] || 0;
+        },
+        "count-todo": function(arg$){
+          var node;
+          node = arg$.node;
+          return this$.progress[1] || 0;
+        },
+        reviewer: function(arg$){
+          var node;
+          node = arg$.node;
+          return this$.user.displayname;
+        }
+      },
       handler: {
+        "comment-name": function(arg$){
+          var node;
+          node = arg$.node;
+          if (this$.active) {
+            return node.innerText = this$.active.name || '';
+          }
+        },
+        "progress-accept": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.style.width = 100 * (this$.progress[0] || 0) / (this$.prjs.length || 1) + "%";
+        },
+        "progress-reject": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.style.width = 100 * (this$.progress[2] || 0) / (this$.prjs.length || 1) + "%";
+        },
+        progress: function(arg$){
+          var node;
+          node = arg$.node;
+          return node.innerText = Math.round(100 * ((this$.progress[0] || 0) + (this$.progress[2] || 0)) / (this$.prjs.length || 1));
+        },
+        "header-criteria": {
+          list: function(){
+            return this$.criteria;
+          },
+          handler: function(arg$){
+            var node, data;
+            node = arg$.node, data = arg$.data;
+            return node.innerText = data.name;
+          }
+        },
         project: {
           list: function(){
             this$.prjs.map(function(){});
@@ -89,6 +149,7 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
           init: function(arg$){
             var node, local, data;
             node = arg$.node, local = arg$.local, data = arg$.data;
+            node.classList.remove('d-none');
             return local.view = new ldView({
               root: node,
               context: data,
@@ -97,13 +158,19 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
                   comment: function(arg$){
                     var node, context, ref$, key$;
                     node = arg$.node, context = arg$.context;
-                    this$.active = (ref$ = this$.data)[key$ = context.slug] || (ref$[key$] = {});
-                    view.get('comment').value = this$.active.comment || '';
-                    return this$.ldcv.comment.toggle();
+                    this$.active = context;
+                    view.get('comment').value = ((ref$ = this$.data)[key$ = this$.active.slug] || (ref$[key$] = {})).comment || '';
+                    this$.ldcv.comment.toggle();
+                    return this$.view.render('comment-name');
                   }
                 }
               },
               handler: {
+                "has-comment": function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.classList.toggle('invisible', !this$.data[context.slug].comment);
+                },
                 state: function(arg$){
                   var node, context, val;
                   node = arg$.node, context = arg$.context;
@@ -171,6 +238,7 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
     render: function(){
+      this.getProgress();
       return this.view.render();
     },
     update: function(opt){
@@ -247,6 +315,24 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
       })['catch'](function(it){
         return console.log("getdoc failed.", it);
       });
+    },
+    getProgress: function(){
+      var val, this$ = this;
+      val = {
+        0: 0,
+        1: 0,
+        2: 0
+      };
+      this.prjs.map(function(p){
+        var v;
+        v = this$.criteria.reduce(function(a, b){
+          var v, ref$, ref1$, key$;
+          v = ((ref$ = (ref1$ = this$.data)[key$ = p.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
+          return Math.max(a, v != null ? v : 1);
+        }, 0);
+        return val[v]++;
+      });
+      return this.progress = val;
     },
     opsIn: function(arg$){
       var data, ops, source;

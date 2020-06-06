@@ -62,7 +62,7 @@ block body
     .p-2.d-flex
       .flex-grow-1.p-2
         span.mr-4 沉浸式內容國際合資合製補助計畫
-        span #[i.i-radio.text-success] 資格審查表 - 王小明
+        span #[i.i-radio.text-success] 資格審查表 - #[span(ld="reviewer")]
       div
         .p-2 Kirby #[i.i-dart-down]
 
@@ -75,14 +75,14 @@ block body
             .sticky(style="top:0")
               .p-2.bg-white.d-flex.text-muted.text-sm.justify-content-end
                 .flex-grow-1.d-flex
-                  .mx-3 總計 #[span.text-danger 50]
-                  .mx-3 通過 #[span.text-danger 42]
-                  .mx-3 待審 #[span.text-danger 4]
-                  .mx-3 退件 #[span.text-danger 4]
+                  .mx-3 總計 #[span.text-danger(ld="count-total") 0]
+                  .mx-3 通過 #[span.text-danger(ld="count-accept") 0]
+                  .mx-3 待審 #[span.text-danger(ld="count-todo") 0]
+                  .mx-3 退件 #[span.text-danger(ld="count-reject") 0]
                 .mx-3 #[i.i-circle] / 待驗證
                 .mx-3 #[i.i-check.text-success] / 通過
                 .mx-3 #[i.i-close.text-danger] / 不符合
-                .mx-3 #[i.i-doc.text-danger] / 帶附註
+                .mx-3 #[i.i-doc.text-primary] / 帶附註
               table.table.w-100.bg-light.border-bottom.mb-0.shadow-sm
                 tr
                   td.text-center(style="width:2em"): i.i-circle
@@ -98,9 +98,7 @@ block body
                     td.text-center(style="width:4em") 不符
                     td.text-center(style="width:4em") 細節
                   else
-                    td.text-center(style="width:4em") 開源
-                    td.text-center(style="width:4em") 協作
-                    td.text-center(style="width:4em") 重用
+                    td.text-center(ld-each="header-criteria",style="width:4em")
                     td.text-center(style="width:4em") 評論
 
             table.table.w-100.mb-0
@@ -120,51 +118,17 @@ block body
                   td.text-center.p-0(style="width:4em")
                   td.text-center.p-0(style="width:4em")
 
-              tr(ld-each="project")
+              tr.d-none(ld-each="project")
                 //- 狀態圖示
                 td: i(ld="state")
                 //- 註解圖示
-                td: i.i-check
+                td: i.i-doc.text-primary.invisible(ld="has-comment comment")
                 td.text-right: span(ld="key")
                 td: span(ld="name")
                 //- 資格清單
                 td.text-center.clickable(ld-each="criteria"): i
                 //- 評論按鈕
                 td.text-center.clickable(ld="comment"): i.i-pen
-
-              //-each item,$index in prjs
-                tr(class=($index == 1 ? "active" : (Math.random() > 0.2 ? "check" : (Math.random() > 0.5 ? "pend" : "fail"))))
-                  td.text-center
-                    if Math.random() > 0.2
-                      i.i-check.text-success
-                    else if Math.random() > 0.5
-                      i.i-circle.text-secondary
-                    else
-                      i.i-close.text-danger
-                  td.text-center
-                    if Math.random() > 0.8
-                      span.ml-1.text-danger: i.i-doc
-
-                  td.text-right(style="width:4em") #{$index + 1}
-                  td
-                    span #{item[0]}
-                  if isall
-                    td.text-center= Math.round(Math.random() * 1) + 2
-                    td.text-danger.text-center= Math.round(Math.random() * 2) + 1
-                    td.text-danger.text-center= Math.round(Math.random() * 3) + 0
-                    td.text-center.clickable(ld="detail") #[i.i-pen]
-
-                  else
-
-                    each i in [1,2,3]
-                      td.text-center.toggle
-                        if Math.random() > 0.2
-                          i.i-check.text-success
-                        else if Math.random() > 0.5
-                          i.i-circle.text-secondary
-                        else
-                          i.i-close.text-danger
-                    td.text-center.clickable(ld="comment") #[i.i-pen]
 
 
         .px-4.py-2.w-100
@@ -173,11 +137,10 @@ block body
               .text-muted.text-sm 距資格審查截止還有
               .text-danger 2 天 15 小時 20 分
             .mr-4.flex-grow-1
-              .text-muted.text-sm 完成度 / #[span.text-danger 70%]
+              .text-muted.text-sm 完成度 / #[span.text-danger(ld="progress")]%
               .progress.my-1(style="width:100%")
-                .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(style="width:40%")
-                .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(style="width:20%")
-                .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(style="width:10%")
+                .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(ld="progress-accept")
+                .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(ld="progress-reject")
             div: .btn.btn-outline-dark 提交審查結果
 
 
@@ -208,13 +171,10 @@ block body
     .ldcv(ld="comment-ldcv"): .base.w-480: .inner.card.shadow-sm
       .card-header.shadow-sm.position-relative.z-float
         p.mb-0 資格審核附註
-        h4.mb-0 點對點分散式網路
+        h4.mb-0(ld="comment-name")
       textarea.form-control.border-0.rounded-0(ld="comment",
       rows="5",placeholder="在這裡輸入您的附註 ... ")
-      .card-footer
-        .d-flex.justify-content-between
-          .btn.btn-outline-secondary 捨棄
-          .btn.btn-primary(data-ldcv-set="") 完成
+      .card-footer.text-right: .btn.btn-primary(data-ldcv-set="") 完成
 
     .ldcv(ld="detail-ldcv"): .base.w-480: .inner.card.shadow-sm
       .card-header.shadow-sm.position-relative.z-float
