@@ -31,7 +31,7 @@ permcache = do
     .catch (e) ~>
       permcache{}[type]{}[slug][user.key] = false
       if e and e.id != 1012 => console.log "[sharedb access error]", e
-      rej(e or (new lderror 1012))
+      return Promise.reject(e or (new lderror 1012))
 
   sharedb: ({io, user, id, data, type, action}) ->
     if !id => return Promise.resolve!
