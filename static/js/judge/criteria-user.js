@@ -24,6 +24,7 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
     this.data = {};
     this.progress = {};
     this.user = opt.user;
+    this.forAll = !opt.user;
     this.criteria = [
       {
         name: "開源",
@@ -37,9 +38,11 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
       }
     ];
     this._update = debounce(function(){
-      return this$.opsOut(function(){
-        return this$.data;
-      });
+      if (this$.user) {
+        return this$.opsOut(function(){
+          return this$.data;
+        });
+      }
     });
     this.ldcv = {
       comment: new ldCover({
@@ -105,14 +108,21 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
         reviewer: function(arg$){
           var node;
           node = arg$.node;
-          return this$.user.displayname;
+          if (this$.user) {
+            return this$.user.displayname;
+          }
         }
       },
       handler: {
+        "for-one": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.classList.toggle('d-none', this$.forAll);
+        },
         "for-all": function(arg$){
           var node;
           node = arg$.node;
-          return node.classList.toggle('d-none', true);
+          return node.classList.toggle('d-none', !this$.forAll);
         },
         "comment-name": function(arg$){
           var node;
@@ -138,7 +148,11 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
         },
         "header-criteria": {
           list: function(){
-            return this$.criteria;
+            if (this$.forAll) {
+              return [];
+            } else {
+              return this$.criteria;
+            }
           },
           handler: function(arg$){
             var node, data;
@@ -156,10 +170,16 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
             root = node;
             node.classList.remove('d-none');
             return local.view = new ldView({
+              initRender: false,
               root: node,
               context: data,
               action: {
                 click: {
+                  detail: function(arg$){
+                    var node, context;
+                    node = arg$.node, context = arg$.context;
+                    return this$.ldcv.detail.toggle();
+                  },
                   comment: function(arg$){
                     var node, context, ref$, key$;
                     node = arg$.node, context = arg$.context;
@@ -183,26 +203,31 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
               },
               text: {
                 "count-accept": function(arg$){
-                  var node;
-                  node = arg$.node;
-                  return 0;
-                },
-                "count-reject": function(arg$){
-                  var node;
-                  node = arg$.node;
-                  return 0;
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return (context.reviewCount ? context.reviewCount[0] : 0) || 0;
                 },
                 "count-todo": function(arg$){
-                  var node;
-                  node = arg$.node;
-                  return 0;
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return (context.reviewCount ? context.reviewCount[1] : 0) || 0;
+                },
+                "count-reject": function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return (context.reviewCount ? context.reviewCount[2] : 0) || 0;
                 }
               },
               handler: {
                 "for-all": function(arg$){
                   var node;
                   node = arg$.node;
-                  return node.classList.toggle('d-none', true);
+                  return node.classList.toggle('d-none', !this$.forAll);
+                },
+                "for-one": function(arg$){
+                  var node;
+                  node = arg$.node;
+                  return node.classList.toggle('d-none', this$.forAll);
                 },
                 "has-comment": function(arg$){
                   var node, context;
@@ -233,7 +258,11 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
                   list: function(arg$){
                     var context;
                     context = arg$.context;
-                    return this$.criteria;
+                    if (this$.forAll) {
+                      return [];
+                    } else {
+                      return this$.criteria;
+                    }
                   },
                   init: function(arg$){
                     var node, local;
@@ -266,6 +295,7 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
           handler: function(arg$){
             var node, local, data;
             node = arg$.node, local = arg$.local, data = arg$.data;
+            data.reviewCount = this$.getCount(data.slug);
             local.view.setContext(data);
             return local.view.render();
           }
@@ -346,13 +376,49 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
         doc.on('op', function(){
           return this$.render();
         });
-        return this$.adapt({
-          hub: this$.hub,
-          path: ['user', this$.user.key]
-        });
+        if (this$.user) {
+          return this$.adapt({
+            hub: this$.hub,
+            path: ['user', this$.user.key]
+          });
+        } else {
+          return this$.adapt({
+            hub: this$.hub,
+            path: []
+          });
+        }
       })['catch'](function(it){
         return console.log("getdoc failed.", it);
       });
+    }
+    /*
+    get-detail: (prj-slug) ->
+      review = []
+      for k of @data.user =>
+        val = @data.user[k][prj-slug].value
+        c = @data.user[k][prj-slug].comment
+        if c => {user: k, comment: c}
+        for c in @criteria => count[val[c.key] or 1]++
+    */,
+    getCount: function(prjSlug){
+      var count, k, val, i$, ref$, len$, c;
+      count = [0, 0, 0];
+      for (k in this.data.user) {
+        val = this.data.user[k][prjSlug].value;
+        for (i$ = 0, len$ = (ref$ = this.criteria).length; i$ < len$; ++i$) {
+          c = ref$[i$];
+          count[val[c.key] || 1]++;
+        }
+      }
+      return count;
+    },
+    getState: function(){
+      var val, this$ = this;
+      return val = this.criteria.reduce(function(a, b){
+        var v, ref$, ref1$, key$;
+        v = ((ref$ = (ref1$ = this$.data)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
+        return Math.max(a, v != null ? v : 1);
+      }, 0);
     },
     getProgress: function(){
       var val, this$ = this;
@@ -385,7 +451,6 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
   return auth.get().then(function(g){
     var ctrl;
     ctrl = new Ctrl({
-      user: g.user,
       root: document.body,
       brd: 'sch001',
       grp: '4rFUP+03IS05ZD09ku03KMlsh'

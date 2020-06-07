@@ -6,24 +6,6 @@ block vars
   - ctrl.foot.shown = false
   - isall = false
 block head
-  style(type="text/css"): :stylus
-    .table .toggle:hover
-      background: #eeeff0
-      cursor: pointer
-    tr.check
-      background: #fafbfc
-      color: #444
-    tr.active
-      background: #ff9!important
-      box-shadow: inset 0 0 10px 2px rgba(255,255,255,1)
-    .handsontable
-      font-size: 14px
-      td, th
-        vertical-align: middle
-        text-align: center
-    .handsontable td.auto
-      background: #f9fafb
-      color: #47b
 block body
   .h-100.w-100.d-flex.flex-column
     .p-2.d-flex
@@ -36,35 +18,34 @@ block body
     .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
       .d-flex.flex-column(style="flex:1 1 50%")
 
-        .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow:scroll")
-          #example.w-100
+        .judge-table.flex-grow-1.bg-white.border-top.border-bottom.mt-3.w-100(style="overflow:scroll")
 
-            .sticky(style="top:0")
-              .p-2.bg-white.d-flex.text-muted.text-sm.justify-content-end
-                .flex-grow-1.d-flex
-                  .mx-3 總計 #[span.text-danger(ld="count-total") 0]
-                  .mx-3 通過 #[span.text-danger(ld="count-accept") 0]
-                  .mx-3 待審 #[span.text-danger(ld="count-todo") 0]
-                  .mx-3 退件 #[span.text-danger(ld="count-reject") 0]
-                .mx-3 #[i.i-circle] / 待驗證
-                .mx-3 #[i.i-check.text-success] / 通過
-                .mx-3 #[i.i-close.text-danger] / 不符合
-                .mx-3 #[i.i-doc.text-primary] / 帶附註
-              table.table.w-100.bg-light.border-bottom.mb-0.shadow-sm
-                tr
-                  td.text-center(style="width:2em"): i.i-circle
-                  td.text-center(style="width:2em"): i.i-doc
-                  td.text-right(style="width:4em") 編號
-                  td
-                    .d-flex.align-items-end
-                      .flex-grow-1 提案名稱
-                      .text-sm.text-primary.clickable(ld="criteria") #[i.i-question] 審核條件
-                  td.text-center.d-none(ld="for-all",style="width:4em") 通過
-                  td.text-center.d-none(ld="for-all",style="width:4em") 待審
-                  td.text-center.d-none(ld="for-all",style="width:4em") 不符
-                  td.text-center.d-none(ld="for-all",style="width:4em") 細節
-                  td.text-center(ld="for-one",ld-each="header-criteria",style="width:4em")
-                  td.text-center(ld="for-one",style="width:4em") 評論
+          .sticky(style="top:0")
+            .p-2.bg-white.d-flex.text-muted.text-sm.justify-content-end
+              .flex-grow-1.d-flex
+                .mx-3 總計 #[span.text-danger(ld="count-total") 0]
+                .mx-3 通過 #[span.text-danger(ld="count-accept") 0]
+                .mx-3 待審 #[span.text-danger(ld="count-todo") 0]
+                .mx-3 退件 #[span.text-danger(ld="count-reject") 0]
+              .mx-3 #[i.i-circle] / 待驗證
+              .mx-3 #[i.i-check.text-success] / 通過
+              .mx-3 #[i.i-close.text-danger] / 不符合
+              .mx-3 #[i.i-doc.text-primary] / 帶附註
+            table.table.w-100.bg-light.border-bottom.mb-0.shadow-sm
+              tr
+                td.text-center(style="width:2em"): i.i-circle
+                td.text-center(style="width:2em"): i.i-doc
+                td.text-right(style="width:4em") 編號
+                td
+                  .d-flex.align-items-end
+                    .flex-grow-1 提案名稱
+                    .text-sm.text-primary.clickable(ld="criteria") #[i.i-question] 審核條件
+                td.text-center.d-none(ld="for-all",style="width:4em") 通過
+                td.text-center.d-none(ld="for-all",style="width:4em") 待審
+                td.text-center.d-none(ld="for-all",style="width:4em") 不符
+                td.text-center.d-none(ld="for-all",style="width:4em") 細節
+                td.text-center(ld-each="header-criteria",style="width:4em")
+                td.text-center.d-none(ld="for-one",style="width:4em") 評論
 
             table.table.w-100.mb-0
 
@@ -82,7 +63,8 @@ block body
                 td.text-center.clickable(ld="count-todo for-all",style="width:4em")
                 td.text-center.clickable(ld="count-reject for-all",style="width:4em")
                 //- 評論按鈕
-                td.text-center.clickable(ld="comment",style="width:4em"): i.i-pen
+                td.text-center.clickable(ld="detail for-all",style="width:4em"): i.i-doc
+                td.text-center.clickable(ld="comment for-one",style="width:4em"): i.i-pen
 
 
         .px-4.py-2.w-100
