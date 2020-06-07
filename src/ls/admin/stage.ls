@@ -16,36 +16,36 @@ Ctrl = (opt) !->
   is-valid = (n) ->
     if !n => return false
     if (o = stage.get!) and o.name == n => return true
-    if ~obj.cfg.stage.map(->it.name).indexOf(n) => return false
+    if ~obj.cfg.list.map(->it.name).indexOf(n) => return false
     return true
 
   @stage = stage = do
-    list: -> obj.cfg.[]stage
+    list: -> obj.cfg.[]list
     key: \default
     _key: (k) -> k = if k? => k else (@key or \default)
     init: ->
-      if !Array.isArray(obj.cfg.stage) => obj.cfg.stage = [{key: \default}]
+      if !Array.isArray(obj.cfg.list) => obj.cfg.list = [{key: \default}]
     is: (k) -> @_key! == k
     is-default: -> @_key! == \default
     insertBefore: (a,b) ->
-      st = obj.cfg.stage
+      st = obj.cfg.list
       ia = st.map(->it.key).indexOf(a)
       o = st.splice(ia, 1).0
       ib = if b? => st.map(->it.key).indexOf(b) else st.length
       st.splice ib, 0, o
-    get: (k) -> obj.cfg.stage.filter(~>it.key == @_key(k)).0
+    get: (k) -> obj.cfg.list.filter(~>it.key == @_key(k)).0
     add: (o = {}) ->
       if @get(o.key) => return
-      obj.cfg.stage.push o
+      obj.cfg.list.push o
       @key = o.key
     del: (k) ->
      if (k = @_key(k)) == \default => return
-     idx = obj.cfg.stage.map(->it.key).indexOf(k)
-     obj.cfg.stage.splice idx, 1
-     if k == @key => @key = (obj.cfg.stage[* - 1] or {}).key or \default
+     idx = obj.cfg.list.map(->it.key).indexOf(k)
+     obj.cfg.list.splice idx, 1
+     if k == @key => @key = (obj.cfg.list[* - 1] or {}).key or \default
     val: ({name,value,key}) ->
       key = @_key(key)
-      if !(o = obj.cfg.stage.filter(->it.key == key)[0]) => return
+      if !(o = obj.cfg.list.filter(->it.key == key)[0]) => return
       return if value? => o[name] = value else o[name]
     use: (k) -> @key = k
 

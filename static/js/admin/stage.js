@@ -36,7 +36,7 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
       if ((o = stage.get()) && o.name === n) {
         return true;
       }
-      if (~obj.cfg.stage.map(function(it){
+      if (~obj.cfg.list.map(function(it){
         return it.name;
       }).indexOf(n)) {
         return false;
@@ -46,7 +46,7 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
     this.stage = stage = {
       list: function(){
         var ref$;
-        return (ref$ = obj.cfg).stage || (ref$.stage = []);
+        return (ref$ = obj.cfg).list || (ref$.list = []);
       },
       key: 'default',
       _key: function(k){
@@ -55,8 +55,8 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
           : this.key || 'default';
       },
       init: function(){
-        if (!Array.isArray(obj.cfg.stage)) {
-          return obj.cfg.stage = [{
+        if (!Array.isArray(obj.cfg.list)) {
+          return obj.cfg.list = [{
             key: 'default'
           }];
         }
@@ -69,7 +69,7 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
       },
       insertBefore: function(a, b){
         var st, ia, o, ib;
-        st = obj.cfg.stage;
+        st = obj.cfg.list;
         ia = st.map(function(it){
           return it.key;
         }).indexOf(a);
@@ -83,7 +83,7 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
       },
       get: function(k){
         var this$ = this;
-        return obj.cfg.stage.filter(function(it){
+        return obj.cfg.list.filter(function(it){
           return it.key === this$._key(k);
         })[0];
       },
@@ -92,7 +92,7 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
         if (this.get(o.key)) {
           return;
         }
-        obj.cfg.stage.push(o);
+        obj.cfg.list.push(o);
         return this.key = o.key;
       },
       del: function(k){
@@ -100,19 +100,19 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
         if ((k = this._key(k)) === 'default') {
           return;
         }
-        idx = obj.cfg.stage.map(function(it){
+        idx = obj.cfg.list.map(function(it){
           return it.key;
         }).indexOf(k);
-        obj.cfg.stage.splice(idx, 1);
+        obj.cfg.list.splice(idx, 1);
         if (k === this.key) {
-          return this.key = ((ref$ = obj.cfg.stage)[ref$.length - 1] || {}).key || 'default';
+          return this.key = ((ref$ = obj.cfg.list)[ref$.length - 1] || {}).key || 'default';
         }
       },
       val: function(arg$){
         var name, value, key, o;
         name = arg$.name, value = arg$.value, key = arg$.key;
         key = this._key(key);
-        if (!(o = obj.cfg.stage.filter(function(it){
+        if (!(o = obj.cfg.list.filter(function(it){
           return it.key === key;
         })[0])) {
           return;
