@@ -9,6 +9,12 @@ h4 階段設定
       li.nav-item.flex-grow-1
       li.nav-item.flex-grow-1.text-right: a.nav-link.text-muted.border-0(data-type="new-stage") 新增 +
   .alert.alert-light.border(ld="default-view") 在提案期間一般用戶可自由建立提案並修改提案。提案審查員會視情況檢視提案，並提醒提案者在提案期結束前做提案內容的調整與補充。
+  .d-none.mb-4(ld="custom-view")
+    .form-group.mb-0.position-relative
+      label 階段名稱
+      input.form-control.rounded.border(ld="stage-name")
+      .invalid-feedback.position-absolute 不能用這個名稱
+
   div(ld="custom-view"): .row.mt-2.mb-3.pb-1
     .col-md
       label 起始時段
@@ -42,8 +48,3 @@ h4 階段設定
   hr
   .d-flex.mt-4
     .flex-grow-1: .btn.btn-outline-danger(ld="delete-stage custom-view") 刪除
-    .d-none(ld="custom-view"): .d-flex
-      .btn.btn-text.mr-2 階段名稱
-      .form-group.mb-0.mr-2.position-relative
-        input.form-control(ld="stage-name")
-        .invalid-feedback.position-absolute 不能用這個名稱
