@@ -1,0 +1,48 @@
+extends /base.pug
+block body
+  .w-640.mx-auto.rwd.border.rounded.shadow-sm: .p-4
+    .form-group
+      label 討論主題
+      input.form-control.border.rounded
+    .row
+      .col-md
+        .form-group
+          label 分類
+          input.form-control.border.rounded
+    label 討論內容
+    .mb-4.position-relative
+      .position-relative
+        textarea.form-control.mb-2(rows="4",ld="input preview off")
+        .w-100.bg-light.rounded.mb-2.p-3.d-none(ld="preview panel",style="min-height:200px")
+      .d-flex
+        .flex-grow-1.d-flex.align-items-center
+          //-.btn.btn-outline-secondary(ld="link"): i.i-link
+          //-.btn.btn-text(ld="attach"): i.i-doc
+          .d-flex.align-items-center.text-sm.text-muted
+            input.mr-1(type="checkbox",ld="use-markdown")
+            div 啟用 Markdown 語法 ( #[a(href="#") 語法說明] )
+          .d-none(ld="if-markdown"): .d-flex.align-items-center.text-sm.text-muted.mr-4
+            input.mr-1(type="checkbox",ld="toggle-preview")
+            div 預覽
+        div: .btn.btn-outline-secondary.ld.ld-ext-right(ld="post") 送出留言 #[.ld.ld-spinner.ld-spin]
+
+
+  .w-1024.rwd.mx-auto
+    .d-flex.p-4
+      .flex-grow-1 討論話題
+      .mx-4 分類
+      .mx-4(style="width:5em") 用戶
+      div(style="width:12em") 時間
+
+    each i in [1,2,3,4,5,6,7]
+      each j in [1,2,3,4,5,6,7]
+        .d-flex.p-4.align-items-center.border-top
+          .flex-grow-1 g0v 獎助金 2020 不徵件公告
+          .mx-4 一般討論
+          .mx-4.d-flex.align-items-end(style="width:5em;padding-left:1em")
+            each j in [1,2,3]
+              .rounded-circle.bg-dark.mr-1.border(style="width:1.5em;height:1.5em;margin-left:-1em")
+            span.text-sm +15
+          div(style="width:12em") 2020-02-23 10:30:50
+
+
