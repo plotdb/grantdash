@@ -86,11 +86,12 @@ block body
       .caption
         h3#project-discuss 討論提問
         p 若您對這個提案有任何的問題或建議，都歡迎在這裡提出與提案人討論喔！
-      .block
-        include /modules/widget/discus.pug
+      +scope("discuss").block
+        include /modules/widget/discuss.pug
 
 block script
   +script("/dash/js/prj/view.js")
-  +script("/dash/js/util/discus.js")
+  +script("/dash/js/discuss/view.js")
+  +script("/dash/js/discuss/edit.js")
   +script("/dash/js/util/htmlentities.js")
   +register-locals()

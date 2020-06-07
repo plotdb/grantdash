@@ -99,15 +99,19 @@ create index if not exists org_slug on org (slug);
 create index if not exists brd_slug on brd (slug);
 create index if not exists prj_slug on prj (slug);
 
-create table if not exists discus (
+create table if not exists discuss (
   key serial primary key,
-  slug text not null unique constraint discus_slug_len check (char_length(slug) <= 256)
+  url text unique constraint discuss_url_len check (char_length(slug) <= 256),
+  slug text not null unique constraint discuss_slug_len check (char_length(slug) <= 256)
 );
+
+create index if not exists discuss_url on discuss (url);
+create index if not exists discuss_slug on discuss (slug);
 
 create table if not exists comment (
   key serial primary key,
   owner int references users(key) not null,
-  discus int,
+  discuss int,
   reply int,
   distance int,
   content jsonb,

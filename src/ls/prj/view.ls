@@ -1,4 +1,4 @@
-ldc.register \prjView, <[auth error viewLocals]>, ({auth, error, viewLocals}) ->
+ldc.register \prjView, <[auth error viewLocals discussView discussEdit]>, ({auth, error, discussView, discussEdit, viewLocals}) ->
   auth.get!
     .then (g) ->
       {prj,brd,grp} = viewLocals
@@ -6,6 +6,11 @@ ldc.register \prjView, <[auth error viewLocals]>, ({auth, error, viewLocals}) ->
       blocks = grp.{}form.[]list
       bhash = {}
       blocks.map -> bhash[it.key] = it
+      discuss = do
+        view: new discussView root: '[ld-scope=discuss]'
+        #edit: new discussEdit root: '[ld-scope=discuss] [ld-scope=edit]'
+      discuss.view.init!
+      #discuss.edit.init!
 
       view = new ldView do
         root: document.body
