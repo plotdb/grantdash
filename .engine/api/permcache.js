@@ -62,7 +62,7 @@
         if (e && e.id !== 1012) {
           console.log("[sharedb access error]", e);
         }
-        return rej(e || new lderror(1012));
+        return Promise.reject(e || new lderror(1012));
       });
     },
     sharedb: function(arg$){

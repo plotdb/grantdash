@@ -97,7 +97,7 @@
         .then -> res.send {}
         .catch aux.error-handler res
     */
-    api.post('/prj/', aux.signed, expressFormidable(), function(req, res){
+    return api.post('/prj/', aux.signed, expressFormidable(), function(req, res){
       var lc, ref$, name, description, brd, grp, thumb, slug;
       lc = {};
       ref$ = req.fields, name = ref$.name, description = ref$.description, brd = ref$.brd, grp = ref$.grp;
@@ -146,16 +146,6 @@
       }).then(function(){
         var ref$;
         return res.send((ref$ = lc.ret || {}, ref$.slug = slug, ref$));
-      })['catch'](aux.errorHandler(res));
-    });
-    return api.get('/brd/:slug/prj/list/', function(req, res){
-      var slug;
-      if (!(slug = req.params.slug)) {
-        return aux.r400(res);
-      }
-      return io.query("select p.name, p.description, p.owner, u.displayname as ownername, p.slug\nfrom prj as p, users as u where p.brd = $1 and p.owner = u.key", [slug]).then(function(r){
-        r == null && (r = {});
-        return res.send(r.rows || (r.rows = []));
       })['catch'](aux.errorHandler(res));
     });
   });

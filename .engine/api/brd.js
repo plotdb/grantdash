@@ -18,7 +18,7 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var deploy, slugs, api, app, upload;
+    var deploy, slugs, api, app, upload, getPrjList;
     deploy = common.deploy, slugs = common.slugs;
     api = engine.router.api;
     app = engine.app;
@@ -188,42 +188,28 @@
         return res.send({});
       })['catch'](aux.errorHandler(res));
     });
-    app.get('/brd/:slug/list', function(req, res){
-      var lc, ref$, offset, limit, keyword, tag, category, slug, ref1$;
-      lc = {};
-      ref$ = {
-        offset: (ref$ = req.query).offset,
-        limit: ref$.limit
-      }, offset = ref$.offset, limit = ref$.limit;
-      ref$ = {
-        keyword: (ref$ = req.query).keyword,
-        category: ref$.category,
-        tag: ref$.tag
-      }, keyword = ref$.keyword, tag = ref$.tag, category = ref$.category;
-      slug = req.params.slug;
-      offset = (ref$ = isNaN(+offset)
-        ? 0
-        : +offset) > 0 ? ref$ : 0;
-      limit = (ref$ = (ref1$ = isNaN(+limit)
-        ? 24
-        : +limit) < 100 ? ref1$ : 100) > 1 ? ref$ : 1;
-      if (!slug) {
-        return aux.r400(res);
-      }
-      return io.query("select b.name, b.description, b.slug, b.org, b.detail from brd as b where b.slug = $1", [slug]).then(function(r){
-        var ref$, ref1$, ref2$, idx1, idx2;
-        r == null && (r = {});
-        if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
-          return aux.reject(404);
+    getPrjList = function(req, res){
+      return Promise.resolve().then(function(){
+        var ref$, offset, limit, keyword, tag, category, slug, ref1$, idx1, idx2;
+        ref$ = {
+          offset: (ref$ = req.query).offset,
+          limit: ref$.limit
+        }, offset = ref$.offset, limit = ref$.limit;
+        ref$ = {
+          keyword: (ref$ = req.query).keyword,
+          category: ref$.category,
+          tag: ref$.tag
+        }, keyword = ref$.keyword, tag = ref$.tag, category = ref$.category;
+        slug = req.params.slug;
+        offset = (ref$ = isNaN(+offset)
+          ? 0
+          : +offset) > 0 ? ref$ : 0;
+        limit = (ref$ = (ref1$ = isNaN(+limit)
+          ? 24
+          : +limit) < 100 ? ref1$ : 100) > 1 ? ref$ : 1;
+        if (!slug) {
+          return aux.reject(400);
         }
-        lc.grps = lc.brd.detail.group.map(function(it){
-          return {
-            form: it.form,
-            key: it.key
-          };
-        });
-        lc.pageInfo = (ref$ = (ref1$ = (ref2$ = lc.brd.detail).page || (ref2$.page = {})).info || (ref1$.info = {})).generic || (ref$.generic = {});
-        delete lc.brd.detail;
         idx1 = 4 + [tag].filter(function(it){
           return it;
         }).length;
@@ -237,12 +223,35 @@
         })));
       }).then(function(r){
         r == null && (r = {});
-        res.render('prj/list.pug', {
-          prjs: r.rows || (r.rows = []),
-          brd: lc.brd,
-          grps: lc.grps,
-          pageInfo: lc.pageInfo
+        return r.rows || (r.rows = []);
+      });
+    };
+    api.get('/brd/:slug/list', function(req, res){
+      return getPrjList(req, res).then(function(it){
+        return res.send(it);
+      })['catch'](aux.errorHandler(res));
+    });
+    app.get('/brd/:slug/list', function(req, res){
+      var lc;
+      lc = {};
+      return getPrjList(req, res).then(function(ret){
+        lc.prjs = ret;
+        return io.query("select b.name, b.description, b.slug, b.org, b.detail from brd as b where b.slug = $1", [slug]);
+      }).then(function(r){
+        var ref$, ref1$, ref2$;
+        r == null && (r = {});
+        if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        lc.grps = lc.brd.detail.group.map(function(it){
+          return {
+            form: it.form,
+            key: it.key
+          };
         });
+        lc.pageInfo = (ref$ = (ref1$ = (ref2$ = lc.brd.detail).page || (ref2$.page = {})).info || (ref1$.info = {})).generic || (ref$.generic = {});
+        delete lc.brd.detail;
+        res.render('prj/list.pug', lc);
         return null;
       })['catch'](aux.errorHandler(res));
     });
