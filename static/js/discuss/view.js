@@ -9,7 +9,6 @@ ldc.register('discussView', ['discussEdit'], function(arg$){
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
-    console.log(1, root, opt.root);
     this.data = import$({
       url: window.location.pathname
     }, opt.data);
@@ -31,6 +30,12 @@ ldc.register('discussView', ['discussEdit'], function(arg$){
           var node, names, ref$;
           node = arg$.node, names = arg$.names;
           return node.classList.toggle('d-none', !(!this$.loading !== !(ref$ = in$('off', names)) && (this$.loading || ref$)));
+        },
+        title: function(arg$){
+          var node, title;
+          node = arg$.node;
+          title = this$.discuss ? this$.discuss.title : '';
+          return node.innerText = title || '未命名的討論串';
         },
         comment: {
           list: function(){
@@ -101,8 +106,8 @@ ldc.register('discussView', ['discussEdit'], function(arg$){
       })['finally'](function(){
         return this$.loading = false;
       }).then(function(ret){
-        this$.comments = ret;
-        console.log('ok');
+        this$.comments = ret.comments;
+        this$.discuss = ret.discuss;
         return this$.view.render();
       });
     }

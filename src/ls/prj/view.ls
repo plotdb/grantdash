@@ -6,11 +6,8 @@ ldc.register \prjView, <[auth error viewLocals discussView discussEdit]>, ({auth
       blocks = grp.{}form.[]list
       bhash = {}
       blocks.map -> bhash[it.key] = it
-      discuss = do
-        view: new discussView root: '[ld-scope=discuss]'
-        #edit: new discussEdit root: '[ld-scope=discuss] [ld-scope=edit]'
-      discuss.view.init!
-      #discuss.edit.init!
+      discuss = new discussView root: '[ld-scope=discuss]'
+      discuss.init!
 
       view = new ldView do
         root: document.body

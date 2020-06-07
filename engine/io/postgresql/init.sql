@@ -102,7 +102,10 @@ create index if not exists prj_slug on prj (slug);
 create table if not exists discuss (
   key serial primary key,
   url text unique constraint discuss_url_len check (char_length(slug) <= 256),
-  slug text not null unique constraint discuss_slug_len check (char_length(slug) <= 256)
+  slug text not null unique constraint discuss_slug_len check (char_length(slug) <= 256),
+  createdtime timestamp not null default now(),
+  modifiedtime timestamp not null default now(),
+  title text constraint discuss_title_len check (char_length(title) <= 256)
 );
 
 create index if not exists discuss_url on discuss (url);

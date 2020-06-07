@@ -3,7 +3,6 @@ Ctrl = (opt) ->
   @opt = opt
   @marked-options = opt.marked or {}
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
-  console.log 1, root, opt.root
   @data = {url: window.location.pathname} <<< opt.data
   @edit = new discuss-edit root: ld$.find(root, '[ld-scope=edit]', 0)
   @edit.init!
@@ -16,6 +15,9 @@ Ctrl = (opt) ->
     root: @root
     handler: do
       loading: ({node,names}) ~> node.classList.toggle \d-none, !(@loading xor ('off' in names))
+      title: ({node}) ~>
+        title = if @discuss => @discuss.title else ''
+        node.innerText = title or '未命名的討論串'
       comment: do
         list: ~> @comments
         init: ({node, data, idx}) ->
@@ -47,8 +49,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     ld$.fetch \/dash/api/discuss, {method: \GET}, {params: payload, type: \json}
       .finally ~> @loading = false
       .then (ret) ~>
-        @comments = ret
-        console.log \ok
+        @ <<< ret{comments, discuss}
         @view.render!
 
 Ctrl

@@ -25,12 +25,16 @@ Ctrl = (opt) ->
           view.render!
         input: ({node}) ~>
           @data.content.body = node.value
-          @ready = !!(@data.content.body or "").trim!length
+          view.render \post
+        title: ({node}) ~>
+          @data.title = node.value
           view.render \post
       click: do
         post: ({node}) ~>
           if node.classList.contains \running => return
-          payload = @data{url, reply, content, slug, key}
+          if node.classList.contains \disabled => return
+          if !@is-ready! => return
+          payload = @data{url, reply, content, slug, key, title}
           @ldld.on!
           debounce 1000
             .then ->
@@ -40,11 +44,11 @@ Ctrl = (opt) ->
                 {type: \json, json: payload}
               )
             .finally ~> @ldld.off!
-            .then ~>
+            .then (ret) ~>
               @fire \new-comment, {
                 owner: @global.user.key,
                 displayname: @global.user.displayname
-              } <<< payload
+              } <<< payload <<< ret{key, slug}
               view.get('input').value = ''
               view.get('panel').innerHTML = ''
               @preview = false
@@ -59,7 +63,8 @@ Ctrl = (opt) ->
         node.classList.toggle \d-none, state
       panel: ({node}) ~>
         if @preview => node.innerHTML = marked((@data.content.body or ''), @marked-options)
-      post: ({node}) ~> node.classList.toggle \disabled, !@ready
+      post: ({node}) ~>
+        node.classList.toggle \disabled, !@is-ready!
       "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
       "if-markdown": ({node}) ~> node.classList.toggle \d-none, !@use-markdown
 
@@ -73,6 +78,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   edit: (cfg = {}) ->
     @data <<< cfg
     @view.render!
+  is-ready: ->
+    title = @view.get('title')
+    @ready = !!(@data.content.body or "").trim!length and (!title or (@data.title or "").trim!length)
   on: (n, cb) -> @evt-handler.[][n].push cb
   fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
 

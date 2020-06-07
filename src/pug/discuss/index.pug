@@ -1,0 +1,80 @@
+extends /base.pug
+block body
+  +scope("discuss-new-post").ldcv.ldcvmgr(data-name="discuss-new-post"): .base.w-640: .inner.card: .card-body
+    .form-group
+      label 討論主題
+      input.form-control.border.rounded(ld="title",placeholder="給討論串定個主題吧 ..")
+      .invalid-feedback.position-absolute 請設定討論的標題
+    label 討論內容
+    .position-relative
+      .position-relative
+        textarea.form-control.mb-2(rows="4",ld="input preview off")
+        .w-100.bg-light.rounded.mb-2.p-3.d-none(ld="preview panel",style="min-height:200px")
+      .d-flex
+        .flex-grow-1.d-flex.align-items-center
+          .d-flex.align-items-center.text-sm.text-muted.mr-4
+            input.mr-1(type="checkbox",ld="use-markdown")
+            div 啟用 Markdown 語法 ( #[a(href="#") 語法說明] )
+          .d-none(ld="if-markdown"): .d-flex.align-items-center.text-sm.text-muted.mr-4
+            input.mr-1(type="checkbox",ld="toggle-preview")
+            div 預覽
+        div: .btn.btn-outline-secondary.ld.ld-ext-right.disabled(ld="post") 送出留言 #[.ld.ld-spinner.ld-spin]
+
+
+  .w-1024.rwd.mx-auto
+    .w-100.text-right: .btn.btn-primary(onclick="lda.ldcvmgr.toggle('discuss-new-post')") 新討論話題
+    .d-flex.p-4
+      .flex-grow-1 討論話題
+      .mx-4 分類
+      .mx-4(style="width:5em") 用戶
+      div(style="width:12em") 時間
+    +scope("discuss-list")
+      .d-flex.p-4.align-items-center.border-top(ld-each="discuss")
+        a.flex-grow-1(ld="title")
+        .mx-4 一般討論
+        .mx-4.d-flex.align-items-end(style="width:5em;padding-left:1em")
+          .rounded-circle.bg-dark.mr-1.border.bg-cover.bg-portrait(ld-each="user",
+          style="width:1.5em;height:1.5em;margin-left:-1em")
+          span.text-sm(ld="user-count")
+        div(ld="modifiedtime",style="width:12em")
+
+block script
+  +script("/js/discuss/edit.js")
+  script: :lsc
+    ldc.register <[error discussEdit]>, ({error, discuss-edit}) ->
+      edit = new discuss-edit do
+        root: '[ld-scope=discuss-new-post]'
+        data: {url: null}
+      edit.init!
+      edit.on \new-comment, -> window.location.href = "/dash/discuss/#{it.slug}"
+      lc = {}
+      view = new ldView do
+        root: '[ld-scope=discuss-list]'
+        handler: do
+          discuss: do
+            list: -> lc.discuss-list
+            init: ({node, data, local}) ->
+              local.view = new ldView do
+                context: data
+                root: node
+                handler: do
+                  "user-count": ({node, context}) ->
+                    len = context.users.length - 3  
+                    node.innerText = if len <= 0 => '' else "+#len"
+                  user: do
+                    list: ({context}) -> context.users.slice(0,3)
+                    handler: ({node, data}) -> node.style.backgroundImage = "url(/dash/s/avatar/#{data}.png)"
+                  title: ({node, context}) ->
+                    node.setAttribute \href, "/dash/discuss/#{context.slug}"
+                    node.innerText = context.title or '無標題的討論串...'
+                  modifiedtime: ({node, context}) ->
+                    node.innerText = moment(context.modifiedtime).format("yy/MM/DD hh:mm")
+            handler: ({data, local}) ->
+              local.view.setContext data
+              local.view.render!
+
+      ld$.fetch '/dash/api/discuss', {method: \GET}, {type: \json}
+        .then (ret) ->
+          lc.discuss-list = ret
+          view.render!
+        .catch error!

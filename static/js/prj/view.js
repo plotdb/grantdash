@@ -11,12 +11,10 @@ ldc.register('prjView', ['auth', 'error', 'viewLocals', 'discussView', 'discussE
     blocks.map(function(it){
       return bhash[it.key] = it;
     });
-    discuss = {
-      view: new discussView({
-        root: '[ld-scope=discuss]'
-      })
-    };
-    discuss.view.init();
+    discuss = new discussView({
+      root: '[ld-scope=discuss]'
+    });
+    discuss.init();
     return view = new ldView({
       root: document.body,
       init: {

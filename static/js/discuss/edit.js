@@ -45,7 +45,12 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
             var node;
             node = arg$.node;
             this$.data.content.body = node.value;
-            this$.ready = !!(this$.data.content.body || "").trim().length;
+            return view.render('post');
+          },
+          title: function(arg$){
+            var node;
+            node = arg$.node;
+            this$.data.title = node.value;
             return view.render('post');
           }
         },
@@ -56,12 +61,19 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
             if (node.classList.contains('running')) {
               return;
             }
+            if (node.classList.contains('disabled')) {
+              return;
+            }
+            if (!this$.isReady()) {
+              return;
+            }
             payload = {
               url: (ref$ = this$.data).url,
               reply: ref$.reply,
               content: ref$.content,
               slug: ref$.slug,
-              key: ref$.key
+              key: ref$.key,
+              title: ref$.title
             };
             this$.ldld.on();
             return debounce(1000).then(function(){
@@ -73,11 +85,12 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
               });
             })['finally'](function(){
               return this$.ldld.off();
-            }).then(function(){
-              this$.fire('new-comment', import$({
+            }).then(function(ret){
+              var ref$;
+              this$.fire('new-comment', (ref$ = import$({
                 owner: this$.global.user.key,
                 displayname: this$.global.user.displayname
-              }, payload));
+              }, payload), ref$.key = ret.key, ref$.slug = ret.slug, ref$));
               view.get('input').value = '';
               view.get('panel').innerHTML = '';
               this$.preview = false;
@@ -118,7 +131,7 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
         post: function(arg$){
           var node;
           node = arg$.node;
-          return node.classList.toggle('disabled', !this$.ready);
+          return node.classList.toggle('disabled', !this$.isReady());
         },
         "edit-panel": function(arg$){
           var node;
@@ -146,6 +159,11 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
       cfg == null && (cfg = {});
       import$(this.data, cfg);
       return this.view.render();
+    },
+    isReady: function(){
+      var title;
+      title = this.view.get('title');
+      return this.ready = !!(this.data.content.body || "").trim().length && (!title || (this.data.title || "").trim().length);
     },
     on: function(n, cb){
       var ref$;
