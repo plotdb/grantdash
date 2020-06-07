@@ -1,4 +1,4 @@
-require! <[fs path lderror ../aux ./permcache]>
+require! <[fs path lderror ../aux ./cache]>
 (engine,io) <- (->module.exports = it) _
 
 api = engine.router.api
@@ -12,16 +12,16 @@ api.post \/toc, aux.signed, (req, res) ->
   lc = {}
   perm-opt = {io, user: req.user, action: \owner}
   promise = (if hint.brd =>
-    permcache.check {} <<< perm-opt <<< {type: \brd, slug: hint.brd}
+    cache.perm.check {} <<< perm-opt <<< {type: \brd, slug: hint.brd}
       .then -> io.query "select * from brd where slug = $1", [hint.brd]
       .then (r={}) ->
         if !(lc.brd = r.[]rows.0) => return aux.reject 404
-        permcache.check {} <<< perm-opt <<< {type: \org, slug: lc.brd.org}
+        cache.perm.check {} <<< perm-opt <<< {type: \org, slug: lc.brd.org}
           .then -> io.query "select key,name,slug,description,detail from org where slug = $1", [lc.brd.org]
           .catch -> # simply ignore
       .then (r={}) -> lc.org = r.[]rows.0 or null
   else if hint.org =>
-    permcache.check {} <<< perm-opt <<< {type: \org, slug: hint.org}
+    cache.perm.check {} <<< perm-opt <<< {type: \org, slug: hint.org}
       .then -> io.query "select * from org where slug = $1", [hint.org]
       .then (r={}) -> if !(lc.org = r.[]rows.0) => return aux.reject 404
   else
@@ -31,7 +31,7 @@ api.post \/toc, aux.signed, (req, res) ->
           io.query "select * from org where owner = $1 order by createdtime limit 1", [req.user.key]
             .then (r={}) -> if !(lc.org = r.[]rows.0) => return aux.reject 404
         else
-          permcache.check {} <<< perm-opt <<< {type: \org, slug: lc.brd.org}
+          cache.perm.check {} <<< perm-opt <<< {type: \org, slug: lc.brd.org}
             .then -> io.query "select * from org where slug = $1", [lc.brd.org]
             .catch -> # simply ignore
       .then (r={}) ->

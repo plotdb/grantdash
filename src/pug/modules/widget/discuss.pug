@@ -16,7 +16,7 @@
         .text-sm.text-muted.ml-1 ． #[span(ld="date")]
       .content.my-1(ld="content")
 
-+scope("edit")
+.d-none(pd="stage-ctrl",data-name="comment-new"): +scope("edit")
   .media.mb-4.p-2.position-relative
     .avatar.mr-2(style="width:3.25em"): .aspect-ratio.ratio-1by1.rounded.bg-dark.w-100.bg-cover(ld="avatar")
     .media-body

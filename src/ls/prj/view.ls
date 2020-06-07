@@ -1,13 +1,25 @@
-ldc.register \prjView, <[auth error viewLocals discussView discussEdit]>, ({auth, error, discussView, discussEdit, viewLocals}) ->
+ldc.register \prjView, <[auth error stage viewLocals discussView discussEdit]>, ({auth, error, stage, discussView, discussEdit, viewLocals}) ->
+  lc = {}
+  {prj,brd,grp} = viewLocals
   auth.get!
     .then (g) ->
-      {prj,brd,grp} = viewLocals
+      lc.global = g
+      stage.get {brd: brd.slug}
+    .then (ret = {}) ->
+      lc.stage = ret.config or {}
       answers = prj.{}detail.{}answer
       blocks = grp.{}form.[]list
       bhash = {}
       blocks.map -> bhash[it.key] = it
       discuss = new discussView root: '[ld-scope=discuss]'
       discuss.init!
+      view = new ldView do
+        global: true
+        root: document.body
+        handler: 
+          "stage-ctrl": ({node}) ->
+            n = node.getAttribute \data-name
+            node.classList.toggle \d-none, !lc.stage[n]
 
       view = new ldView do
         root: document.body
@@ -19,7 +31,7 @@ ldc.register \prjView, <[auth error viewLocals discussView discussEdit]>, ({auth
               node.classList.add \tip-on
               local.h = setTimeout (-> node.classList.remove \tip-on), 1000
         handler: do
-          "btn-edit": ({node}) -> node.classList.toggle \d-none, (g.user.key != viewLocals.owner)
+          "btn-edit": ({node}) -> node.classList.toggle \d-none, (lc.global.user.key != viewLocals.owner)
           answer: ({node}) ->
             key = node.getAttribute(\data-key)
             block = bhash[key]

@@ -1,6 +1,6 @@
-require! <[permcheck]>
+require! <[permcheck ../aux]>
 
-permcache = do
+perm = do
   cache: {}
   perm: {}
   supported-types: <[org brd prj]>
@@ -38,4 +38,30 @@ permcache = do
     [type,slug] = id.split('/')
     @check({io, user, type, slug, action})
 
-module.exports = permcache
+stage = do
+  cache: {}
+  supported-types: <[brd]>
+  invalidate: ({type, slug}) -> @cache{}[type][slug] = null
+  check: ({io, type, slug}) -> 
+    Promise.resolve!
+      .then ~>
+        if !type in @supported-types => return aux.reject 400
+        if !slug => return aux.reject 400
+        if @cache{}[type][slug] => return that
+        io.query "select detail->'stage' as stage from brd where slug = $1", [slug]
+          .then (r={}) ~>
+            ret = r.[]rows.0
+            stage = ret.stage.list or []
+            cfgs = stage
+              .filter (s) ->
+                if s.starttime and Date.now! < Date(s.starttime) => return false
+                if s.endtime and Date.now! > Date(s.endtime) => return false
+                return true
+            ret = (cfgs[* - 1] or {})
+            if !ret.config => config.config = {}
+            return (@cache[type][slug] = ret)
+
+module.exports = {perm, stage}
+
+
+

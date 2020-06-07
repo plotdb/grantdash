@@ -4,8 +4,8 @@ require! <[fs fs-extra path crypto LiveScript chokidar moment]>
 require! <[express body-parser express-session connect-multiparty csurf express-rate-limit]>
 require! <[passport passport-local passport-facebook passport-google-oauth20]>
 require! <[nodemailer]>
-require! <[sharedb-wrapper permcheck lderror]>
-require! <[./io/postgresql ./api ./ext ./view ./api/permcache]>
+require! <[sharedb-wrapper lderror]>
+require! <[./io/postgresql ./api ./ext ./view ./api/cache]>
 require! <[./aux ./watch ../secret ./watch/build/mod]>
 require! 'uglify-js': uglify-js, LiveScript: lsc
 config = require "../config/site/#{secret.config}"
@@ -145,7 +145,7 @@ backend = do
 
     # =========== Sharedb
     if config.{}sharedb.enabled =>
-      access = ({user, id, data, type}) -> permcache.sharedb {io: pgsql, user, id, data, type, action: \owner}
+      access = ({user, id, data, type}) -> cache.perm.sharedb {io: pgsql, user, id, data, type, action: \owner}
       @sharedb = {server, sdb, connect, wss} = sharedb-wrapper {
         app, io: config.io-pg, session, access, milestone-db: {interval: 50, enabled: true}
       }

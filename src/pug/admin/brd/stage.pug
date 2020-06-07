@@ -26,12 +26,18 @@ h4 階段設定
   .row.form
     .col-md
       +switch-lg({name: "活動公開", desc: "一般人都可以看到這個活動", key: "public"})
-      +switch-lg({name: "提案功能", desc: "註冊使用者可以自由提案", key: "propose"})
-      +switch-lg({name: "評論功能", desc: "註冊使用者可以針對不同提案進行評論", key: "comment"})
+      +switch-lg({name: "編輯提案", desc: "提案者可以修改自己的提案", key: "prj-edit"})
+      +switch-lg({name: "提案列表", desc: "開放瀏覽提案列表", key: "prj-list-view"})
+      +switch-lg({name: "編輯評論", desc: "留言者可以修改自己的留言", key: "comment-edit"})
+      +switch-lg({name: "刪除評論", desc: "留言者可以刪除自己的留言", key: "comment-delete"})
+      +switch-lg({name: "資格審查", desc: "評審用戶可以進行線上決審作業", key: "judge-criteria"})
     .col-md
-      +switch-lg({name: "修改提案", desc: "提案人可以修改自己的提案", key: "project-edit"})
-      +switch-lg({name: "修改評論", desc: "留言用戶可以修改自己的評論", key: "comment-edit"})
-      +switch-lg({name: "評審功能", desc: "被標註為評審的使用者可以針對提案進行評論", key: "judge"})
+      +switch-lg({name: "建立提案", desc: "註冊用戶可以自由提案", key: "prj-new"})
+      +switch-lg({name: "瀏覽提案", desc: "提案公開可見", key: "prj-view"})
+      +switch-lg({name: "建立評論", desc: "註冊用戶可以針對不同提案進行評論", key: "comment-new"})
+      +switch-lg({name: "瀏覽評論", desc: "開放瀏覽留言", key: "comment-view"})
+      +switch-lg({name: "初選作業", desc: "評審用戶可以進行線上決審作業", key: "judge-preliminary"})
+      +switch-lg({name: "決選作業", desc: "評審用戶可以進行線上決審作業", key: "judge-final"})
 
   hr
   .d-flex.mt-4

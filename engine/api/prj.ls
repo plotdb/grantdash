@@ -1,4 +1,5 @@
 require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror suuid]>
+require! <[./cache]>
 require! <[../aux]>
 (engine,io) <- (->module.exports = it)  _
 
@@ -15,6 +16,9 @@ app.get \/prj/:slug, (req, res) ->
   """, [slug]
     .then (r={}) ->
       if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
+      cache.stage.check {io, type: \brd, slug: lc.prj.brd}
+    .then ({config} = {config: {}}) ->
+      if !config["prj-view"] => return aux.reject 403
       io.query """select name,slug,org,detail from brd where brd.slug = $1""", [lc.prj.brd]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400

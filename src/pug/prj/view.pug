@@ -58,7 +58,8 @@ block body
       //-.dropdown.my-4
         .btn.btn-outline-secondary.dropdown-toggle.btn-block(data-toggle="dropdown") 修改紀錄
         .dropdown-menu
-      a.btn.btn-primary.btn-block.text-white.my-4(href=`/dash/brd/${prj.brd}/prj/create`) 我也要提案
+      a.btn.btn-primary.btn-block.text-white.my-4.d-none(pd="stage-ctrl",data-name="prj-new",
+      href=`/dash/brd/${prj.brd}/prj/create`) 我也要提案
     .col-md-10
       #project-detail
       .block
@@ -82,12 +83,12 @@ block body
               - var value = answer[block.key]
               .pb-4(ld="answer",data-key=block.key)
 
-
-      .caption
-        h3#project-discuss 討論提問
-        p 若您對這個提案有任何的問題或建議，都歡迎在這裡提出與提案人討論喔！
-      +scope("discuss").block
-        include /modules/widget/discuss.pug
+      .d-none(pd="stage-ctrl",data-name="comment-view")
+        .caption
+          h3#project-discuss 討論提問
+          p 若您對這個提案有任何的問題或建議，都歡迎在這裡提出與提案人討論喔！
+        +scope("discuss").block
+          include /modules/widget/discuss.pug
 
 block script
   +script("/dash/js/prj/view.js")

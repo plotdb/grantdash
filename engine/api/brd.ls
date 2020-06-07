@@ -1,5 +1,5 @@
 require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror nodegit suuid]>
-require! <[../aux ./permcache ./common]>
+require! <[../aux ./cache ./common]>
 (engine,io) <- (->module.exports = it)  _
 
 {deploy, slugs} = common
@@ -62,7 +62,7 @@ api.put \/detail/, aux.signed, (req, res) ->
   if !(slug and type and payload) => return aux.r400 res
   if !(type in <[prj brd org]>) => return aux.r400 res
   if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
-  permcache.check {io, user: req.user, type: type, slug, action: \owner}
+  cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
     .then ->
       io.query "update #type set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
     .then ->
@@ -76,7 +76,8 @@ api.put \/detail/, aux.signed, (req, res) ->
         update #type set (name,description) = ($1,$2)  where slug = $3
         """, [name,description,slug]
     .then ->
-      permcache.invalidate {type: type, slug}
+      cache.perm.invalidate {type: type, slug}
+      cache.stage.invalidate {type: type, slug}
       opt = {io}
       opt[type] = slug
       slugs opt
@@ -130,6 +131,7 @@ api.get \/brd/:slug/list, (req, res) ->
 
 app.get \/brd/:slug/list, (req, res) ->
   lc = {}
+  if !(slug = req.params.slug) => return aux.r400 res
   get-prj-list req, res
     .then (ret) ->
       lc.prjs = ret
@@ -171,7 +173,7 @@ api.post \/deploy, aux.signed, (req, res) ->
   lc = {}
   {slug, type} = (req.body or {})
   if !(slug and type and (type in <[org brd]>)) => return aux.r400 res
-  permcache.check {io, user: req.user, type, slug, action: \owner}
+  cache.perm.check {io, user: req.user, type, slug, action: \owner}
     .then ->
       if type == \org => return io.query "select detail->'page'->'info' as info from org where slug = $1", [slug]
       io.query """
@@ -219,7 +221,7 @@ app.get \/org/:slug/admin, aux.signed, (req, res) ->
 app.get \/brd/:slug/admin, aux.signed, (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r404 res
-  permcache.check {io, user: req.user, type: \brd, slug: slug, action: \owner}
+  cache.perm.check {io, user: req.user, type: \brd, slug: slug, action: \owner}
     .then ->
       io.query "select * from brd where slug = $1", [slug]
     .then (r={}) ->
