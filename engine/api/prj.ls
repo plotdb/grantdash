@@ -72,9 +72,13 @@ api.post \/prj/, aux.signed, express-formidable!, (req, res) ->
   lc = {}
   {name,description,brd,grp} = req.fields
   if !(brd and grp) => return aux.r400 res
+
   thumb = (req.files["thumbnail[]"] or {}).path
   slug = suuid!
-  io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
+  cache.stage.check {io, type: \brd, slug: brd}
+    .then ({config} = {config: {}}) ->
+      if !config["prj-new"] => return aux.reject 403
+      io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
       if !(lc.brd.[]group.filter(->it.key == grp).length) => return aux.reject 404

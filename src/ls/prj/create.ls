@@ -1,5 +1,5 @@
-({general, ldcvmgr, adminInfo, prjCreate, auth, error, loader, general}) <- ldc.register <[
-general ldcvmgr adminInfo prjCreate auth error loader general]>, _
+({stage, general, ldcvmgr, adminInfo, prjCreate, auth, error, loader, general}) <- ldc.register <[
+stage general ldcvmgr adminInfo prjCreate auth error loader general]>, _
 loader.on!
 lc = {}
 
@@ -10,6 +10,11 @@ key = (
 key = brd: key.1, grp: key.2
 
 auth.get!
+  .then ->
+    stage.get {brd: key.brd}
+  .then (ret = {}) ->
+    lc.stage = ret.config or {}
+    if !lc.stage["prj-new"] => return ldcvmgr.toggle("not-open")
   .then -> ld$.fetch "/dash/api/brd/#{key.brd}/form", {method: \GET}, {type: \json}
   .then (brd) ->
     lc.brd = brd

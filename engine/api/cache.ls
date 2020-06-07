@@ -54,8 +54,8 @@ stage = do
             stage = ret.stage.list or []
             cfgs = stage
               .filter (s) ->
-                if s.starttime and Date.now! < Date(s.starttime) => return false
-                if s.endtime and Date.now! > Date(s.endtime) => return false
+                if s.start and Date.now! < (new Date(s.start).getTime!) => return false
+                if s.end and Date.now! > (new Date(s.end).getTime!) => return false
                 return true
             ret = (cfgs[* - 1] or {})
             if !ret.config => config.config = {}
