@@ -36,8 +36,8 @@ api.get \/discuss/, (req, res) ->
       and c.state = 'active'
       order by distance limit $2 offset $3
       """, [discuss.key, limit, offset]
-    .then (r= {}) ->
-      res.send( {discuss: lc.discuss, comments: r.[]rows} )
+        .then (r= {}) ->
+          res.send( {discuss: lc.discuss, comments: r.[]rows} )
     .catch aux.error-handler res
 
 api.post \/discuss/, aux.signed, (req, res) ->

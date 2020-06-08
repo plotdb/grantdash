@@ -50,12 +50,12 @@
         if (!discuss) {
           return res.send({});
         }
-        return io.query("select c.*, u.displayname\nfrom comment as c, users as u\nwhere c.discuss = $1 and c.owner = u.key\nand c.deleted is not true\nand c.state = 'active'\norder by distance limit $2 offset $3", [discuss.key, limit, offset]);
-      }).then(function(r){
-        r == null && (r = {});
-        return res.send({
-          discuss: lc.discuss,
-          comments: r.rows || (r.rows = [])
+        return io.query("select c.*, u.displayname\nfrom comment as c, users as u\nwhere c.discuss = $1 and c.owner = u.key\nand c.deleted is not true\nand c.state = 'active'\norder by distance limit $2 offset $3", [discuss.key, limit, offset]).then(function(r){
+          r == null && (r = {});
+          return res.send({
+            discuss: lc.discuss,
+            comments: r.rows || (r.rows = [])
+          });
         });
       })['catch'](aux.errorHandler(res));
     });
