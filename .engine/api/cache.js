@@ -108,7 +108,7 @@
           var ret, stage, cfgs;
           r == null && (r = {});
           ret = (r.rows || (r.rows = []))[0];
-          stage = ret.stage.list || [];
+          stage = (ret.stage || (ret.stage = {})).list || [];
           cfgs = stage.filter(function(s){
             if (s.start && Date.now() < new Date(s.start).getTime()) {
               return false;

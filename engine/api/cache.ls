@@ -51,7 +51,7 @@ stage = do
         io.query "select detail->'stage' as stage from brd where slug = $1", [slug]
           .then (r={}) ~>
             ret = r.[]rows.0
-            stage = ret.stage.list or []
+            stage = ret.{}stage.list or []
             cfgs = stage
               .filter (s) ->
                 if s.start and Date.now! < (new Date(s.start).getTime!) => return false
