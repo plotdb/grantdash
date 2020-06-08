@@ -39,7 +39,7 @@ block body
         div(ld="modifiedtime",style="width:12em")
 
 block script
-  +script("/js/discuss/edit.js")
+  +script("/dash/js/discuss/edit.js")
   script: :lsc
     ldc.register <[error discussEdit]>, ({error, discuss-edit}) ->
       edit = new discuss-edit do
