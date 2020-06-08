@@ -226,3 +226,9 @@
 .folder-item:hover {
   color: currentColor;
 }
+.user-icon {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: #444;
+}

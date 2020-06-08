@@ -1,5 +1,5 @@
 require! <[fs path]>
-require! <[./admin ./user ./prj ./brd ./org ./perm ./discuss ./auth/reset ./auth/verify]>
+require! <[./admin ./user ./prj ./brd ./org ./perm ./discuss ./post ./auth/reset ./auth/verify]>
 module.exports = (engine, io) ->
   user engine, io
   reset engine, io
@@ -9,4 +9,5 @@ module.exports = (engine, io) ->
   discuss engine, io
   admin engine, io
   prj engine, io
+  post engine, io
   perm engine, io

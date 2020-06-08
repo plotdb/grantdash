@@ -1,7 +1,7 @@
-require! <[nodegit lderror path]>
+require! <[nodegit lderror path ../aux]>
 
-slugs = ({io, org, brd, prj}) -> new Promise (res, rej) ->
-  type = if prj => \prj else if brd => \brd else if org => \org else null
+slugs = ({io, org, brd, prj, post}) -> new Promise (res, rej) ->
+  type = if prj => \prj else if brd => \brd else if org => \org else if post => \post else null
   if !type => return rej(new lderror 400)
   # TODO use left join to speed up
   promise = if type == \prj =>
@@ -10,6 +10,13 @@ slugs = ({io, org, brd, prj}) -> new Promise (res, rej) ->
     from org as o, brd as b, prj as p
     where p.slug = $1 and p.brd = b.slug and b.org = o.slug
     """, [prj]
+  else if type == \post =>
+    console.log \here, post
+    io.query """
+    select o.slug as org, b.slug as brd, p.slug as post
+    from org as o, brd as b, post as p
+    where p.slug = $1 and p.brd = b.slug and b.org = o.slug
+    """, [post]
   else if type == \brd =>
     io.query """
     select o.slug as org, b.slug as brd
@@ -25,8 +32,9 @@ slugs = ({io, org, brd, prj}) -> new Promise (res, rej) ->
   promise
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
-      {org,prj,brd} = ret
+      {org,prj,brd,post} = ret
       root = if type == \prj => "users/org/#{org}/prj/#{prj}"
+      root = if type == \post => "users/org/#{org}/post/#{post}"
       else if type == \brd => "users/org/#{org}/brd/#{brd}"
       else if type == \org => "users/org/#{org}"
       else null

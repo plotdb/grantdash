@@ -125,3 +125,17 @@ create table if not exists comment (
 );
 
 create index if not exists comment_distance on comment (distance);
+
+create table if not exists post (
+  key serial primary key,
+  owner int references users(key) not null,
+  title text, constraint post_title_length check (char_length(title) <= 256),
+  slug text not null unique constraint post_slug_len check (char_length(slug) <= 256),
+  brd text references brd(slug),
+  detail jsonb,
+  history jsonb,
+  createdtime timestamp not null default now(),
+  modifiedtime timestamp not null default now(),
+  state state not null default 'pending',
+  deleted bool default false
+);

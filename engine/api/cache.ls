@@ -3,7 +3,7 @@ require! <[permcheck ../aux]>
 perm = do
   cache: {}
   perm: {}
-  supported-types: <[org brd prj]>
+  supported-types: <[org brd prj post]>
   invalidate: ({type, slug}) ->
     @cache{}[type][slug] = {}
     @perm{}[type][slug] = null

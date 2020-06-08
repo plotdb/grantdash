@@ -60,7 +60,7 @@ api.put \/detail/, aux.signed, (req, res) ->
   lc = {}
   {slug, type, payload} = (req.body or {})
   if !(slug and type and payload) => return aux.r400 res
-  if !(type in <[prj brd org]>) => return aux.r400 res
+  if !(type in <[prj brd org post]>) => return aux.r400 res
   if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
   cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
     .then ->
@@ -91,7 +91,9 @@ api.put \/detail/, aux.signed, (req, res) ->
             .then -> fs-extra.ensure-dir draft
             .then -> fs-extra.move draft, release
     .then -> res.send {}
-    .catch aux.error-handler res
+    .catch ->
+      console.log it
+      aux.error-handler(res) it
 
 get-prj-list = (req, res) ->
   Promise.resolve!
