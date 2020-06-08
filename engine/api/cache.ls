@@ -58,7 +58,7 @@ stage = do
                 if s.end and Date.now! > (new Date(s.end).getTime!) => return false
                 return true
             ret = (cfgs[* - 1] or {})
-            if !ret.config => config.config = {}
+            if !ret.config => ret.config = {}
             return (@cache[type][slug] = ret)
 
 module.exports = {perm, stage}

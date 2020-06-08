@@ -120,7 +120,7 @@
           });
           ret = cfgs[cfgs.length - 1] || {};
           if (!ret.config) {
-            config.config = {};
+            ret.config = {};
           }
           return this$.cache[type][slug] = ret;
         });
