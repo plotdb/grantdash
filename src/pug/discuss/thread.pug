@@ -2,15 +2,14 @@ extends /base.pug
 block body
   +scope("discuss").w-1024.rwd.mx-auto
     h2(ld="title")
-    
-    .d-flex
+    //-.d-flex
       each i in [1,2,3,4]
         .px-2.py-1.bg-light.d-inline-block.rounded.mr-2.text-sm 2019 春季
     hr
     include /modules/widget/discuss.pug
 block script
-  +script("/js/discuss/view.js")
-  +script("/js/discuss/edit.js")
+  +script("/dash/js/discuss/view.js")
+  +script("/dash/js/discuss/edit.js")
   script: :lsc
     ldc.register <[discussView]>, ({discuss-view}) ->
       ret = /^\/dash\/discuss\/([^/]+)/.exec(window.location.pathname)
