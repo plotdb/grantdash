@@ -90,7 +90,7 @@ block script
               .folder-toggle.folder-item(ld="name") 分組
               .folder-menu
                 .folder-item(ld="nav-tab",data-name="grp-config") 設定
-                //-.folder-item(ld="nav-tab",data-name="grp-list") 專案列表
+                .folder-item(ld="nav-tab",data-name="grp-list") 專案列表
                 //-.folder-item(ld="nav-tab",data-name="grp-judge") 評選資訊
                 .folder-item(ld="nav-tab",data-name="grp-form") 提案表
             .folder-item(ld="grp-add") 新增分組 ...
@@ -135,7 +135,7 @@ block script
             .d-none(ld="nav-panel",data-nav="main",data-name="grp-list")
               include grp/list.pug
 
-            //-.d-none(ld="nav-panel",data-nav="main",data-name="grp-detail")
+            .d-none(ld="nav-panel",data-nav="main",data-name="grp-detail")
               include grp/detail.pug
 
           .bg-info.text-white.m-2.rounded.shadow-sm.d-none.py-2.px-4(
@@ -161,10 +161,14 @@ block script
   +script("/dash/js/admin/list.js")
   +script("/dash/js/admin/welcome.js")
   +script("/dash/js/admin/page.js")
+  +script("/dash/js/admin/prj.js")
 
   //- form js files
   +script("/dash/js/form/index.js")
   +script("/dash/js/form/block.js")
   +script("/dash/js/form/criteria.js")
   +script("/dash/js/form/validator.js")
+
+  //- prj files
+  +script("/dash/js/prj/view-simple.js")
 

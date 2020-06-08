@@ -1,9 +1,8 @@
 //- module
-.p-4
-  .py-2.mb-4.d-flex.align-items-center.justify-content-center
-    div
-      h3 超級義手計劃
-      .text-muted 好妙手工作室股份有限公司
++scope("prj-detail"): .p-4
+  .py-2.mb-4.text-center
+    h3(ld="name")
+    .text-muted(ld="ownername")
     //-div
       .btn.btn-outline-secondary 聯絡團隊
 
@@ -11,19 +10,24 @@
   .navbar.navbar-expand-lg.navbar-light.border.shadow-sm.rounded.sticky.z-fixed.bg-white(style="top:15px")
     .collapse.navbar-collapse
       ul.nav.nav-pills.mr-auto(ld="nav",data-nav="grp-detail")
-        //-li.nav-item: .nav-link.active(ld="tabbar-tab",data-name="basic") 基本資訊
-        li.nav-item: .nav-link(ld="nav-tab default",data-name="prj-track") 專案追蹤
+        li.nav-item: .nav-link.active(ld="nav-tab default",data-name="prj-info") 基本資訊
+        li.nav-item: .nav-link(ld="nav-tab",data-name="prj-track") 專案追蹤
         li.nav-item: .nav-link(ld="nav-tab",data-name="prj-budget") 經費表
         li.nav-item: .nav-link(ld="nav-tab",data-name="prj-view") 提案內容
       ul.navbar-nav.ml-auto
-        li.nav-item: a.nav-link(href="/org/dashboard.html") 專案列表 #[i.i-chevron-right]
+        li.nav-item: .nav-link(ld="nav-tab",data-nav="main",data-name="grp-list") 專案列表 #[i.i-chevron-right]
 
   .p-0
-    div(ld="nav-panel default",data-nav="grp-detail",data-name="prj-track")
-      include track.pug
+    div(ld="nav-panel default",data-nav="grp-detail",data-name="prj-info")
+      .w-100.mt-4: .aspect-ratio.ratio-2by1.bg-light: .w-100.h-100.vertical-center: .w-100.text-center 尚未啟用
+      //-include prj-info.pug
+    div(ld="nav-panel",data-nav="grp-detail",data-name="prj-track")
+      .w-100.mt-4: .aspect-ratio.ratio-2by1.bg-light: .w-100.h-100.vertical-center: .w-100.text-center 尚未啟用
+      //-include track.pug
     div(ld="nav-panel",data-nav="grp-detail",data-name="prj-view")
-      div TBD
+      .w-100.mt-4: .aspect-ratio.ratio-2by1.bg-light: .w-100.h-100.vertical-center: .w-100.text-center 尚未啟用
       //-include view.pug
     div(ld="nav-panel",data-nav="grp-detail",data-name="prj-budget")
-      include budget.pug
+      .w-100.mt-4: .aspect-ratio.ratio-2by1.bg-light: .w-100.h-100.vertical-center: .w-100.text-center 尚未啟用
+      //-include budget.pug
 

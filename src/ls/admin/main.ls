@@ -1,15 +1,16 @@
 ldc.register \adminGuard,
 <[general navtop ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
-adminPrjList prjForm adminEntry adminWelcome adminPage]>,
+adminPrjList prjForm adminEntry adminWelcome adminPage
+adminPrjDetail]>,
 ({general, navtop, ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
-admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
+admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail}) ->
 
   Ctrl = ->
     @loader = loader
     @hubs = null
-    @ctrl = {org: {}, brd: {}, grp: {}}
+    @ctrl = {org: {}, brd: {}, grp: {}, prj: {}}
 
     # keep dirty bit and original data of org and brd.
     @modify = {org: {}, brd: {}}
@@ -154,6 +155,10 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page}) ->
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
         ..list = new admin-prj-list {root: '[ld-scope=prj-list]', toc}
 
+      @ctrl.prj
+        ..main = new admin-prj-detail {root: '[ld-scope=prj-detail]'}
+
+      @ctrl.grp.list.on \set-prj, ~> @ctrl.prj.main.set-prj it
 
     publish: ->
       ldcvmgr.toggle \publishing, true
