@@ -9,3 +9,5 @@ doc/memo
 users
 static/s/
 config/nginx/domains/production/
+src/ls/work/
+static/js/work/
