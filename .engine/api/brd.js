@@ -135,7 +135,7 @@
       if (!(slug && type && payload)) {
         return aux.r400(res);
       }
-      if (!(type === 'prj' || type === 'brd' || type === 'org')) {
+      if (!(type === 'prj' || type === 'brd' || type === 'org' || type === 'post')) {
         return aux.r400(res);
       }
       if (info = payload.info) {
@@ -190,7 +190,10 @@
         });
       }).then(function(){
         return res.send({});
-      })['catch'](aux.errorHandler(res));
+      })['catch'](function(it){
+        console.log(it);
+        return aux.errorHandler(res)(it);
+      });
     });
     getPrjList = function(req, res){
       return Promise.resolve().then(function(){
@@ -284,7 +287,7 @@
       }).then(function(r){
         r == null && (r = {});
         lc.projects = r.rows || (r.rows = []);
-        return res.render('brd/index.pug', {
+        return res.render('pages/under-construction.pug', {
           brd: lc.brd,
           projects: lc.projects
         });

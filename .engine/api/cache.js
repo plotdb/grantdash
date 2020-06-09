@@ -6,7 +6,7 @@
   perm = {
     cache: {},
     perm: {},
-    supportedTypes: ['org', 'brd', 'prj'],
+    supportedTypes: ['org', 'brd', 'prj', 'post'],
     invalidate: function(arg$){
       var type, slug, ref$;
       type = arg$.type, slug = arg$.slug;

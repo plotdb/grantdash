@@ -34,7 +34,7 @@ slugs = ({io, org, brd, prj, post}) -> new Promise (res, rej) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       {org,prj,brd,post} = ret
       root = if type == \prj => "users/org/#{org}/prj/#{prj}"
-      root = if type == \post => "users/org/#{org}/post/#{post}"
+      else if type == \post => "users/org/#{org}/post/#{post}"
       else if type == \brd => "users/org/#{org}/brd/#{brd}"
       else if type == \org => "users/org/#{org}"
       else null
