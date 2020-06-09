@@ -156,7 +156,7 @@
         passport.use(new passportGoogleOauth20.Strategy({
           clientID: config.google.clientID,
           clientSecret: config.google.clientSecret,
-          callbackURL: "/dash/u/auth/google/callback",
+          callbackURL: "/dash/api/u/auth/google/callback",
           passReqToCallback: true,
           userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
           profileFields: ['id', 'displayName', 'link', 'emails']
@@ -172,7 +172,7 @@
         passport.use(new passportFacebook.Strategy({
           clientID: config.facebook.clientID,
           clientSecret: config.facebook.clientSecret,
-          callbackURL: "/dash/u/auth/facebook/callback",
+          callbackURL: "/dash/api/u/auth/facebook/callback",
           profileFields: ['id', 'displayName', 'link', 'emails']
         }, function(accessToken, refreshToken, profile, done){
           if (!profile.emails) {

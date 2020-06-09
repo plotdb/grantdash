@@ -41,7 +41,6 @@
             : type === 'brd'
               ? "users/org/" + org + "/brd/" + brd
               : type === 'org' ? "users/org/" + org : null;
-        console.log(type, root);
         if (!root) {
           return aux.reject(400);
         }
