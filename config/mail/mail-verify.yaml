@@ -1,11 +1,13 @@
-from: '"#{displayname} Support" <noreply@#{domain}>'
-subject: Email Verification from #{domain}
+from: '"#{teamname} Support" <account-manage@#{domain}>'
+subject: '電子郵件信箱認證 / #{domain}'
 content: |
-  You receive this mail because there is an email verification request for the account using this email in #{domain}. If you didn't sign up #{domain}, please just ignore this mail, or reply directly to ask removing email.
+  您好！
 
-  To verify your email, click following link:
+  您會收到這封信是因為有人在 #{domain} 使用了您的電子郵件註冊，並發出了認證信件的要求。若您並沒有在 #{domain} 註冊，請直接忽略此信，或者您亦可直接回覆此信來要求移除此帳號。
 
-  [https://#{domain}/me/mail/verify/#{token}](https://#{domain}/me/mail/verify/#{token})
+  若要認證您的電子郵件信箱，請開啟以下連結：
 
-  Thanks,
-  #{domain} team
+  [https://#{domain}/dash/me/mail/verify/#{token}](https://#{domain}/dash/me/mail/verify/#{token})
+
+  感謝！
+  #{domain} 團隊
