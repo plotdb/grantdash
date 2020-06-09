@@ -107,7 +107,7 @@
             mailVerify: ({node}) ->
               ldld = new ldLoader root: node
               if local.user.verified =>
-                node.innerText = "Verified in #{moment(local.user.verified.date).format("YYYY/MM/DD")}"
+                node.innerText = "已於 #{moment(local.user.verified.date).format("YYYY/MM/DD")} 驗證"
               else
                 node.addEventListener \click, ->
                   ldld.on!

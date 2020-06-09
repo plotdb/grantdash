@@ -193,7 +193,7 @@
               root: node
             });
             if (local.user.verified) {
-              return node.innerText = "Verified in " + moment(local.user.verified.date).format("YYYY/MM/DD");
+              return node.innerText = "已於 " + moment(local.user.verified.date).format("YYYY/MM/DD") + " 驗證";
             } else {
               return node.addEventListener('click', function(){
                 ldld.on();
