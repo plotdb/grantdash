@@ -1,6 +1,7 @@
 extends /auth/base.pug
 block vars
-  - ctrl.authpanel = true
+  - ctrl.authpanel = true;
+  - ctrl.navtop.placeholder = false;
 block content
   h1 密碼重設完成。
   p 那麼就 #[a(href="#",onclick="lda.auth.show('login')") 讓我們試試] 您是否可以使用新密碼成功登入吧。

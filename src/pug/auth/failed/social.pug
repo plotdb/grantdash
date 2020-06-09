@@ -4,7 +4,7 @@ html
   head
     +css("/css/pack/vendor.min.css")
     +css("/css/index.css")
-  body(style="background-image:linear-gradient(15deg,#bdf,#f9fbfe 35%,#fff 70%)")
+  body(style="background-image:linear-gradient(15deg,#bbb,#f9fafb 35%,#fff 70%);font-weight:300")
     .p-4
       //-img.mx-auto.d-block.my-4(src="/assets/img/c/logo/ldio-alt.svg",style="width:160px;opacity:0.5")
       h1.text-center.my-4 登入失敗
@@ -14,8 +14,7 @@ html
       ul
         li 換一個登入的方式
         li 確認您輸入的資訊是否正確
-        li #[a(href="/auth/reset/",style="color:#0ff",target="_blank") 重設密碼]
-      p 您也可以直接 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact');",style="color:#0ff") 與我們聯絡] ，讓我們協助您取回帳號。
+        li #[a(href="/auth/reset/",style="color:#09f",target="_blank",rel="noopener noreferrer") 重設密碼]
+      p 您也可以直接與我們聯絡，讓我們協助您取回帳號。
 
     +nbr(2)
-    img.mx-auto.d-block(style="width:64px;position:relative;left:-10px",src="/assets/img/c/logo/plotdb-sm-text.svg")
