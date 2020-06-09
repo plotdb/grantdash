@@ -19,7 +19,7 @@ engine.router.api.post \/me/mail/verify, throttling.send, (req, res) ->
       mail.by-template(
         \mail-verify
         req.user.username
-        {token: obj.hex, domain: 'grantdash.io', displayname: 'Grant Dash'}
+        {token: obj.hex, domain: 'grantdash.io', teamname: 'Grant Dash'}
         {now: true}
       )
     .then -> res.send!
@@ -44,10 +44,10 @@ engine.app.get \/me/mail/verify/:token, (req, res) ->
         return new Promise (res, rej) -> req.logIn(req.user, -> res!); return null
       else return null
     .then ->
-      res.redirect \/auth/mail/verify/done/
+      res.redirect \/dash/auth/mail/verify/done/
       return null
     .catch (e) ->
       if (e instanceof lderror) and e.id == 1013 =>
-        res.redirect \/auth/mail/verify/expire/
+        res.redirect \/dash/auth/mail/verify/expire/
         return null
       else aux.error-handler(res, true) e

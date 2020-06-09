@@ -50,7 +50,11 @@ module.exports = do
   # content -> text / html
   send-from-md: (payload, map = {}, opt={}) -> new Promise (res, rej) ->
     content = (payload.content or '')
-    for k,v of map => content = content.replace new RegExp("\#{#k}", "g"), v
+    for k,v of map =>
+      re = new RegExp("\#{#k}", "g")
+      content = content.replace(re, v)
+      payload.from = payload.from.replace(re, v)
+      payload.subject = payload.subject.replace(re, v)
     payload.text = md.to-text(content)
     payload.html = md.to-html(content)
     delete payload.content

@@ -20,7 +20,7 @@ engine.router.api.post \/me/passwd/reset/:token, (req, res) ->
       io.query "update users set (password,usepasswd) = ($2,$3) where key = $1", [user.key, user.password, true]
     .then -> io.query "delete from pwresettoken where pwresettoken.token=$1", [token]
     .then ->
-      res.redirect \/auth/reset/done
+      res.redirect \/dash/auth/reset/done
       return null
     .catch aux.error-handler res, true
 
@@ -38,7 +38,7 @@ engine.app.get \/me/passwd/reset/:token, (req, res) ->
       #res.redirect "/auth/reset/change/?token=#token"
       # use this to pass by cookie
       res.cookie "password-reset-token", token
-      res.redirect "/auth/reset/change/"
+      res.redirect "/dash/auth/reset/change/"
       return null
     .catch aux.error-handler res, true
 
@@ -57,7 +57,7 @@ engine.router.api.post \/me/passwd/reset, throttling.send, (req, res) ->
       mail.by-template(
         \reset-password
         email
-        {token: obj.hex, domain: 'grantdash.io', displayname: 'Grant Dash'}
+        {token: obj.hex, domain: 'grantdash.io', teamname: 'Grant Dash'}
         {now: true}
       )
     .then -> res.send ''
