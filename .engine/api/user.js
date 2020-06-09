@@ -40,7 +40,7 @@
     app.get("/me/reauth/", function(req, res){
       var that;
       clearUserCookie(req, res);
-      return res.redirect("/auth/" + ((that = req.query.nexturl) ? "?nexturl=" + that : ''));
+      return res.redirect("/dash/auth/" + ((that = req.query.nexturl) ? "?nexturl=" + that : ''));
     });
     api['delete']('/me/', function(req, res){
       var key;

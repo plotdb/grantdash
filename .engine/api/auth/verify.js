@@ -42,7 +42,7 @@
         return mail.byTemplate('mail-verify', req.user.username, {
           token: obj.hex,
           domain: 'grantdash.io',
-          displayname: 'Grant Dash'
+          teamname: 'Grant Dash'
         }, {
           now: true
         });
@@ -86,11 +86,11 @@
           return null;
         }
       }).then(function(){
-        res.redirect('/auth/mail/verify/done/');
+        res.redirect('/dash/auth/mail/verify/done/');
         return null;
       })['catch'](function(e){
         if (e instanceof lderror && e.id === 1013) {
-          res.redirect('/auth/mail/verify/expire/');
+          res.redirect('/dash/auth/mail/verify/expire/');
           return null;
         } else {
           return aux.errorHandler(res, true)(e);

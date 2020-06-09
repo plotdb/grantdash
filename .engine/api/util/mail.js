@@ -67,11 +67,14 @@
       map == null && (map = {});
       opt == null && (opt = {});
       return new Promise(function(res, rej){
-        var content, k, ref$, v;
+        var content, k, ref$, v, re;
         content = payload.content || '';
         for (k in ref$ = map) {
           v = ref$[k];
-          content = content.replace(new RegExp("#{" + k + "}", "g"), v);
+          re = new RegExp("#{" + k + "}", "g");
+          content = content.replace(re, v);
+          payload.from = payload.from.replace(re, v);
+          payload.subject = payload.subject.replace(re, v);
         }
         payload.text = md.toText(content);
         payload.html = md.toHtml(content);

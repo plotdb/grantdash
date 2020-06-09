@@ -37,7 +37,7 @@
       }).then(function(){
         return io.query("delete from pwresettoken where pwresettoken.token=$1", [token]);
       }).then(function(){
-        res.redirect('/auth/reset/done');
+        res.redirect('/dash/auth/reset/done');
         return null;
       })['catch'](aux.errorHandler(res, true));
     });
@@ -59,7 +59,7 @@
           return null;
         }
         res.cookie("password-reset-token", token);
-        res.redirect("/auth/reset/change/");
+        res.redirect("/dash/auth/reset/change/");
         return null;
       })['catch'](aux.errorHandler(res, true));
     });
@@ -87,7 +87,7 @@
         return mail.byTemplate('reset-password', email, {
           token: obj.hex,
           domain: 'grantdash.io',
-          displayname: 'Grant Dash'
+          teamname: 'Grant Dash'
         }, {
           now: true
         });
