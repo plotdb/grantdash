@@ -78,7 +78,8 @@ block body
           if !(block.config && !block.config.public)
             .pb-4.mb-4
               h4 #{block.title}
-              p.text-muted #{block.desc}
+              if block.config && block.config["show-desc"]
+                p.text-muted #{block.desc}
               hr
               - var value = answer[block.key]
               .pb-4(ld="answer",data-key=block.key)
