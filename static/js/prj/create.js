@@ -17,7 +17,7 @@ ldc.register(['stage', 'general', 'ldcvmgr', 'adminInfo', 'prjCreate', 'auth', '
     ret == null && (ret = {});
     lc.stage = ret.config || {};
     if (!lc.stage["prj-new"]) {
-      return ldcvmgr.toggle("not-open");
+      return Promise.reject(new ldError(1016));
     }
   }).then(function(){
     return ld$.fetch("/dash/api/brd/" + key.brd + "/form", {

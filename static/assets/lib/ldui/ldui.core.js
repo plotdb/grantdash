@@ -82,7 +82,6 @@ smoothScroll = function(opt){
     t = d.getAttribute('data-scrollto');
     jump = getComputedStyle(document.body).scrollBehavior === 'smooth';
     return d.addEventListener('click', function(e){
-      console.log('h1');
       ldui.scrollTo({
         node: ld$.find(document, t, 0),
         delay: delay,

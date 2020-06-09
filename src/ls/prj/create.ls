@@ -14,7 +14,7 @@ auth.get!
     stage.get {brd: key.brd}
   .then (ret = {}) ->
     lc.stage = ret.config or {}
-    if !lc.stage["prj-new"] => return ldcvmgr.toggle("not-open")
+    if !lc.stage["prj-new"] => return Promise.reject new ldError(1016)
   .then -> ld$.fetch "/dash/api/brd/#{key.brd}/form", {method: \GET}, {type: \json}
   .then (brd) ->
     lc.brd = brd

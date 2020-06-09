@@ -158,7 +158,7 @@ app.get \/brd/:slug, aux.signed, (req, res) ->
       io.query "select * from prj where brd = $1", [brd.slug]
     .then (r={}) ->
       lc.projects = r.[]rows
-      res.render \brd/index.pug, lc{brd, projects}
+      res.render \pages/under-construction.pug, lc{brd, projects}
     .catch aux.error-handler res
 
 api.get \/brd/:slug/form/, (req, res) ->
