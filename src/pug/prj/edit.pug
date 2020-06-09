@@ -113,7 +113,7 @@ block body
       .d-none(ld="to-publish"): .alert.alert-info.d-flex.align-items-center.shadow-sm
         .flex-grow-1 您有尚未發布的修改，記得按「儲存並發布」更新提案的最新版本喔！
         div: .btn.btn.btn-primary.mr-2(ld="submit") 儲存並發布
-        div: .btn.btn.btn-outline-primary(ld="cancel") 取消並還原
+        //-div: .btn.btn.btn-outline-primary(ld="cancel") 取消並還原
       .d-none(ld="to-fix"): .alert.alert-warning.d-flex.align-items-center.shadow-sm
         .flex-grow-1 您尚有#[span(ld="remain") 數]個欄位須修正，在請修正完成過後，便能發布您的提案。
         div: .btn.btn.btn-warning.mr-2(ld="jump invalid") 跳至待修正項目
