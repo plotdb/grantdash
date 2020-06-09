@@ -23,7 +23,7 @@
       promise = type === 'prj'
         ? io.query("select o.slug as org, b.slug as brd, p.slug as prj\nfrom org as o, brd as b, prj as p\nwhere p.slug = $1 and p.brd = b.slug and b.org = o.slug", [prj])
         : type === 'post'
-          ? (console.log('here', post), io.query("select o.slug as org, b.slug as brd, p.slug as post\nfrom org as o, brd as b, post as p\nwhere p.slug = $1 and p.brd = b.slug and b.org = o.slug", [post]))
+          ? io.query("select o.slug as org, b.slug as brd, p.slug as post\nfrom org as o, brd as b, post as p\nwhere p.slug = $1 and p.brd = b.slug and b.org = o.slug", [post])
           : type === 'brd'
             ? io.query("select o.slug as org, b.slug as brd\nfrom org as o, brd as b\nwhere b.slug = $1 and b.org = o.slug", [brd])
             : type === 'org' ? io.query("select o.slug as org\nfrom org as o\nwhere o.slug = $1", [org]) : void 8;

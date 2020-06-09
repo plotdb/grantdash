@@ -11,7 +11,6 @@ slugs = ({io, org, brd, prj, post}) -> new Promise (res, rej) ->
     where p.slug = $1 and p.brd = b.slug and b.org = o.slug
     """, [prj]
   else if type == \post =>
-    console.log \here, post
     io.query """
     select o.slug as org, b.slug as brd, p.slug as post
     from org as o, brd as b, post as p
