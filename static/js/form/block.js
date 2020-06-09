@@ -296,7 +296,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                       var node, evt, ref$;
                       node = arg$.node, evt = arg$.evt;
                       ((ref$ = this$.block).config || (ref$.config = {})).otherEnabled = !((ref$ = this$.block).config || (ref$.config = {})).otherEnabled;
-                      node.classList.toggle('on');
+                      node.classList.toggle('on', ((ref$ = this$.block).config || (ref$.config = {})).otherEnabled);
                       this$.update();
                       return this$.render();
                     },
@@ -339,9 +339,10 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                     return node.classList.toggle('d-none', !!((this$.viewing && !editable) || data.other));
                   },
                   "other-enabled": function(arg$){
-                    var node;
+                    var node, ref$;
                     node = arg$.node;
-                    return node.classList.toggle('d-none', this$.viewing || !data.other);
+                    node.classList.toggle('d-none', this$.viewing || !data.other);
+                    return node.classList.toggle('on', ((ref$ = this$.block).config || (ref$.config = {})).otherEnabled);
                   },
                   other: function(arg$){
                     var node;

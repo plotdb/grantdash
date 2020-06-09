@@ -143,7 +143,7 @@ module-list = module-init: ->
               click: do
                 "other-enabled": ({node, evt}) ~>
                   @block.{}config.other-enabled = !@block.{}config.other-enabled
-                  node.classList.toggle \on
+                  node.classList.toggle \on, @block.{}config.other-enabled
                   @update!
                   @render!
                 delete: ({node, evt}) ~>
@@ -165,6 +165,7 @@ module-list = module-init: ->
               delete: ({node}) ~> node.classList.toggle \d-none, !!((@viewing and !editable) or data.other)
               "other-enabled": ({node}) ~>
                 node.classList.toggle \d-none, (@viewing or !data.other)
+                node.classList.toggle \on, @block.{}config.other-enabled
               other: ({node}) ->
                 node.classList.toggle \d-none, !data.other
               data: ({node}) ->
