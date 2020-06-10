@@ -441,10 +441,21 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
         action: {
           change: {
             "input-field": function(arg$){
-              var node, local, ref$;
-              node = arg$.node, local = arg$.local;
-              ((ref$ = this$.block).value || (ref$.value = {})).content = node.value;
+              var node, local, names, n, ref$;
+              node = arg$.node, local = arg$.local, names = arg$.names;
+              n = in$('start', names) ? 'start' : 'end';
+              ((ref$ = this$.block).value || (ref$.value = {}))[n] = node.value;
               return this$.update();
+            }
+          },
+          click: {
+            "range-enabled": function(arg$){
+              var node, evt, ref$;
+              node = arg$.node, evt = arg$.evt;
+              ((ref$ = this$.block).config || (ref$.config = {})).rangeEnabled = !((ref$ = this$.block).config || (ref$.config = {})).rangeEnabled;
+              node.classList.toggle('on', ((ref$ = this$.block).config || (ref$.config = {})).rangeEnabled);
+              this$.update();
+              return this$.render();
             }
           }
         },
@@ -455,6 +466,25 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
             if (this$.viewing) {
               return tail.DateTime(node);
             }
+          }
+        },
+        handler: {
+          "input-field": function(arg$){
+            var node, names, ref$;
+            node = arg$.node, names = arg$.names;
+            return node.value = in$('start', names)
+              ? ((ref$ = this$.block).value || (ref$.value = {})).start
+              : ((ref$ = this$.block).value || (ref$.value = {})).end;
+          },
+          "is-range": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            return node.classList.toggle('d-none', !((ref$ = this$.block).config || (ref$.config = {})).rangeEnabled);
+          },
+          "range-enabled": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            return node.classList.toggle('on', ((ref$ = this$.block).config || (ref$.config = {})).rangeEnabled);
           }
         }
       });

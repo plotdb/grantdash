@@ -41,6 +41,10 @@ ldc.register \prjView, <[auth error stage viewLocals discussView]>, ({auth, erro
               if answer.useMarkdown =>
                 node.innerHTML = DOMPurify.sanitize(marked(answer.content))
               else node.innerText = answer.content
+            else if answer.start =>
+              start = moment(answer.start).format("YYYY-MM-DD hh:mm:ss")
+              end = moment(answer.end).format("YYYY-MM-DD hh:mm:ss")
+              node.innerText = if block.{}config.range-enabled => "#start - #end" else start
             else if answer.list =>
               if block.name in <[form-file form-thumbnail]>
                 ret = (answer.list or [])

@@ -142,4 +142,10 @@ mixin criteria
   input.form-control(ld="input-field",placeholder="以逗號等標點符號分隔標籤 ...")
 
 +form-block({name: "form-datetime"})
-  input.form-control(ld="input-field",placeholder="請輸入時間 ...")
+  .d-flex.align-items-center.mb-4
+    input.form-control(ld="input-field start",placeholder="請輸入開始時間 ...")
+    span.mx-4(ld="is-range") 至
+    input.form-control(ld="input-field end is-range",placeholder="請輸入結束時間 ...")
+  .flex-grow-1.text-nowrap.d-flex.align-items-center(ld="edit-only")
+    .mr-2 讓使用者以區間形式 ( 起始至結束 ) 設定時間
+    div: .switch.ml-2(ld="range-enabled")

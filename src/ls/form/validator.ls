@@ -36,12 +36,14 @@ validator = do
 
 return do
   validate: (block, force = false) ->
-    v = block.{}value.content or block.{}value.list
-    if block.value.other => v = (v or []) ++ [block.value.other-value]
-    if (!v and ((block.config.required and block.touched) or force)) =>
+    v = u = block.{}value.content or block.{}value.list
+    if !u => u = !!block.{}value.start and (!block.{}config.range-enabled or !!block.{}value.end)
+    if block.value.other => v = u = (v or []) ++ [block.value.other-value]
+    if Array.isArray(u) => u = u.length
+    if (!u and ((block.config.required and block.touched) or force)) =>
       return {result: false, criteria: {invalid: "此為必填項目"}}
-    if !v => return {}
-    if v => block.touched = true
+    if !u => return {}
+    if u => block.touched = true
     for c in (block.criteria or [])
       if !c.enabled => continue
       type = prjFormCriteria.schema.types[c.type]

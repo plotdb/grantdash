@@ -213,11 +213,25 @@ module["form-datetime"] = module-init: ->
     root: @root
     action: do
       change: do
-        "input-field": ({node,local}) ~>
-          @block.{}value.content = node.value
+        "input-field": ({node,local,names}) ~>
+          n = if \start in names => \start else \end
+          @block.{}value[n] = node.value
           @update!
+      click: do
+        "range-enabled": ({node, evt}) ~>
+          @block.{}config.range-enabled = !@block.{}config.range-enabled
+          node.classList.toggle \on, @block.{}config.range-enabled
+          @update!
+          @render!
+
     init:
       "input-field": ({node,local}) ~> if @viewing => tail.DateTime node
+    handler:
+      "input-field": ({node,names}) ~>
+        node.value = if \start in names => @block.{}value.start else @block.{}value.end
+      "is-range": ({node}) ~> node.classList.toggle \d-none, !@block.{}config.range-enabled
+      "range-enabled": ({node}) ~>
+        node.classList.toggle \on, @block.{}config.range-enabled
 
 module["form-tag"] = module-init: ->
   @view.module = view = new ldView do
@@ -231,10 +245,6 @@ module["form-tag"] = module-init: ->
       "input-field": ({node,local}) ~>
         local.tagify = new Tagify node, { delimiters: /[,.:;，。：； ]/ }
         local.tagify.addTags(@block.{}value.list or [])
-
-
-
-
 
 purpose-type = do
   title: <[form-short-answer]>

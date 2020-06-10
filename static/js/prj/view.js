@@ -64,7 +64,7 @@ ldc.register('prjView', ['auth', 'error', 'stage', 'viewLocals', 'discussView'],
           return node.classList.toggle('d-none', lc.global.user.key !== viewLocals.owner);
         },
         answer: function(arg$){
-          var node, key, block, answer, ref$, ret, list;
+          var node, key, block, answer, start, end, ref$, ret, list;
           node = arg$.node;
           key = node.getAttribute('data-key');
           block = bhash[key];
@@ -77,6 +77,10 @@ ldc.register('prjView', ['auth', 'error', 'stage', 'viewLocals', 'discussView'],
             } else {
               return node.innerText = answer.content;
             }
+          } else if (answer.start) {
+            start = moment(answer.start).format("YYYY-MM-DD hh:mm:ss");
+            end = moment(answer.end).format("YYYY-MM-DD hh:mm:ss");
+            return node.innerText = (block.config || (block.config = {})).rangeEnabled ? start + " - " + end : start;
           } else if (answer.list) {
             if ((ref$ = block.name) === 'form-file' || ref$ === 'form-thumbnail') {
               ret = (answer.list || []).map(function(f){

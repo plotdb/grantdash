@@ -98,13 +98,19 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
   };
   return {
     validate: function(block, force){
-      var v, i$, ref$, len$, c, type, vtr, ref1$, i, j;
+      var v, u, i$, ref$, len$, c, type, vtr, ref1$, i, j;
       force == null && (force = false);
-      v = (block.value || (block.value = {})).content || (block.value || (block.value = {})).list;
-      if (block.value.other) {
-        v = (v || []).concat([block.value.otherValue]);
+      v = u = (block.value || (block.value = {})).content || (block.value || (block.value = {})).list;
+      if (!u) {
+        u = !!(block.value || (block.value = {})).start && (!(block.config || (block.config = {})).rangeEnabled || !!(block.value || (block.value = {})).end);
       }
-      if (!v && ((block.config.required && block.touched) || force)) {
+      if (block.value.other) {
+        v = u = (v || []).concat([block.value.otherValue]);
+      }
+      if (Array.isArray(u)) {
+        u = u.length;
+      }
+      if (!u && ((block.config.required && block.touched) || force)) {
         return {
           result: false,
           criteria: {
@@ -112,10 +118,10 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
           }
         };
       }
-      if (!v) {
+      if (!u) {
         return {};
       }
-      if (v) {
+      if (u) {
         block.touched = true;
       }
       for (i$ = 0, len$ = (ref$ = block.criteria || []).length; i$ < len$; ++i$) {
