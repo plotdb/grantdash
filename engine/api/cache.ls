@@ -1,5 +1,47 @@
 require! <[permcheck ../aux]>
 
+# TODO hard coded for now but we should query from db in the future.
+coded-domains = do
+  "grantdash.dev": {}
+  "grantdash.io": {}
+  "sch001.g0v.tw": {org: "g0v-jothon", brd: "sch001"}
+  "dash.taicca.tw": {org: "taicca.tw"}
+
+# route.check: return
+#  - domain
+#  - org (optional)
+#  - brd (optional)
+route = do
+  cache: {domain: (coded-domains or {}), brd: {}, prj: {}}
+  check: ({io, req, res}) -> Promise.resolve!then ~>
+    pathname = req.originalUrl
+    domain = req.get("host")
+
+    if (brd = /brd\/([^/]+)/.exec(pathname)) => brd = brd.1
+    if (prj = /prj\/([^/]+)/.exec(pathname)) => prj = prj.1
+    promise = if brd =>
+      if @cache.brd[brd] => Promise.resolve that
+      else
+        io.query "select b.org from brd as b where b.slug = $1", [brd]
+          .then (r={}) ~> @cache.brd[brd] = ((r.[]rows.0 or {}) <<< {brd})
+    else if prj =>
+      if @cache.prj[prj] => Promise.resolve that
+      else
+        io.query "select p.brd, b.org from prj as p, brd as b where b.slug = p.brd and p.slug = $1", [prj]
+          .then (r={}) ~> @cache.prj[prj] = (r.[]rows.0 or {})
+    else Promise.resolve(null)
+    promise.then (path-cfg) ~>
+      if path-cfg and !path-cfg.org => return aux.reject 400
+      p = if @cache.domain[domain] => Promise.resolve(that)
+      else aux.reject 400
+      p.then (domain-cfg) ->
+        if !domain-cfg => return aux.reject 400
+        if !path-cfg => return domain-cfg <<< {domain}
+        if !domain-cfg.org => return path-cfg <<< {domain}
+        if path-cfg.org != domain-cfg.org or (domain-cfg.brd and domain-cfg.brd != path.cfg-brd) =>
+          return aux.reject 400
+        return path-cfg <<< {domain}
+
 perm = do
   cache: {}
   perm: {}
@@ -7,7 +49,7 @@ perm = do
   invalidate: ({type, slug}) ->
     @cache{}[type][slug] = {}
     @perm{}[type][slug] = null
-  check: ({io, user, type, slug, action}) -> 
+  check: ({io, user, type, slug, action}) ->
     Promise.resolve!
       .then ~>
         if !(user and user.key and slug and (type in @supported-types)) => return Promise.reject!
@@ -42,7 +84,7 @@ stage = do
   cache: {}
   supported-types: <[brd]>
   invalidate: ({type, slug}) -> @cache{}[type][slug] = null
-  check: ({io, type, slug}) -> 
+  check: ({io, type, slug}) ->
     Promise.resolve!
       .then ~>
         if !type in @supported-types => return aux.reject 400
@@ -61,7 +103,7 @@ stage = do
             if !ret.config => ret.config = {}
             return (@cache[type][slug] = ret)
 
-module.exports = {perm, stage}
+module.exports = {perm, stage, route}
 
 
 

@@ -174,6 +174,13 @@ backend = do
     app.use \/ext, throttling.route.external, router.ext # External API
     ext(@, pgsql)
 
+    app.use (req, res, next) ->
+      cache.route.check {io: pgsql, req, res}
+        .then (ret) ->
+          # ret = {domain, org, brd} ( org, brd is optional )
+          req.scope = ret
+          next!
+        .catch -> next it
     # ============ CSRF
     # put it here to secure login with csrf
     # TODO will this block fb / google login? it might will.
