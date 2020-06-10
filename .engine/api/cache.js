@@ -5,10 +5,10 @@
   aux = require('../aux');
   codedDomains = {
     "grantdash.dev": {
-      teamname: "grantdash.io"
+      teamname: "Grant Dash Dev"
     },
     "grantdash.io": {
-      teamname: "grantdash.io"
+      teamname: "Grant Dash"
     },
     "sch001.g0v.tw": {
       org: "g0v-jothon",

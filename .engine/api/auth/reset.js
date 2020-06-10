@@ -84,11 +84,12 @@
       }).then(function(){
         return io.query("insert into pwresettoken (owner,token,time) values ($1,$2,$3)", [obj.key, obj.hex, obj.time]);
       }).then(function(){
-        return mail.byTemplate('reset-password', email, {
+        var ref$, ref1$;
+        return mail.byTemplate('reset-password', email, (ref1$ = {
           token: obj.hex,
           domain: 'grantdash.io',
           teamname: 'Grant Dash'
-        }, {
+        }, ref1$.domain = (ref$ = req.scope).domain, ref1$.teamname = ref$.teamname, ref1$), {
           now: true
         });
       }).then(function(){

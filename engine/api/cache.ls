@@ -2,8 +2,8 @@ require! <[permcheck ../aux]>
 
 # TODO hard coded for now but we should query from db in the future.
 coded-domains = do
-  "grantdash.dev": {teamname: "grantdash.io"}
-  "grantdash.io": {teamname: "grantdash.io"}
+  "grantdash.dev": {teamname: "Grant Dash Dev"}
+  "grantdash.io": {teamname: "Grant Dash"}
   "sch001.g0v.tw": {org: "g0v-jothon", brd: "sch001", teamname: "零時小學校"}
   "dash.taicca.tw": {org: "taicca.tw", teamname: "文化內容策進院"}
 
