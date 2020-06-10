@@ -62,6 +62,7 @@
             if @fields.displayname.value => s.displayname = 0
         new Tagify form.fields.tags, do
           originalInputValueFormat: (vals) -> vals.map(-> it.value).join \,
+          delimiters: /[,.:;，。：； ]/
 
         view = new ldView do
           root: document.body

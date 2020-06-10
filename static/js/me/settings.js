@@ -103,7 +103,8 @@
           return vals.map(function(it){
             return it.value;
           }).join(',');
-        }
+        },
+        delimiters: /[,.:;，。：； ]/
       });
       return view = new ldView({
         root: document.body,
