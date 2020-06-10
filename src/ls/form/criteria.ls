@@ -46,5 +46,6 @@ schema = do
     'form-budget': <[count]>
     'form-checkpoint': <[count]>
     'form-tag': <[count]>
+    'form-datetime': <[]>
 
 return {schema}

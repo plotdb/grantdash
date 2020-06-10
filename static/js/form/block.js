@@ -433,6 +433,33 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
     "form-long-answer": moduleTextarea,
     "form-short-answer": moduleTextarea
   });
+  module["form-datetime"] = {
+    moduleInit: function(){
+      var view, this$ = this;
+      return this.view.module = view = new ldView({
+        root: this.root,
+        action: {
+          change: {
+            "input-field": function(arg$){
+              var node, local, ref$;
+              node = arg$.node, local = arg$.local;
+              ((ref$ = this$.block).value || (ref$.value = {})).content = node.value;
+              return this$.update();
+            }
+          }
+        },
+        init: {
+          "input-field": function(arg$){
+            var node, local;
+            node = arg$.node, local = arg$.local;
+            if (this$.viewing) {
+              return tail.DateTime(node);
+            }
+          }
+        }
+      });
+    }
+  };
   module["form-tag"] = {
     moduleInit: function(){
       var view, this$ = this;

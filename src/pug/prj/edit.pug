@@ -3,6 +3,7 @@ block body
   //-include /ui/data/sample.pug
   include /modules/mixins/index.pug
   include /form/timeline.pug
+  +css("/dash/assets/lib/tail.datetime/0.4.13/css/tail.datetime-harx-light.min.css")
   +css("/dash/assets/lib/handsontable/handsontable.min.css")
   +script("/dash/assets/lib/suuid/suuid.bundle.min.js")
   +script("/dash/assets/lib/handsontable/handsontable.min.js")
@@ -119,6 +120,7 @@ block body
         div: .btn.btn.btn-warning.mr-2(ld="jump invalid") 跳至待修正項目
 
 block script
+  +script("/dash/assets/lib/tail.datetime/0.4.13/js/tail.datetime-full.min.js")
   +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
   +script("/dash/assets/lib/dompurify/2.0.11/purify.min.js")
   +script("/dash/assets/lib/jsdiff/diff.min.js")

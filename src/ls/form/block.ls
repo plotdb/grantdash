@@ -208,6 +208,17 @@ module <<< do
   "form-short-answer": module-textarea
 
 
+module["form-datetime"] = module-init: ->
+  @view.module = view = new ldView do
+    root: @root
+    action: do
+      change: do
+        "input-field": ({node,local}) ~>
+          @block.{}value.content = node.value
+          @update!
+    init:
+      "input-field": ({node,local}) ~> if @viewing => tail.DateTime node
+
 module["form-tag"] = module-init: ->
   @view.module = view = new ldView do
     root: @root
@@ -216,9 +227,8 @@ module["form-tag"] = module-init: ->
         "input-field": ({node,local}) ~>
           @block.{}value.list = local.tagify.value.map(-> it.value)
           @update!
-
-    init: 
-      "input-field": ({node,local}) ~> 
+    init:
+      "input-field": ({node,local}) ~>
         local.tagify = new Tagify node, { delimiters: /[,.:;，。：； ]/ }
         local.tagify.addTags(@block.{}value.list or [])
 
@@ -321,7 +331,7 @@ Ctrl = (opt) ->
           if n.op => data.op = n.op
           @update!
           local.view.render!
-        init: ({node, data, local}) ~> 
+        init: ({node, data, local}) ~>
           get-type = ~> data.type or schema.support[@block.name][0] or \number
           get-op = ->
             ops = schema.ops[schema.types[get-type!].ops]
@@ -393,7 +403,7 @@ Ctrl = (opt) ->
 
 Ctrl.prototype = Object.create(Object.prototype) <<< do
   set-data: -> @block = it
-  render: -> 
+  render: ->
     @view.block.render!
     if @view.module => @view.module.render!
     if @view.criteria => @view.criteria.render!
