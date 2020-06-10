@@ -23,8 +23,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
         ld$.fetch "/dash/api/brd/#{@prj.brd}/form", {method: \GET}, {type: \json}
       .then ~>
         @brd = it
-        # TODO choose grp by prj result
-        @grp = @brd.detail.group.0 or {}
+        @grp = @brd.detail.group.filter(~> it.key == @prj.grp).0
+        if !@grp => return Promise.reject new ldError(1017)
 
   sharedb: ->
     console.log "initializing sharedb connection ..."

@@ -45,7 +45,12 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
         });
       }).then(function(it){
         this$.brd = it;
-        return this$.grp = this$.brd.detail.group[0] || {};
+        this$.grp = this$.brd.detail.group.filter(function(it){
+          return it.key === this$.prj.grp;
+        })[0];
+        if (!this$.grp) {
+          return Promise.reject(new ldError(1017));
+        }
       });
     },
     sharedb: function(){
