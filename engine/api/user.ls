@@ -80,7 +80,7 @@ app.get \/user/:id, aux.numid true, (req, res) ->
   """, [req.params.id]
     .then (r={}) ->
       if !r.rows or !r.rows.length => return aux.reject 404
-      res.render \me/user.pug, {user: r.rows.0}
+      res.render \me/profile.pug, {user: r.rows.0}
     .catch aux.error-handler res
 
 app.get \/me/settings/, aux.needlogin (req, res) ->
