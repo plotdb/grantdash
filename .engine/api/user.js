@@ -96,7 +96,7 @@
         if (!r.rows || !r.rows.length) {
           return aux.reject(404);
         }
-        return res.render('me/user.pug', {
+        return res.render('me/profile.pug', {
           user: r.rows[0]
         });
       })['catch'](aux.errorHandler(res));
