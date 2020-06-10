@@ -2,15 +2,16 @@ require! <[permcheck ../aux]>
 
 # TODO hard coded for now but we should query from db in the future.
 coded-domains = do
-  "grantdash.dev": {}
-  "grantdash.io": {}
-  "sch001.g0v.tw": {org: "g0v-jothon", brd: "sch001"}
-  "dash.taicca.tw": {org: "taicca.tw"}
+  "grantdash.dev": {teamname: "grantdash.io"}
+  "grantdash.io": {teamname: "grantdash.io"}
+  "sch001.g0v.tw": {org: "g0v-jothon", brd: "sch001", teamname: "零時小學校"}
+  "dash.taicca.tw": {org: "taicca.tw", teamname: "文化內容策進院"}
 
 # route.check: return
 #  - domain
 #  - org (optional)
 #  - brd (optional)
+#  - team name ( optional )
 route = do
   cache: {domain: (coded-domains or {}), brd: {}, prj: {}}
   check: ({io, req, res}) -> Promise.resolve!then ~>
@@ -37,10 +38,12 @@ route = do
       p.then (domain-cfg) ->
         if !domain-cfg => return aux.reject 400
         if !path-cfg => return domain-cfg <<< {domain}
-        if !domain-cfg.org => return path-cfg <<< {domain}
-        if path-cfg.org != domain-cfg.org or (domain-cfg.brd and domain-cfg.brd != path.cfg-brd) =>
-          return aux.reject 400
-        return path-cfg <<< {domain}
+        if (
+        ((path-cfg.org != domain-cfg.org) or
+        (domain-cfg.brd and domain-cfg.brd != path.cfg-brd)) and
+        domain-cfg.org
+        ) => return aux.reject 400
+        return path-cfg <<< domain-cfg{teamname} <<< {domain}
 
 perm = do
   cache: {}

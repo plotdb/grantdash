@@ -262,6 +262,18 @@
         };
         app.use('/ext', throttling.route.external, router.ext);
         ext(this$, pgsql);
+        app.use(function(req, res, next){
+          return cache.route.check({
+            io: pgsql,
+            req: req,
+            res: res
+          }).then(function(ret){
+            req.scope = ret;
+            return next();
+          })['catch'](function(it){
+            return next(it);
+          });
+        });
         backend.csrfProtection = csurf();
         app.use(backend.csrfProtection);
         router.api.use('/u', throttling.route.user, router.user);
