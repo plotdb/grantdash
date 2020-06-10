@@ -18,8 +18,8 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var deploy, slugs, api, app, upload, getPrjList;
-    deploy = common.deploy, slugs = common.slugs;
+    var deploy, slugs, saveSnapshot, api, app, upload, getPrjList;
+    deploy = common.deploy, slugs = common.slugs, saveSnapshot = common.saveSnapshot;
     api = engine.router.api;
     app = engine.app;
     upload = function(arg$){
@@ -187,6 +187,15 @@
           }).then(function(){
             return fsExtra.move(draft, release);
           });
+        });
+      }).then(function(){
+        var doc_id;
+        doc_id = type + "/" + slug;
+        return saveSnapshot({
+          io: io,
+          sharedb: engine.sharedb,
+          version: null,
+          doc_id: doc_id
         });
       }).then(function(){
         return res.send({});

@@ -2,7 +2,7 @@ require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr l
 require! <[../aux ./cache ./common]>
 (engine,io) <- (->module.exports = it)  _
 
-{deploy, slugs} = common
+{deploy, slugs, save-snapshot} = common
 
 api = engine.router.api
 app = engine.app
@@ -90,6 +90,9 @@ api.put \/detail/, aux.signed, (req, res) ->
             .then -> fs-extra.remove release
             .then -> fs-extra.ensure-dir draft
             .then -> fs-extra.move draft, release
+    .then ->
+      doc_id = "#type/#slug"
+      save-snapshot {io, sharedb: engine.sharedb, version: null, doc_id}
     .then -> res.send {}
     .catch ->
       console.log it

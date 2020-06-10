@@ -1,5 +1,18 @@
 require! <[nodegit lderror path ../aux]>
 
+save-snapshot = ({io, sharedb, doc_id, version}) -> new Promise (res, rej) ->
+  (e,b) <- sharedb.connect.fetchSnapshot \doc, doc_id, version, _
+  if e => return rej e
+  {id,v,type,data} = b
+  io.query "select doc_id,version from milestonesnapshots where version = $1", [v]
+    .then (r={}) ->
+      if r.[]rows.length => return Promise.resolve!
+      io.query """
+      insert into milestonesnapshots (collection,doc_id,doc_type,version,data) values ($1,$2,$3,$4,$5)
+      """, ["doc", id, type, v, data]
+    .then -> res!
+    .catch rej
+
 slugs = ({io, org, brd, prj, post}) -> new Promise (res, rej) ->
   type = if prj => \prj else if brd => \brd else if org => \org else if post => \post else null
   if !type => return rej(new lderror 400)
@@ -68,4 +81,4 @@ deploy = ({url, root, branch}) ->
         .then (ref) -> repo.checkoutRef ref, {checkoutStrategy: 2} # force checkout
         .catch (e) -> console.log "[Deploy Error]", e
 
-module.exports = {slugs, deploy}
+module.exports = {slugs, deploy, save-snapshot}
