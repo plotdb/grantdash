@@ -36,21 +36,37 @@ validator = do
 
 return do
   validate: (block, force = false) ->
-    v = u = block.{}value.content or block.{}value.list
-    if !u => u = !!block.{}value.start and (!block.{}config.range-enabled or !!block.{}value.end)
-    if block.value.other => v = u = (v or []) ++ [block.value.other-value]
-    if Array.isArray(u) => u = u.length
-    if (!u and ((block.config.required and block.touched) or force)) =>
+    [value,config, is-empty] = [block.{}value, block.{}config, false]
+    if block.name == \form-checkpoint =>
+      data = value.[]list
+      is-empty = !data.length or data.filter(-> (it.title and it.desc and it.date)).length != data.length
+    else if block.name == \form-datetime =>
+      data = value
+      is-empty = !(value.start and (!config.range-enabled or value.end))
+    else if block.name in <[form-checkbox form-radio]> =>
+      data = ((value.list or []) ++ (if value.other => [value.other-value] else []))
+      is-empty = !(data.filter(->it).length)
+    else if value.content =>
+      data = value.content
+      is-empty = !data
+    else if value.list =>
+      data = value.list
+      is-empty = !(data and data.length)
+    else
+      [data,is-empty] = [null, true]
+
+    if is-empty and ((config.required and block.touched) or force) =>
       return {result: false, criteria: {invalid: "此為必填項目"}}
-    if !u => return {}
-    if u => block.touched = true
+
+    if is-empty => return {}
+    else block.touched = true
     for c in (block.criteria or [])
       if !c.enabled => continue
       type = prjFormCriteria.schema.types[c.type]
       if !(c.type and type) => continue
       vtr = validator[type.ops]
       if !vtr[c.op] => continue
-      [v,i,j] = vtr.convert v, c.input1, c.input2
+      [v,i,j] = vtr.convert data, c.input1, c.input2
       if !(vtr.type(v, i, j) and vtr[c.op](v,i,j)) => return {result: false, criteria: c}
     return {result: true}
 

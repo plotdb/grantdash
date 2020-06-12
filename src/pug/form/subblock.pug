@@ -6,7 +6,6 @@ mixin form-block(opt)
         .flex-grow-1
           h4.mb-2.single-line.w-100(ld="title",editable="title") 提問的標題
           p.text-muted.mb-2.single-line.w-100(ld="desc",editable="desc") 提問的簡短描述 ...
-
         .ml-4
           .btn-group-vertical(ld="edit-only")
             .btn.btn-sm.btn-light(ld="move-up",style="padding:0 .25em") #[i.i-chevron-up]
@@ -63,15 +62,15 @@ mixin criteria
 
 +form-block({name: "form-checkpoint"})
   .pt-4.px-4
-    .timeline-list
-      .item(draggable="true",ld-each="list",data-user-editable="true"): .d-flex
+    .timeline-list(hostable)
+      .item(draggable="true",ld-each="list"): .d-flex
         i.i-bars.mr-2.text-muted(ld="drag")
-        .flex-grow-1
-          .title(ld="data",editable="title") 新項目
-          p(ld="data",editable="desc") 關於這個項目的描述 ...
+        .flex-grow-1.mr-2.fields
+          input.form-control.border.rounded.mb-2(ld="input",data-name="title",placeholder="查核階段項目名稱 ...")
+          input.form-control.border.rounded.mb-2(ld="date input",data-name="date",placeholder="查核階段時間 ...")
+          textarea.form-control(rows="4",ld="input",data-name="desc",placeholder="關於這個查核項目的描述 ...")
         i.i-close.mr-2.clickable.text-danger(ld="delete")
     .btn.btn-sm.btn-outline-dark(ld="list-add") 增加項目 #[i.i-plus]
-
 
 +form-block({name: "form-radio"})
   .px-4.py-3.border.rounded(editable="option",edit-type="block")

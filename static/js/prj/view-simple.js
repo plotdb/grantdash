@@ -2,7 +2,7 @@
 ldc.register('prjViewSimple', [], function(){
   var Ctrl;
   Ctrl = function(opt){
-    var root, this$ = this;
+    var root, getAnswer, this$ = this;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
@@ -11,6 +11,9 @@ ldc.register('prjViewSimple', [], function(){
     this.prj = opt.prj;
     this.brd = opt.brd;
     this.org = opt.org;
+    getAnswer = function(block){
+      return this$.answer[block.key] || block.value;
+    };
     this.view = new ldView({
       root: root,
       handler: {
@@ -33,14 +36,16 @@ ldc.register('prjViewSimple', [], function(){
                 desc: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
+                  node.classList.toggle('d-none', !context.config["show-desc"]);
                   return node.innerText = context.desc;
                 },
-                answer: function(arg$){
-                  var node, context, ret;
+                content: function(arg$){
+                  var node, context, ans, ret;
                   node = arg$.node, context = arg$.context;
+                  ans = getAnswer(context);
                   ret = Ctrl.render({
                     block: context,
-                    answer: this$.answer[context.key],
+                    answer: ans,
                     prj: this$.prj,
                     org: this$.org
                   });
@@ -52,6 +57,7 @@ ldc.register('prjViewSimple', [], function(){
           handler: function(arg$){
             var local, data;
             local = arg$.local, data = arg$.data;
+            console.log(data);
             local.view.setContext(data);
             return local.view.render();
           }
@@ -70,22 +76,25 @@ ldc.register('prjViewSimple', [], function(){
       return this.render();
     },
     render: function(){
+      console.log('here');
       return this.view.render();
     }
   });
   Ctrl.render = function(arg$){
-    var block, answer, prj, brd, org, result, ref$, ret, list;
+    var block, answer, prj, brd, org, result, start, end, ref$, ret, list;
     block = arg$.block, answer = arg$.answer, prj = arg$.prj, brd = arg$.brd, org = arg$.org;
     result = {};
     if (!(block && answer)) {
       return;
     }
     if (answer.content) {
-      if (answer.useMarkdown) {
-        result = DOMPurify.sanitize(marked(answer.content));
-      } else {
-        result = htmlentities(answer.content);
-      }
+      result = answer.useMarkdown
+        ? DOMPurify.sanitize(marked(answer.content))
+        : htmlentities(answer.content);
+    } else if (answer.start) {
+      start = moment(answer.start).format("YYYY-MM-DD hh:mm:ss");
+      end = moment(answer.end).format("YYYY-MM-DD hh:mm:ss");
+      result = (block.config || (block.config = {})).rangeEnabled ? start + " - " + end : start;
     } else if (answer.list) {
       if ((ref$ = block.name) === 'form-file' || ref$ === 'form-thumbnail') {
         ret = (answer.list || []).map(function(f){
@@ -94,9 +103,9 @@ ldc.register('prjViewSimple', [], function(){
         result = DOMPurify.sanitize(ret);
       } else if (block.name === 'form-checkpoint') {
         ret = (answer.list || []).map(function(d){
-          return "<p><div><b><big>" + htmlentities(d.title) + "</big></b></div>\n<div>" + htmlentities(d.desc) + "</div></p>";
+          return "<div class=\"item\"><div class=\"fields mb-4\">\n<div class=\"d-flex align-items-end mb-2\">\n  <h4 class=\"mb-0 mr-2\">" + htmlentities(d.title) + "</h4>\n  <p class=\"text-muted text-sm mb-0\">" + htmlentities(d.date) + "</p>\n</div>\n<p>" + htmlentities(d.desc) + "</p>\n</div></div>";
         }).join('');
-        result = "<blockquote style='margin-left:1em'>" + DOMPurify.sanitize(ret) + "</blockquote>";
+        result = "<div class=\"form-block mt-4 p-2\"><div class=\"timeline-list\">" + DOMPurify.sanitize(ret) + "</div></div>";
       } else {
         list = answer.list.concat(answer.otherValue && answer.other
           ? [answer.otherValue]

@@ -1,5 +1,4 @@
-({error, ldcvmgr, prj-form-criteria, prj-form-block, prj-form-validation, sdbAdapter}) <- ldc.register \prjForm,
-<[error ldcvmgr prjFormCriteria prjFormBlock prjFormValidation sdbAdapter]>, _
+({error, ldcvmgr, prj-form-criteria, prj-form-block, prj-form-validation, prj-view-simple, sdbAdapter}) <- ldc.register \prjForm, <[error ldcvmgr prjFormCriteria prjFormBlock prjFormValidation prjViewSimple sdbAdapter]>, _
 
 Ctrl = (opt) ->
   @opt = opt
@@ -8,7 +7,7 @@ Ctrl = (opt) ->
   @node = do
     src: ld$.find(root, '[ld=blocksrc]', 0)
     list: ld$.find(root, '[ld=form-list]', 0)
-    answer: ld$.find(root, '[ld=form-answer]', 0)
+    answer: ld$.find(root, '[ld-scope=form-answer]', 0)
   @view-mode = view-mode = opt.view-mode
   @obj = obj = {list: [], value: {answer: {}}}
   @brd = opt.brd
@@ -140,8 +139,6 @@ Ctrl = (opt) ->
         blocks-view.render!
         hub.update!
 
-
-
       afterMoveNode: ({src, des, ib}) ->
         if src.parentNode.hasAttribute(\hostable) =>
           n = src.parentNode
@@ -186,7 +183,7 @@ Ctrl = (opt) ->
           viewing: ->
             lc.view = !lc.view
             viewer.render!
-            view-answer.render!
+            prj-view.render!
           invalid: ~>
             @validate-all true
             if !(v = obj.list.filter(-> it.valid and !it.valid.result).0) => return
@@ -215,6 +212,7 @@ Ctrl = (opt) ->
         "owner-name": ({node}) ~>
           node.innerText = @prj.ownername
 
+    /*
     render-answer = do
       "form-checkpoint": ({node, data, block}) ->
         items = (data.list or [])
@@ -251,6 +249,13 @@ Ctrl = (opt) ->
                   if render-answer[data.name] =>
                     render-answer[data.name]({node, block: data, data: (obj.value.answer[data.key] or {})})
                   else node.innerText = (obj.value.answer[data.key] or {}).content or ''
+    */
+
+    prj-view = new prj-view-simple do
+      root: @node.answer
+      prj: @prj.slug, brd: @brd.slug, org: @brd.org
+      form: opt.form
+      answer: obj.value.answer
 
     view-answer-diff = new ldView do
       root: '[ld-scope=prj-diff] .card-body'

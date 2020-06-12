@@ -1,4 +1,4 @@
-ldc.register \prjView, <[auth error stage viewLocals discussView]>, ({auth, error, stage, discussView, discussEdit, viewLocals}) ->
+ldc.register \prjView, <[auth error stage viewLocals discussView prjViewSimple]>, ({auth, error, stage, discussView, discussEdit, viewLocals, prj-view-simple}) ->
   lc = {}
   {prj,brd,grp} = viewLocals
   auth.get!
@@ -33,43 +33,13 @@ ldc.register \prjView, <[auth error stage viewLocals discussView]>, ({auth, erro
               local.h = setTimeout (-> node.classList.remove \tip-on), 1000
         handler: do
           "btn-edit": ({node}) -> node.classList.toggle \d-none, (lc.global.user.key != viewLocals.owner)
-          answer: ({node}) ->
-            key = node.getAttribute(\data-key)
-            block = bhash[key]
-            if !(answer = answers[key] or {}) or !(block = bhash[key]) => return
-            if answer.content =>
-              if answer.useMarkdown =>
-                node.innerHTML = DOMPurify.sanitize(marked(answer.content))
-              else node.innerText = answer.content
-            else if answer.start =>
-              start = moment(answer.start).format("YYYY-MM-DD hh:mm:ss")
-              end = moment(answer.end).format("YYYY-MM-DD hh:mm:ss")
-              node.innerText = if block.{}config.range-enabled => "#start - #end" else start
-            else if answer.list =>
-              if block.name in <[form-file form-thumbnail]>
-                ret = (answer.list or [])
-                  .map (f) ->
-                    """
-                    <li><a href="/dash/org/#{brd.org}/prj/#{prj.slug}/upload/#{f.path}">
-                    #{htmlentities(f.name)}
-                    </a></li>
-                    """
-                  .join ('')
-                node.innerHTML = DOMPurify.sanitize(ret)
-              else if block.name == \form-checkpoint
-                ret = (answer.list or [])
-                  .map (d) ->
-                    """
-                    <p><div><b><big>#{htmlentities(d.title)}</big></b></div>
-                    <div>#{htmlentities(d.desc)}</div></p>
-                    """
-                  .join('')
-                node.innerHTML = "<blockquote style='margin-left:1em'>#{DOMPurify.sanitize(ret)}</blockquote>"
-              else
-                list = (answer.list ++ if answer.otherValue and answer.other => [answer.otherValue] else [])
-                node.innerHTML = DOMPurify.sanitize(list.join "<br>")
 
-     
+      prj-view = new prj-view-simple do
+        root: '[ld-scope=form-answer]'
+        prj: prj.slug, brd: brd.slug, org: brd.org
+        form: grp.form
+        answer: answers
+
     .catch error!
 
 ldc.app \prjView

@@ -98,19 +98,34 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
   };
   return {
     validate: function(block, force){
-      var v, u, i$, ref$, len$, c, type, vtr, ref1$, i, j;
+      var ref$, value, config, isEmpty, data, i$, len$, c, type, vtr, ref1$, v, i, j;
       force == null && (force = false);
-      v = u = (block.value || (block.value = {})).content || (block.value || (block.value = {})).list;
-      if (!u) {
-        u = !!(block.value || (block.value = {})).start && (!(block.config || (block.config = {})).rangeEnabled || !!(block.value || (block.value = {})).end);
+      ref$ = [block.value || (block.value = {}), block.config || (block.config = {}), false], value = ref$[0], config = ref$[1], isEmpty = ref$[2];
+      if (block.name === 'form-checkpoint') {
+        data = value.list || (value.list = []);
+        isEmpty = !data.length || data.filter(function(it){
+          return it.title && it.desc && it.date;
+        }).length !== data.length;
+      } else if (block.name === 'form-datetime') {
+        data = value;
+        isEmpty = !(value.start && (!config.rangeEnabled || value.end));
+      } else if ((ref$ = block.name) === 'form-checkbox' || ref$ === 'form-radio') {
+        data = (value.list || []).concat(value.other
+          ? [value.otherValue]
+          : []);
+        isEmpty = !data.filter(function(it){
+          return it;
+        }).length;
+      } else if (value.content) {
+        data = value.content;
+        isEmpty = !data;
+      } else if (value.list) {
+        data = value.list;
+        isEmpty = !(data && data.length);
+      } else {
+        ref$ = [null, true], data = ref$[0], isEmpty = ref$[1];
       }
-      if (block.value.other) {
-        v = u = (v || []).concat([block.value.otherValue]);
-      }
-      if (Array.isArray(u)) {
-        u = u.length;
-      }
-      if (!u && ((block.config.required && block.touched) || force)) {
+      if (isEmpty && ((config.required && block.touched) || force)) {
         return {
           result: false,
           criteria: {
@@ -118,10 +133,9 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
           }
         };
       }
-      if (!u) {
+      if (isEmpty) {
         return {};
-      }
-      if (u) {
+      } else {
         block.touched = true;
       }
       for (i$ = 0, len$ = (ref$ = block.criteria || []).length; i$ < len$; ++i$) {
@@ -137,7 +151,7 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
         if (!vtr[c.op]) {
           continue;
         }
-        ref1$ = vtr.convert(v, c.input1, c.input2), v = ref1$[0], i = ref1$[1], j = ref1$[2];
+        ref1$ = vtr.convert(data, c.input1, c.input2), v = ref1$[0], i = ref1$[1], j = ref1$[2];
         if (!(vtr.type(v, i, j) && vtr[c.op](v, i, j))) {
           return {
             result: false,

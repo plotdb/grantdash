@@ -5,22 +5,29 @@ Ctrl = (opt) ->
   @form = opt.form
   @answer = opt.answer
   @ <<< opt{prj, brd, org}
+  get-answer = (block) ~> @answer[block.key] or block.value 
+    
   @view = new ldView do
     root: root
     handler: do
       item: do
-        list: ~> @form.list
+        list: ~>
+          @form.list
         init: ({node, local, data}) ~>
           local.view = new ldView do
             context: data
             root: node
             handler: do
               title: ({node,context}) -> node.innerText = context.title
-              desc: ({node,context}) -> node.innerText = context.desc
-              answer: ({node,context}) ~>
-                ret = Ctrl.render {block: context, answer: @answer[context.key], prj: @prj, org: @org}
+              desc: ({node,context}) ->
+                node.classList.toggle \d-none, !context.config["show-desc"]
+                node.innerText = context.desc
+              content: ({node,context}) ~>
+                ans = get-answer context
+                ret = Ctrl.render {block: context, answer: ans, prj: @prj, org: @org}
                 node.innerHTML = DOMPurify.sanitize(ret)
         handler: ({local, data}) ->
+          console.log data
           local.view.setContext data
           local.view.render!
   @
@@ -29,15 +36,21 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   update: ({form, answer, prj}) ->
     @ <<< {form, answer, prj}
     @render!
-  render: -> @view.render!
+  render: ->
+    console.log \here
+    @view.render!
 
 Ctrl.render = ({block, answer, prj, brd, org}) ->
   result = {}
   if !(block and answer) => return
+
   if answer.content =>
-    if answer.useMarkdown =>
-      result = DOMPurify.sanitize(marked(answer.content))
-    else result = htmlentities(answer.content)
+    result = if answer.useMarkdown => DOMPurify.sanitize(marked(answer.content))
+    else htmlentities(answer.content)
+  else if answer.start =>
+    start = moment(answer.start).format("YYYY-MM-DD hh:mm:ss")
+    end = moment(answer.end).format("YYYY-MM-DD hh:mm:ss")
+    result = if block.{}config.range-enabled => "#start - #end" else start
   else if answer.list =>
     if block.name in <[form-file form-thumbnail]>
       ret = (answer.list or [])
@@ -53,14 +66,20 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
       ret = (answer.list or [])
         .map (d) ->
           """
-          <p><div><b><big>#{htmlentities(d.title)}</big></b></div>
-          <div>#{htmlentities(d.desc)}</div></p>
+          <div class="item"><div class="fields mb-4">
+          <div class="d-flex align-items-end mb-2">
+            <h4 class="mb-0 mr-2">#{htmlentities(d.title)}</h4>
+            <p class="text-muted text-sm mb-0">#{htmlentities(d.date)}</p>
+          </div>
+          <p>#{htmlentities(d.desc)}</p>
+          </div></div>
           """
         .join('')
-      result = "<blockquote style='margin-left:1em'>#{DOMPurify.sanitize(ret)}</blockquote>"
+      result = """<div class="form-block mt-4 p-2"><div class="timeline-list">#{DOMPurify.sanitize(ret)}</div></div>"""
     else
       list = (answer.list ++ if answer.otherValue and answer.other => [answer.otherValue] else [])
       result = DOMPurify.sanitize(list.join "<br>")
+
   return result
 
 Ctrl

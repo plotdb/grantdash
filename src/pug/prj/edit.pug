@@ -2,7 +2,6 @@ extends /base.pug
 block body
   //-include /ui/data/sample.pug
   include /modules/mixins/index.pug
-  include /form/timeline.pug
   +css("/dash/assets/lib/tail.datetime/0.4.13/css/tail.datetime-harx-light.min.css")
   +css("/dash/assets/lib/handsontable/handsontable.min.css")
   +script("/dash/assets/lib/suuid/suuid.bundle.min.js")
@@ -94,10 +93,7 @@ block body
 
       .flex-grow-1
         .d-none(ld="form-sample"): include /form/subblock.pug
-        .d-none(ld="view"): div(ld="form-answer"): .mb-4.pb-4(ld-each="answer")
-          h4.mb-1(ld="title") 提問的標題
-          p.text-muted.mb-2(ld="desc") 提問的簡短描述 ...
-          .mb-4.text-break.bg-light.rounded.p-4(ld="content")
+        .d-none(ld="view"): include answer.pug
         .d-none(ld="nview"): div(ld="form-list"): div(ld-each="block")
         .w-100.h-100(pd="init-loader",style="background-image:url(/dash/assets/img/c/placeholder/content.svg);background-position:top center;background-repeat:repeat-y;")
 
@@ -134,3 +130,4 @@ block script
   +script("/dash/js/util/misc.js")
   +script("/dash/js/util/input.js")
   +script("/dash/js/prj/edit.js")
+  +script("/dash/js/prj/view-simple.js")

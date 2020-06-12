@@ -156,10 +156,10 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
     "form-file": moduleFile,
     "form-thumbnail": moduleFile
   });
-  moduleList = {
+  module["form-checkpoint"] = {
     moduleInit: function(){
       var ref$, view, this$ = this;
-      if (this.block.name === 'form-checkpoint' && this.viewing) {
+      if (this.viewing) {
         if (!((ref$ = this.block).value || (ref$.value = {})).list) {
           ((ref$ = this.block).value || (ref$.value = {})).list = (ref$ = this.block).data || (ref$.data = []);
         } else {
@@ -171,6 +171,86 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
           return this$.update();
         });
       }
+      return this.view.module = view = new ldView({
+        root: this.root,
+        action: {
+          click: {
+            "list-add": function(){
+              var ref$;
+              ((ref$ = this$.block).data || (ref$.data = [])).push({
+                title: "",
+                desc: "",
+                key: suuid()
+              });
+              this$.update();
+              return this$.render();
+            }
+          }
+        },
+        handler: {
+          list: {
+            key: function(it){
+              return it.key;
+            },
+            list: function(){
+              return this$.block.data || [];
+            },
+            handler: function(arg$){
+              var node, data, editable;
+              node = arg$.node, data = arg$.data;
+              editable = node.hasAttribute('data-user-editable');
+              if (node.view) {
+                return node.view.render();
+              }
+              return node.view = new ldView({
+                root: node,
+                init: {
+                  date: function(arg$){
+                    var node;
+                    node = arg$.node;
+                    if (this$.viewing) {
+                      return tail.DateTime(node);
+                    }
+                  }
+                },
+                action: {
+                  input: {
+                    input: function(arg$){
+                      var node, ref$;
+                      node = arg$.node;
+                      data[node.getAttribute('data-name')] = node.value;
+                      ((ref$ = this$.block).value || (ref$.value = {})).list = this$.block.data;
+                      return this$.update();
+                    }
+                  },
+                  click: {
+                    'delete': function(arg$){
+                      var node, evt;
+                      node = arg$.node, evt = arg$.evt;
+                      this$.block.data.splice(this$.block.data.indexOf(data), 1);
+                      this$.update();
+                      this$.render();
+                      return evt.stopPropagation();
+                    }
+                  }
+                },
+                handler: {
+                  input: function(arg$){
+                    var node;
+                    node = arg$.node;
+                    return node.value = data[node.getAttribute('data-name')] || '';
+                  }
+                }
+              });
+            }
+          }
+        }
+      });
+    }
+  };
+  moduleList = {
+    moduleInit: function(){
+      var view, this$ = this;
       return this.view.module = view = new ldView({
         root: this.root,
         action: {
@@ -208,10 +288,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               node = arg$.node, data = arg$.data;
               editable = node.hasAttribute('data-user-editable');
               if (!editable && this$.viewing) {
-                node.removeAttribute('draggable');
-              }
-              if (data.other && this$.block.name === 'form-checkpoint') {
-                return node.classList.add('d-none');
+                return node.removeAttribute('draggable');
               }
             },
             action: {
@@ -220,9 +297,6 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                 : function(arg$){
                   var node, data, evt, isRadio, val, ref$, ison, list;
                   node = arg$.node, data = arg$.data, evt = arg$.evt;
-                  if (this$.block.name === 'form-checkpoint') {
-                    return;
-                  }
                   if (evt.target.nodeName === 'INPUT') {
                     return;
                   }
@@ -268,6 +342,13 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               return node.view = new ldView({
                 root: node,
                 init: {
+                  date: function(arg$){
+                    var node;
+                    node = arg$.node;
+                    if (this$.viewing) {
+                      return tail.DateTime(node);
+                    }
+                  },
                   data: function(arg$){
                     var node;
                     node = arg$.node;
@@ -370,8 +451,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
   };
   import$(module, {
     "form-radio": moduleList,
-    "form-checkbox": moduleList,
-    "form-checkpoint": moduleList
+    "form-checkbox": moduleList
   });
   moduleTextarea = {
     moduleInit: function(){

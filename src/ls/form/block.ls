@@ -78,8 +78,8 @@ module <<< do
   "form-file": module-file
   "form-thumbnail": module-file
 
-module-list = module-init: ->
-  if @block.name == \form-checkpoint and @viewing =>
+module["form-checkpoint"] = module-init: ->
+  if @viewing =>
     if !@block.{}value.list => @block.{}value.list = @block.[]data else @block.data = @block.value.list
     ld$.find(@root, '.timeline-list', 0).addEventListener \input, ~>
       @block.{}value.list = @block.data
@@ -88,10 +88,43 @@ module-list = module-init: ->
     root: @root
     action: click: do
       "list-add": ~>
+        @block.[]data.push { title: "", desc: "", key: suuid!  }
+        @update!
+        @render!
+    handler: do
+      list: do
+        key: -> it.key
+        list: ~> (@block.data or [])
+        handler: ({node, data}) ~>
+          editable = node.hasAttribute(\data-user-editable)
+          if node.view => return node.view.render!
+          node.view = new ldView do
+            root: node
+            init: date: ({node}) ~> if @viewing => tail.DateTime node
+            action: do
+              input: do
+                input: ({node}) ~>
+                  data[node.getAttribute(\data-name)] = node.value
+                  @block.{}value.list = @block.data
+                  @update!
+              click: do
+                delete: ({node, evt}) ~>
+                  @block.data.splice @block.data.indexOf(data), 1
+                  @update!
+                  @render!
+                  evt.stopPropagation!
+            handler: do
+              input: ({node}) -> node.value = data[node.getAttribute(\data-name)] or ''
+
+
+module-list = module-init: ->
+  @view.module = view = new ldView do
+    root: @root
+    action: click: do
+      "list-add": ~>
         @block.[]data.push { title: "新項目", desc: "關於這個項目的描述 ... ", key: suuid!  }
         @update!
         @render!
-
     handler: do
       list: do
         key: -> it.key
@@ -102,10 +135,8 @@ module-list = module-init: ->
         init: ({node, data}) ~>
           editable = node.hasAttribute(\data-user-editable)
           if !editable and @viewing => node.removeAttribute \draggable
-          if data.other and @block.name == \form-checkpoint => node.classList.add \d-none
 
         action: click: if !@viewing => (->) else ({node, data, evt}) ~>
-          if @block.name == \form-checkpoint => return
           if evt.target.nodeName == \INPUT => return
           is-radio = @block.name == \form-radio
           val = @block.{}value
@@ -130,9 +161,11 @@ module-list = module-init: ->
           if node.view => return node.view.render!
           node.view = new ldView do
             root: node
-            init: data: ({node}) ~>
-              node.setAttribute(\data-name, node.getAttribute(\editable))
-              if !editable and @viewing => node.removeAttribute \editable
+            init:
+              date: ({node}) ~> if @viewing => tail.DateTime node
+              data: ({node}) ~>
+                node.setAttribute(\data-name, node.getAttribute(\editable))
+                if !editable and @viewing => node.removeAttribute \editable
             action: do
               input: do
                 "other-value": ({node}) ~>
@@ -178,7 +211,6 @@ module-list = module-init: ->
 module <<< do
   "form-radio": module-list
   "form-checkbox": module-list
-  "form-checkpoint": module-list
 
 
 module-textarea = module-init: ->

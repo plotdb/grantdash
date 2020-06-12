@@ -62,28 +62,7 @@ block body
       href=`/dash/brd/${prj.brd}/prj/create`) 我也要提案
     .col-md-10
       #project-detail
-      .block
-        if !purpose.title && answer.title
-          .pb-4.mb-4
-            h4 提案名稱
-            hr
-            .pb-4 #{answer.title.content}
-        if !purpose.title && answer.description
-          .pb-4.mb-4
-            h4 提案簡介
-            hr
-            .pb-4 #{answer.description.content}
-
-        each block in grp.form.list
-          if !(block.config && !block.config.public)
-            .pb-4.mb-4
-              h4 #{block.title}
-              if block.config && block.config["show-desc"]
-                p.text-muted #{block.desc}
-              hr
-              - var value = answer[block.key]
-              .pb-4(ld="answer",data-key=block.key)
-
+      .block: include answer.pug
       .d-none(pd="stage-ctrl",data-name="comment-view")
         .caption
           h3#project-discuss 討論提問
@@ -93,6 +72,7 @@ block body
 
 block script
   +script("/dash/js/prj/view.js")
+  +script("/dash/js/prj/view-simple.js")
   +script("/dash/js/discuss/view.js")
   +script("/dash/js/discuss/edit.js")
   +script("/dash/js/util/misc.js")
