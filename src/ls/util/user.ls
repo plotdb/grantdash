@@ -52,7 +52,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
         click: clear: ~> @clear!
       handler: do
         picked: ({node}) ~> node.classList.toggle \d-none, !@picked
-        "picked-avatar": ({node}) ~> if @picked => node.style.backgroundImage = "url(/s/avatar/#{@picked.key}.png)"
+        "picked-avatar": ({node}) ~>
+          if @picked =>
+            node.style.backgroundImage = if @picked.type == \email => \none
+            else "url(/s/avatar/#{@picked.key}.png)"
         "picked-name": ({node}) ~> if @picked => node.innerText = @picked.displayname
         clear: ({node}) ~> node.classList.toggle \d-none, !@picked
         loading: ({node}) ~> node.classList.toggle \d-none, !@loading
@@ -61,7 +64,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
           list: ~> @users or []
           action: click: ({node, data}) ~>
             @users = []
-            if !data.empty => @picked = data
+            type = if !data.empty => \user else if data.is-email => \email else null
+            if type => @picked = {type} <<< data{displayname, key}
+            else @picked = null
             @view.get("input").value = ''
             @render!
           init: ({node, data, local}) ->
@@ -73,11 +78,20 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
                   node.classList.toggle \d-none, !!context.empty
                   if context.key => node.style.backgroundImage = "url(/s/avatar/#{context.key}.png)"
                 name: ({node, context}) ->
+                  if !context.empty => return node.innerText = context.displayname
                   node.innerText = if context.empty => '找不到相似的用戶' else context.displayname
+                  input = view.get('input').value
+                  if !(context.is-email = is-email(input)) => return node.innerText = '找不到相關的用戶'
+                  node.innerHTML = """
+                  <span class="text-primary">透過 email 邀請 #{htmlentities(input)} 使用</span>
+                  """
+                  context.displayname = context.key = input
+
+
           render: ({local, data}) ->
             local.view.setContext data
             local.view.render!
-  get: -> return @picked
+  get: -> return JSON.parse(JSON.stringify(@picked))
   clear: ->
     @ <<< picked: null, users: []
     @view.get('input').value = ''

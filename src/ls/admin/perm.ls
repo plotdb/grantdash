@@ -120,14 +120,16 @@ Ctrl = (opt) ->
     "newuser-toggle": ({node}) -> view.getAll(\newuser).map -> it.classList.toggle \d-none
     "newuser-add": ({node, evt}) ~>
       role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0 or {name: ''}
-      if !(user = @ctrl.search.get!) => return
-      idx = obj.cfg.roles
+      if !(picked = @ctrl.search.get!) => return
+      len = obj.cfg.roles
         .map -> it.list
         .reduce(((a,b) -> a ++ b), [])
-        .map -> it.key
-        .indexOf(user.key)
-      if ~idx => return alert("user already exist")
-      role.list.push {perm: role.name, type: \user} <<< user{key,displayname}
+        .filter -> it.type == picked.type and it.key == picked.key
+        .length
+      if len => return alert("user already exist")
+      entry = picked <<< {perm: role.name}
+      if picked.type == \email => picked.config = {invited: false, pending: true}
+      role.list.push entry
       @ctrl.search.clear!
       update-data!
       update-view!

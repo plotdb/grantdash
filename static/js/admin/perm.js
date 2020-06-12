@@ -254,30 +254,34 @@ ldc.register('adminPerm', ['sdbAdapter', 'userSearch'], function(arg$){
         });
       },
       "newuser-add": function(arg$){
-        var node, evt, role, user, idx, ref$;
+        var node, evt, role, picked, len, entry;
         node = arg$.node, evt = arg$.evt;
         role = (lc.type === 'list'
           ? lc.pickedRole
           : lc.role) || obj.cfg.roles[0] || {
           name: ''
         };
-        if (!(user = this$.ctrl.search.get())) {
+        if (!(picked = this$.ctrl.search.get())) {
           return;
         }
-        idx = obj.cfg.roles.map(function(it){
+        len = obj.cfg.roles.map(function(it){
           return it.list;
         }).reduce(function(a, b){
           return a.concat(b);
-        }, []).map(function(it){
-          return it.key;
-        }).indexOf(user.key);
-        if (~idx) {
+        }, []).filter(function(it){
+          return it.type === picked.type && it.key === picked.key;
+        }).length;
+        if (len) {
           return alert("user already exist");
         }
-        role.list.push((ref$ = {
-          perm: role.name,
-          type: 'user'
-        }, ref$.key = user.key, ref$.displayname = user.displayname, ref$));
+        entry = (picked.perm = role.name, picked);
+        if (picked.type === 'email') {
+          picked.config = {
+            invited: false,
+            pending: true
+          };
+        }
+        role.list.push(entry);
         this$.ctrl.search.clear();
         updateData();
         return updateView();

@@ -55,7 +55,9 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
             var node;
             node = arg$.node;
             if (this$.picked) {
-              return node.style.backgroundImage = "url(/s/avatar/" + this$.picked.key + ".png)";
+              return node.style.backgroundImage = this$.picked.type === 'email'
+                ? 'none'
+                : "url(/s/avatar/" + this$.picked.key + ".png)";
             }
           },
           "picked-name": function(arg$){
@@ -86,11 +88,18 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
             },
             action: {
               click: function(arg$){
-                var node, data;
+                var node, data, type, ref$;
                 node = arg$.node, data = arg$.data;
                 this$.users = [];
-                if (!data.empty) {
-                  this$.picked = data;
+                type = !data.empty
+                  ? 'user'
+                  : data.isEmail ? 'email' : null;
+                if (type) {
+                  this$.picked = (ref$ = {
+                    type: type
+                  }, ref$.displayname = data.displayname, ref$.key = data.key, ref$);
+                } else {
+                  this$.picked = null;
                 }
                 this$.view.get("input").value = '';
                 return this$.render();
@@ -112,11 +121,20 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
                     }
                   },
                   name: function(arg$){
-                    var node, context;
+                    var node, context, input;
                     node = arg$.node, context = arg$.context;
-                    return node.innerText = context.empty
+                    if (!context.empty) {
+                      return node.innerText = context.displayname;
+                    }
+                    node.innerText = context.empty
                       ? '找不到相似的用戶'
                       : context.displayname;
+                    input = view.get('input').value;
+                    if (!(context.isEmail = isEmail(input))) {
+                      return node.innerText = '找不到相關的用戶';
+                    }
+                    node.innerHTML = "<span class=\"text-primary\">透過 email 邀請 " + htmlentities(input) + " 使用</span>";
+                    return context.displayname = context.key = input;
                   }
                 }
               });
@@ -132,7 +150,7 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
       });
     },
     get: function(){
-      return this.picked;
+      return JSON.parse(JSON.stringify(this.picked));
     },
     clear: function(){
       this.picked = null;
