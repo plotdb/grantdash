@@ -17,9 +17,8 @@ route = do
   check: ({io, req, res}) -> Promise.resolve!then ~>
     pathname = req.originalUrl
     domain = req.get("host")
-
-    if (brd = /brd\/([^/]+)/.exec(pathname)) => brd = brd.1
-    if (prj = /prj\/([^/]+)/.exec(pathname)) => prj = prj.1
+    if (brd = /brd\/([^/?]+)/.exec(pathname)) => brd = brd.1
+    if (prj = /prj\/([^/?]+)/.exec(pathname)) => prj = prj.1
     promise = if brd =>
       if @cache.brd[brd] => Promise.resolve that
       else

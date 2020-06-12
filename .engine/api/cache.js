@@ -33,10 +33,10 @@
         var pathname, domain, brd, prj, promise, that;
         pathname = req.originalUrl;
         domain = req.get("host");
-        if (brd = /brd\/([^/]+)/.exec(pathname)) {
+        if (brd = /brd\/([^/?]+)/.exec(pathname)) {
           brd = brd[1];
         }
-        if (prj = /prj\/([^/]+)/.exec(pathname)) {
+        if (prj = /prj\/([^/?]+)/.exec(pathname)) {
           prj = prj[1];
         }
         promise = brd
