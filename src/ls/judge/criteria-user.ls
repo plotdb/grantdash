@@ -159,6 +159,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         .then ~> @adapt!
         .then -> console.log "admin initialized."
         .then ~> @loader.off!
+    sdb.ready!
   getdoc: ->
     @hub.doc = null
     @sdb.get({

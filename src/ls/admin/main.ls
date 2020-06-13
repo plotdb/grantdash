@@ -74,6 +74,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
           .then ~> @adapt!
           .then -> console.log "admin initialized."
           .then ~> @loader.off!
+      @sdb.ready!
 
     getdoc: ->
       Promise.resolve!
@@ -90,7 +91,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
               if !(@hubs[n]doc = doc) => return rej!
               doc.on \op, ~> @render!
               res!
-            ).catch -> console.log "getdoc #n failed."
+            ).catch -> console.log "getdoc #n failed.", it
             @hubs[n]doc
           # TODO if no org but brd -> clear org and let it edit brd.
           # vice versa

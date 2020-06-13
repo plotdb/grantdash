@@ -41,6 +41,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
         .then -> console.log "re-inited."
         .then -> loader.off!
     @hubs = prj: new Hub({sdb})
+    sdb.ready!
 
   getdoc: ->
     console.log "get project document ..."

@@ -6,15 +6,17 @@ var slice$ = [].slice;
     dostr == null && (dostr = true);
     return json0OtDiff(o, n, dostr ? diffMatchPatch : null);
   };
-  sharedbWrapper = function(arg$){
-    var url, path;
-    url = arg$.url, path = arg$.path;
-    this.url = url;
-    this.path = path || '/ws';
-    this.path = path[0] === '/'
+  sharedbWrapper = function(opt){
+    opt == null && (opt = {});
+    this.url = opt.url;
+    this.path = opt.path || '/ws';
+    this.path = this.path[0] === '/'
       ? this.path
       : "/" + this.path;
     this.evtHandler = {};
+    this.reconnectInfo = {
+      retry: 0
+    };
     this.reconnect();
     return this;
   };
@@ -36,6 +38,14 @@ var slice$ = [].slice;
             return res(s);
           }
         });
+      });
+    },
+    ready: function(){
+      var this$ = this;
+      return Promise.resolve().then(function(){
+        if (this$.connected) {} else {
+          return this$.reconnect();
+        }
       });
     },
     get: function(arg$){
@@ -93,20 +103,31 @@ var slice$ = [].slice;
     reconnect: function(){
       var this$ = this;
       return new Promise(function(res, rej){
+        var delay;
         if (this$.socket) {
           return res();
         }
-        this$.socket = new WebSocket((this$.url.scheme === 'http' ? 'ws' : 'wss') + "://" + this$.url.domain + this$.path);
-        this$.connection = new sharedb.Connection(this$.socket);
-        this$.socket.addEventListener('close', function(){
-          this$.socket = null;
-          this$.connected = false;
-          return this$.fire('close');
-        });
-        return this$.socket.addEventListener('open', function(){
-          this$.connected = true;
-          return res();
-        });
+        delay = this$.reconnectInfo.retry++;
+        delay = Math.round(Math.pow(delay, 1.4) * 500);
+        clearTimeout(this$.reconnectInfo.handler);
+        return this$.reconnectInfo.handler = setTimeout(function(){
+          console.log("retry: ", this$.reconnectInfo, "delay: ", delay);
+          this$.socket = new WebSocket((this$.url.scheme === 'http' ? 'ws' : 'wss') + "://" + this$.url.domain + this$.path);
+          this$.connection = new sharedb.Connection(this$.socket);
+          this$.socket.addEventListener('close', function(){
+            this$.socket = null;
+            this$.connected = false;
+            return this$.fire('close');
+          });
+          return this$.socket.addEventListener('open', function(){
+            var ref$;
+            ref$ = this$.reconnectInfo;
+            ref$.retry = 0;
+            ref$.handler = null;
+            this$.connected = true;
+            return res();
+          });
+        }, delay);
       });
     }
   });

@@ -65,6 +65,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         .then -> console.log "re-inited."
         .then -> loader.off!
     @hub = new Hub({sdb})
+    sdb.ready!
 
   getdoc: ->
     console.log "get post document ..."

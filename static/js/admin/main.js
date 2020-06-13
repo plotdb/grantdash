@@ -123,7 +123,7 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
       sdb.on('error', function(){
         return ldcvmgr.toggle('not-sync');
       });
-      return sdb.on('close', function(){
+      sdb.on('close', function(){
         this$.loader.on();
         return sdb.reconnect().then(function(){
           return this$.getdoc();
@@ -135,6 +135,7 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
           return this$.loader.off();
         });
       });
+      return this.sdb.ready();
     },
     getdoc: function(){
       var this$ = this;
@@ -166,8 +167,8 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
                 return this$.render();
               });
               return res();
-            })['catch'](function(){
-              return console.log("getdoc " + n + " failed.");
+            })['catch'](function(it){
+              return console.log("getdoc " + n + " failed.", it);
             });
             return this$.hubs[n].doc;
           });
