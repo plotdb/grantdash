@@ -110,8 +110,8 @@ var slice$ = [].slice;
         delay = this$.reconnectInfo.retry++;
         delay = Math.round(Math.pow(delay, 1.4) * 500);
         clearTimeout(this$.reconnectInfo.handler);
+        console.log("try reconnecting (" + this$.reconnectInfo.retry + ") after " + delay + "ms ...");
         return this$.reconnectInfo.handler = setTimeout(function(){
-          console.log("retry: ", this$.reconnectInfo, "delay: ", delay);
           this$.socket = new WebSocket((this$.url.scheme === 'http' ? 'ws' : 'wss') + "://" + this$.url.domain + this$.path);
           this$.connection = new sharedb.Connection(this$.socket);
           this$.socket.addEventListener('close', function(){
