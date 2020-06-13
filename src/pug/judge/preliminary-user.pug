@@ -1,0 +1,73 @@
+extends /base.pug
+block vars
+  - ctrl.navtop.shown = false
+  - ctrl.navtop.placeholder = false
+  - ctrl.navtop.className = " "
+  - ctrl.foot.shown = false
+block body
+  .h-100.w-100.d-flex.flex-column
+    .p-2.d-flex
+      .flex-grow-1.p-2
+        span.mr-4 沉浸式內容國際合資合製補助計畫
+        span #[i.i-radio.text-success] 初審表 - 王小明委員
+      div
+        .p-2 Kirby #[i.i-dart-down]
+
+    .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
+      .d-flex.flex-column(style="flex:1 1 50%")
+
+        .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow:scroll")
+          .w-100
+            .p-2.d-flex.align-items-center.border-bottom.border-secondary.bg-light.sticky.shadow-sm(style="top:0")
+              .mr-2.text-right.px-2(style="width:50px") 編號
+              .mr-2.text-right.px-2(style="width:50px") 資格
+              .flex-grow-1 提案名稱
+              .mx-2.d-flex.text-muted.text-center
+                .mx-2 通過
+                .mx-2 面議
+                .mx-2 汰除
+                .mx-2 評論
+
+
+            .px-2.py-1.d-flex.align-items-center.border-bottom.border-light(ld-each="prj")
+              .mr-2.text-right.px-2(ld="index",style="width:50px")
+              .mr-2.text-center.px-2(ld="criteria",style="width:50px") #[i.i-check.text-success]
+              .flex-grow-1.text-truncate
+                div(ld="name")
+                .text-sm.text-muted(ld="ownername")
+              .mx-2.d-flex.text-muted.text-center.clickable(style="height:2em")
+                .mx-2.rounded.vertical-center(ld="option",data-name="accept",style="width:2em"): i.i-check
+                .mx-2.rounded.vertical-center(ld="option",data-name="pending",style="width:2em"): i.i-circle
+                .mx-2.rounded.vertical-center(ld="option",data-name="reject",style="width:2em"): i.i-close
+                .mx-2.vertical-center(ld="comment",style="width:2em"): i.i-pen
+
+        .px-4.py-2.w-100
+          .d-flex.align-items-center
+            .mr-4
+              .text-muted.text-sm 距初選截止還有
+              .text-danger 2 天 15 小時 20 分
+            .mr-4.flex-grow-1
+
+              .text-muted.text-sm 完成度 / #[span.text-danger(ld="progress")]%
+              .progress.my-1(style="width:100%")
+                .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(ld="progress-accept")
+                .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(ld="progress-pending")
+                .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(ld="progress-reject")
+
+            div: .btn.btn-outline-dark 提交評選結果
+
+
+
+      div(style="flex:1 1 50%")
+        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0
+          //-iframe.border-0.w-100.h-100(src="/ui/project/view.html")
+          //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
+            embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
+block script
+  +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
+  +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
+  +script("/dash/js/util/sdb-adapter.js")
+  +script("/dash/js/util/hub.js")
+  +script("/dash/js/judge/preliminary-user.js")
+  script: :lsc
+    ldc.register <[judgePreliminaryUser]>, ->
