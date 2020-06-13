@@ -1,0 +1,8 @@
+include /modules/common.pug
+.ldcv.ldcvmgr(data-name="new-post"): .base.w-640.rwd: .inner.card: .card-body: .p-4
+  .form-group
+    label 討論主題
+    input.form-control.border.rounded(name="title",ld="title",placeholder="給討論串定個主題吧 ..")
+    .invalid-feedback.position-absolute 請設定討論的標題
+  div: .btn.btn-primary.ld.ld-ext-right.disabled(ld="post") 開始編輯 #[.ld.ld-spinner.ld-spin]
+

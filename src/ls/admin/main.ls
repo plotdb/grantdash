@@ -2,10 +2,10 @@ ldc.register \adminGuard,
 <[general navtop ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
 adminPrjList prjForm adminEntry adminWelcome adminPage
-adminPrjDetail]>,
+adminPrjDetail adminPostList]>,
 ({general, navtop, ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
-admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail}) ->
+admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail, admin-post-list}) ->
 
   Ctrl = ->
     @loader = loader
@@ -132,6 +132,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
         @ctrl.brd.group.delete-group it
 
       @ctrl.welcome = new admin-welcome {root: '[ld-scope=admin-welcome]', toc}
+      @ctrl.posts = new admin-post-list {root: '[ld-scope=admin-post-list]', brd: toc.brd}
 
       @ctrl.org
         ..info = new admin-info {root: '[ld-scope=org-info]', type: \org, data: toc.org, toc}

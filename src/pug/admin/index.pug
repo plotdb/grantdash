@@ -78,6 +78,7 @@ block script
           .folder.show(ld="folder")
             .folder-toggle.folder-item 頁面客製
             .folder-menu
+              .folder-item(ld="nav-tab",data-name="brd-post-list") 貼文管理
               //-.folder-item(ld="nav-tab",data-name="brd-navbar") 選單列
               .folder-item(ld="nav-tab",data-name="brd-page-info") 頁面設定
               a.folder-item.d-flex(href="/edit/")
@@ -96,9 +97,14 @@ block script
             .folder-item(ld="grp-add") 新增分組 ...
           .my-4
       //- content panel
-      .flex-grow-1.d-flex.flex-column
+      .flex-grow-1.d-flex.flex-column.bg-white
+
+        .p-4.d-none.w-100.h-100.bg-white(
+        ld="nav-panel",data-nav="main",data-name="brd-post-list",style="overflow-:scroll")
+          include post-list.pug
 
         .flex-grow-1.bg-white(style="overflow-y:scroll")
+
           .position-relative(style="min-height:calc(100% - 4em)")
             .p-4.position-absolute.vertical-center(
             ld="nav-panel default", data-nav="main", data-name="welcome",
@@ -162,6 +168,7 @@ block script
   +script("/dash/js/admin/welcome.js")
   +script("/dash/js/admin/page.js")
   +script("/dash/js/admin/prj.js")
+  +script("/dash/js/admin/post-list.js")
 
   //- form js files
   +script("/dash/js/form/index.js")
