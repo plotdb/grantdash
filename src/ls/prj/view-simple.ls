@@ -53,7 +53,7 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
       ret = (answer.list or [])
         .map (f) ->
           """
-          <li><a href="/dash/org/#{org}/prj/#{prj}/upload/#{f.path}">
+          <li><a href="/dash/org/#{org}/prj/#{prj}/upload/#{f.fn}" download="#{htmlentities(f.name)}">
           #{htmlentities(f.name)}
           </a></li>
           """

@@ -96,7 +96,7 @@ ldc.register('prjViewSimple', [], function(){
     } else if (answer.list) {
       if ((ref$ = block.name) === 'form-file' || ref$ === 'form-thumbnail') {
         ret = (answer.list || []).map(function(f){
-          return "<li><a href=\"/dash/org/" + org + "/prj/" + prj + "/upload/" + f.path + "\">\n" + htmlentities(f.name) + "\n</a></li>";
+          return "<li><a href=\"/dash/org/" + org + "/prj/" + prj + "/upload/" + f.fn + "\" download=\"" + htmlentities(f.name) + "\">\n" + htmlentities(f.name) + "\n</a></li>";
         }).join('');
         result = DOMPurify.sanitize(ret);
       } else if (block.name === 'form-checkpoint') {
