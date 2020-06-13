@@ -30,7 +30,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               root: node
             });
             return ldf.on('load', function(files){
-              var fd, i$, to$, i;
+              var ref$, fd, i$, to$, i;
               if (this$.block.name === 'form-thubmnail') {
                 files = files.filter(function(it){
                   return /^image\//.exec(it.type) && /\.(gif|png|jpg|jpeg)$/.exec(it.name);
@@ -41,27 +41,26 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                 return;
               }
               if (files.filter(function(it){
-                return it.file && it.file.size > 1048576;
+                return it.file && it.file.size >= 10485760;
               }).length) {
                 return ldcvmgr.toggle('error-413');
               }
-              fd = new FormData();
-              if (this$.block.name === 'form-thumbnail') {
-                fd.append("thumb[]", files[0].file);
-                fd.append("files", JSON.stringify([{
-                  name: "thumb",
-                  type: "thumb"
-                }]));
-              } else {
-                for (i$ = 0, to$ = files.length; i$ < to$; ++i$) {
-                  i = i$;
-                  fd.append("file[]", files[i].file);
-                }
-                fd.append("files", JSON.stringify([{
-                  name: "file",
-                  type: "form"
-                }]));
+              if (files.length + (((ref$ = this$.block).value || (ref$.value = {})).list || []).length > 10) {
+                return ldcvmgr.toggle('error-413');
               }
+              fd = new FormData();
+              for (i$ = 0, to$ = files.length; i$ < to$; ++i$) {
+                i = i$;
+                fd.append("file[]", files[i].file);
+              }
+              /*
+              if @block.name == \form-thumbnail =>
+                fd.append "thumb[]", files.0.file
+                fd.append "files", JSON.stringify([{name: "thumb", type: "thumb"}])
+              else
+                for i from 0 til files.length => fd.append "file[]", files[i].file
+                fd.append "files", JSON.stringify([{name: "file", type: "form"}])
+              */
               fd.append('prj', this$.prj.slug);
               context.loading = true;
               this$.view.module.render();
@@ -76,19 +75,32 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                   context.percent = percent;
                   return this$.view.module.render();
                 }
-              }).then(function(ret){
-                var retFiles, ref$;
-                if (!ret[0]) {
+              }).then(function(retFiles){
+                var curList, ref$, ref1$, newList;
+                retFiles == null && (retFiles = []);
+                if (!(retFiles && retFiles.length)) {
                   return;
                 }
-                retFiles = ret[0].files || [];
-                ((ref$ = this$.block).value || (ref$.value = {})).list = files.map(function(d, i){
-                  var ref$, ref1$;
-                  return ref1$ = {
-                    key: i,
-                    path: retFiles[i]
-                  }, ref1$.name = (ref$ = d.file).name, ref1$.size = ref$.size, ref1$.type = ref$.type, ref1$;
+                curList = (ref$ = (ref1$ = this$.block).value || (ref1$.value = {})).list || (ref$.list = []);
+                newList = files.map(function(d, i){
+                  var retFile, ref$;
+                  retFile = retFiles.filter(function(it){
+                    return it.name === d.file.name;
+                  })[0];
+                  if (!retFile) {
+                    return null;
+                  }
+                  return ref$ = {
+                    key: suuid()
+                  }, ref$.name = retFile.name, ref$.size = retFile.size, ref$.type = retFile.type, ref$.ext = retFile.ext, ref$.fn = retFile.fn, ref$;
+                }).filter(function(it){
+                  return it;
+                }).filter(function(f){
+                  return curList.filter(function(it){
+                    return it.name === f.name && it.fn === f.fn;
+                  }).length === 0;
                 });
+                (ref$ = this$.block.value).list = ref$.list.concat(newList);
                 return this$.update();
               })['finally'](function(){
                 return debounce(1000).then(function(){
@@ -127,6 +139,21 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               return local.view = new ldView({
                 context: data,
                 root: node,
+                action: {
+                  click: {
+                    'delete': function(arg$){
+                      var node, context, list, ref$, idx;
+                      node = arg$.node, context = arg$.context;
+                      list = (ref$ = this$.block.value).list || (ref$.list = []);
+                      idx = list.indexOf(context);
+                      if (~idx) {
+                        list.splice(idx, 1);
+                      }
+                      view.render();
+                      return this$.update();
+                    }
+                  }
+                },
                 handler: {
                   name: function(arg$){
                     var node, context;

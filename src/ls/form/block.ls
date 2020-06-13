@@ -21,15 +21,22 @@ module-file = module-init: ->
             files = files.filter(-> /^image\//.exec(it.type) and /\.(gif|png|jpg|jpeg)$/.exec(it.name))
           node.value = ''
           if !files.length => return
-          if files.filter(-> it.file and it.file.size > 1048576).length => return ldcvmgr.toggle('error-413')
+          if files.filter(-> it.file and it.file.size >= 10485760).length => return ldcvmgr.toggle('error-413')
+          if files.length + (@block.{}value.list or []).length > 10 => return ldcvmgr.toggle('error-413')
 
           fd = new FormData!
+
+          for i from 0 til files.length => fd.append "file[]", files[i].file
+
+          /*
           if @block.name == \form-thumbnail =>
             fd.append "thumb[]", files.0.file
             fd.append "files", JSON.stringify([{name: "thumb", type: "thumb"}])
           else
             for i from 0 til files.length => fd.append "file[]", files[i].file
             fd.append "files", JSON.stringify([{name: "file", type: "form"}])
+          */
+
           fd.append \prj, @prj.slug
           context.loading = true
           @view.module.render!
@@ -43,11 +50,17 @@ module-file = module-init: ->
                 @view.module.render!
             }
           )
-            .then (ret) ~>
-              if !ret.0 => return
-              ret-files = ret.0.files or []
-              @block.{}value.list = files.map (d,i) ->
-                {key: i, path: ret-files[i]} <<< d.file{name, size, type}
+            .then (ret-files = []) ~>
+              if !(ret-files and ret-files.length) => return
+              cur-list = @block.{}value.[]list
+              new-list = files
+                .map (d,i) ->
+                  ret-file = ret-files.filter(-> it.name == d.file.name).0
+                  if !ret-file => return null
+                  return {key: suuid!} <<< ret-file{name, size, type, ext, fn}
+                .filter -> it
+                .filter (f) -> cur-list.filter(-> it.name == f.name and it.fn == f.fn).length == 0
+              @block.value.list ++= new-list
               @update!
             .finally ~>
               debounce 1000 .then ~>
@@ -61,11 +74,18 @@ module-file = module-init: ->
       "bar-label": ({context, node}) -> node.innerText = "#{(context.percent or 0) * 100}%"
       file: do
         list: ~> @block.{}value.[]list
-        init: ({node, data, local}) ->
+        init: ({node, data, local}) ~>
           node.classList.toggle \d-none, false
           local.view = new ldView do
             context: data
             root: node
+            action: click: do
+              delete: ({node, context}) ~>
+                list = @block.value.[]list
+                idx = list.indexOf(context)
+                if ~idx => list.splice idx, 1
+                view.render!
+                @update!
             handler: do
               name: ({node,context}) -> node.innerText = context.name
               type: ({node,context}) -> node.innerText = context.type

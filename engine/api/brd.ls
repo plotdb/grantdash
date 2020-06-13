@@ -1,4 +1,4 @@
-require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror nodegit suuid]>
+require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror nodegit suuid mime-types]>
 require! <[../aux ./cache ./common]>
 (engine,io) <- (->module.exports = it)  _
 
@@ -7,7 +7,47 @@ require! <[../aux ./cache ./common]>
 api = engine.router.api
 app = engine.app
 
+# req.files = {name: [ file ... ]}
+# file:
+#   - path ( file path on server temp folder )
+#   - size ( e.g., 17454 )
+#   - type ( e.g., application/json )
+#   - name ( e.g., my-document.docx )
+
 upload = ({root, files}) -> new Promise (res, rej) ->
+  (e) <- fs-extra.ensure-dir path.join(root, \upload), _
+  if e => return rej(e)
+  ps = files
+    .filter -> it.name and it.type and it.path
+    .map (f = {}) ->
+      ext = mime-types.extension(f.type) or mime-types.extension(mime-types.lookup(f.name)) or ''
+      md5 = crypto.createHash \md5 .update fs.read-file-sync f.path .digest \hex
+      fn = "#{md5}.#{ext}"
+      fs-extra.copy f.path, path.join(root, \upload, fn)
+        .then -> f{name, type, size} <<< {fn, ext}
+
+  Promise.all(ps)
+    .then -> res it
+    .catch -> rej it
+
+api.post \/upload, aux.signed, express-formidable({multiples:true}), (req, res) ->
+  lc = {}
+  {org,brd,prj,post,files} = req.fields
+
+  files = []
+  for name,list of req.files => files ++= list
+  if files.length > 10 or files.filter(->it.size >= 10485760).length => return aux.r413 res
+
+  slugs {io, org, brd, prj, post}
+    .then ({type, prj, brd, org, root}) ->
+      # TODO verify prj form criteria
+      upload {root, files}
+    .then -> res.send it
+    .catch aux.error-handler res
+
+
+
+upload-v1 = ({root, files}) -> new Promise (res, rej) ->
   (e) <- fs-extra.ensure-dir path.join(root, \upload, \draft), _
   if e => return rej(e)
   ps = files.map ({name, type, list}) ->
@@ -30,9 +70,9 @@ upload = ({root, files}) -> new Promise (res, rej) ->
     .catch -> rej it
 
 
-api.post \/upload, aux.signed, express-formidable({multiples:true}), (req, res) ->
+api.post \/upload-v1, aux.signed, express-formidable({multiples:true}), (req, res) ->
   lc = {}
-  {org,brd,prj,files} = req.fields
+  {org,brd,prj,post,files} = req.fields
   try
     files = JSON.parse(files)
   catch e
@@ -48,7 +88,7 @@ api.post \/upload, aux.signed, express-formidable({multiples:true}), (req, res) 
       return {name, type, list}
     .filter -> it.list.length > 0 and it.list.length < 10
 
-  slugs {io, org, brd, prj}
+  slugs {io, org, brd, prj, post}
     .then ({type, prj, brd, org, root}) ->
       # TODO verify prj form criteria
       upload {root, files}

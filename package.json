@@ -45,6 +45,7 @@
     "ldColor": "git+https://github.com/loadingio/ldColor.git",
     "lderror": "github:loadingio/ldError",
     "marked": "^0.7.0",
+    "mime-types": "^2.1.27",
     "moment": "=2.19.3",
     "moment-timezone": "=0.5.13",
     "nodegit": "^0.26.5",
