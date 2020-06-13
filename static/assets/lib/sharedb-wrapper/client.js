@@ -15,7 +15,8 @@ var slice$ = [].slice;
       : "/" + this.path;
     this.evtHandler = {};
     this.reconnectInfo = {
-      retry: 0
+      retry: 0,
+      pending: []
     };
     this.reconnect();
     return this;
@@ -42,10 +43,17 @@ var slice$ = [].slice;
     },
     ready: function(){
       var this$ = this;
-      return Promise.resolve().then(function(){
-        if (this$.connected) {} else {
+      return new Promise(function(res, rej){
+        if (this$.connected) {
+          return res();
+        }
+        if (!this$.reconnectInfo.handler) {
           return this$.reconnect();
         }
+        return this$.reconnectInfo.pending.push({
+          res: res,
+          rej: rej
+        });
       });
     },
     get: function(arg$){
@@ -112,6 +120,7 @@ var slice$ = [].slice;
         clearTimeout(this$.reconnectInfo.handler);
         console.log("try reconnecting (" + this$.reconnectInfo.retry + ") after " + delay + "ms ...");
         return this$.reconnectInfo.handler = setTimeout(function(){
+          this$.reconnectInfo.handler = null;
           this$.socket = new WebSocket((this$.url.scheme === 'http' ? 'ws' : 'wss') + "://" + this$.url.domain + this$.path);
           this$.connection = new sharedb.Connection(this$.socket);
           this$.socket.addEventListener('close', function(){
@@ -121,9 +130,10 @@ var slice$ = [].slice;
           });
           return this$.socket.addEventListener('open', function(){
             var ref$;
-            ref$ = this$.reconnectInfo;
-            ref$.retry = 0;
-            ref$.handler = null;
+            this$.reconnectInfo.retry = 0;
+            ((ref$ = this$.reconnectInfo).pending || (ref$.pending = [])).splice(0).map(function(it){
+              return it.res();
+            });
             this$.connected = true;
             return res();
           });
