@@ -73,7 +73,7 @@ perm = do
               .then (cfg) -> if !(cfg and cfg[action]) => return Promise.reject!
     .then ~> @cache{}[type]{}[slug][user.key] = true
     .catch (e) ~>
-      permcache{}[type]{}[slug][user.key] = false
+      @cache{}[type]{}[slug][user.key] = false
       if e and e.id != 1012 => console.log "[sharedb access error]", e
       return Promise.reject(e or (new lderror 1012))
 
