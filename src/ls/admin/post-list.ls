@@ -7,6 +7,7 @@ Ctrl = (opt) ->
   @posts = []
   @view = {}
   @ldcv = {}
+  @ldld = new ldLoader root: ld$.find(root, '[ld=loading]', 0)
 
   @view.list = new ldView do
     init-render: false
@@ -14,12 +15,11 @@ Ctrl = (opt) ->
     action: click: do
       "new-post": ~> @toggle-modal!
     handler: do
-      loading: ({node}) -> node.classList.toggle \d-none, true
       empty: ({node}) ~> node.classList.toggle \d-none, (@posts and @posts.length)
       editor: ({node}) -> node.classList.toggle \d-none, true
       post: do
         list: ~> @posts or []
-        init: ({node, local,data}) ->
+        init: ({node, local,data}) ~>
           node.classList.remove \d-none
           local.view = new ldView do
             root: node
@@ -37,20 +37,23 @@ Ctrl = (opt) ->
           local.view.setContext data
           local.view.render!
   admin-panel.on \active, ({nav, name, panel}) ~>
-    if name == \brd-post-list => @fetch!
+    if name != \brd-post-list => return
+    @edit null
+    @fetch!
   @
 Ctrl.prototype = Object.create(Object.prototype) <<< do
   render: -> @view.list.render!
   fetch: ->
+    @ldld.on!
     ld$.fetch \/dash/api/post/, {method: \GET}, {params: {brd: @brd.slug}, type: \json}
       .then ~>
         @posts = it
         @render!
+        @ldld.off!
   edit: (slug) ->
     editor = @view.list.get('editor')
-    console.log editor
-    editor.src = "/dash/post/#{slug}/edit"
-    editor.classList.toggle \d-none, false
+    if slug => editor.src = "/dash/post/#{slug}/edit"
+    editor.classList.toggle \d-none, !slug
 
   toggle-modal: ->
     if @ldcv.new-post => that.toggle!
@@ -63,7 +66,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
           root: dom
           action: click: post: ({node}) ~>
             loader.on!
-            payload = {brd: \sch001, title: @form.values!title}
+            payload = {brd: @brd.slug, title: @form.values!title}
             ld$.fetch "/dash/api/post/", {method: \POST}, {json: payload, type: \json}
               .then (ret) ~> 
                 @edit ret.slug

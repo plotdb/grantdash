@@ -74,7 +74,7 @@ ldc.register(['ldcvmgr', 'sdbAdapter', 'loader', 'error'], function(arg$){
         return;
       }
       this.data = JSON.parse(JSON.stringify(data));
-      this.quill.root.innerHTML = this.data.content;
+      this.quill.root.innerHTML = this.data.content || '';
       return this.view.render();
     },
     init: function(){

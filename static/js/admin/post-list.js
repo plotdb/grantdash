@@ -12,6 +12,9 @@ ldc.register('adminPostList', ['loader', 'ldcvmgr', 'error', 'adminPanel'], func
     this.posts = [];
     this.view = {};
     this.ldcv = {};
+    this.ldld = new ldLoader({
+      root: ld$.find(root, '[ld=loading]', 0)
+    });
     this.view.list = new ldView({
       initRender: false,
       root: this.root,
@@ -23,11 +26,6 @@ ldc.register('adminPostList', ['loader', 'ldcvmgr', 'error', 'adminPanel'], func
         }
       },
       handler: {
-        loading: function(arg$){
-          var node;
-          node = arg$.node;
-          return node.classList.toggle('d-none', true);
-        },
         empty: function(arg$){
           var node;
           node = arg$.node;
@@ -43,7 +41,7 @@ ldc.register('adminPostList', ['loader', 'ldcvmgr', 'error', 'adminPanel'], func
             return this$.posts || [];
           },
           init: function(arg$){
-            var node, local, data, this$ = this;
+            var node, local, data;
             node = arg$.node, local = arg$.local, data = arg$.data;
             node.classList.remove('d-none');
             return local.view = new ldView({
@@ -99,9 +97,11 @@ ldc.register('adminPostList', ['loader', 'ldcvmgr', 'error', 'adminPanel'], func
     adminPanel.on('active', function(arg$){
       var nav, name, panel;
       nav = arg$.nav, name = arg$.name, panel = arg$.panel;
-      if (name === 'brd-post-list') {
-        return this$.fetch();
+      if (name !== 'brd-post-list') {
+        return;
       }
+      this$.edit(null);
+      return this$.fetch();
     });
     return this;
   };
@@ -111,6 +111,7 @@ ldc.register('adminPostList', ['loader', 'ldcvmgr', 'error', 'adminPanel'], func
     },
     fetch: function(){
       var this$ = this;
+      this.ldld.on();
       return ld$.fetch('/dash/api/post/', {
         method: 'GET'
       }, {
@@ -120,15 +121,17 @@ ldc.register('adminPostList', ['loader', 'ldcvmgr', 'error', 'adminPanel'], func
         type: 'json'
       }).then(function(it){
         this$.posts = it;
-        return this$.render();
+        this$.render();
+        return this$.ldld.off();
       });
     },
     edit: function(slug){
       var editor;
       editor = this.view.list.get('editor');
-      console.log(editor);
-      editor.src = "/dash/post/" + slug + "/edit";
-      return editor.classList.toggle('d-none', false);
+      if (slug) {
+        editor.src = "/dash/post/" + slug + "/edit";
+      }
+      return editor.classList.toggle('d-none', !slug);
     },
     toggleModal: function(){
       var that, this$ = this;
@@ -149,7 +152,7 @@ ldc.register('adminPostList', ['loader', 'ldcvmgr', 'error', 'adminPanel'], func
                 node = arg$.node;
                 loader.on();
                 payload = {
-                  brd: 'sch001',
+                  brd: this$.brd.slug,
                   title: this$.form.values().title
                 };
                 return ld$.fetch("/dash/api/post/", {

@@ -14,7 +14,8 @@ api.get \/post, aux.signed, (req, res) ->
       select p.*, u.displayname as ownername
       from post as p
       left join users as u on u.key = p.owner
-      where brd = $1
+      where brd = $1 and deleted is not true
+      order by createdtime desc
       """, [slug]
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res

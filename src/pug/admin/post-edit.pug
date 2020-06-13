@@ -5,13 +5,13 @@ block vars
 block head
   style(type="text/css"): :stylus
     #editor { font-size: 1em }
-    html,body { margin: 0}
+    html,body { margin: 0; width: 100%; height: 100%;}
 block body
   .ldcv.scroll(ld="preview-ldcv"): .base.w-768.rwd.h-75: .inner.card
     .closebtn.lg(data-ldcv-set="")
     .card-body(style="overflow-y:scroll",ld="preview-panel")
-  .mx-auto.typeset.heading-contrast
-    .d-flex.flex-column.w-100.h-100.border.rounded.shadow-sm.p-4
+  .mx-auto.my-0.typeset.heading-contrast.p-4.w-100.h-100
+    .d-flex.flex-column.w-100.h-100
       .form-group
         label 標題
         input.form-control.border.rounded(ld="title")

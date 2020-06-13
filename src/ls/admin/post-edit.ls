@@ -37,7 +37,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
     if source => return
     @data = JSON.parse(JSON.stringify(data))
-    @quill.root.innerHTML = @data.content
+    @quill.root.innerHTML = @data.content or ''
     @view.render!
 
 

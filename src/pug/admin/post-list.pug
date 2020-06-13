@@ -6,7 +6,7 @@
       .flex-grow-1: h3.mb-0 發布貼文
       .btn.btn-primary(ld="new-post") 建立文章
     hr
-    .py-4.text-center.text-muted.text-lg(ld="loading"): .ld.ld-spin.ld-spinner
+    .ld.ldld.full(ld="loading",style="background:rgba(255,255,255,.6)")
     .py-4.text-center.text-muted.d-none(ld="empty")
       span 尚無任何貼文。#[a.mx-2(ld="new-post",href="#") 建立一則]吧!
     .py-4.border-bottom.d-none(ld-each="post")
@@ -16,7 +16,7 @@
           div
             a.mr-3(ld="edit",href="#") 編輯
             a.mr-3(ld="view",href="#",target="_blank",rel="noopener noreferrer") 瀏覽
-            a.mr-3.text-danger(ld="delete",href="#") 刪除
+            //-a.mr-3.text-danger(ld="delete",href="#") 刪除
         .mr-2: .user-icon(ld="avatar",style="font-size:2.5em")
         div
           div(ld="owner")
