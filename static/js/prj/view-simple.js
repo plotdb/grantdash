@@ -57,7 +57,6 @@ ldc.register('prjViewSimple', [], function(){
           handler: function(arg$){
             var local, data;
             local = arg$.local, data = arg$.data;
-            console.log(data);
             local.view.setContext(data);
             return local.view.render();
           }
@@ -76,7 +75,6 @@ ldc.register('prjViewSimple', [], function(){
       return this.render();
     },
     render: function(){
-      console.log('here');
       return this.view.render();
     }
   });

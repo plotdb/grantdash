@@ -27,7 +27,6 @@ Ctrl = (opt) ->
                 ret = Ctrl.render {block: context, answer: ans, prj: @prj, org: @org}
                 node.innerHTML = DOMPurify.sanitize(ret)
         handler: ({local, data}) ->
-          console.log data
           local.view.setContext data
           local.view.render!
   @
@@ -36,9 +35,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   update: ({form, answer, prj}) ->
     @ <<< {form, answer, prj}
     @render!
-  render: ->
-    console.log \here
-    @view.render!
+  render: -> @view.render!
 
 Ctrl.render = ({block, answer, prj, brd, org}) ->
   result = {}
