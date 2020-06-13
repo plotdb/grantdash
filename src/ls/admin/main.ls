@@ -1,9 +1,9 @@
 ldc.register \adminGuard,
-<[general navtop ldcvmgr auth loader sdbAdapter error
+<[navtop ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
 adminPrjList prjForm adminEntry adminWelcome adminPage
 adminPrjDetail adminPostList]>,
-({general, navtop, ldcvmgr, auth, loader, sdbAdapter, error,
+({navtop, ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
 admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail, admin-post-list}) ->
 
