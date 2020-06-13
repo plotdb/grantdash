@@ -323,6 +323,9 @@ p {
   height: 1em;
   border-radius: 50%;
   background: #444;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 .dropdown-item {
   font-weight: 300;
