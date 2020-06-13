@@ -58,12 +58,12 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       path: '/dash/ws'
     sdb.on \error, -> ldcvmgr.toggle \not-sync
     sdb.on \close, ~>
-      loader.on!
+      ldcvmgr.toggle \offline-retry, true
       sdb.reconnect!
         .then ~> @getdoc!
         .then ~> @render!
         .then -> console.log "re-inited."
-        .then -> loader.off!
+        .then -> ldcvmgr.toggle \offline-retry, false
     @hub = new Hub({sdb})
     sdb.ready!
 

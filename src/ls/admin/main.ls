@@ -68,12 +68,12 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
       @hubs = org: new Hub({sdb}), brd: new Hub({sdb})
       sdb.on \error, -> ldcvmgr.toggle \not-sync
       sdb.on \close, ~>
-        @loader.on!
+        ldcvmgr.toggle \offline-retry, true
         sdb.reconnect!
           .then ~> @getdoc!
           .then ~> @adapt!
           .then -> console.log "admin initialized."
-          .then ~> @loader.off!
+          .then ~> ldcvmgr.toggle \offline-retry, false
       @sdb.ready!
 
     getdoc: ->

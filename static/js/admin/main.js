@@ -124,7 +124,7 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
         return ldcvmgr.toggle('not-sync');
       });
       sdb.on('close', function(){
-        this$.loader.on();
+        ldcvmgr.toggle('offline-retry', true);
         return sdb.reconnect().then(function(){
           return this$.getdoc();
         }).then(function(){
@@ -132,7 +132,7 @@ ldc.register('adminGuard', ['general', 'navtop', 'ldcvmgr', 'auth', 'loader', 's
         }).then(function(){
           return console.log("admin initialized.");
         }).then(function(){
-          return this$.loader.off();
+          return ldcvmgr.toggle('offline-retry', false);
         });
       });
       return this.sdb.ready();

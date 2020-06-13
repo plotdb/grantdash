@@ -153,12 +153,12 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     @hub = new Hub({sdb})
     sdb.on \error, -> ldcvmgr.toggle \not-sync
     sdb.on \close, ~>
-      @loader.on!
+      ldcvmgr.toggle \offline-retry, true
       sdb.reconnect!
         .then ~> @getdoc!
         .then ~> @adapt!
         .then -> console.log "admin initialized."
-        .then ~> @loader.off!
+        .then ~> ldcvmgr.toggle \offline-retry, false
     sdb.ready!
   getdoc: ->
     @hub.doc = null

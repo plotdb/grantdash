@@ -117,7 +117,7 @@ ldc.register(['ldcvmgr', 'sdbAdapter', 'loader', 'error'], function(arg$){
         return ldcvmgr.toggle('not-sync');
       });
       sdb.on('close', function(){
-        loader.on();
+        ldcvmgr.toggle('offline-retry', true);
         return sdb.reconnect().then(function(){
           return this$.getdoc();
         }).then(function(){
@@ -125,12 +125,13 @@ ldc.register(['ldcvmgr', 'sdbAdapter', 'loader', 'error'], function(arg$){
         }).then(function(){
           return console.log("re-inited.");
         }).then(function(){
-          return loader.off();
+          return ldcvmgr.toggle('offline-retry', false);
         });
       });
-      return this.hub = new Hub({
+      this.hub = new Hub({
         sdb: sdb
       });
+      return sdb.ready();
     },
     getdoc: function(){
       var this$ = this;

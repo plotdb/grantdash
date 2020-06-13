@@ -67,7 +67,7 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
         return ldcvmgr.toggle('not-sync');
       });
       sdb.on('close', function(){
-        loader.on();
+        ldcvmgr.toggle('offline-retry', true);
         return sdb.reconnect().then(function(){
           return this$.getdoc();
         }).then(function(){
@@ -77,14 +77,15 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
         }).then(function(){
           return console.log("re-inited.");
         }).then(function(){
-          return loader.off();
+          return ldcvmgr.toggle('offline-retry', false);
         });
       });
-      return this.hubs = {
+      this.hubs = {
         prj: new Hub({
           sdb: sdb
         })
       };
+      return sdb.ready();
     },
     getdoc: function(){
       var this$ = this;

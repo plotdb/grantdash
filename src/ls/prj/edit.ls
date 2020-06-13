@@ -33,13 +33,13 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       path: '/dash/ws'
     sdb.on \error, -> ldcvmgr.toggle \not-sync
     sdb.on \close, ~>
-      loader.on!
+      ldcvmgr.toggle \offline-retry, true
       sdb.reconnect!
         .then ~> @getdoc!
         .then ~> @adapt!
         .then ~> @render!
         .then -> console.log "re-inited."
-        .then -> loader.off!
+        .then -> ldcvmgr.toggle \offline-retry, false
     @hubs = prj: new Hub({sdb})
     sdb.ready!
 

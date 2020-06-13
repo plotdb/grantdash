@@ -344,8 +344,8 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
       sdb.on('error', function(){
         return ldcvmgr.toggle('not-sync');
       });
-      return sdb.on('close', function(){
-        this$.loader.on();
+      sdb.on('close', function(){
+        ldcvmgr.toggle('offline-retry', true);
         return sdb.reconnect().then(function(){
           return this$.getdoc();
         }).then(function(){
@@ -353,9 +353,10 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
         }).then(function(){
           return console.log("admin initialized.");
         }).then(function(){
-          return this$.loader.off();
+          return ldcvmgr.toggle('offline-retry', false);
         });
       });
+      return sdb.ready();
     },
     getdoc: function(){
       var this$ = this;
