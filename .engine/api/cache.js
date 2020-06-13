@@ -10,6 +10,9 @@
     "grantdash.io": {
       teamname: "Grant Dash"
     },
+    "taicca.grantdash.io": {
+      teamname: "Taicca Dash"
+    },
     "sch001.g0v.tw": {
       org: "g0v-jothon",
       brd: "sch001",

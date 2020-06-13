@@ -4,6 +4,7 @@ require! <[permcheck ../aux]>
 coded-domains = do
   "grantdash.dev": {teamname: "Grant Dash Dev"}
   "grantdash.io": {teamname: "Grant Dash"}
+  "taicca.grantdash.io": {teamname: "Taicca Dash"}
   "sch001.g0v.tw": {org: "g0v-jothon", brd: "sch001", teamname: "零時小學校"}
   "dash.taicca.tw": {org: "taicca.tw", teamname: "文化內容策進院"}
 
