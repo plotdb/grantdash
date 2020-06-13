@@ -16,13 +16,25 @@ Ctrl = (opt) ->
   @view = view = new ldView do
     root: opt.root
     handler: do
+      empty: ({node}) ~> node.classList.toggle \d-none, @data.filter(->it.slug).length
       prj: do
-        list: ~> @data
+        list: ~> @data.filter -> it.slug
         init: ({node,local,data}) ~>
           local.view = new ldView do
             context: data
             root: node
             action: click: do
+              delete: ({node, context}) ~>
+                if node.classList.contains \running => return
+                node.classList.toggle \running, true
+                ld$.fetch "/dash/api/prj/#{context.slug}", {method: \delete}, {type: \json}
+                  .finally -> node.classList.toggle \running, false
+                  .then ~>
+                    notify.send \success, "成功刪除了「#{context.name}」提案"
+                    idx = @data.indexOf(context)
+                    if ~idx => @data.splice idx, 1
+                    @view.render!
+                  .catch error!
               name: ({node, context}) ~>
                 admin-panel.toggle {nav: \main, name: \grp-detail}
                 @set-prj context

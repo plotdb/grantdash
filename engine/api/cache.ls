@@ -68,7 +68,7 @@ perm = do
           .then (ret) ~>
             if user.key == ret.owner => return
             perm = ret.{}perm.[]roles
-            role = {user: [user.key]}
+            role = {user: [user.key], email: [user.username]}
             permcheck {role, perm}
               .then (cfg) -> if !(cfg and cfg[action]) => return Promise.reject!
     .then ~> @cache{}[type]{}[slug][user.key] = true

@@ -25,9 +25,18 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
     this.view = view = new ldView({
       root: opt.root,
       handler: {
+        empty: function(arg$){
+          var node;
+          node = arg$.node;
+          return node.classList.toggle('d-none', this$.data.filter(function(it){
+            return it.slug;
+          }).length);
+        },
         prj: {
           list: function(){
-            return this$.data;
+            return this$.data.filter(function(it){
+              return it.slug;
+            });
           },
           init: function(arg$){
             var node, local, data;
@@ -37,6 +46,29 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
               root: node,
               action: {
                 click: {
+                  'delete': function(arg$){
+                    var node, context;
+                    node = arg$.node, context = arg$.context;
+                    if (node.classList.contains('running')) {
+                      return;
+                    }
+                    node.classList.toggle('running', true);
+                    return ld$.fetch("/dash/api/prj/" + context.slug, {
+                      method: 'delete'
+                    }, {
+                      type: 'json'
+                    })['finally'](function(){
+                      return node.classList.toggle('running', false);
+                    }).then(function(){
+                      var idx;
+                      notify.send('success', "成功刪除了「" + context.name + "」提案");
+                      idx = this$.data.indexOf(context);
+                      if (~idx) {
+                        this$.data.splice(idx, 1);
+                      }
+                      return this$.view.render();
+                    })['catch'](error());
+                  },
                   name: function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;

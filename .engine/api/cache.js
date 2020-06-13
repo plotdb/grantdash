@@ -120,7 +120,8 @@
           }
           perm = (ref$ = ret.perm || (ret.perm = {})).roles || (ref$.roles = []);
           role = {
-            user: [user.key]
+            user: [user.key],
+            email: [user.username]
           };
           return permcheck({
             role: role,
@@ -135,8 +136,8 @@
         var ref$, ref1$;
         return ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = true;
       })['catch'](function(e){
-        var ref$;
-        ((ref$ = permcache[type] || (permcache[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = false;
+        var ref$, ref1$;
+        ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = false;
         if (e && e.id !== 1012) {
           console.log("[sharedb access error]", e);
         }

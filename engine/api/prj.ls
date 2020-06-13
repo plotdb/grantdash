@@ -12,7 +12,7 @@ app.get \/prj/:slug, (req, res) ->
   io.query """
   select p.*,u.displayname as ownerName
   from prj as p, users as u
-  where slug = $1 and p.owner = u.key
+  where slug = $1 and p.owner = u.key and p.deleted is not true
   """, [slug]
     .then (r={}) ->
       if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
@@ -32,41 +32,23 @@ app.get \/prj/:slug, (req, res) ->
       res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}}
     .catch aux.error-handler res
 
+api.delete \/prj/:slug, aux.signed, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  cache.perm.check {io, user: req.user, type: \prj, slug: slug, action: \owner}
+    .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
+    .then -> io.query """update prj set deleted = true where slug = $1""", [slug]
+    .then -> res.send {}
+    .catch aux.error-handler res
+
 api.get "/prj/:slug/", aux.signed, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   io.query """
   select p.*, u.displayname as ownername
   from prj as p, users as u
-  where p.slug = $1 and u.key = p.owner
+  where p.slug = $1 and u.key = p.owner and p.deleted is not true
   """, [slug]
     .then (r = {}) -> res.send(r.[]rows.0 or {})
     .catch aux.error-handler res
-
-/*
-api.put \/prj/:slug/file/:key, aux.signed, express-formidable({multiples:true}), (req, res) ->
-  lc = {}
-  if !(slug = req.params.slug) => return aux.r400 res
-  if !((key = req.params.key) and /^([0-9a-zA-Z+_-]+)$/.exec(key)) => return aux.r404 res
-  io.query """select slug from prj where slug = $1""", [slug]
-    .then (r={}) ->
-      if !(lc.prj = r.[]rows.0) => return aux.reject 404
-      lc.root = "users/prj/#{lc.prj.slug}"
-    .then ->
-      lc.files = req.files["file[]"]
-      lc.files = if Array.isArray(lc.files) => lc.files else [lc.files]
-      if lc.files.length > 100 or lc.files.length < 1 => return aux.reject 400
-      lc.files = lc.files
-        .map -> {path: it.path, type: it.type.split(\/).1}
-        .filter -> /([a-zA-Z0-9]+$)/.exec(it.type)
-      fs-extra.ensure-dir lc.root
-    .then ->
-      Promise.all(
-        lc.files.map (file, idx) ->
-          fs-extra.copy file.path, path.join(lc.root, "draft.#{key}.#{idx}.#{file.type}")
-      )
-    .then -> res.send {}
-    .catch aux.error-handler res
-*/
 
 api.post \/prj/, aux.signed, express-formidable!, (req, res) ->
   lc = {}

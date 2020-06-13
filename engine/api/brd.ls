@@ -105,7 +105,8 @@ get-prj-list = (req, res) ->
       {keyword,tag,category} = req.query{keyword, category, tag}
       slug = req.params.slug
       offset = (if isNaN(+offset) => 0 else +offset ) >? 0
-      limit = (if isNaN(+limit) => 24 else +limit ) <? 100 >? 1
+      # TODO we make limit quite large so we dont have to support pagination. at least for now
+      limit = (if isNaN(+limit) => 500 else +limit ) <? 500 >? 1
       if !slug => return aux.reject 400
       idx1 = 4 + ([tag].filter(-> it).length)
       idx2 = 4 + ([tag,category].filter(-> it).length)
@@ -115,7 +116,7 @@ get-prj-list = (req, res) ->
         with cte as (
         select p.*,u.displayname as ownername
         from prj as p, users as u
-        where u.key = p.owner and p.brd = $3
+        where u.key = p.owner and p.brd = $3 and p.deleted is not true
         """,
         "and tag ? $4" if tag
         "and category = $#idx1" if category
@@ -127,7 +128,7 @@ get-prj-list = (req, res) ->
         """
         ].filter(->it).join(' '), [offset, limit, slug] ++ ([tag, category, keyword].filter(->it))
       )
-    .then (r={}) -> return r.[]rows
+    .then (r={}) -> return r.[]rows.filter(-> it.slug)
 
 api.get \/brd/:slug/list, (req, res) ->
   get-prj-list req, res
@@ -158,7 +159,7 @@ app.get \/brd/:slug, aux.signed, (req, res) ->
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 404
       if brd.owner != req.user.key => return aux.reject 403
-      io.query "select * from prj where brd = $1", [brd.slug]
+      io.query "select * from prj where brd = $1 and deleted is not true", [brd.slug]
     .then (r={}) ->
       lc.projects = r.[]rows
       res.render \pages/under-construction.pug, lc{brd, projects}

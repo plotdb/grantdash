@@ -19,6 +19,45 @@
     var api, app;
     api = engine.router.api;
     app = engine.app;
+    api.get('/post', aux.signed, function(req, res){
+      var slug;
+      if (!(slug = req.query.brd)) {
+        return aux.r400(res);
+      }
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: slug,
+        action: 'owner'
+      }).then(function(){
+        return io.query("select p.*, u.displayname as ownername\nfrom post as p\nleft join users as u on u.key = p.owner\nwhere brd = $1 and p.deleted is not true\norder by p.createdtime desc", [slug]);
+      }).then(function(r){
+        r == null && (r = {});
+        return res.send(r.rows || (r.rows = []));
+      })['catch'](aux.errorHandler(res));
+    });
+    api.get('/post/:slug', aux.signed, function(req, res){
+      var lc, slug;
+      lc = {};
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      return io.query("select p.*,u.displayname as ownername\nfrom post as p, users as u\nwhere slug = $1 and p.owner = u.key", [slug]).then(function(r){
+        r == null && (r = {});
+        if (!(lc.post = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: lc.post.brd
+        });
+      }).then(function(){
+        return res.send(lc.post);
+      })['catch'](aux.errorHandler(res));
+    });
     app.get('/post/:slug', function(req, res){
       var lc, slug;
       lc = {};
@@ -65,9 +104,13 @@
         type: 'brd',
         slug: brd
       }).then(function(){
-        var slug;
+        var slug, detail;
         slug = suuid();
-        return io.query("insert into post (title,owner,slug) values ($1, $2, $3) returning slug", [title, req.user.key, slug]);
+        detail = {
+          content: "",
+          title: title
+        };
+        return io.query("insert into post (title,owner,slug,brd,detail) values ($1, $2, $3, $4, $5) returning slug", [title, req.user.key, slug, brd, detail]);
       }).then(function(r){
         r == null && (r = {});
         return res.send((r.rows || (r.rows = []))[0] || {});

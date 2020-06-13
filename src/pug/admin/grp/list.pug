@@ -29,6 +29,7 @@
         //-.px-1.text-center(style="width:200px") 預算概況
         //-.px-1.text-center(style="width:100px") 階段
       div(ld="prjs")
+        .p-4.text-center.text-muted(ld="empty") 目前尚沒有任何提案。
         .d-flex.border-bottom.align-items-center.p-2(ld-each="prj")
           .px-1(ld="index",style="width:48px")
           .flex-grow-1
@@ -38,4 +39,6 @@
             //-div 已核銷 #[span(ld="budget-consume")]
             //-.text-sm(ld="budget-detail")
           .px-1.text-center(ld="stage",style="width:100px")
+          .px-1.text-center(style="width:100px")
+            .btn.btn-outline-danger.ld-ext-right(ld="delete") 刪除 #[.ld.ld-spin.ld-spinner]
 

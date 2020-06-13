@@ -221,8 +221,8 @@
           ? 0
           : +offset) > 0 ? ref$ : 0;
         limit = (ref$ = (ref1$ = isNaN(+limit)
-          ? 24
-          : +limit) < 100 ? ref1$ : 100) > 1 ? ref$ : 1;
+          ? 500
+          : +limit) < 500 ? ref1$ : 500) > 1 ? ref$ : 1;
         if (!slug) {
           return aux.reject(400);
         }
@@ -232,14 +232,16 @@
         idx2 = 4 + [tag, category].filter(function(it){
           return it;
         }).length;
-        return io.query(["with cte as (\nselect p.*,u.displayname as ownername\nfrom prj as p, users as u\nwhere u.key = p.owner and p.brd = $3", tag ? "and tag ? $4" : void 8, category ? "and category = $" + idx1 : void 8, keyword ? "and name ~ $" + idx2 : void 8, ") select * from (\n  table cte limit $2 offset $1\n) sub\nright join (select count(*) from cte) c(full_count) on true"].filter(function(it){
+        return io.query(["with cte as (\nselect p.*,u.displayname as ownername\nfrom prj as p, users as u\nwhere u.key = p.owner and p.brd = $3 and p.deleted is not true", tag ? "and tag ? $4" : void 8, category ? "and category = $" + idx1 : void 8, keyword ? "and name ~ $" + idx2 : void 8, ") select * from (\n  table cte limit $2 offset $1\n) sub\nright join (select count(*) from cte) c(full_count) on true"].filter(function(it){
           return it;
         }).join(' '), [offset, limit, slug].concat([tag, category, keyword].filter(function(it){
           return it;
         })));
       }).then(function(r){
         r == null && (r = {});
-        return r.rows || (r.rows = []);
+        return (r.rows || (r.rows = [])).filter(function(it){
+          return it.slug;
+        });
       });
     };
     api.get('/brd/:slug/list', function(req, res){
@@ -292,7 +294,7 @@
         if (brd.owner !== req.user.key) {
           return aux.reject(403);
         }
-        return io.query("select * from prj where brd = $1", [brd.slug]);
+        return io.query("select * from prj where brd = $1 and deleted is not true", [brd.slug]);
       }).then(function(r){
         r == null && (r = {});
         lc.projects = r.rows || (r.rows = []);

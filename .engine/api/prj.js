@@ -25,7 +25,7 @@
       if (!(slug = req.params.slug)) {
         return aux.r400(res);
       }
-      return io.query("select p.*,u.displayname as ownerName\nfrom prj as p, users as u\nwhere slug = $1 and p.owner = u.key", [slug]).then(function(r){
+      return io.query("select p.*,u.displayname as ownerName\nfrom prj as p, users as u\nwhere slug = $1 and p.owner = u.key and p.deleted is not true", [slug]).then(function(r){
         var prj;
         r == null && (r = {});
         if (!(lc.prj = prj = (r.rows || (r.rows = []))[0])) {
@@ -78,41 +78,41 @@
         }, ref$));
       })['catch'](aux.errorHandler(res));
     });
+    api['delete']('/prj/:slug', aux.signed, function(req, res){
+      var slug;
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'prj',
+        slug: slug,
+        action: 'owner'
+      })['catch'](function(){
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: req.scope.brd,
+          action: 'owner'
+        });
+      }).then(function(){
+        return io.query("update prj set deleted = true where slug = $1", [slug]);
+      }).then(function(){
+        return res.send({});
+      })['catch'](aux.errorHandler(res));
+    });
     api.get("/prj/:slug/", aux.signed, function(req, res){
       var slug;
       if (!(slug = req.params.slug)) {
         return aux.r400(res);
       }
-      return io.query("select p.*, u.displayname as ownername\nfrom prj as p, users as u\nwhere p.slug = $1 and u.key = p.owner", [slug]).then(function(r){
+      return io.query("select p.*, u.displayname as ownername\nfrom prj as p, users as u\nwhere p.slug = $1 and u.key = p.owner and p.deleted is not true", [slug]).then(function(r){
         r == null && (r = {});
         return res.send((r.rows || (r.rows = []))[0] || {});
       })['catch'](aux.errorHandler(res));
     });
-    /*
-    api.put \/prj/:slug/file/:key, aux.signed, express-formidable({multiples:true}), (req, res) ->
-      lc = {}
-      if !(slug = req.params.slug) => return aux.r400 res
-      if !((key = req.params.key) and /^([0-9a-zA-Z+_-]+)$/.exec(key)) => return aux.r404 res
-      io.query """select slug from prj where slug = $1""", [slug]
-        .then (r={}) ->
-          if !(lc.prj = r.[]rows.0) => return aux.reject 404
-          lc.root = "users/prj/#{lc.prj.slug}"
-        .then ->
-          lc.files = req.files["file[]"]
-          lc.files = if Array.isArray(lc.files) => lc.files else [lc.files]
-          if lc.files.length > 100 or lc.files.length < 1 => return aux.reject 400
-          lc.files = lc.files
-            .map -> {path: it.path, type: it.type.split(\/).1}
-            .filter -> /([a-zA-Z0-9]+$)/.exec(it.type)
-          fs-extra.ensure-dir lc.root
-        .then ->
-          Promise.all(
-            lc.files.map (file, idx) ->
-              fs-extra.copy file.path, path.join(lc.root, "draft.#{key}.#{idx}.#{file.type}")
-          )
-        .then -> res.send {}
-        .catch aux.error-handler res
-    */
     return api.post('/prj/', aux.signed, expressFormidable(), function(req, res){
       var lc, ref$, name, description, brd, grp, thumb, slug;
       lc = {};
