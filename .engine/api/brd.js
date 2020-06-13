@@ -23,6 +23,36 @@
     deploy = common.deploy, slugs = common.slugs, saveSnapshot = common.saveSnapshot;
     api = engine.router.api;
     app = engine.app;
+    app.get('/org/:org/prj/:prj/upload/:file', function(req, res){
+      var ref$, org, prj, file;
+      ref$ = {
+        org: (ref$ = req.params).org,
+        prj: ref$.prj,
+        file: ref$.file
+      }, org = ref$.org, prj = ref$.prj, file = ref$.file;
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'prj',
+        slug: prj,
+        action: 'owner'
+      })['catch'](function(){
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: req.scope.brd,
+          action: 'owner'
+        });
+      }).then(function(){
+        res.set({
+          "X-Accel-Redirect": "/dash/private/org/" + org + "/prj/" + prj + "/upload/" + file
+        });
+        return res.send();
+      })['catch'](function(){
+        return res.status(403).send({});
+      });
+    });
     upload = function(arg$){
       var root, files;
       root = arg$.root, files = arg$.files;

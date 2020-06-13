@@ -7,6 +7,24 @@ require! <[../aux ./cache ./common]>
 api = engine.router.api
 app = engine.app
 
+# project file permission check
+# X-Accel-Redirect will be intercepted by Nginx, and then use to serve corresponding location.
+# once we config it as internal, it will only accessible through this route.
+app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
+  {org, prj, file} = req.params{org, prj, file}
+  cache.perm.check {io, user: req.user, type: \prj, slug: prj, action: \owner}
+    .catch ->
+      cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
+    .then ->
+      res.set {"X-Accel-Redirect": "/dash/private/org/#org/prj/#prj/upload/#file"}
+      res.send!
+    .catch -> res.status 403 .send {}
+
+# For now we don't need these
+# app.get \/org/:org/brd/:brd/upload/:file, (req, res) ->
+# app.get \/org/:org/upload/:file, (req, res) ->
+
+
 # req.files = {name: [ file ... ]}
 # file:
 #   - path ( file path on server temp folder )
