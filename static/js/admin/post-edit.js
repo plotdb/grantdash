@@ -136,7 +136,6 @@ ldc.register(['ldcvmgr', 'sdbAdapter', 'loader', 'error'], function(arg$){
     getdoc: function(){
       var this$ = this;
       console.log("get post document ...");
-      console.log(this.post.detail, this.slug);
       return this.sdb.get({
         id: "post/" + this.slug,
         watch: function(ops, source){

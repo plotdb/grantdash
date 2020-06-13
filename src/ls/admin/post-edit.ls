@@ -69,7 +69,6 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
 
   getdoc: ->
     console.log "get post document ..."
-    console.log @post.detail, @slug
     @sdb.get({
       id: "post/#{@slug}"
       watch: (ops,source) ~> @hub.fire \change, {ops,source}
