@@ -35,11 +35,13 @@ Ctrl = (opt) ->
       try
         if view-mode and block =>
           obj.value.answer[block.key] = block.value
+          purpose = obj.{}purpose
           obj.value.{}info
-            ..title = (obj.value.answer[obj.{}purpose.title or \title] or {}).content
-            ..description = (obj.value.answer[obj.{}purpose.description or \description] or {}).content
-            ..category = ((obj.value.answer[obj.{}purpose.category or \category] or {}).list or []).0
-            ..tag = (obj.value.answer[obj.{}purpose.tag or \tag] or {}).list
+            ..title = (obj.value.answer[purpose.title or \title] or {}).content
+            ..description = (obj.value.answer[purpose.description or \description] or {}).content
+            ..category = ((obj.value.answer[purpose.category or \category] or {}).list or []).0
+            ..tag = (obj.value.answer[purpose.tag or \tag] or {}).list
+            ..thumb = (obj.value.answer[purpose.thumb or \thumb] or {}).[]list.0
           @ops-out ~> obj.value
           @validate block
         else @ops-out ~> {list: @obj.list, purpose: @obj.purpose}

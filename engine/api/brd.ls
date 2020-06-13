@@ -82,16 +82,18 @@ api.put \/detail/, aux.signed, (req, res) ->
   {slug, type, payload} = (req.body or {})
   if !(slug and type and payload) => return aux.r400 res
   if !(type in <[prj brd org post]>) => return aux.r400 res
-  if (info = payload.info) => [name, description] = [(info.name or info.title), info.description]
+  info = payload.info or {}
+  [name, description] = [(info.name or info.title), info.description]
   cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
     .then ->
       io.query "update #type set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
     .then ->
       if !name => return
       if type == \prj
+        thumb = (info.thumb or {}).fn
         io.query """
-        update prj set (name,description,category,tag) = ($1,$2,$3,$4)  where slug = $5
-        """, [name,description,(info.category or ''),JSON.stringify((info.tag or [])),slug]
+        update prj set (name,description,category,tag,thumb) = ($1,$2,$3,$4,$5) where slug = $6
+        """, [name,description,(info.category or ''),JSON.stringify((info.tag or [])),thumb,slug]
       else
         io.query """
         update #type set (name,description) = ($1,$2)  where slug = $3

@@ -58,15 +58,17 @@ ldc.register('prjForm', ['error', 'ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 
         return hub.update();
       }),
       update: function(block){
-        var x$, ref$, e;
+        var purpose, x$, ref$, e;
         try {
           if (viewMode && block) {
             obj.value.answer[block.key] = block.value;
+            purpose = obj.purpose || (obj.purpose = {});
             x$ = (ref$ = obj.value).info || (ref$.info = {});
-            x$.title = (obj.value.answer[(obj.purpose || (obj.purpose = {})).title || 'title'] || {}).content;
-            x$.description = (obj.value.answer[(obj.purpose || (obj.purpose = {})).description || 'description'] || {}).content;
-            x$.category = ((obj.value.answer[(obj.purpose || (obj.purpose = {})).category || 'category'] || {}).list || [])[0];
-            x$.tag = (obj.value.answer[(obj.purpose || (obj.purpose = {})).tag || 'tag'] || {}).list;
+            x$.title = (obj.value.answer[purpose.title || 'title'] || {}).content;
+            x$.description = (obj.value.answer[purpose.description || 'description'] || {}).content;
+            x$.category = ((obj.value.answer[purpose.category || 'category'] || {}).list || [])[0];
+            x$.tag = (obj.value.answer[purpose.tag || 'tag'] || {}).list;
+            x$.thumb = ((ref$ = obj.value.answer[purpose.thumb || 'thumb'] || {}).list || (ref$.list = []))[0];
             this$.opsOut(function(){
               return obj.value;
             });

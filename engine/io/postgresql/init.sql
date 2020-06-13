@@ -84,6 +84,7 @@ create table if not exists prj (
   owner int references users(key) not null,
   slug text not null unique constraint prj_slug_len check (char_length(slug) <= 64),
   brd text references brd(slug),
+  thumb text,
   grp text,
   name text not null constraint prg_name_len check (char_length(name) <= 100),
   description text constraint prj_description_len check (char_length(description) <= 500),

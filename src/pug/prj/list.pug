@@ -29,7 +29,7 @@ block body
     .w-1024.rwd.mx-auto.d-flex.flex-wrap.justify-content-between
       each prj in prjs
         - prj.showThumb = true
-        - prj.thumb = `/dash/org/${brd.org}/prj/${prj.slug}/upload/thumb.png`
+        - prj.thumb = (prj.thumb ? `/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb}` : 'none')
         +card(prj)
       +card({}).flex-placeholder
     .gd-prj-list-pagination.w-1024.rwd.mx-auto.text-center.my-4.py-4
