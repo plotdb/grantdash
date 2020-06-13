@@ -185,7 +185,7 @@ app.get \/brd/:slug/list, (req, res) ->
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
       lc.grps = lc.brd.detail.group.map -> it{form,key}
-      lc.page-info = lc.brd.detail.{}page.{}info.{}generic
+      lc.page-info = lc.brd.detail.{}page.{}info.{}generic <<< lc.brd.detail.info
       delete lc.brd.detail
       res.render \prj/list.pug, lc
       return null

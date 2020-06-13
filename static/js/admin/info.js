@@ -115,14 +115,13 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
       },
       handler: {
         bg: function(arg$){
-          var node, name;
+          var node, name, url;
           node = arg$.node;
           name = node.getAttribute('data-name');
-          if (type === 'org') {
-            return node.style.backgroundImage = "url(/dash/org/" + slug + "/upload/" + name + ".png)";
-          } else if (type === 'brd') {
-            return node.style.backgroundImage = "url(/dash/org/" + this$.toc.org.slug + "/brd/" + slug + "/upload/" + name + ".png)";
-          }
+          url = type === 'org'
+            ? "url(/dash/org/" + slug + "/upload/" + this$.form.values()[name] + ")"
+            : type === 'brd' ? "url(/dash/org/" + this$.toc.org.slug + "/brd/" + slug + "/upload/" + this$.form.values()[name] + ")" : 'none';
+          return node.style.backgroundImage = url;
         },
         org: {
           key: function(it){
@@ -175,10 +174,6 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
             fd = new FormData();
             fd.append(type, slug);
             fd.append(name + "[]", node.files[0]);
-            fd.append('files', JSON.stringify([{
-              name: name,
-              type: name
-            }]));
             return ld$.fetch('/dash/api/upload', {
               method: 'POST',
               body: fd
@@ -188,9 +183,14 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
               return debounce(1000).then(function(){
                 return btn.classList.toggle('running', false);
               });
-            }).then(function(it){
+            }).then(function(retFiles){
               node.value = "";
-              return console.log("uploaded", it);
+              form.field(name).value = retFiles[0].fn;
+              form.check({
+                n: name,
+                now: true
+              });
+              return console.log("uploaded", retFiles);
             })['catch'](function(e){
               console.log(e);
               return error()(e);

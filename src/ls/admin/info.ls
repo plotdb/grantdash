@@ -56,10 +56,10 @@ Ctrl = (opt) ->
     handler: do
       bg: ({node}) ~>
         name = node.getAttribute(\data-name)
-        if type == \org =>
-          node.style.backgroundImage = "url(/dash/org/#slug/upload/#{name}.png)"
-        else if type == \brd =>
-          node.style.backgroundImage = "url(/dash/org/#{@toc.org.slug}/brd/#slug/upload/#{name}.png)"
+        url = if type == \org => "url(/dash/org/#slug/upload/#{@form.values![name]})"
+        else if type == \brd => "url(/dash/org/#{@toc.org.slug}/brd/#slug/upload/#{@form.values![name]})"
+        else 'none'
+        node.style.backgroundImage = url
       org: do
         key: -> it.key
         list: -> (lc.list or []) ++ [{name: "無", key: null}]
@@ -84,12 +84,13 @@ Ctrl = (opt) ->
           fd = new FormData!
           fd.append type, slug
           fd.append "#{name}[]", node.files.0
-          fd.append \files, JSON.stringify([{name: name, type: name}])
           ld$.fetch \/dash/api/upload, {method: \POST, body: fd}, {type: \json}
             .finally -> debounce 1000 .then -> btn.classList.toggle \running, false
-            .then ->
+            .then (ret-files) ->
               node.value = ""
-              console.log "uploaded", it
+              form.field(name).value = ret-files.0.fn
+              form.check {n: name, now: true}
+              console.log "uploaded", ret-files
             .catch (e) ->
               console.log e
               error! e
