@@ -40,6 +40,11 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               if (!files.length) {
                 return;
               }
+              if (files.filter(function(it){
+                return it.file && it.file.size > 1048576;
+              }).length) {
+                return ldcvmgr.toggle('error-413');
+              }
               fd = new FormData();
               if (this$.block.name === 'form-thumbnail') {
                 fd.append("thumb[]", files[0].file);

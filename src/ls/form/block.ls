@@ -21,6 +21,7 @@ module-file = module-init: ->
             files = files.filter(-> /^image\//.exec(it.type) and /\.(gif|png|jpg|jpeg)$/.exec(it.name))
           node.value = ''
           if !files.length => return
+          if files.filter(-> it.file and it.file.size > 1048576).length => return ldcvmgr.toggle('error-413')
 
           fd = new FormData!
           if @block.name == \form-thumbnail =>
