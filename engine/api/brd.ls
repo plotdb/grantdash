@@ -45,57 +45,6 @@ api.post \/upload, aux.signed, express-formidable({multiples:true}), (req, res) 
     .then -> res.send it
     .catch aux.error-handler res
 
-
-
-upload-v1 = ({root, files}) -> new Promise (res, rej) ->
-  (e) <- fs-extra.ensure-dir path.join(root, \upload, \draft), _
-  if e => return rej(e)
-  ps = files.map ({name, type, list}) ->
-    if type in <[banner thumb]> =>
-      f = list.0
-      (res, rej) <- new Promise _
-      (e,i) <- sharp(f.path).toFile path.join(root, \upload, \draft, "#type.png"), _
-      return if e => rej(e) else res {name, type, files: ["#type.png"]}
-    else
-      id = suuid!
-      ps = list.map (f,idx) ->
-        fn = "#{id}.#{idx}.#{f.type}"
-        fs-extra.copy(f.path, path.join(root, \upload, \draft, fn))
-          .then -> fn
-      Promise.all ps
-        .then (files) -> {name, type, id, files}
-
-  Promise.all(ps)
-    .then -> res it
-    .catch -> rej it
-
-
-api.post \/upload-v1, aux.signed, express-formidable({multiples:true}), (req, res) ->
-  lc = {}
-  {org,brd,prj,post,files} = req.fields
-  try
-    files = JSON.parse(files)
-  catch e
-    return aux.r400 res
-  if !(files and Array.isArray(files) and files.length) => return aux.r400 res
-  files = files
-    .map ({name,type}) ->
-      list = req.files["#{name}[]"]
-      list = if Array.isArray(list) => list else [list]
-      list = list
-        .map -> {path: it.path, type: it.type.split(\/).1}
-        .filter -> /([a-zA-Z0-9]{1,6}$)/.exec(it.type)
-      return {name, type, list}
-    .filter -> it.list.length > 0 and it.list.length < 10
-
-  slugs {io, org, brd, prj, post}
-    .then ({type, prj, brd, org, root}) ->
-      # TODO verify prj form criteria
-      upload {root, files}
-    .then -> res.send it
-    .catch aux.error-handler res
-
-
 api.put \/detail/, aux.signed, (req, res) ->
   lc = {}
   {slug, type, payload} = (req.body or {})
