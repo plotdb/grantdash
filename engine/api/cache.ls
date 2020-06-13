@@ -53,6 +53,7 @@ perm = do
     @cache{}[type][slug] = {}
     @perm{}[type][slug] = null
   check: ({io, user, type, slug, action}) ->
+    action = if Array.isArray(action) => action else [action]
     Promise.resolve!
       .then ~>
         if !(user and user.key and slug and (type in @supported-types)) => return Promise.reject!
@@ -71,7 +72,7 @@ perm = do
             perm = ret.{}perm.[]roles
             role = {user: [user.key], email: [user.username]}
             permcheck {role, perm}
-              .then (cfg) -> if !(cfg and cfg[action]) => return Promise.reject!
+              .then (cfg) -> if !cfg or !(action.filter(->cfg[it]).length) => return Promise.reject!
     .then ~> @cache{}[type]{}[slug][user.key] = true
     .catch (e) ~>
       @cache{}[type]{}[slug][user.key] = false

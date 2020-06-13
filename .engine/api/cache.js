@@ -96,6 +96,9 @@
     check: function(arg$){
       var io, user, type, slug, action, this$ = this;
       io = arg$.io, user = arg$.user, type = arg$.type, slug = arg$.slug, action = arg$.action;
+      action = Array.isArray(action)
+        ? action
+        : [action];
       return Promise.resolve().then(function(){
         var ref$, ref1$, p, that;
         if (!(user && user.key && slug && in$(type, this$.supportedTypes))) {
@@ -130,7 +133,9 @@
             role: role,
             perm: perm
           }).then(function(cfg){
-            if (!(cfg && cfg[action])) {
+            if (!cfg || !action.filter(function(it){
+              return cfg[it];
+            }).length) {
               return Promise.reject();
             }
           });
