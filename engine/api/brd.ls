@@ -12,9 +12,24 @@ app = engine.app
 # once we config it as internal, it will only accessible through this route.
 app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
   {org, prj, file} = req.params{org, prj, file}
+  lc = {}
   cache.perm.check {io, user: req.user, type: \prj, slug: prj, action: \owner}
     .catch ->
       cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
+    .catch ->
+      io.query "select grp,detail from prj where slug = $1", [prj]
+        .then (r={}) ->
+          if !(lc.prj = r.[]rows.0) => return aux.reject 404
+          io.query "select detail from brd where slug = $1", [req.scope.brd]
+        .then (r={}) ->
+          if !(lc.brd = r.[]rows.0) => return aux.reject 404
+          grps = lc.brd.{}detail.[]group
+          if !(grp = grps.filter(-> lc.prj.grp == it.key).0) => return aux.reject 404
+          is-public = grp.{}form.[]list.filter(-> it.name in <[form-thumbnail form-file]>)
+            .filter -> lc.prj.detail.answer[it.key].[]list.filter(-> it.fn == file).length
+            .filter -> it.{}config.public
+            .length
+          if !is-public => return Promise.reject 403
     .then ->
       res.set {"X-Accel-Redirect": "/dash/private/org/#org/prj/#prj/upload/#file"}
       res.send!
@@ -23,7 +38,6 @@ app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
 # For now we don't need these
 # app.get \/org/:org/brd/:brd/upload/:file, (req, res) ->
 # app.get \/org/:org/upload/:file, (req, res) ->
-
 
 # req.files = {name: [ file ... ]}
 # file:
