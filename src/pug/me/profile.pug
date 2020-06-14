@@ -4,58 +4,71 @@ block vars
   - ctrl.navtop.className = "navbar-light bg-semi-light";
   - ctrl.navtop.placeholder = false;
   - var meta = { title: "設定" };
+block head
+  style(type="text/css"): :stylus
+    [ld-scope=profile]
+      .card-panel, .info-panel
+        margin: 0 1em
+      @media (max-width: 960px)
+        & > .d-flex
+          flex-wrap: wrap
+        .card-panel, .info-panel
+          margin: 0
+
 block body
   include /modules/mixins/index.pug
-  .w-1024.rwd.mx-auto
+
+  +scope("profile").w-1024.rwd.mx-auto.my-0.typeset.heading-contrast
     .d-flex.justify-content-center
-      .mr-4: .sticky(style="height:100vh;top:0"): .vertical-center: .w-100.text-center
-          .card.mx-auto.shadow(style="font-family:arial;width:300px")
-            .card-body.p-4
-              .mx-auto.mb-4(style="margin-top:-25%;width:140px"): .rounded-circle.bg-secondary.aspect-ratio.ratio-1by1.ldlz.shadow.ldlz(data-src=`/dash/s/avatar/${user.key}.png`)
-              .text-center
-                .text-lg.text-center: b #{user.displayname}
-                .text-muted.mb-4
-                  .my-2 #{user.title || '尚無抬頭'}
-                  .text-sm #{new Date(user.createdtime).toLocaleString()} 加入這裡
-                  hr
-                  p.text-sm.text-center #{user.description || '尚未準備自我介紹...'}
-                  hr
-                  .tags
-                    each tag in (user.tags || '').split(',')
-                      .badge.badge-secondary.mr-1 #{tag}
-                  .mt-4
-                    //-.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2 追蹤
-                    a.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2(href="/dash/me/settings") 設定
-      //-.ml-4.flex-grow-1: div(style="padding-top:100px")
-        .typeset.heading-contrast
-          .sticky(style="top:55px")
-            .d-flex.bg-white.p-4.border-bottom
-              //-.mx-3 焦點 #[sup.text-white.bg-danger.rounded-lg.px-1 3]
-              .mx-3 專案
-              .mx-3 組織
-              .mx-3 活動
-              //-.mx-3 追蹤
+      .card-panel: .sticky(style="height:100vh;top:0"): .vertical-center: .w-100.text-center
+        .card.mx-auto.shadow(style="font-family:arial;width:300px")
+          .card-body.p-4
+            .mx-auto.mb-4(style="margin-top:-25%;width:140px"): .rounded-circle.bg-secondary.aspect-ratio.ratio-1by1.ldlz.shadow.ldlz(data-src=`/dash/s/avatar/${user.key}.png`)
+            .text-center
+              .text-lg.text-center: b #{user.displayname}
+              .text-muted.mb-4
+                .my-2 #{user.title || '尚無抬頭'}
+                .text-sm #[span(ld="prettydate",data-value=user.createdtime)] 加入這裡
+                hr
+                p.text-sm.text-center #{user.description || '尚未準備自我介紹...'}
+                hr
+                .tags
+                  each tag in (user.tags || '').split(',')
+                    .badge.badge-secondary.mr-1 #{tag}
+                .mt-4
+                  //-.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2 追蹤
+                  a.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2(href="/dash/me/settings") 設定
+      .info-panel.flex-grow-1
+        if !prjs.length
+          .w-100.vertical-center: .w-100.text-center.text-muted
+            .text-lg.mb-4 您目前沒有任何提案
+            div 當您開始提案以後，您可以在這裡瀏覽您所建立過的提案。
+            +nbr(2)
+        else
+          br
+          .bg-white.p-4.border-bottom
+            .text-lg 您的提案
+          each prj in prjs
+            .m-4
+              .d-flex.align-items-center.flex-nowrap
+                if !prj.deleted
+                  .m-4: i.i-radio.text-success
+                else
+                  .m-4: i.i-close.text-danger
+                .flex-grow-1.mr-4(style=`opacity:${prj.deleted ? 0.2 : 1}`)
+                  .d-flex.align-items-end.mb-1
+                    if !prj.deleted
+                      h4.mb-0: a.text-dark(href=`/prj/${prj.slug}`) #{prj.name}
+                    else
+                      h4.mb-0: .text-dark #{prj.name}
+                    .text-sm.mx-2 / 
+                    .text-sm.text-muted(ld="prettydate",data-value=prj.createdtime)
+                  p.text-muted.mb-1 #{prj.description}
+                if !prj.deleted
+                  .ml-4: a.btn.btn-outline-primary.text-nowrap(href=`/prj/${prj.slug}`) 檢視
+                  .ml-2: a.btn.btn-outline-primary.text-nowrap(href=`/prj/${prj.slug}/edit`) 編輯
+                else
+                  .ml-2: a.btn.btn-light.text-nowrap.disabled 已刪除
 
-          .m-4
-            .d-flex.align-items-center
-              .m-4: i.i-check.text-success
-              .flex-grow-1
-                h5 2020 沉浸式內容國際合資合製補助案 
-                p.text-muted 提案評選中 ( 2020/05/20 截止 )
-              .m-4: .btn.btn-outline-primary 前往評選表
-
-          .m-4
-            .d-flex.align-items-center
-              .m-4: i.i-check.text-success
-              .flex-grow-1
-                h5 Johnny 查核了你的提案
-                p.text-muted 於 15 分鐘前：「所以我說那個醬汁呢？ ... 」
-              .m-4: .btn.btn-outline-primary 前往評論
-
-          .m-4
-            .d-flex.align-items-center
-              .m-4: i.i-check.text-success
-              .flex-grow-1
-                h5 2019 沉浸式內容國際合資合製補助案
-                p.text-muted 提案即將截止 ( 於 50 分鐘後 )
-              .m-4: .btn.btn-outline-primary 前往主控台
+block script
+  +script("/js/me/profile.js")

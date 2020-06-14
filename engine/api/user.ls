@@ -56,18 +56,21 @@ api.get \/me/, (req, res) ->
     .catch aux.error-handler res
 
 render-profile = (req, res, id) ->
-  ret = {}
+  lc = {}
   io.query "select key,displayname,description,createdtime,title,tags from users where key = $1", [id]
     .then (r={}) ->
       if !r.rows or !r.rows.length => return aux.reject 404
-      ret.user = r.rows.0
-  #    io.query "select * from file where owner = $1", [id]
-  #  .then (r={}) ->
-  #    ret.files = r.rows or []
-  #    io.query "select * from doc where owner = $1 order by accesstime desc", [id]
-  #  .then (r={}) ->
-  #    ret.docs = r.rows or []
-      res.render \me/profile.pug, ret
+      lc.user = r.rows.0
+      io.query """
+      select p.*, b.name as brdname
+      from prj as p
+      left join brd as b on p.brd = b.slug
+      where p.owner = $1
+      order by createdtime desc
+      """, [id]
+    .then (r={}) ->
+      lc.prjs = r.[]rows
+      res.render \me/profile.pug, {exports: lc} <<< lc{user, prjs}
       return null
     .catch aux.error-handler res
 
