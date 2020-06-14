@@ -4575,7 +4575,7 @@ if (!prj.deleted) {
 ;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ch4 class=\"mb-0\"\u003E";
 ;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"text-dark\""+pug_attr("href", `/prj/${prj.slug}`, true, true)) + "\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"text-dark\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
 ;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = prj.name) ? "" : pug_interp)) + "\u003C\u002Fa\u003E\u003C\u002Fh4\u003E";
 }
@@ -4602,13 +4602,13 @@ if (!prj.deleted) {
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-4\"\u003E";
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/prj/${prj.slug}`, true, true)) + "\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "檢視\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-2\"\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/prj/${prj.slug}/edit`, true, true)) + "\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/dash/prj/${prj.slug}/edit`, true, true)) + "\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "編輯\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 }
@@ -4653,7 +4653,7 @@ if (!prj.deleted) {
 ;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ch4 class=\"mb-0\"\u003E";
 ;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"text-dark\""+pug_attr("href", `/prj/${prj.slug}`, true, true)) + "\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"text-dark\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
 ;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = prj.name) ? "" : pug_interp)) + "\u003C\u002Fa\u003E\u003C\u002Fh4\u003E";
 }
@@ -4680,13 +4680,13 @@ if (!prj.deleted) {
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-4\"\u003E";
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/prj/${prj.slug}`, true, true)) + "\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "檢視\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-2\"\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/prj/${prj.slug}/edit`, true, true)) + "\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/dash/prj/${prj.slug}/edit`, true, true)) + "\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "編輯\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 }
