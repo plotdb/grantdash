@@ -70,14 +70,16 @@ h4 權限設定
       .row
         .col-md
           +switch-lg({name: "擁有者", desc: "最高權限", key: "owner"})
-          +switch-lg({name: "管理活動", desc: "設定活動各種資訊", key: "info-edit"})
-          +switch-lg({name: "管理權限", desc: "可以修改權限列表", key: "perm-edit"})
-          +switch-lg({name: "管理提案", desc: "可以編修、刪除、設定提案", key: "prj-admin"})
+          +switch-lg({name: "建立提案", desc: "可以建立新的提案", key: "prj-new"})
+          +switch-lg({name: "修改提案", desc: "可以修改自己的提案", key: "prj-edit"})
+          //-+switch-lg({name: "管理活動", desc: "設定活動各種資訊", key: "info-edit"})
+          //-+switch-lg({name: "管理權限", desc: "可以修改權限列表", key: "perm-edit"})
         .col-md
-          +switch-lg({name: "建立提案", desc: "可以建立新的提案", key: "prj-create"})
-          +switch-lg({name: "建立留言", desc: "可以新增或修改留言", key: "comment-create"})
-          +switch-lg({name: "管理留言", desc: "可以修改、刪除或設定留言", key: "comment-admin"})
           +switch-lg({name: "評審", desc: "可以進入評審介面", key: "judge"})
+          +switch-lg({name: "建立留言", desc: "可以新增留言", key: "comment-new"})
+          +switch-lg({name: "修改留言", desc: "可以修改自己的留言", key: "comment-edit"})
+          //-+switch-lg({name: "管理留言", desc: "可以修改、刪除或設定留言", key: "comment-admin"})
+          //-+switch-lg({name: "管理提案", desc: "可以編修、刪除、設定提案", key: "prj-admin"})
 
   hr
   .d-flex.justify-content-between
