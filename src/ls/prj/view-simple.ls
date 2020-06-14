@@ -25,6 +25,7 @@ Ctrl = (opt) ->
               content: ({node,context}) ~>
                 ans = get-answer context
                 ret = Ctrl.render {block: context, answer: ans, prj: @prj, org: @org}
+                node.classList.toggle 'empty', !ret
                 node.innerHTML = DOMPurify.sanitize(ret)
         handler: ({local, data}) ->
           local.view.setContext data
@@ -42,8 +43,8 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
   if !(block and answer) => return
 
   if answer.content =>
-    result = if answer.useMarkdown => DOMPurify.sanitize(marked(answer.content))
-    else htmlentities(answer.content)
+    result = if answer.useMarkdown => DOMPurify.sanitize(marked(answer.content or ''))
+    else htmlentities(answer.content or '')
   else if answer.start =>
     start = moment(answer.start).format("YYYY-MM-DD hh:mm:ss")
     end = moment(answer.end).format("YYYY-MM-DD hh:mm:ss")
@@ -53,12 +54,12 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
       ret = (answer.list or [])
         .map (f) ->
           """
-          <li><a href="/dash/org/#{org}/prj/#{prj}/upload/#{f.fn}" download="#{htmlentities(f.name)}">
+          <li><a href="/dash/org/#{org}/prj/#{prj}/upload/#{f.fn}" target="_blank" rel="noopener noreferrer">
           #{htmlentities(f.name)}
           </a></li>
           """
         .join ('')
-      result = DOMPurify.sanitize(ret)
+      result = DOMPurify.sanitize(ret,{ ADD_ATTR: <[target]> })
     else if block.name == \form-checkpoint
       ret = (answer.list or [])
         .map (d) ->
@@ -76,7 +77,7 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
     else
       list = (answer.list ++ if answer.otherValue and answer.other => [answer.otherValue] else [])
       result = DOMPurify.sanitize(list.join "<br>")
-
+  else result = ''
   return result
 
 Ctrl

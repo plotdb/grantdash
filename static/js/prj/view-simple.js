@@ -49,6 +49,7 @@ ldc.register('prjViewSimple', [], function(){
                     prj: this$.prj,
                     org: this$.org
                   });
+                  node.classList.toggle('empty', !ret);
                   return node.innerHTML = DOMPurify.sanitize(ret);
                 }
               }
@@ -87,8 +88,8 @@ ldc.register('prjViewSimple', [], function(){
     }
     if (answer.content) {
       result = answer.useMarkdown
-        ? DOMPurify.sanitize(marked(answer.content))
-        : htmlentities(answer.content);
+        ? DOMPurify.sanitize(marked(answer.content || ''))
+        : htmlentities(answer.content || '');
     } else if (answer.start) {
       start = moment(answer.start).format("YYYY-MM-DD hh:mm:ss");
       end = moment(answer.end).format("YYYY-MM-DD hh:mm:ss");
@@ -96,9 +97,11 @@ ldc.register('prjViewSimple', [], function(){
     } else if (answer.list) {
       if ((ref$ = block.name) === 'form-file' || ref$ === 'form-thumbnail') {
         ret = (answer.list || []).map(function(f){
-          return "<li><a href=\"/dash/org/" + org + "/prj/" + prj + "/upload/" + f.fn + "\" download=\"" + htmlentities(f.name) + "\">\n" + htmlentities(f.name) + "\n</a></li>";
+          return "<li><a href=\"/dash/org/" + org + "/prj/" + prj + "/upload/" + f.fn + "\" target=\"_blank\" rel=\"noopener noreferrer\">\n" + htmlentities(f.name) + "\n</a></li>";
         }).join('');
-        result = DOMPurify.sanitize(ret);
+        result = DOMPurify.sanitize(ret, {
+          ADD_ATTR: ['target']
+        });
       } else if (block.name === 'form-checkpoint') {
         ret = (answer.list || []).map(function(d){
           return "<div class=\"item\"><div class=\"fields mb-4\">\n<div class=\"d-flex align-items-end mb-2\">\n  <h4 class=\"mb-0 mr-2\">" + htmlentities(d.title) + "</h4>\n  <p class=\"text-muted text-sm mb-0\">" + htmlentities(d.date) + "</p>\n</div>\n<p>" + htmlentities(d.desc) + "</p>\n</div></div>";
@@ -110,6 +113,8 @@ ldc.register('prjViewSimple', [], function(){
           : []);
         result = DOMPurify.sanitize(list.join("<br>"));
       }
+    } else {
+      result = '';
     }
     return result;
   };

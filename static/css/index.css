@@ -283,6 +283,13 @@ p {
 .form-block .timeline-list .item:last-child {
   border-left: 0px solid transparent;
 }
+.form-answer .answer.empty:before {
+  display: block;
+  content: "此項空白";
+  padding: 1em;
+  opacity: 0.4;
+  background: rgba(0,0,0,0.05);
+}
 @-moz-keyframes form-block-hint-fresh {
   0% {
     outline: 5px solid #ff0;
