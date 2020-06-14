@@ -9,7 +9,7 @@
     .form-group
       label 簡單介紹您的提案
       textarea.form-control(name="description",rows="4",placeholder="簡單描述即可，亦可後續再補完")
-    .form-group
+    .form-group(ld="show-grp")
       label 選擇分組
       select.form-control(ld="grp",name="grp")
         option(ld-each="grp-option",value="") 無
@@ -23,5 +23,3 @@
       .col-md.mb-3: a.btn.btn-outline-secondary.btn-block(href="/") 先不要
       .col-md.mb-3: .btn.btn-primary.btn-block.disabled.ld-ext-right(ld="submit") 建立提案 #[.ld.ld-spinner.ld-spin]
   p.text-muted.text-sm 別擔心！建立提案後，您可以再慢慢將提案內容補完。提案建立後並不會立刻發布，而是待您填完相關欄位並確認發表後，才會正式發布。
-
-
