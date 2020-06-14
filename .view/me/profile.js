@@ -4535,7 +4535,7 @@ pug_html = pug_html + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 }
 else {
 ;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cbr\u003E";
+pug_mixins["nbr"](2);
 ;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"bg-white p-4 border-bottom\"\u003E";
 ;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
