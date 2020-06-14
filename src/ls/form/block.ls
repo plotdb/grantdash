@@ -51,6 +51,7 @@ module-file = module-init: ->
                   return {key: suuid!} <<< ret-file{name, size, type, ext, fn}
                 .filter -> it
                 .filter (f) -> cur-list.filter(-> it.name == f.name and it.fn == f.fn).length == 0
+              if @block.name == \form-thumbnail => @block.value.list.splice 0
               @block.value.list ++= new-list
               @update!
             .finally ~>

@@ -92,6 +92,9 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                     return it.name === f.name && it.fn === f.fn;
                   }).length === 0;
                 });
+                if (this$.block.name === 'form-thumbnail') {
+                  this$.block.value.list.splice(0);
+                }
                 (ref$ = this$.block.value).list = ref$.list.concat(newList);
                 return this$.update();
               })['finally'](function(){
