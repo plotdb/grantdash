@@ -307,7 +307,7 @@
         app.get('/api/global', backend.csrfProtection, function(req, res){
           var payload, ref$;
           res.setHeader('content-type', 'application/json');
-          payload = JSON.stringify({
+          payload = JSON.stringify(import$({
             global: true,
             csrfToken: req.csrfToken(),
             production: config.isProduction,
@@ -322,7 +322,9 @@
                 username: ref$.username
               }
               : {}
-          });
+          }, {
+            scope: req.scope || {}
+          }));
           res.cookie('global', payload, {
             path: '/',
             secure: true,

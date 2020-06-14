@@ -213,10 +213,11 @@ backend = do
     #   so if we want to prevent user from editing our code, we have to go backend for the generation.
     app.get \/api/global, backend.csrfProtection, (req, res) ->
       res.setHeader \content-type, \application/json
-      payload = JSON.stringify do
+      payload = JSON.stringify({
         global: true, csrfToken: req.csrfToken!, production: config.is-production
         ip: aux.ip req
         user: if req.user => req.user{key, plan, config, displayname, verified, username} else {}
+      } <<< ({scope: req.scope or {}}))
       res.cookie 'global', payload, { path: '/', secure: true, domain: ".#{config.domain}" }
       res.send payload
 

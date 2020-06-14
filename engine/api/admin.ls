@@ -9,6 +9,7 @@ api = engine.router.api
 # 3. none     - get latest brd, its org ( or none ) and corresponding brds.
 api.post \/toc, aux.signed, (req, res) ->
   hint = req.body{org, brd}
+  if !(hint.org or hint.brd) => hint <<< req.scope{brd, org}
   lc = {}
   perm-opt = {io, user: req.user, action: \owner}
   promise = (if hint.brd =>
