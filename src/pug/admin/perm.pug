@@ -9,13 +9,24 @@ h4 權限設定
     li.nav-item.flex-grow-1
     li.nav-item.text-right: a.nav-link.text-muted.border-0(ld="new-role") 新增 +
 
-  .form-group.mb-2(ld="role-view")
-    input.form-control(ld="role-name",placeholder="請在這裡自訂角色的名稱",value="")
-    .invalid-feedback 不能用這個名稱
-  .alert.alert-light.px-2.mb-4.border
+  .row
+    .col-md(ld="role-view")
+      .form-group.mb-2
+        label 角色名稱
+        input.form-control.border.rounded(ld="role-name",placeholder="請在這裡自訂角色的名稱",value="")
+        .invalid-feedback 不能用這個名稱
+    .col-md
+      .form-group.mb-2
+        label 角色描述
+        .alert.alert-light.px-2.mb-4.border(style="padding-top:.375em;padding-bottom:.375em")
+          .text-muted(ld="role-desc-all",data-name="") 此列表列出所有出現在權限設定中的用戶，以及他們所擔任角色。
+          div(ld="roles-desc")
+            .text-muted.d-none(ld-each="role-desc",contenteditable="true") 角色的簡單描述 ...
+
+  //-.alert.alert-light.px-2.mb-4.border
     .text-muted(ld="role-desc-all",data-name="") 此列表列出所有出現在權限設定中的用戶，以及他們所擔任角色。
     div(ld="roles-desc")
-      .text-muted.d-none(ld-each="role-desc",contenteditable="true") 角色的簡單描述 ... 
+      .text-muted.d-none(ld-each="role-desc",contenteditable="true") 角色的簡單描述 ...
 
   div
     .py-3.px-3(ld="newuser"): .d-inline-block.clickable.text-primary(ld="newuser-toggle") 新增使用者權限 ...
@@ -38,7 +49,6 @@ h4 權限設定
               .d-flex.align-items-center.clickable.my-2(ld-each="user")
                 .bg-light.rounded.mr-1(ld="avatar",style="width:1em;height:1em")
                 div(ld="name")
-
 
           .input-group-appned(ld="newuser-role list-view")
             .dropdown
