@@ -1,4 +1,4 @@
-require! <[permcheck ../aux]>
+require! <[permcheck lderror ../aux]>
 
 # TODO hard coded for now but we should query from db in the future.
 coded-domains = do
