@@ -619,7 +619,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
             var node, local, ref$;
             node = arg$.node, local = arg$.local;
             local.tagify = new Tagify(node, {
-              delimiters: /[,.:;，。：； ]/
+              delimiters: /[,.:;，。：；]/
             });
             return local.tagify.addTags(((ref$ = this$.block).value || (ref$.value = {})).list || []);
           }

@@ -104,7 +104,7 @@
             return it.value;
           }).join(',');
         },
-        delimiters: /[,.:;，。：； ]/
+        delimiters: /[,.:;，。：；]/
       });
       return view = new ldView({
         root: document.body,

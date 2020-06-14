@@ -288,7 +288,7 @@ module["form-tag"] = module-init: ->
           @update!
     init:
       "input-field": ({node,local}) ~>
-        local.tagify = new Tagify node, { delimiters: /[,.:;，。：； ]/ }
+        local.tagify = new Tagify node, { delimiters: /[,.:;，。：；]/ }
         local.tagify.addTags(@block.{}value.list or [])
 
 purpose = do
