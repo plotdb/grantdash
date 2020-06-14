@@ -270,9 +270,7 @@
           }).then(function(ret){
             req.scope = ret;
             return next();
-          })['catch'](function(it){
-            return next(it);
-          });
+          })['catch'](aux.errorHandler(res));
         });
         backend.csrfProtection = csurf();
         app.use(backend.csrfProtection);

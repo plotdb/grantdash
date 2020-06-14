@@ -180,7 +180,7 @@ backend = do
           # ret = {domain, org, brd} ( org, brd is optional )
           req.scope = ret
           next!
-        .catch -> next it
+        .catch aux.error-handler res
     # ============ CSRF
     # put it here to secure login with csrf
     # TODO will this block fb / google login? it might will.
