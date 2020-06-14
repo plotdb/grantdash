@@ -3712,7 +3712,7 @@ pug_html = pug_html + "\u003Cdiv class=\"label\"\u003E";
 ;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
 pug_html = pug_html + "提案人\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"d-flex align-items-center\""+pug_attr("href", `/user/${prj.owner}`, true, true)) + "\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"d-flex align-items-center\""+pug_attr("href", `/dash/user/${prj.owner}`, true, true)) + "\u003E";
 ;pug_debug_line = 46;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
 pug_html = pug_html + "\u003Cdiv" + (" class=\"avatar\""+pug_attr("style", pug_style(`background-image:url(/dash/s/avatar/${prj.owner}.png)`), true, true)) + "\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 47;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
