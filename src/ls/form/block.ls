@@ -28,15 +28,6 @@ module-file = module-init: ->
 
           for i from 0 til files.length => fd.append "file[]", files[i].file
 
-          /*
-          if @block.name == \form-thumbnail =>
-            fd.append "thumb[]", files.0.file
-            fd.append "files", JSON.stringify([{name: "thumb", type: "thumb"}])
-          else
-            for i from 0 til files.length => fd.append "file[]", files[i].file
-            fd.append "files", JSON.stringify([{name: "file", type: "form"}])
-          */
-
           fd.append \prj, @prj.slug
           context.loading = true
           @view.module.render!
