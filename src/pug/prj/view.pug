@@ -16,18 +16,12 @@ block head
 block body
   - var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
   - var purpose = grp.form.purpose || {};
-  -
-    var path = '';
-    if(prj.detail && prj.detail.answer) {
-      var list = (prj.detail.answer[grp.form.purpose.thumb] || {}).list;
-      if(list && list.length) { path = (list[0] || {}).path; }
-    }
-  - prj.thumb = `/dash/org/${brd.org}/prj/${prj.slug}/upload/${path}`
+  - thumb = (prj.thumb ? `/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb}` : 'none')
 
 
   .gd-prj-view.typeset.heading-contrast: .inner
     .gd-prj-view-header.simple
-      .thumb(style=`background-image:url(${prj.thumb})`)
+      .thumb(style=`background-image:url(${thumb})`)
       .info
         .brd
           a(href=`/dash/brd/${brd.slug}/list`) #{brd.name}
