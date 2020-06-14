@@ -3,7 +3,7 @@ block body
 block script
   +scope("admin").d-flex.flex-column.h-100.position-relative.z-float
     div(style="height:2.75em")
-    .w-1024.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4.position-relative(style="overflow:hidden")
+    .w-1200.h-100.rwd.mx-auto.d-flex.shadow-lg.rounded.my-4.position-relative(style="overflow:hidden")
       .position-absolute.w-100.h-100.bg-white.vertical-center.bg-cover(pd="init-loader",
       style="z-index:99999;background:radial-gradient(#fff,#eee,#ddd)")
         .text-center.w-100
@@ -31,11 +31,11 @@ block script
 
             .clickable(ld="brd-bar",style="box-shadow:0 2px 3px rgba(0,0,0,1)")
               .d-flex.align-items-center.p-3.w-100
-                .flex-grow-1.text-truncate.d-none(ld="brd")
+                .flex-grow-1.d-none(ld="brd")
                   .text-sm(ld="brd-progress")
                     i.i-radio.mr-1
                     span.mr-2(ld="brd-progress-text") ...
-                  .text-truncate.text-capitalize(ld="brd-name") ...
+                  .text-capitalize(ld="brd-name") ...
                 .flex-grow-1.text-truncate(ld="brd empty") 請選擇活動 ...
                 .ml-2(ld="brd-list-toggle") #[i.i-dart-down]
 
@@ -53,7 +53,7 @@ block script
                 a.text-underline.text-white(href="/dash/new/brd/") 建立新活動
               //-.pb-2: input.form-control.form-control-sm.rounded(ld="brd-search",placeholder="搜尋...")
               a.py-2.d-block.clickable.text-no-deco.text-white(href="#",ld-each="brd-entry")
-                span
+                .text-truncate
                 .text-muted.text-sm
 
 
@@ -88,7 +88,7 @@ block script
           .border-bottom.border-secondary.my-2
           div
             .folder(ld-each="grp-entry")
-              .folder-toggle.folder-item(ld="name") 分組
+              .folder-toggle.folder-item.text-truncate(ld="name") 分組
               .folder-menu
                 .folder-item(ld="nav-tab",data-name="grp-config") 設定
                 .folder-item(ld="nav-tab",data-name="grp-list") 專案列表

@@ -49,7 +49,7 @@ Ctrl = (opt) ->
       "brd-entry": do
         list: -> toc.brds-filtered
         handler: ({node, data}) ->
-          ld$.find(node, 'span',0).innerText = data.name
+          ld$.find(node, '.text-truncate',0).innerText = data.name
           ld$.find(node, '.text-sm',0).innerText = data.description.substring(0,30) + "..."
           node.setAttribute \href, "/dash/brd/#{data.slug}/admin"
       "grp-entry": do
