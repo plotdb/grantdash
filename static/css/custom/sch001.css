@@ -27,7 +27,7 @@ body {
 }
 .gd-prj-list-banner > div {
   border-radius: 0.5em;
-  background: linear-gradient(90deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4), rgba(0,0,0,0.1));
+  background: linear-gradient(90deg, rgba(0,0,0,0.8), rgba(0,0,0,0.5), rgba(0,0,0,0.1));
 }
 .gd-prj-list-banner .btn {
   border: 1px solid #fff;
@@ -38,7 +38,7 @@ body {
   color: #000;
 }
 .gd-prj-list-info {
-  width: 50%;
+  width: 60%;
   text-align: left;
   margin-left: 1.5em;
   padding: 1.5em;
@@ -50,7 +50,7 @@ body {
   font-size: 0.8em;
   margin-bottom: 1.5em;
   max-width: 400px;
-  opacity: 0.65;
+  opacity: 0.85;
 }
 .gd-prj-list-ctrl {
   display: flex;
