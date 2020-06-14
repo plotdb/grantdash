@@ -37,10 +37,10 @@
             .finally ->
               ldld.off!
             .then ->
-              notify.send \success, "Password updated."
+              notify.send \success, "密碼更新完成"
               form.reset!
             .catch ->
-              notify.send \danger, "Update password failed."
+              notify.send \danger, "密碼更新失敗"
 
   ldc.register <[auth ldcvmgr change-password notify]>,
   ({auth, ldcvmgr, change-password, notify}) ->
@@ -102,7 +102,7 @@
                   .catch -> ldcvmgr.toggle \error; console.log it
                   .then -> auth.fetch {renew: true}
                   .then -> debounce 500
-                  .then -> notify.send \success, \updated.
+                  .then -> notify.send \success, \更新完成
                   .then -> debounce 500
                   .then -> ldld.off!
             mailVerify: ({node}) ->
@@ -128,7 +128,7 @@
                   headers: {'Content-Type': 'application/json; charset=UTF-8'}
                 }, {})
                   .then ->
-                    node.innerHTML = 'Link Sent.<i class="i-check"></i>'
+                    node.innerHTML = '連結已寄出 <i class="i-check"></i>'
                     node.classList.add \disabled
 
             copyUid: ({node}) ->

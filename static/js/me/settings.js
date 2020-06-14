@@ -64,10 +64,10 @@
         }, {})['finally'](function(){
           return ldld.off();
         }).then(function(){
-          notify.send('success', "Password updated.");
+          notify.send('success', "密碼更新完成");
           return form.reset();
         })['catch'](function(){
-          return notify.send('danger', "Update password failed.");
+          return notify.send('danger', "密碼更新失敗");
         });
       });
     });
@@ -179,7 +179,7 @@
               }).then(function(){
                 return debounce(500);
               }).then(function(){
-                return notify.send('success', 'updated.');
+                return notify.send('success', '更新完成');
               }).then(function(){
                 return debounce(500);
               }).then(function(){
@@ -231,7 +231,7 @@
                   'Content-Type': 'application/json; charset=UTF-8'
                 }
               }, {}).then(function(){
-                node.innerHTML = 'Link Sent.<i class="i-check"></i>';
+                node.innerHTML = '連結已寄出 <i class="i-check"></i>';
                 return node.classList.add('disabled');
               });
             });
