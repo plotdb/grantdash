@@ -37,7 +37,8 @@ block body
                     .badge.badge-secondary.mr-1 #{tag}
                 .mt-4
                   //-.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2 追蹤
-                  a.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2(href="/dash/me/settings") 設定
+                  if prjs
+                    a.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2(href="/dash/me/settings") 設定
       if prjs
         .info-panel.flex-grow-1
           if !prjs.length
