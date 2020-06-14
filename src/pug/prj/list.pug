@@ -17,10 +17,9 @@ block body
   mixin card(opt)
     .gd-prj-card&attributes(attributes)
       a(href=`/dash/prj/${opt.slug}`)
-        if opt.showThumb
-          .w-100
-            .gd-prj-card-thumb.aspect-ratio.ratio-3by2(
-            style=`background-image:url(${opt.thumb})`)
+        - var thumb = opt.thumb ? `url(/dash/org/${brd.org}/prj/${opt.slug}/upload/${opt.thumb})` : 'none';
+        .w-100
+          .gd-prj-card-thumb.aspect-ratio.ratio-3by2(style=`background-image:${thumb}`)
         .gd-prj-card-name.text-truncate(style="font-weight:500;font-size:1.25em") #{opt.name || '未命名的提案'}
       .gd-prj-card-owner.mb-2 By #[a(href=`/dash/user/${opt.owner}`) #{opt.ownername || '未具名'}]
       .gd-prj-card-description.mb-2.flex-grow-1 #{(opt.description || '').substring(0,50)} ...
@@ -28,8 +27,6 @@ block body
   mixin list
     .w-1024.rwd.mx-auto.d-flex.flex-wrap.justify-content-between
       each prj in prjs
-        - prj.showThumb = true
-        - prj.thumb = (prj.thumb ? `/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb}` : 'none')
         +card(prj)
       +card({}).flex-placeholder
     .gd-prj-list-pagination.w-1024.rwd.mx-auto.text-center.my-4.py-4
@@ -38,7 +35,8 @@ block body
   +scope("project-list")
     .d-block(ld="panel side")
       .w-1024.rwd.mx-auto.pt-4
-        .gd-prj-list-banner(style=`background-image:url(/dash/org/${brd.org}/brd/${brd.slug}/upload/${pageInfo.banner})`)
+        - var banner = (pageInfo.banner?`url(/dash/org/${brd.org}/brd/${brd.slug}/upload/${pageInfo.banner})`:'none');
+        .gd-prj-list-banner(style=`background-image:${banner}`)
           .vertical-center
             .gd-prj-list-info
               h3 #{brd.name}
