@@ -61,7 +61,7 @@ ldc.register('prjView', ['auth', 'error', 'stage', 'viewLocals', 'discussView', 
         "btn-edit": function(arg$){
           var node;
           node = arg$.node;
-          return node.classList.toggle('d-none', lc.global.user.key !== viewLocals.owner);
+          return node.classList.toggle('d-none', lc.global.user.key !== prj.owner);
         }
       }
     });

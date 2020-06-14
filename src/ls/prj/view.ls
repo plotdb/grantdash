@@ -32,7 +32,8 @@ ldc.register \prjView, <[auth error stage viewLocals discussView prjViewSimple]>
               node.classList.add \tip-on
               local.h = setTimeout (-> node.classList.remove \tip-on), 1000
         handler: do
-          "btn-edit": ({node}) -> node.classList.toggle \d-none, (lc.global.user.key != viewLocals.owner)
+          "btn-edit": ({node}) ->
+            node.classList.toggle \d-none, (lc.global.user.key != prj.owner)
 
       prj-view = new prj-view-simple do
         root: '[ld-scope=form-answer]'
