@@ -1,0 +1,10 @@
+include /modules/common.pug
+.ldcv.ldcvmgr(data-name="access-denied",data-lock="true"): .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
+  h1 存取被拒
+  p 您的權限不足，無法使用這個功能
+  br
+  .m-auto.text-left.text-muted
+    p 您正要存取的這個頁面需要特別的權限才能進入使用，而您似乎沒有足夠的權限，因此我們無法提供內容給您。
+    p 有時只是單純的使用了錯誤的帳號，因此請先確認您是否使用您所認為的帳號。若您覺得這是個錯誤，您可以 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 聯絡我們]，讓我們試著為您排除問題。 
+    br
+    a.btn.btn-primary.btn-block.btn-lg.mr-2(href="/") 回首頁

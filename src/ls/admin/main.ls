@@ -196,13 +196,10 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
     .catch (e) ->
       console.log "[Admin Error] Code: ", (if e => e.id else e)
       console.log "Error Object: ", ((e and e.e) or e)
-      if !e => return error!(e)
-      if e.stack => console.log that
-      # TODO jump to landing page ?
-      if e.id == 1012 => ldcvmgr.toggle \error-403
-      else if e.id == 1000 => ldcvmgr.toggle \auth-required
+      if e.id == 1000 => ldcvmgr.toggle \auth-required
       else if e.id == 1007 => ldcvmgr.toggle \server-down
-      else error!(e)
+      else ldcvmgr.toggle \access-denied
+      if e.stack => console.log that
     .then -> ctrl.render!
 
 ldc.app \adminGuard

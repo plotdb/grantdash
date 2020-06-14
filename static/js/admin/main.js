@@ -421,20 +421,15 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
     var that;
     console.log("[Admin Error] Code: ", e ? e.id : e);
     console.log("Error Object: ", (e && e.e) || e);
-    if (!e) {
-      return error()(e);
+    if (e.id === 1000) {
+      ldcvmgr.toggle('auth-required');
+    } else if (e.id === 1007) {
+      ldcvmgr.toggle('server-down');
+    } else {
+      ldcvmgr.toggle('access-denied');
     }
     if (that = e.stack) {
-      console.log(that);
-    }
-    if (e.id === 1012) {
-      return ldcvmgr.toggle('error-403');
-    } else if (e.id === 1000) {
-      return ldcvmgr.toggle('auth-required');
-    } else if (e.id === 1007) {
-      return ldcvmgr.toggle('server-down');
-    } else {
-      return error()(e);
+      return console.log(that);
     }
   }).then(function(){
     return ctrl.render();
