@@ -75,15 +75,22 @@
       })['catch'](aux.errorHandler(res));
     });
     renderProfile = function(req, res, id){
-      var ret;
-      ret = {};
+      var lc;
+      lc = {};
       return io.query("select key,displayname,description,createdtime,title,tags from users where key = $1", [id]).then(function(r){
         r == null && (r = {});
         if (!r.rows || !r.rows.length) {
           return aux.reject(404);
         }
-        ret.user = r.rows[0];
-        res.render('me/profile.pug', ret);
+        lc.user = r.rows[0];
+        return io.query("select p.*, b.name as brdname\nfrom prj as p\nleft join brd as b on p.brd = b.slug\nwhere p.owner = $1\norder by createdtime desc", [id]);
+      }).then(function(r){
+        var ref$;
+        r == null && (r = {});
+        lc.prjs = r.rows || (r.rows = []);
+        res.render('me/profile.pug', (ref$ = {
+          exports: lc
+        }, ref$.user = lc.user, ref$.prjs = lc.prjs, ref$));
         return null;
       })['catch'](aux.errorHandler(res));
     };
