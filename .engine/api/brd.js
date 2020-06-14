@@ -24,12 +24,13 @@
     api = engine.router.api;
     app = engine.app;
     app.get('/org/:org/prj/:prj/upload/:file', function(req, res){
-      var ref$, org, prj, file;
+      var ref$, org, prj, file, lc;
       ref$ = {
         org: (ref$ = req.params).org,
         prj: ref$.prj,
         file: ref$.file
       }, org = ref$.org, prj = ref$.prj, file = ref$.file;
+      lc = {};
       return cache.perm.check({
         io: io,
         user: req.user,
@@ -43,6 +44,40 @@
           type: 'brd',
           slug: req.scope.brd,
           action: 'owner'
+        });
+      })['catch'](function(){
+        return io.query("select grp,detail from prj where slug = $1", [prj]).then(function(r){
+          r == null && (r = {});
+          if (!(lc.prj = (r.rows || (r.rows = []))[0])) {
+            return aux.reject(404);
+          }
+          return io.query("select detail from brd where slug = $1", [req.scope.brd]);
+        }).then(function(r){
+          var grps, ref$, ref1$, grp, isPublic;
+          r == null && (r = {});
+          if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
+            return aux.reject(404);
+          }
+          grps = (ref$ = (ref1$ = lc.brd).detail || (ref1$.detail = {})).group || (ref$.group = []);
+          if (!(grp = grps.filter(function(it){
+            return lc.prj.grp === it.key;
+          })[0])) {
+            return aux.reject(404);
+          }
+          isPublic = ((ref$ = grp.form || (grp.form = {})).list || (ref$.list = [])).filter(function(it){
+            var ref$;
+            return (ref$ = it.name) === 'form-thumbnail' || ref$ === 'form-file';
+          }).filter(function(it){
+            var ref$;
+            return ((ref$ = lc.prj.detail.answer[it.key]).list || (ref$.list = [])).filter(function(it){
+              return it.fn === file;
+            }).length;
+          }).filter(function(it){
+            return (it.config || (it.config = {}))['public'];
+          }).length;
+          if (!isPublic) {
+            return Promise.reject(403);
+          }
         });
       }).then(function(){
         res.set({
@@ -130,9 +165,8 @@
       if (!(type === 'prj' || type === 'brd' || type === 'org' || type === 'post')) {
         return aux.r400(res);
       }
-      if (info = payload.info) {
-        ref$ = [info.name || info.title, info.description], name = ref$[0], description = ref$[1];
-      }
+      info = payload.info || {};
+      ref$ = [info.name || info.title, info.description], name = ref$[0], description = ref$[1];
       return cache.perm.check({
         io: io,
         user: req.user,
@@ -142,11 +176,13 @@
       }).then(function(){
         return io.query("update " + type + " set detail = $1 where slug = $2", [JSON.stringify(payload), slug]);
       }).then(function(){
+        var thumb;
         if (!name) {
           return;
         }
         if (type === 'prj') {
-          return io.query("update prj set (name,description,category,tag) = ($1,$2,$3,$4)  where slug = $5", [name, description, info.category || '', JSON.stringify(info.tag || []), slug]);
+          thumb = (info.thumb || {}).fn;
+          return io.query("update prj set (name,description,category,tag,thumb) = ($1,$2,$3,$4,$5) where slug = $6", [name, description, info.category || '', JSON.stringify(info.tag || []), thumb, slug]);
         } else {
           return io.query("update " + type + " set (name,description) = ($1,$2)  where slug = $3", [name, description, slug]);
         }
