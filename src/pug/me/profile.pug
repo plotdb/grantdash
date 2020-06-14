@@ -38,37 +38,38 @@ block body
                 .mt-4
                   //-.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2 追蹤
                   a.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2(href="/dash/me/settings") 設定
-      .info-panel.flex-grow-1
-        if !prjs.length
-          .w-100.vertical-center: .w-100.text-center.text-muted
-            .text-lg.mb-4 您目前沒有任何提案
-            div 當您開始提案以後，您可以在這裡瀏覽您所建立過的提案。
+      if prjs
+        .info-panel.flex-grow-1
+          if !prjs.length
+            .w-100.vertical-center: .w-100.text-center.text-muted
+              .text-lg.mb-4 您目前沒有任何提案
+              div 當您開始提案以後，您可以在這裡瀏覽您所建立過的提案。
+              +nbr(2)
+          else
             +nbr(2)
-        else
-          +nbr(2)
-          .bg-white.p-4.border-bottom
-            .text-lg 您的提案
-          each prj in prjs
-            .m-4
-              .d-flex.align-items-center.flex-nowrap
-                if !prj.deleted
-                  .m-4: i.i-radio.text-success
-                else
-                  .m-4: i.i-close.text-danger
-                .flex-grow-1.mr-4(style=`opacity:${prj.deleted ? 0.2 : 1}`)
-                  .d-flex.align-items-end.mb-1
-                    if !prj.deleted
-                      h4.mb-0: a.text-dark(href=`/dash/prj/${prj.slug}`) #{prj.name}
-                    else
-                      h4.mb-0: .text-dark #{prj.name}
-                    .text-sm.mx-2 / 
-                    .text-sm.text-muted(ld="prettydate",data-value=prj.createdtime)
-                  p.text-muted.mb-1 #{prj.description}
-                if !prj.deleted
-                  .ml-4: a.btn.btn-outline-primary.text-nowrap(href=`/dash/prj/${prj.slug}`) 檢視
-                  .ml-2: a.btn.btn-outline-primary.text-nowrap(href=`/dash/prj/${prj.slug}/edit`) 編輯
-                else
-                  .ml-2: a.btn.btn-light.text-nowrap.disabled 已刪除
+            .bg-white.p-4.border-bottom
+              .text-lg 您的提案
+            each prj in prjs
+              .m-4
+                .d-flex.align-items-center.flex-nowrap
+                  if !prj.deleted
+                    .m-4: i.i-radio.text-success
+                  else
+                    .m-4: i.i-close.text-danger
+                  .flex-grow-1.mr-4(style=`opacity:${prj.deleted ? 0.2 : 1}`)
+                    .d-flex.align-items-end.mb-1
+                      if !prj.deleted
+                        h4.mb-0: a.text-dark(href=`/dash/prj/${prj.slug}`) #{prj.name}
+                      else
+                        h4.mb-0: .text-dark #{prj.name}
+                      .text-sm.mx-2 / 
+                      .text-sm.text-muted(ld="prettydate",data-value=prj.createdtime)
+                    p.text-muted.mb-1 #{prj.description}
+                  if !prj.deleted
+                    .ml-4: a.btn.btn-outline-primary.text-nowrap(href=`/dash/prj/${prj.slug}`) 檢視
+                    .ml-2: a.btn.btn-outline-primary.text-nowrap(href=`/dash/prj/${prj.slug}/edit`) 編輯
+                  else
+                    .ml-2: a.btn.btn-light.text-nowrap.disabled 已刪除
 
 block script
   +script("/dash/js/me/profile.js")
