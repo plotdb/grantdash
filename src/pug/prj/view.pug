@@ -54,7 +54,9 @@ block body
       .list-group
         a.list-group-item.clickable.text-secondary(data-scrollto="#project-detail") 提案細節
         //-a.list-group-item.clickable.text-secondary(href="#project-note") 線上共筆
-        a.list-group-item.clickable.text-secondary(data-scrollto="#project-discuss") 討論提問
+        a.list-group-item.clickable.text-secondary.d-none(
+        pd="stage-ctrl",data-name="comment-view",
+        data-scrollto="#project-discuss") 討論提問
       //-.dropdown.my-4
         .btn.btn-outline-secondary.dropdown-toggle.btn-block(data-toggle="dropdown") 修改紀錄
         .dropdown-menu
