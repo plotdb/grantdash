@@ -42,8 +42,9 @@ block body
         .user
           .item
             .label 提案人
-            .avatar(style=`background-image:url(/dash/s/avatar/${prj.owner}.png)`)
-            .name #{prj.ownername}
+            a.d-flex.align-items-center(href=`/user/${prj.owner}`)
+              .avatar(style=`background-image:url(/dash/s/avatar/${prj.owner}.png)`)
+              .name #{prj.ownername}
 
         .hr
         .brief: each p in (prj.description || '').split('\n')
