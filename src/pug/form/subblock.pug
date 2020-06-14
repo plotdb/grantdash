@@ -35,10 +35,9 @@ mixin footer
         .dropup(ld="purpose-menu edit-only")
           .btn.btn-sm.btn-light.dropdown-toggle(data-toggle="dropdown") 用途
           .dropdown-menu.dropdown-menu-right
-            each item in [["標題","title"],["簡介","description"],["縮圖","thumb"],["標籤","tag"],["分類","category"]]
-              .dropdown-item.d-flex(ld="purpose",data-name=item[1])
-                .flex-grow-1 #{item[0]}
-                div: i.i-check.text-success
+            .dropdown-item.d-flex(ld-each="purpose")
+              .flex-grow-1
+              div: i.i-check.text-success
 
 mixin criteria
   .card-body.border-top(ld="has-criteria"): .p-2.d-flex.criteria

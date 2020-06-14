@@ -290,14 +290,17 @@ module["form-tag"] = module-init: ->
         local.tagify = new Tagify node, { delimiters: /[,.:;，。：； ]/ }
         local.tagify.addTags(@block.{}value.list or [])
 
-purpose-type = do
-  title: <[form-short-answer]>
-  description: <[form-short-answer form-long-answer]>
-  thumb: <[form-thumbnail]>
-  category: <[form-radio]>
-  tag: <[form-tag]>
-
-purpose-match = (name, block-name) -> block-name in purpose-type[name]
+purpose = do
+  map: do
+    title: { name: "標題", block: <[form-short-answer]> }
+    description: { name: "簡介", block: <[form-short-answer form-long-answer]> }
+    thumb: { name: "縮圖", block: <[form-thumbnail]> }
+    tag: { name: "標籤", block: <[form-radio]> }
+    category: { name: "分類", block: <[form-tag]> }
+    teamname: { name: "團隊名", block: <[form-short-answer]> }
+    uid: { name: "統編", block: <[form-short-answer]> }
+  match: (p, b) -> b.name in (p.block or [])
+purpose.list = [[k,v] for k,v of purpose.map].map -> {key: it.0} <<< it.1
 
 # {root, mode, data}
 Ctrl = (opt) ->
@@ -329,28 +332,31 @@ Ctrl = (opt) ->
         clone: ({node, evt}) ~> @clone!
         "move-up": ~> @move -1
         "move-down": ~> @move 1
-        purpose: ({node}) ~>
-          n = node.getAttribute(\data-name)
-          if !purpose-match(n, @block.name) => return
-          @form{}purpose[n] = v = if @form{}purpose[n] == @block.key => null else @block.key
-          if v => for k of @form.purpose => if k != n and @form.purpose[k] == v => @form.purpose[k] = null
-          @update!
-          @view.block.render!
+
     init: do
       "purpose-menu": ({node}) -> new Dropdown(node)
     handler: do
+      purpose: do
+        list: ~>
+          ret = purpose.list.filter ~> purpose.match(it, @block)
+          if !ret.length => ret = [{name: "無適合用途"}]
+          ret
+        action: click: ({node, data}) ~>
+          if !purpose.match(data, @block) => return
+          @form{}purpose[data.key] = v = if @form{}purpose[data.key] == @block.key => null else @block.key
+          if v => for k of @form.purpose => if k != data.key and @form.purpose[k] == v => @form.purpose[k] = null
+          @update!
+          @view.block.render!
+        handler: ({node,data}) ~>
+          ld$.find(node, '.flex-grow-1', 0).innerText = data.name
+          node.classList.toggle \disabled, !purpose.match(data, @block)
+          ld$.find(node, \i, 0).classList.toggle \d-none, @form{}purpose[data.key] != @block.key
       "purpose-menu": ({node}) ~>
-        map = {title: "標題", description: "簡介", thumb: "縮圖", category: "分類", tag: "標籤"}
         n = [{k,v} for k,v of @form{}purpose]
           .filter(~> it.v == @block.key)
-          .map(-> map[it.k])
+          .map(-> purpose.map[it.k].name)
           .join(' / ')
-        btn = ld$.find(node, '.btn', 0)
-        btn.innerText = if !n => '用途' else "#n"
-      purpose: ({node}) ~>
-        n = node.getAttribute(\data-name)
-        node.classList.toggle \disabled, !purpose-match(n, @block.name)
-        ld$.find(node, \i, 0).classList.toggle \d-none, @form{}purpose[n] != @block.key
+        btn = ld$.find(node, '.btn', 0).innerText = if !n => '用途' else "#n"
       invalid: ({node}) ~>
         is-valid = (!(@block.{}valid.result?) or @block.valid.result)
         if !is-valid => settext node, (@block.valid.criteria.invalid or "這個欄位格式不符")
