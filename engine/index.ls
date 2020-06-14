@@ -147,7 +147,7 @@ backend = do
     if config.{}sharedb.enabled =>
       access = ({user, id, data, type}) -> cache.perm.sharedb {io: pgsql, user, id, data, type, action: \owner}
       @sharedb = {server, sdb, connect, wss} = sharedb-wrapper {
-        app, io: config.io-pg, session, access, milestone-db: {interval: 50, enabled: true}
+        app, io: config.io-pg, session, access, milestone-db: {interval: 200, enabled: true}
       }
 
       wss.on \connection, (ws, req) ->

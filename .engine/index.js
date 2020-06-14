@@ -220,7 +220,7 @@
             session: session,
             access: access,
             milestoneDb: {
-              interval: 50,
+              interval: 200,
               enabled: true
             }
           }), server = ref$.server, sdb = ref$.sdb, connect = ref$.connect, wss = ref$.wss, ref$);
