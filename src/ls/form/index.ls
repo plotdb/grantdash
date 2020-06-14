@@ -209,6 +209,8 @@ Ctrl = (opt) ->
         submit: ({node}) -> node.classList.toggle \disabled, (progress!remain > 0)
         "brd-name": ({node}) -> node.innerText = if opt.brd => (opt.brd.name or '') else '未定的活動'
         "grp-name": ({node}) -> node.innerText = if opt.grp => (opt.grp.{}info.name or '') else '未定的分組'
+        "prj-link": ({node}) ~>
+          node.setAttribute \href, "/dash/prj/#{@prj.slug}"
         "owner-avatar": ({node}) ~>
           ld$.find(node, 'div', 0).style.backgroundImage = "url(/dash/s/avatar/#{@prj.owner}.png)"
         "owner-name": ({node}) ~>

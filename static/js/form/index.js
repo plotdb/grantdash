@@ -418,6 +418,11 @@ ldc.register('prjForm', ['error', 'ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 
             node = arg$.node;
             return node.innerText = opt.grp ? ((ref$ = opt.grp).info || (ref$.info = {})).name || '' : '未定的分組';
           },
+          "prj-link": function(arg$){
+            var node;
+            node = arg$.node;
+            return node.setAttribute('href', "/dash/prj/" + this$.prj.slug);
+          },
           "owner-avatar": function(arg$){
             var node;
             node = arg$.node;
