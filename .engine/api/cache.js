@@ -74,7 +74,7 @@
             if (!pathCfg) {
               return domainCfg.domain = domain, domainCfg;
             }
-            if ((pathCfg.org !== domainCfg.org || (domainCfg.brd && domainCfg.brd !== path.cfgBrd)) && domainCfg.org) {
+            if ((pathCfg.org !== domainCfg.org || (domainCfg.brd && domainCfg.brd !== pathCfg.brd)) && domainCfg.org) {
               return aux.reject(400);
             }
             return ref$ = (pathCfg.teamname = domainCfg.teamname, pathCfg), ref$.domain = domain, ref$;

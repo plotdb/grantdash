@@ -40,7 +40,7 @@ route = do
         if !path-cfg => return domain-cfg <<< {domain}
         if (
         ((path-cfg.org != domain-cfg.org) or
-        (domain-cfg.brd and domain-cfg.brd != path.cfg-brd)) and
+        (domain-cfg.brd and domain-cfg.brd != path-cfg.brd)) and
         domain-cfg.org
         ) => return aux.reject 400
         return path-cfg <<< domain-cfg{teamname} <<< {domain}
