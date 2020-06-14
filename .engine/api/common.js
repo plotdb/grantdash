@@ -9,22 +9,46 @@
     var io, sharedb, doc_id, version;
     io = arg$.io, sharedb = arg$.sharedb, doc_id = arg$.doc_id, version = arg$.version;
     return new Promise(function(res, rej){
-      return sharedb.connect.fetchSnapshot('doc', doc_id, version, function(e, b){
-        var id, v, type, data;
-        if (e) {
-          return rej(e);
-        }
-        id = b.id, v = b.v, type = b.type, data = b.data;
-        return io.query("select doc_id,version from milestonesnapshots where version = $1", [v]).then(function(r){
+      var lc, p;
+      lc = {
+        id: doc_id
+      };
+      if (version != null) {
+        p = new Promise(function(res, rej){
+          return sharedb.connect.fetchSnapshot('doc', doc_id, version, function(e, b){
+            if (e) {
+              return rej(e);
+            }
+            lc.id = b.id;
+            lc.v = b.v;
+            lc.type = b.type;
+            lc.data = b.data;
+            return res();
+          });
+        });
+      } else {
+        p = io.query("select doc_id, version, doc_type, data from snapshots where doc_id = $1", [doc_id]).then(function(r){
+          var ret;
           r == null && (r = {});
-          if ((r.rows || (r.rows = [])).length) {
-            return Promise.resolve();
+          if (!(ret = (r.rows || (r.rows = []))[0])) {
+            return aux.reject(404);
           }
-          return io.query("insert into milestonesnapshots (collection,doc_id,doc_type,version,data) values ($1,$2,$3,$4,$5)", ["doc", id, type, v, data]);
-        }).then(function(){
-          return res();
-        })['catch'](rej);
-      });
+          lc.v = ret.version;
+          lc.type = ret.doc_type;
+          return lc.data = ret.data;
+        });
+      }
+      return p.then(function(){
+        return io.query("select doc_id,version from milestonesnapshots where version = $1", [lc.v]);
+      }).then(function(r){
+        r == null && (r = {});
+        if ((r.rows || (r.rows = [])).length) {
+          return Promise.resolve();
+        }
+        return io.query("insert into milestonesnapshots (collection,doc_id,doc_type,version,data) values ($1,$2,$3,$4,$5)", ["doc", lc.id, lc.type, lc.v, lc.data]);
+      }).then(function(){
+        return res();
+      })['catch'](rej);
     });
   };
   slugs = function(arg$){

@@ -1,15 +1,31 @@
 require! <[nodegit lderror path ../aux]>
 
 save-snapshot = ({io, sharedb, doc_id, version}) -> new Promise (res, rej) ->
-  (e,b) <- sharedb.connect.fetchSnapshot \doc, doc_id, version, _
-  if e => return rej e
-  {id,v,type,data} = b
-  io.query "select doc_id,version from milestonesnapshots where version = $1", [v]
+  lc = {id: doc_id}
+  if version? =>
+    # slow way - fetchSnapshot by sharedb.
+    # yet currently this is the only way to fetch a specific version, so we only use it when version is defined.
+    p = new Promise (res, rej) ->
+      (e,b) <- sharedb.connect.fetchSnapshot \doc, doc_id, version, _
+      if e => return rej e
+      lc <<< b{id,v,type,data}
+      res!
+  else
+    # fast way - directly use latest snapshot
+    # use this for undefined version, since latest snapshot is always in database
+    p = io.query "select doc_id, version, doc_type, data from snapshots where doc_id = $1", [doc_id]
+      .then (r={}) ->
+        if !(ret = r.[]rows.0) => return aux.reject 404
+        lc.v = ret.version
+        lc.type = ret.doc_type
+        lc.data = ret.data
+  p
+    .then -> io.query "select doc_id,version from milestonesnapshots where version = $1", [lc.v]
     .then (r={}) ->
       if r.[]rows.length => return Promise.resolve!
       io.query """
       insert into milestonesnapshots (collection,doc_id,doc_type,version,data) values ($1,$2,$3,$4,$5)
-      """, ["doc", id, type, v, data]
+      """, ["doc", lc.id, lc.type, lc.v, lc.data]
     .then -> res!
     .catch rej
 
