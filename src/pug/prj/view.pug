@@ -16,12 +16,12 @@ block head
 block body
   - var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
   - var purpose = grp.form.purpose || {};
-  - thumb = (prj.thumb ? `/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb}` : 'none')
+  - thumb = (prj.thumb ? `url(/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb})` : 'none')
 
 
   .gd-prj-view.typeset.heading-contrast: .inner
     .gd-prj-view-header.simple
-      .thumb(style=`background-image:url(${thumb})`)
+      .thumb(style=`background-image:${thumb}`)
       .info
         .brd
           a(href=`/dash/brd/${brd.slug}/list`) #{brd.name}
