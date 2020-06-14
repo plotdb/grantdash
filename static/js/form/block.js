@@ -579,9 +579,9 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
           "input-field": function(arg$){
             var node, names, ref$;
             node = arg$.node, names = arg$.names;
-            return node.value = in$('start', names)
+            return node.value = (in$('start', names)
               ? ((ref$ = this$.block).value || (ref$.value = {})).start
-              : ((ref$ = this$.block).value || (ref$.value = {})).end;
+              : ((ref$ = this$.block).value || (ref$.value = {})).end) || '';
           },
           "is-range": function(arg$){
             var node, ref$;

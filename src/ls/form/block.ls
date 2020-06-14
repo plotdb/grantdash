@@ -273,7 +273,7 @@ module["form-datetime"] = module-init: ->
       "input-field": ({node,local}) ~> if @viewing => tail.DateTime node
     handler:
       "input-field": ({node,names}) ~>
-        node.value = if \start in names => @block.{}value.start else @block.{}value.end
+        node.value = (if \start in names => @block.{}value.start else @block.{}value.end) or ''
       "is-range": ({node}) ~> node.classList.toggle \d-none, !@block.{}config.range-enabled
       "range-enabled": ({node}) ~>
         node.classList.toggle \on, @block.{}config.range-enabled
