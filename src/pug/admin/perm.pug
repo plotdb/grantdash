@@ -2,7 +2,6 @@
 h4 權限設定
 .text-muted.mb-4 權限設定讓您指派特定用戶來協助您管理維護您的組織、活動與用戶提案。我們已經預建了數種不同的角色，您可以依需求指派用戶到這些角色之中。
 +scope("perm-panel")
-
   ul.nav.nav-tabs.mb-4(ld="roles")
     li.nav-item: a.nav-link(ld="role-all",data-type="all",data-name="") 清單
     li.nav-item(ld-each="role"): a.nav-link
@@ -30,7 +29,7 @@ h4 權限設定
 
   div
     .py-3.px-3(ld="newuser"): .d-inline-block.clickable.text-primary(ld="newuser-toggle") 新增使用者權限 ...
-    .card.shadow-sm.mx-2.d-none(ld="newuser"): .card-body.p-2
+    .card.shadow-sm.mx-2.mb-3.d-none(ld="newuser"): .card-body.p-2
       .d-flex.align-items-center
         .input-group
           +scope("user-search").position-relative.flex-grow-1
@@ -59,6 +58,7 @@ h4 權限設定
             .btn.btn-outline-secondary(ld="newuser-add") 增加
 
         .ml-4.mr-2.clickable(ld="newuser-toggle"): i.i-close
+      a.text-sm.mt-1.ml-1(ld="role-view newtoken-add", href="#") 以連結方式加入權限 ...
 
 
   .px-0(ld="list-view")

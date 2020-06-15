@@ -27,7 +27,7 @@ api.post \/token, aux.signed, (req, res) ->
   # TODO For now, we only provide brd permission token. only owner can create token
   cache.perm.check {io, user: req.user, type, slug, action: \owner}
     .then -> io.query "insert into permtoken (token,id) values ($1, $2)", [token, id]
-    .then -> res.send {id}
+    .then -> res.send {id, token}
     .catch aux.error-handler res
 
 app.get \/token/:token, (req, res) ->

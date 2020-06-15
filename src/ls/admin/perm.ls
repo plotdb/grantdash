@@ -1,4 +1,4 @@
-({sdbAdapter, userSearch}) <- ldc.register \adminPerm, <[sdbAdapter userSearch]>, _
+({ldcvmgr, sdbAdapter, userSearch, error}) <- ldc.register \adminPerm, <[ldcvmgr sdbAdapter userSearch error]>, _
 Ctrl = (opt) ->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
@@ -118,6 +118,29 @@ Ctrl = (opt) ->
         update-view!
   view-config.action.click <<< do
     "newuser-toggle": ({node}) -> view.getAll(\newuser).map -> it.classList.toggle \d-none
+    "newtoken-add": ({node}) ~>
+      role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0 or {name: ''}
+      ld$.fetch "/dash/api/token", {method: \POST}, {type: \json}
+        .then (r = {}) ~>
+          if !(r.id and r.token) => return Promise.reject new ldError(400)
+          picked = {key: r.id, displayname: r.id, type: \token}
+          len = obj.cfg.roles
+            .map -> it.list
+            .reduce(((a,b) -> a ++ b), [])
+            .filter -> it.type == picked.type and it.key == picked.key
+            .length
+          if len => return alert("user already exist")
+          entry = picked <<< {perm: role.name}
+          role.list.push entry
+          update-data!
+          update-view!
+          ldcvmgr.getdom \token-link
+            .then (dom) ->
+              ld$.find(dom, '[ld=token-link]',0)
+                .innerText = "https://#{window.location.hostname}/dash/token/#{r.token}"
+              ldcvmgr.toggle \token-link
+        .catch error!
+
     "newuser-add": ({node, evt}) ~>
       role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0 or {name: ''}
       if !(picked = @ctrl.search.get!) => return
@@ -128,7 +151,6 @@ Ctrl = (opt) ->
         .length
       if len => return alert("user already exist")
       entry = picked <<< {perm: role.name}
-      if picked.type == \email => picked.config = {invited: false, pending: true}
       role.list.push entry
       @ctrl.search.clear!
       update-data!

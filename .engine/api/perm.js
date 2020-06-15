@@ -67,7 +67,8 @@
         return io.query("insert into permtoken (token,id) values ($1, $2)", [token, id]);
       }).then(function(){
         return res.send({
-          id: id
+          id: id,
+          token: token
         });
       })['catch'](aux.errorHandler(res));
     });
