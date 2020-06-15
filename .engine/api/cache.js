@@ -14,6 +14,8 @@
       teamname: "Grant Dash"
     },
     "taicca.grantdash.io": {
+      org: "taicca-tw",
+      brd: "grantdash-test",
       teamname: "Taicca Dash"
     },
     "sch001.g0v.tw": {
