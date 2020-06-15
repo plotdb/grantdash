@@ -30,6 +30,23 @@ create table if not exists users (
 
 create index idx_user_displayname on users (lower(displayname) varchar_pattern_ops);
 
+create table if not exists perm (
+  id text not null unique,
+  createdtime timestamp not null default now(),
+  owner int not null references users(key) on delete cascade
+);
+
+create index if not exists perm_owner on perm (owner);
+
+create table if not exists permtoken (
+  token text not null unique primary key,
+  id text not null unique,
+  createdtime timestamp not null default now(),
+  redeemspan int not null default 172800000
+);
+
+create index if not exists permtoken_id on permtoken (id);
+
 create table if not exists mailverifytoken (
   owner int references users(key) on delete cascade,
   token text,

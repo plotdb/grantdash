@@ -14,6 +14,9 @@ mixin authpanel
             li #[a(href="/auth/reset/",style="color:#0ff",target="_blank",rel="noopener noreferrer") 重設密碼]
             li #[a(href="#",onclick="lda.ldcvmgr.toggle('contact');",style="color:#0ff") 與我們聯絡]
 
+        .d-none(data-info="token")
+          h2.mb-4.font-weight-bold 歡迎您！
+          p 您受邀成為我們的一員。不過，在繼續之前您需要先登入系統。
         div(data-info="default")
           if block
             block

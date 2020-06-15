@@ -2,7 +2,7 @@ require! <[permcheck lderror ../aux]>
 
 # TODO hard coded for now but we should query from db in the future.
 coded-domains = do
-  "grantdash.dev": {teamname: "Grant Dash Dev"}
+  "grantdash.dev": {org: "grantdash-dev", brd: "test-brd", teamname: "Grant Dash Dev"}
   "grantdash.io": {teamname: "Grant Dash"}
   "taicca.grantdash.io": {teamname: "Taicca Dash"}
   "sch001.g0v.tw": {org: "g0v-jothon", brd: "sch001", teamname: "零時小學校"}
@@ -54,9 +54,13 @@ perm = do
     @perm{}[type][slug] = null
   check: ({io, user, type, slug, action}) ->
     action = if Array.isArray(action) => action else [action]
+    payload = {role: {}, perm: {}}
     Promise.resolve!
       .then ~>
         if !(user and user.key and slug and (type in @supported-types)) => return Promise.reject!
+        # NOTE instead of obj.perm, we also use an external table 'perm' for providing token for users.
+        #      and for now we don't have strategy to invalidate caches for perm type update.
+        # TODO better way for invalidating cache based on perm table change?
         if @cache{}[type]{}[slug][user.key]? =>
           return if @cache[type][slug][user.key] => true else Promise.reject!
         p = if @perm{}[type][slug] =>
@@ -69,9 +73,12 @@ perm = do
         p
           .then (ret) ~>
             if user.key == ret.owner => return
-            perm = ret.{}perm.[]roles
-            role = {user: [user.key], email: [user.username]}
-            permcheck {role, perm}
+            payload.perm = ret.{}perm.[]roles
+            io.query "select id from perm where owner = $1", [user.key]
+          .then (r={}) ->
+            token = r.[]rows.map -> it.id
+            payload.role = {user: [user.key], email: [user.username], token}
+            permcheck payload
               .then (cfg) -> if !cfg or !(action.filter(->cfg[it]).length) => return Promise.reject!
     .then ~> @cache{}[type]{}[slug][user.key] = true
     .catch (e) ~>

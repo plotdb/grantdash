@@ -30,7 +30,7 @@
         return res.send(r.rows || (r.rows = []));
       })['catch'](aux.errorHandler(res));
     });
-    return api.get('/stage', function(req, res){
+    api.get('/stage', function(req, res){
       var brd;
       brd = {
         brd: req.query.brd
@@ -46,5 +46,67 @@
         return res.send(it);
       })['catch'](aux.errorHandler(res));
     });
+    api.post('/token', aux.signed, function(req, res){
+      var ref$, token, id, hint, type, slug;
+      ref$ = [suuid(), suuid()], token = ref$[0], id = ref$[1];
+      hint = {
+        org: (ref$ = import$(import$({}, req.scope), req.body)).org,
+        brd: ref$.brd
+      };
+      type = hint.brd ? 'brd' : 'org';
+      slug = hint.brd
+        ? hint.brd
+        : hint.org;
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: type,
+        slug: slug,
+        action: 'owner'
+      }).then(function(){
+        return io.query("insert into permtoken (token,id) values ($1, $2)", [token, id]);
+      }).then(function(){
+        return res.send({
+          id: id
+        });
+      })['catch'](aux.errorHandler(res));
+    });
+    app.get('/token/:token', function(req, res){
+      var token;
+      if (!(token = req.params.token)) {
+        return aux.r400(res);
+      }
+      return res.render("auth/perm/claim.pug", {
+        exports: {
+          token: token
+        }
+      });
+    });
+    return api.put('/token', aux.signed, function(req, res){
+      var token;
+      if (!(token = req.body.token)) {
+        return aux.r400(res);
+      }
+      return io.query("select token,id,redeemspan,createdtime from permtoken where token = $1", [token]).then(function(r){
+        var ret;
+        r == null && (r = {});
+        if (!(ret = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan) {
+          return aux.reject(1013);
+        }
+        return io.query("insert into perm (id, owner) values ($1, $2)", [ret.id, req.user.key]);
+      })['finally'](function(){
+        return io.query("delete from permtoken where token = $1", [token]);
+      }).then(function(){
+        return res.send({});
+      })['catch'](aux.errorHandler(res));
+    });
   });
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
 }).call(this);

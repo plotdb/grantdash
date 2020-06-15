@@ -6,6 +6,8 @@
   aux = require('../aux');
   codedDomains = {
     "grantdash.dev": {
+      org: "grantdash-dev",
+      brd: "test-brd",
       teamname: "Grant Dash Dev"
     },
     "grantdash.io": {
@@ -95,11 +97,15 @@
       return ((ref$ = this.perm)[type] || (ref$[type] = {}))[slug] = null;
     },
     check: function(arg$){
-      var io, user, type, slug, action, this$ = this;
+      var io, user, type, slug, action, payload, this$ = this;
       io = arg$.io, user = arg$.user, type = arg$.type, slug = arg$.slug, action = arg$.action;
       action = Array.isArray(action)
         ? action
         : [action];
+      payload = {
+        role: {},
+        perm: {}
+      };
       return Promise.resolve().then(function(){
         var ref$, ref1$, p, that;
         if (!(user && user.key && slug && in$(type, this$.supportedTypes))) {
@@ -121,19 +127,24 @@
             return ((ref$ = this$.perm)[type] || (ref$[type] = {}))[slug] = ret;
           });
         return p.then(function(ret){
-          var perm, ref$, role;
+          var ref$;
           if (user.key === ret.owner) {
             return;
           }
-          perm = (ref$ = ret.perm || (ret.perm = {})).roles || (ref$.roles = []);
-          role = {
+          payload.perm = (ref$ = ret.perm || (ret.perm = {})).roles || (ref$.roles = []);
+          return io.query("select id from perm where owner = $1", [user.key]);
+        }).then(function(r){
+          var token;
+          r == null && (r = {});
+          token = (r.rows || (r.rows = [])).map(function(it){
+            return it.id;
+          });
+          payload.role = {
             user: [user.key],
-            email: [user.username]
+            email: [user.username],
+            token: token
           };
-          return permcheck({
-            role: role,
-            perm: perm
-          }).then(function(cfg){
+          return permcheck(payload).then(function(cfg){
             if (!cfg || !action.filter(function(it){
               return cfg[it];
             }).length) {
