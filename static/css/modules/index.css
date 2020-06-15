@@ -271,6 +271,26 @@
     outline: 0px solid rgba(255,255,255,0);
   }
 }
+.judge .handsontable {
+  font-size: 14px;
+}
+.judge .handsontable td,
+.judge .handsontable th {
+  vertical-align: middle;
+  text-align: center;
+}
+.judge .handsontable td.auto {
+  background: #f9fafb;
+  color: #47b;
+}
+.judge-table tr.check {
+  background: #fafbfc;
+  color: #444;
+}
+.judge-table tr.active {
+  background: #ff9 !important;
+  box-shadow: inset 0 0 10px 2px #fff;
+}
 .folder-item:hover {
   color: currentColor;
 }

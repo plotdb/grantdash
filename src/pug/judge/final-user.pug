@@ -1,0 +1,141 @@
+extends /base.pug
+block vars
+  - ctrl.navtop.shown = false
+  - ctrl.navtop.placeholder = false
+  - ctrl.navtop.className = " "
+  - ctrl.foot.shown = false
+block head
+  +css("/assets/lib/handsontable/handsontable.min.css")
+block body
+
+  .h-100.w-100.d-flex.flex-column.judge
+    .p-2.d-flex
+      .flex-grow-1.p-2
+        span.mr-4 沉浸式內容國際合資合製補助計畫
+        span #[i.i-radio.text-success] 決選表 - 王小明委員
+      div
+        .p-2 Kirby #[i.i-dart-down]
+
+    .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
+      .d-flex.flex-column(style="flex:3 2 60%")
+
+        .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow:hidden")
+          #example.w-100.h-100.bg-light
+
+        .px-4.py-2.w-100
+          .d-flex.align-items-center
+            .mr-4
+              .text-muted.text-sm 距決選截止還有
+              .text-danger 2 天 15 小時 20 分
+            .mr-4.flex-grow-1
+              .text-muted.text-sm 完成度 / #[span.text-danger 70%]
+              .progress.my-1(style="width:100%")
+                .progress-bar.progress-bar-striped.progress-bar-animated(style="width:60%")
+            div: .btn.btn-outline-dark 提交評選結果
+
+
+      div(style="flex:2 3 40%")
+        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0
+          iframe.border-0.w-100.h-100(src="about:blank")
+          //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
+            embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
+
+
+   
+block script
+  +script("/assets/lib/handsontable/handsontable.min.js")
+  script: :lsc
+
+    data2 = [
+      ["編號","評論","專案名稱","創意","技術","完整","總分","排名","短評"],
+      [1,0,"開放 SaaS 平台",29,26,36,91,2,"很適合用支持其它開源專案"],
+      [2,0,"線上資料庫",30,15,39,84,3,"不知道這個要怎麼實作"],
+      [3,1,"選舉指南",19,13,20,52,22,''],
+      [4,0,"點對點分散式網路",30,10,22,62,14,"感覺很不容易做得好"],
+      [5,0,"剩食大平台",18,13,37,68,12,''],
+      [6,0,"求職小幫手",29,28,25,82,4,''],
+      [7,1,"美國台灣觀測協會",11,24,34,69,14],
+      [8,1,"國會監視器",10,28,31,69,10,"如果可以自動化會更好"],
+      [9,0,"協作資料夾 2.0",29,25,38,92,4],
+      [10,0,"線上課程平台",27,12,33,72,16],
+      [11,0,"協作式筆記系統",13,15,34,62,10],
+      [12,0,"剩食資料庫系統",23,21,30,74,23],
+      [13,2,"社區食倉",17,18,23,58,18,"感覺很多同性質的提案了"],
+      [14,0,"文字工作者大平台",25,13,24,62,23],
+      [15,0,"自動逐字稿輔助編寫平台",29,26,21,76,18],
+      [16,0,"司法透視鏡 - 一起監督司法",12,14,15,41,8],
+      [17,3,"台灣ㄟ姻仔",15,21,37,73,23],
+      [18,3,"農業微型監視儀",21,18,18,57,18],
+      [19,0,"台灣在地化分散式字點",15,13,32,60,15],
+      [20,0,"xota.co",23,11,24,58,25],
+      [21,0,"從 AM2.5 到 PM2.5",21,21,10,52,8],
+      [22,1,"新聞儀表板",20,11,26,57,17],
+      [23,0,"山林間測快手",26,14,39,79,18],
+      [24,0,"台灣在地化地圖計畫",11,11,21,43,8],
+      [25,2,"資訊透明度量表",19,12,13,44,27],
+      [26,0,"智慧漸凍人補助器",20,15,16,51,25],
+      [27,0,"離職書產生器",17,24,22,63,20]
+    ]
+
+    data = []
+    for i from 0 til 20 =>
+      data = data ++ data2
+
+
+    dom = ld$.find document, '#example', 0
+    Handsontable.renderers.registerRenderer \myrenderer, (instance, td, row, col, prop, value, cellProperties) -> 
+      Handsontable.renderers.TextRenderer.apply @, arguments
+      if col >=6 and col <= 7 =>
+        td.classList.add \auto
+      else if col == 1 and row > 0 and value > 0 =>
+        td.style.background = <[none #ff9 #fb9 #f99]>[value] or \#f99
+    Handsontable.hooks.add \afterOnCellMouseDown, (e, c, td) ->
+      if c.col == 1 => # take care of review number cell clicking event
+      else if c.col == 2 => 
+        iframe = ld$.find \iframe, 0
+        iframe.setAttribute \src, \https://battledash.dev/project/simple.html
+
+
+    hot = new Handsontable dom, {
+      data: data
+      rowHeaders: true
+      colHeaders: true
+      filters: true
+      dropdownMenu: true
+      stretchH: \all
+      rowHeights: 25
+      minRows: 50
+      minCols: 15
+      fixedRowsTop: 1,
+      fixedColumnsLeft: 3,
+      cells: (row, col) ->
+        cellProperties = {}
+        cellProperties.renderer = \myrenderer
+        return cellProperties
+      colWidths: [40,50,180,50,50,50,50,50,250]
+      customBorders: [
+
+        {
+          range: { from : {row: 0, col: 2}, to: {row: 0, col: 2}},
+          bottom: {width: 2, color: \#000}, right: {width: 2, color: \#000}
+        }
+
+        {
+          range: { from : {row: 0, col: 5}, to: {row: 0, col: 5}},
+          bottom: {width: 2, color: \#000}, right: {width: 1, color: \#444}
+        }
+
+        {
+          range: { from : {row: 0, col: 7}, to: {row: 0, col: 7}},
+          bottom: {width: 2, color: \#000}, right: {width: 1, color: \#444}
+        }
+
+        { range: { from : {row: 0, col: 0}, to: {row: 0, col: 50}}, bottom: {width: 2, color: \#000}}
+        { range: { from : {row: 0, col: 2}, to: {row: 50, col: 2}}, right: {width: 2, color: \#000}}
+
+        { range: { from : {row: 0, col: 5}, to: {row: 50, col: 5}}, right: {width: 1, color: \#444}}
+        { range: { from : {row: 0, col: 7}, to: {row: 50, col: 7}}, right: {width: 1, color: \#444}}
+
+      ]
+    }
+
