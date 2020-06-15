@@ -140,7 +140,7 @@ ldc.register('judgePreliminaryUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdb
     fetch: function(){
       var this$ = this;
       console.log("get project list ... ");
-      return ld$.fetch('/dash/api/brd/sch001/list', {
+      return ld$.fetch('/dash/api/brd/test-brd/list', {
         method: 'GET'
       }, {
         type: 'json'
@@ -229,8 +229,8 @@ ldc.register('judgePreliminaryUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdb
     ctrl = new Ctrl({
       user: g.user,
       root: document.body,
-      brd: 'sch001',
-      grp: '4rFUP+03IS05ZD09ku03KMlsh'
+      brd: 'test-brd',
+      grp: '4jUmMh07zZ05kl0Col03v-Bhu'
     });
     return Promise.resolve().then(function(){
       return ctrl.fetch();

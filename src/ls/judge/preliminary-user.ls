@@ -65,7 +65,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
 
   fetch: ->
     console.log "get project list ... "
-    ld$.fetch '/dash/api/brd/sch001/list', {method: \GET}, {type: \json}
+    ld$.fetch '/dash/api/brd/test-brd/list', {method: \GET}, {type: \json}
       .then ~>
         @prjs = it
         @render!
@@ -112,8 +112,8 @@ auth.get!
     ctrl = new Ctrl do
       user: g.user
       root: document.body
-      brd: \sch001
-      grp: \4rFUP+03IS05ZD09ku03KMlsh
+      brd: \test-brd
+      grp: \4jUmMh07zZ05kl0Col03v-Bhu
     Promise.resolve!
       .then -> ctrl.fetch!
       .then -> ctrl.sharedb!
