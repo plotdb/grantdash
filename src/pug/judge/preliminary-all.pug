@@ -1,0 +1,81 @@
+extends /base.pug
+block vars
+  - ctrl.navtop.shown = false
+  - ctrl.navtop.placeholder = false
+  - ctrl.navtop.className = " "
+  - ctrl.foot.shown = false
+block head
+block body
+  //-include /ui/data/prj-list.pug
+  //-include /ui/data/sample.pug
+  .h-100.w-100.d-flex.flex-column
+    //-div(style="flex:0 0 auto;height:56px")
+    .p-2.d-flex
+      .flex-grow-1.p-2
+        span.mr-4 沉浸式內容國際合資合製補助計畫
+        span #[i.i-radio.text-success] 初審總表
+      div
+        .p-2 Kirby #[i.i-dart-down]
+
+    .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
+      .d-flex.flex-column(style="flex:3 2 60%")
+
+        .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow:scroll")
+          #example.w-100
+            .p-2.d-flex.align-items-center.border-bottom.border-secondary.bg-light.sticky.shadow-sm(style="top:0")
+              .mr-2.text-right.px-2(style="width:50px") 編號
+              .mr-2.text-right.px-2(style="width:50px") 評論
+              .mr-2.text-right.px-2(style="width:50px") 資格
+              .flex-grow-1 提案名稱
+              .mx-2 入選標記
+
+              .d-flex.justify-content-center.align-items-center(style="width:200px")
+                .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                span.mr-3 推薦
+                .bg-warning.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                span.mr-3 面議
+                .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                span 汰除
+
+            //-each i,$index in db
+            div(ld-each="prj")
+              .px-2.py-1.d-flex.align-items-center.border-bottom.border-light
+                .mr-2.text-right.px-2(style="width:50px")
+                .mr-2.text-center.px-2(style="width:50px"): i.i-doc
+                .mr-2.text-center.px-2(style="width:50px") #[i.i-check.text-success]
+                .flex-grow-1.text-truncate
+                  span(ld="name")
+                  .text-sm.text-muted(ld="ownername")
+                .mx-2.rounded.text-center.text-secondary.bg-light.vertical-center.clickable(
+                ld="pick",style="width:4em"): i.i-check
+                .px-1(style="flex:0 0 200px")
+                  div: .progress.w-100
+                    .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(
+                    ld="progress",data-name="accept")
+                    .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(
+                    ld="progress",data-name="pending")
+                    .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
+                    ld="progress",data-name="reject")
+                  .d-flex.align-items-center.text-sm.mt-1.ml-1(style="line-height:1em")
+                    each c in [["bg-success","accept"],["bg-warning","pending"],["bg-danger","reject"]]
+                      .d-flex.align-items-center.mr-3
+                        .d-inline-block.rounded.mr-1(style="width:1.1em;height:1em;",class=c[0])
+                        span(ld="count", data-name=c[1])
+
+
+
+
+
+      div(style="flex:2 3 40%")
+        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0
+          iframe.border-0.w-100.h-100(src="about:blank")
+          //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
+            embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
+block script
+  +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
+  +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
+  +script("/dash/js/util/sdb-adapter.js")
+  +script("/dash/js/util/hub.js")
+  +script("/dash/js/judge/preliminary-all.js")
+  script: :lsc
+    ldc.register <[judgePreliminaryAll]>, ->
