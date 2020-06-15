@@ -31,6 +31,9 @@
         if (!(lc.prj = prj = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
+        if (!prj.detail) {
+          return aux.reject(404);
+        }
         return cache.stage.check({
           io: io,
           type: 'brd',

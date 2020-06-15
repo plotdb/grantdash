@@ -16,6 +16,7 @@ app.get \/prj/:slug, (req, res) ->
   """, [slug]
     .then (r={}) ->
       if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
+      if !(prj.detail) => return aux.reject 404
       cache.stage.check {io, type: \brd, slug: lc.prj.brd}
     .then ({config} = {config: {}}) ->
       if !config["prj-view"] => return aux.reject 403

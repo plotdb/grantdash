@@ -139,7 +139,7 @@ get-prj-list = (req, res) ->
         with cte as (
         select p.*,u.displayname as ownername
         from prj as p, users as u
-        where u.key = p.owner and p.brd = $3 and p.deleted is not true
+        where p.detail is not null and u.key = p.owner and p.brd = $3 and p.deleted is not true
         """,
         "and tag ? $4" if tag
         "and category = $#idx1" if category

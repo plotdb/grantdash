@@ -4,10 +4,12 @@ block vars
   - ctrl.navtop.placeholder = false;
 block head
   -
-    var meta = {
-      title: prj.detail.info.title,
-      description: prj.detail.info.description
-    };
+    var meta = {};
+  -
+    if(prj && prj.detail.info) {
+      meta.title = prj.detail.info.title;
+      meta.description = prj.detail.info.description;
+    }
   include /modules/meta.pug
   if pageInfo && pageInfo.cssUrl
     +css(pageInfo.cssUrl)
