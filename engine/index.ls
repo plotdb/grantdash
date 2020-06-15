@@ -174,6 +174,7 @@ backend = do
     app.use \/ext, throttling.route.external, router.ext # External API
     ext(@, pgsql)
 
+    # route preparation
     app.use (req, res, next) ->
       cache.route.check {io: pgsql, req, res}
         .then (ret) ->
