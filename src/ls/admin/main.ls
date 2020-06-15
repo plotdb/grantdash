@@ -138,21 +138,21 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
       @ctrl.org
         ..info = new admin-info {root: '[ld-scope=org-info]', type: \org, data: toc.org, toc}
         ..navbar = new admin-navbar {toc, root: '[data-name=org-navbar] [ld-scope=navbar-editor]'}
-        ..perm = new admin-perm {toc, root: '[data-nav=org-config] [ld-scope=perm-panel]'}
+        ..perm = new admin-perm {toc, root: '[data-nav=org-config] [ld-scope=perm-panel]', org: toc.org}
         ..page = new admin-page {toc, type: \org, root: '[data-name=org-page-info] [ld-scope=page-info]'}
 
       @ctrl.brd
         ..info = new admin-info {root: '[ld-scope=brd-info]', type: \brd, data: toc.brd, toc}
         ..group = new admin-menu {toc: @toc, set-group}
         ..stage = new admin-stage {toc, root: '[ld-scope=brd-stage]'}
-        ..perm = new admin-perm {toc, root: '[data-nav=brd-config] [ld-scope=perm-panel]'}
+        ..perm = new admin-perm {toc, root: '[data-nav=brd-config] [ld-scope=perm-panel]', brd: toc.brd}
         ..navbar = new admin-navbar {toc, root: '[data-name=brd-navbar] [ld-scope=navbar-editor]'}
         ..page = new admin-page {toc, type: \brd, root: '[data-name=brd-page-info] [ld-scope=page-info]'}
 
       @ctrl.grp
         ..form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}
         ..info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group, delete-group}
-        ..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]'}
+        ..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]', brd: toc.brd}
         ..grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
         ..list = new admin-prj-list {root: '[ld-scope=prj-list]', toc}

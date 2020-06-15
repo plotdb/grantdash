@@ -3,6 +3,8 @@ Ctrl = (opt) ->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @ctrl = search: new userSearch root: ld$.find(@root, '[ld-scope=user-search]',0)
+  @toc = opt.toc
+  @ <<< opt{org, brd}
   @ctrl.search.init!
 
   lc = {type: \list}
@@ -120,7 +122,10 @@ Ctrl = (opt) ->
     "newuser-toggle": ({node}) -> view.getAll(\newuser).map -> it.classList.toggle \d-none
     "newtoken-add": ({node}) ~>
       role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0 or {name: ''}
-      ld$.fetch "/dash/api/token", {method: \POST}, {type: \json}
+      payload = {}
+      if @org => payload.org = @org.slug
+      if @brd => payload.brd = @brd.slug
+      ld$.fetch "/dash/api/token", {method: \POST}, {json: payload, type: \json}
         .then (r = {}) ~>
           if !(r.id and r.token) => return Promise.reject new ldError(400)
           picked = {key: r.id, displayname: r.id, type: \token}

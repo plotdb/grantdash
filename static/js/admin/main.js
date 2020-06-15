@@ -295,7 +295,8 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
       });
       x$.perm = new adminPerm({
         toc: toc,
-        root: '[data-nav=org-config] [ld-scope=perm-panel]'
+        root: '[data-nav=org-config] [ld-scope=perm-panel]',
+        org: toc.org
       });
       x$.page = new adminPage({
         toc: toc,
@@ -319,7 +320,8 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
       });
       y$.perm = new adminPerm({
         toc: toc,
-        root: '[data-nav=brd-config] [ld-scope=perm-panel]'
+        root: '[data-nav=brd-config] [ld-scope=perm-panel]',
+        brd: toc.brd
       });
       y$.navbar = new adminNavbar({
         toc: toc,
@@ -344,7 +346,8 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
       });
       z$.perm = new adminPerm({
         toc: toc,
-        root: '[data-nav=grp-config] [ld-scope=perm-panel]'
+        root: '[data-nav=grp-config] [ld-scope=perm-panel]',
+        brd: toc.brd
       });
       z$.grade = new adminEntry({
         root: '[ld-scope=grade-panel]'

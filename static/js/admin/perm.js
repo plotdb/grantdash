@@ -13,6 +13,9 @@ ldc.register('adminPerm', ['ldcvmgr', 'sdbAdapter', 'userSearch', 'error'], func
         root: ld$.find(this.root, '[ld-scope=user-search]', 0)
       })
     };
+    this.toc = opt.toc;
+    this.org = opt.org;
+    this.brd = opt.brd;
     this.ctrl.search.init();
     lc = {
       type: 'list'
@@ -254,16 +257,24 @@ ldc.register('adminPerm', ['ldcvmgr', 'sdbAdapter', 'userSearch', 'error'], func
         });
       },
       "newtoken-add": function(arg$){
-        var node, role;
+        var node, role, payload;
         node = arg$.node;
         role = (lc.type === 'list'
           ? lc.pickedRole
           : lc.role) || obj.cfg.roles[0] || {
           name: ''
         };
+        payload = {};
+        if (this$.org) {
+          payload.org = this$.org.slug;
+        }
+        if (this$.brd) {
+          payload.brd = this$.brd.slug;
+        }
         return ld$.fetch("/dash/api/token", {
           method: 'POST'
         }, {
+          json: payload,
           type: 'json'
         }).then(function(r){
           var picked, len, entry;
