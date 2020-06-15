@@ -132,19 +132,19 @@
             return;
           }
           payload.perm = (ref$ = ret.perm || (ret.perm = {})).roles || (ref$.roles = []);
-          return io.query("select id from perm where owner = $1", [user.key]);
-        }).then(function(r){
-          var token;
-          r == null && (r = {});
-          token = (r.rows || (r.rows = [])).map(function(it){
-            return it.id;
-          });
-          payload.role = {
-            user: [user.key],
-            email: [user.username],
-            token: token
-          };
-          return permcheck(payload).then(function(cfg){
+          return io.query("select id from perm where owner = $1", [user.key]).then(function(r){
+            var token;
+            r == null && (r = {});
+            token = (r.rows || (r.rows = [])).map(function(it){
+              return it.id;
+            });
+            payload.role = {
+              user: [user.key],
+              email: [user.username],
+              token: token
+            };
+            return permcheck(payload);
+          }).then(function(cfg){
             if (!cfg || !action.filter(function(it){
               return cfg[it];
             }).length) {

@@ -75,11 +75,12 @@ perm = do
             if user.key == ret.owner => return
             payload.perm = ret.{}perm.[]roles
             io.query "select id from perm where owner = $1", [user.key]
-          .then (r={}) ->
-            token = r.[]rows.map -> it.id
-            payload.role = {user: [user.key], email: [user.username], token}
-            permcheck payload
+              .then (r={}) ->
+                token = r.[]rows.map -> it.id
+                payload.role = {user: [user.key], email: [user.username], token}
+                permcheck payload
               .then (cfg) -> if !cfg or !(action.filter(->cfg[it]).length) => return Promise.reject!
+
     .then ~> @cache{}[type]{}[slug][user.key] = true
     .catch (e) ~>
       @cache{}[type]{}[slug][user.key] = false
