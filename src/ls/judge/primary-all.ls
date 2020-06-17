@@ -139,7 +139,6 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @prjs.map (p,i) ~>
       p.count = count = {accept: 0, pending: 0, reject: 0, total: len}
       for k,u of @data.user => if (v = u.prj[p.slug].value) => count[v]++
-    console.log @data
 
   get-progress: ->
     @progress = ret = {done: 0, accept: 0, pending: 0, reject: 0, total: (@prjs.length or 1)}

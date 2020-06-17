@@ -261,7 +261,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
         }
         return results$;
       }.call(this)).length;
-      this.prjs.map(function(p, i){
+      return this.prjs.map(function(p, i){
         var count, k, ref$, u, v, results$ = [];
         p.count = count = {
           accept: 0,
@@ -277,7 +277,6 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
         }
         return results$;
       });
-      return console.log(this.data);
     },
     getProgress: function(){
       var ret, this$ = this;
