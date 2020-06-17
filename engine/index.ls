@@ -145,15 +145,7 @@ backend = do
 
     # =========== Sharedb
     if config.{}sharedb.enabled =>
-      access = ({user, id, data, type}) ->
-        console.log 1
-        t1 = Date.now!
-        cache.perm.sharedb {io: pgsql, user, id, data, type, action: \owner}
-          .then (ret) ->
-            t2 = Date.now!
-            console.log t2 - t1
-            console.log 2
-            return ret
+      access = ({user, id, data, type}) -> cache.perm.sharedb {io: pgsql, user, id, data, type, action: \owner}
 
       @sharedb = {server, sdb, connect, wss} = sharedb-wrapper {
         app, io: config.io-pg, session, access, milestone-db: {interval: 200, enabled: true}
