@@ -29,30 +29,25 @@ block body
               .mx-3 #[i.i-check.text-success] / 通過
               .mx-3 #[i.i-close.text-danger] / 不符合
               .mx-3 #[i.i-doc.text-primary] / 帶附註
-            table.table.w-100.bg-light.border-bottom.mb-0.shadow-sm
+            table.table.w-100.bg-light.border-bottom.mb-0.shadow-sm.text-center
               tr
-                td.text-center.clickable(ld="sort",data-name="state",style="width:5em") 結果
-                td.text-center(ld="sort",data-name="comment",style="width:2em"): i.i-doc
+                td.clickable(ld="sort",data-name="state",style="width:5em") 結果
+                td(ld="sort",data-name="comment",style="width:2em") 註
                 //-td.text-right(style="width:4em") 編號
-                td.clickable
+                td.clickable.text-left
                   .d-flex.align-items-end
                     .flex-grow-1.clickable(ld="sort",data-name="name") 提案名稱
                     //-.text-sm.text-primary.clickable(ld="criteria") #[i.i-question] 審核條件
-                td.text-center.clickable(ld-each="header-criteria",style="width:4em")
-                td.text-center(style="width:4em") 評論
-
+                td.clickable(ld-each="header-criteria",style="width:4em")
+                td(style="width:4em") 評論
           table.table.w-100.mb-0
             tr.d-none(ld-each="project")
-              //- 狀態圖示
-              td.text-nowrap.text-sm(style="width:5em")
-                .bg-light(style="padding:.2em .5em",ld="state") #[span.mr-1]#[i]
-              //- 註解圖示
+              td.text-nowrap(style="width:5em"): .text-sm
+                .bg-light.rounded(style="padding:.2em .5em",ld="state") #[span.mr-1]#[i]
               td(style="width:2em"): i.i-doc.text-primary.invisible(ld="has-comment comment")
               //-td(style="width:4em").text-right: span(ld="key")
               td.clickable: span.text-underline(ld="name")
-              //- 資格清單 ( 個人用 )
               td.text-center.clickable(ld-each="criteria",style="width:4em"): i
-              //- 評論按鈕
               td.text-center.clickable(ld="comment",style="width:4em"): i.i-pen
 
 

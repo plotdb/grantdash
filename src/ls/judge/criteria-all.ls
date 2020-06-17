@@ -1,17 +1,5 @@
-({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeCriteriaUser,
+({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeCriteriaAll,
 <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
-
-
-clsmap = [
-  <[i-check text-success]>
-  <[i-circle text-secondary]>
-  <[i-close text-danger]>
-]
-clsset = (node, val) ->
-  newcls = clsmap[val]
-  oldcls = Array.from(node.classList)
-  if oldcls.length => node.classList.remove.apply node.classList, oldcls
-  node.classList.add.apply node.classList, newcls
 
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
@@ -26,17 +14,12 @@ Ctrl = (opt) ->
   @view = view = new ldView do
     init-render: false
     root: @root
+
     action: do
-      input: do
-        comment: ({node}) ~>
-          if !@active => return
-          @data.prj{}[@active.slug].comment = node.value
-          @update debounced: 300
-          @view.render {name: 'project', key: @active.slug}
       click: do
         detail: ({node}) ~> @ldcv.detail.toggle!
         criteria: ({node}) ~> @ldcv.criteria.toggle!
-        sort: ({node}) ~> @sort node.getAttribute \data-name
+        sort: ({node}) ~> @sort node.getAttribute(\data-name), node.getAttribute(\data-value)
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
       reviewer: ({node}) ~> if @user => @user.displayname
@@ -50,10 +33,6 @@ Ctrl = (opt) ->
           node.style.width = "#{100 * p[n] / p.total }%"
         else if \progress-percent in names =>
           node.innerText = Math.round(100 * p.done / p.total )
-      "header-criteria": do
-        list: ~> @criteria
-        action: click: ({node, data}) ~> @sort \criteria, data.name
-        handler: ({node, data}) ~> node.innerText = data.name
       project: do
         key: -> it.slug
         list: ~> @prjs
@@ -77,6 +56,10 @@ Ctrl = (opt) ->
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
                 @active-node.classList.add \active
+            text: do
+              count: ({node, context}) ->
+                n = node.getAttribute(\data-name)
+                return context.count[n].length or '0'
             handler: do
               "has-comment": ({node, context}) ~>
                 node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
@@ -90,27 +73,13 @@ Ctrl = (opt) ->
                 cls = [<[bg-success text-white]> <[bg-light text-secondary]> <[bg-danger text-white]>]
                 node.classList.add.apply node.classList, (cls[state] ++ <[rounded]>)
                 span.innerText = <[通過 待查 不符]>[state]
-              name: ({node, context}) -> node.innerText = context.name
+              name: ({node, context}) ->
+                node.innerText = context.name
               key: ({node, context}) -> node.innerText = context.key or ''
-              criteria: do
-                list: ({context}) ~> @criteria
-                init: ({node, local}) -> local.icon = ld$.find(node, 'i', 0)
-                action: click: ({node, data, context}) ~>
-                  v = @data.prj{}[context.slug].{}value[data.name]
-                  v = if v? => v else 1
-                  v = ( v + 2 ) % 3
-                  @data.prj{}[context.slug].value[data.name] = v
-                  @get-progress!
-                  @view.render {name: 'project', key: context.slug}
-                  @view.render <[progress count]>
-                  @update debounced: 10
-                handler: ({local, data, context}) ~>
-                  v = @data.prj{}[context.slug].{}value[data.name]
-                  v = if v? => v else 1
-                  clsset local.icon, v
+
         handler: ({node, local, data}) ~>
           local.view.setContext data
-          @get-state data
+          @get-count data
           local.view.render!
 
   @
@@ -134,7 +103,6 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
   init: ->
     Promise.resolve!
       .then ~> ctrl.auth!
-      .then ~> @user = @global.user
       .then ~> ctrl.fetch-criteria!
       .then ~> ctrl.fetch-prjs!
       .then ~> ctrl.sharedb!
@@ -149,8 +117,9 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     if !@sort.inversed => @sort.inversed = {}
     dir = if @sort.inversed[n] => 1 else -1
     verbose = do
-      name: value or {name: "名稱", state: "狀態", comment: "評論長度"}[name]
+      name: {name: "名稱", state: "狀態", comment: "評論長度"}[name] or value
       dir: if dir > 0 => "順向" else "逆向"
+    if name == \count => verbose.name = "#{{accept: "通過", pending: "待審", reject: "不符"}[value]}的數量"
     if hint => notify.send \success, "重新將表格依 #{verbose.name} 做 #{verbose.dir} 排序"
     debounce 100 .then ~>
       @sort.inversed[n] = !@sort.inversed[n]
@@ -169,27 +138,30 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
           a = if a? => a else 1
           b = if b? => b else 1
           return dir * ( statemap[a] - statemap[b] )
+      else if name == \count =>
+        @prjs.sort (a, b) ~> dir * (a.count[][value].length - b.count[][value].length)
+
       if hint => loader.off!
       @render!
 
-  get-state: (context) ->
-    context.state = @criteria.reduce(
-      (a, b) ~>
-        v = @data.prj{}[context.slug].{}value[b.name]
-        Math.max(a, if v? => v else 1)
-      0
-    )
-
-  get-progress: ->
-    val = {0: 0, 1: 0, 2: 0}
-    @prjs.map (p) ~>
-      v = @criteria.reduce(
+  get-count: (context) ->
+    context.count = count = {accept: [], pending: [], reject: []}
+    for k,user of @data.{}user =>
+      val = @criteria.reduce(
         (a, b) ~>
-          v = @data.prj{}[p.slug].{}value[b.name]
+          v = user.prj{}[context.slug].{}value[b.name]
           Math.max(a, if v? => v else 1)
         0
       )
-      val[v]++
+      count[<[accept pending reject]>[val]].push user
+      context.state = if count.reject.length => 2 else if count.pending.length => 1 else 0
+
+  get-progress: ->
+
+    val = {0: 0, 1: 0, 2: 0}
+    @prjs.map (p) ~>
+      if !(p.state?) => @get-count(p)
+      val[p.state]++
     @progress = do
       accept: val.0
       pending: val.1
