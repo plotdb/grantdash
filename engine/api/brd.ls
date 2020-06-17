@@ -206,9 +206,8 @@ app.get \/brd/:slug, aux.signed, (req, res) ->
       res.render \pages/under-construction.pug, lc{brd, projects}
     .catch aux.error-handler res
 
-api.get \/brd/:brd/grpinfo, (req, res) ->
-  if !(brd = req.params.slug) => return aux.r400 res
-  if !(grp = req.body.grp) => return aux.r400 res
+api.post \/brd/:brd/grp/:grp/info, (req, res) ->
+  if !((brd = req.params.brd) and (grp = req.params.grp)) => return aux.r400 res
   fields = req.body.[]fields.filter -> it in <[grade criteria form]>
   io.query "select key,name,description,slug,detail from brd where slug = $1", [brd]
     .then (r={}) ->

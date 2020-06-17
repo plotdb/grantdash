@@ -129,7 +129,8 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
 
   fetch-criteria: ->
     console.log "fetch criteria ... "
-    @criteria = [{name: "開源", key: 1}, {name: "協作", key: 2}, {name: "參與", key: 3}]
+    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/info", {method: \POST}, {json: {fields: <[criteria]>}, type: \json}
+      .then (grp) ~> @criteria = grp.criteria.entries
 
   init: ->
     Promise.resolve!

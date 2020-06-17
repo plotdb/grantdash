@@ -261,19 +261,18 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
       return this.view.render();
     },
     fetchCriteria: function(){
+      var this$ = this;
       console.log("fetch criteria ... ");
-      return this.criteria = [
-        {
-          name: "開源",
-          key: 1
-        }, {
-          name: "協作",
-          key: 2
-        }, {
-          name: "參與",
-          key: 3
-        }
-      ];
+      return ld$.fetch("/dash/api/brd/" + this.brd + "/grp/" + this.grp + "/info", {
+        method: 'POST'
+      }, {
+        json: {
+          fields: ['criteria']
+        },
+        type: 'json'
+      }).then(function(grp){
+        return this$.criteria = grp.criteria.entries;
+      });
     },
     init: function(){
       var this$ = this;
