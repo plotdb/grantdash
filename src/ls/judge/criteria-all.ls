@@ -21,8 +21,8 @@ Ctrl = (opt) ->
         criteria: ({node}) ~> @ldcv.criteria.toggle!
         sort: ({node}) ~> @sort node.getAttribute(\data-name), node.getAttribute(\data-value)
     text: do
+      "grp-name": ({node}) ~> "#{@brdinfo.name} / #{@grpinfo.info.name}"
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
-      reviewer: ({node}) ~> if @user => @user.displayname
     handler: do
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
@@ -56,11 +56,15 @@ Ctrl = (opt) ->
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
                 @active-node.classList.add \active
-            text: do
+            handler: do
               count: ({node, context}) ->
                 n = node.getAttribute(\data-name)
-                return context.count[n].length or '0'
-            handler: do
+                node.innerHTML = ["""
+                <div style="width:.3em;display:inline-block">
+                <div class="rounded-circle bg-cover bg-portrait bg-dark border border-light"
+                style="width:1.5em;height:1.5em;background-image:url(/s/avatar/#{i}.png);">
+                </div></div>
+                """ for i in context.count[n]].join('')
               "has-comment": ({node, context}) ~>
                 node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
               state: ({node, context}) ~>
@@ -96,14 +100,18 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @get-progress!
     @view.render!
 
-  fetch-criteria: ->
-    console.log "fetch criteria ... "
-    @criteria = [{name: "開源", key: 1}, {name: "協作", key: 2}, {name: "參與", key: 3}]
+  fetch-info: ->
+    console.log "fetch info ... "
+    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/info", {method: \POST}, {json: {fields: <[criteria]>}, type: \json}
+      .then (ret) ~>
+        @brdinfo = ret.brd
+        @grpinfo = ret.grp
+        @criteria = ret.grp.criteria.entries
 
   init: ->
     Promise.resolve!
       .then ~> ctrl.auth!
-      .then ~> ctrl.fetch-criteria!
+      .then ~> ctrl.fetch-info!
       .then ~> ctrl.fetch-prjs!
       .then ~> ctrl.sharedb!
       .then ~> ctrl.getdoc!
@@ -149,11 +157,11 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     for k,user of @data.{}user =>
       val = @criteria.reduce(
         (a, b) ~>
-          v = user.prj{}[context.slug].{}value[b.name]
+          v = user.prj{}[context.slug].{}value[b.key]
           Math.max(a, if v? => v else 1)
         0
       )
-      count[<[accept pending reject]>[val]].push user
+      count[<[accept pending reject]>[val]].push k
       context.state = if count.reject.length => 2 else if count.pending.length => 1 else 0
 
   get-progress: ->

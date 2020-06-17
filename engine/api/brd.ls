@@ -215,7 +215,7 @@ api.post \/brd/:brd/grp/:grp/info, (req, res) ->
       if !(g = ret.detail.[]group.filter(-> it.key == grp).0) => return aux.reject 404
       grpinfo = g{info, key}
       for f in fields => grpinfo[f] = g[f]
-      res.send grpinfo
+      res.send {brd: ret{key,name,description,slug}, grp: grpinfo}
     .catch aux.error-handler res
 
 api.get \/brd/:slug/form/, (req, res) ->

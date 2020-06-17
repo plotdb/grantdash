@@ -40,6 +40,7 @@ Ctrl = (opt) ->
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
       reviewer: ({node}) ~> if @user => @user.displayname
+      "grp-name": ({node}) ~> "#{@brdinfo.name} / #{@grpinfo.info.name}"
     handler: do
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
@@ -52,7 +53,7 @@ Ctrl = (opt) ->
           node.innerText = Math.round(100 * p.done / p.total )
       "header-criteria": do
         list: ~> @criteria
-        action: click: ({node, data}) ~> @sort \criteria, data.name
+        action: click: ({node, data}) ~> @sort \criteria, data.key
         handler: ({node, data}) ~> node.innerText = data.name
       project: do
         key: -> it.slug
@@ -96,16 +97,16 @@ Ctrl = (opt) ->
                 list: ({context}) ~> @criteria
                 init: ({node, local}) -> local.icon = ld$.find(node, 'i', 0)
                 action: click: ({node, data, context}) ~>
-                  v = @data.prj{}[context.slug].{}value[data.name]
+                  v = @data.prj{}[context.slug].{}value[data.key]
                   v = if v? => v else 1
                   v = ( v + 2 ) % 3
-                  @data.prj{}[context.slug].value[data.name] = v
+                  @data.prj{}[context.slug].value[data.key] = v
                   @get-progress!
                   @view.render {name: 'project', key: context.slug}
                   @view.render <[progress count]>
                   @update debounced: 10
                 handler: ({local, data, context}) ~>
-                  v = @data.prj{}[context.slug].{}value[data.name]
+                  v = @data.prj{}[context.slug].{}value[data.key]
                   v = if v? => v else 1
                   clsset local.icon, v
         handler: ({node, local, data}) ~>
@@ -127,16 +128,19 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @get-progress!
     @view.render!
 
-  fetch-criteria: ->
-    console.log "fetch criteria ... "
+  fetch-info: ->
+    console.log "fetch info ... "
     ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/info", {method: \POST}, {json: {fields: <[criteria]>}, type: \json}
-      .then (grp) ~> @criteria = grp.criteria.entries
+      .then (ret) ~>
+        @brdinfo = ret.brd
+        @grpinfo = ret.grp
+        @criteria = ret.grp.criteria.entries
 
   init: ->
     Promise.resolve!
       .then ~> ctrl.auth!
       .then ~> @user = @global.user
-      .then ~> ctrl.fetch-criteria!
+      .then ~> ctrl.fetch-info!
       .then ~> ctrl.fetch-prjs!
       .then ~> ctrl.sharedb!
       .then ~> ctrl.getdoc!
@@ -176,7 +180,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
   get-state: (context) ->
     context.state = @criteria.reduce(
       (a, b) ~>
-        v = @data.prj{}[context.slug].{}value[b.name]
+        v = @data.prj{}[context.slug].{}value[b.key]
         Math.max(a, if v? => v else 1)
       0
     )
@@ -186,7 +190,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @prjs.map (p) ~>
       v = @criteria.reduce(
         (a, b) ~>
-          v = @data.prj{}[p.slug].{}value[b.name]
+          v = @data.prj{}[p.slug].{}value[b.key]
           Math.max(a, if v? => v else 1)
         0
       )

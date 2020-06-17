@@ -43,17 +43,15 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
         }
       },
       text: {
+        "grp-name": function(arg$){
+          var node;
+          node = arg$.node;
+          return this$.brdinfo.name + " / " + this$.grpinfo.info.name;
+        },
         count: function(arg$){
           var node;
           node = arg$.node;
           return this$.progress[node.getAttribute('data-name')] || 0;
-        },
-        reviewer: function(arg$){
-          var node;
-          node = arg$.node;
-          if (this$.user) {
-            return this$.user.displayname;
-          }
         }
       },
       handler: {
@@ -119,15 +117,20 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                   }
                 }
               },
-              text: {
+              handler: {
                 count: function(arg$){
-                  var node, context, n;
+                  var node, context, n, i;
                   node = arg$.node, context = arg$.context;
                   n = node.getAttribute('data-name');
-                  return context.count[n].length || '0';
-                }
-              },
-              handler: {
+                  return node.innerHTML = (function(){
+                    var i$, ref$, len$, results$ = [];
+                    for (i$ = 0, len$ = (ref$ = context.count[n]).length; i$ < len$; ++i$) {
+                      i = ref$[i$];
+                      results$.push("<div style=\"width:.3em;display:inline-block\">\n<div class=\"rounded-circle bg-cover bg-portrait bg-dark border border-light\"\nstyle=\"width:1.5em;height:1.5em;background-image:url(/s/avatar/" + i + ".png);\">\n</div></div>");
+                    }
+                    return results$;
+                  }()).join('');
+                },
                 "has-comment": function(arg$){
                   var node, context, ref$, key$;
                   node = arg$.node, context = arg$.context;
@@ -186,27 +189,28 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
       this.getProgress();
       return this.view.render();
     },
-    fetchCriteria: function(){
-      console.log("fetch criteria ... ");
-      return this.criteria = [
-        {
-          name: "開源",
-          key: 1
-        }, {
-          name: "協作",
-          key: 2
-        }, {
-          name: "參與",
-          key: 3
-        }
-      ];
+    fetchInfo: function(){
+      var this$ = this;
+      console.log("fetch info ... ");
+      return ld$.fetch("/dash/api/brd/" + this.brd + "/grp/" + this.grp + "/info", {
+        method: 'POST'
+      }, {
+        json: {
+          fields: ['criteria']
+        },
+        type: 'json'
+      }).then(function(ret){
+        this$.brdinfo = ret.brd;
+        this$.grpinfo = ret.grp;
+        return this$.criteria = ret.grp.criteria.entries;
+      });
     },
     init: function(){
       var this$ = this;
       return Promise.resolve().then(function(){
         return ctrl.auth();
       }).then(function(){
-        return ctrl.fetchCriteria();
+        return ctrl.fetchInfo();
       }).then(function(){
         return ctrl.fetchPrjs();
       }).then(function(){
@@ -300,7 +304,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
       for (k in ref$ = (ref1$ = this.data).user || (ref1$.user = {})) {
         user = ref$[k];
         val = this.criteria.reduce(fn$, 0);
-        count[['accept', 'pending', 'reject'][val]].push(user);
+        count[['accept', 'pending', 'reject'][val]].push(k);
         results$.push(context.state = count.reject.length
           ? 2
           : count.pending.length ? 1 : 0);
@@ -308,7 +312,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
       return results$;
       function fn$(a, b){
         var v, ref$, ref1$, key$;
-        v = ((ref$ = (ref1$ = user.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.name];
+        v = ((ref$ = (ref1$ = user.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
         return Math.max(a, v != null ? v : 1);
       }
     },

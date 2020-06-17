@@ -81,6 +81,11 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
           if (this$.user) {
             return this$.user.displayname;
           }
+        },
+        "grp-name": function(arg$){
+          var node;
+          node = arg$.node;
+          return this$.brdinfo.name + " / " + this$.grpinfo.info.name;
         }
       },
       handler: {
@@ -110,7 +115,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
             click: function(arg$){
               var node, data;
               node = arg$.node, data = arg$.data;
-              return this$.sort('criteria', data.name);
+              return this$.sort('criteria', data.key);
             }
           },
           handler: function(arg$){
@@ -207,10 +212,10 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
                     click: function(arg$){
                       var node, data, context, v, ref$, ref1$, key$;
                       node = arg$.node, data = arg$.data, context = arg$.context;
-                      v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[data.name];
+                      v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[data.key];
                       v = v != null ? v : 1;
                       v = (v + 2) % 3;
-                      ((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).value[data.name] = v;
+                      ((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).value[data.key] = v;
                       this$.getProgress();
                       this$.view.render({
                         name: 'project',
@@ -225,7 +230,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
                   handler: function(arg$){
                     var local, data, context, v, ref$, ref1$, key$;
                     local = arg$.local, data = arg$.data, context = arg$.context;
-                    v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[data.name];
+                    v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[data.key];
                     v = v != null ? v : 1;
                     return clsset(local.icon, v);
                   }
@@ -260,9 +265,9 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
       this.getProgress();
       return this.view.render();
     },
-    fetchCriteria: function(){
+    fetchInfo: function(){
       var this$ = this;
-      console.log("fetch criteria ... ");
+      console.log("fetch info ... ");
       return ld$.fetch("/dash/api/brd/" + this.brd + "/grp/" + this.grp + "/info", {
         method: 'POST'
       }, {
@@ -270,8 +275,10 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
           fields: ['criteria']
         },
         type: 'json'
-      }).then(function(grp){
-        return this$.criteria = grp.criteria.entries;
+      }).then(function(ret){
+        this$.brdinfo = ret.brd;
+        this$.grpinfo = ret.grp;
+        return this$.criteria = ret.grp.criteria.entries;
       });
     },
     init: function(){
@@ -281,7 +288,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
       }).then(function(){
         return this$.user = this$.global.user;
       }).then(function(){
-        return ctrl.fetchCriteria();
+        return ctrl.fetchInfo();
       }).then(function(){
         return ctrl.fetchPrjs();
       }).then(function(){
@@ -357,7 +364,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
       var this$ = this;
       return context.state = this.criteria.reduce(function(a, b){
         var v, ref$, ref1$, key$;
-        v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.name];
+        v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
         return Math.max(a, v != null ? v : 1);
       }, 0);
     },
@@ -372,7 +379,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
         var v;
         v = this$.criteria.reduce(function(a, b){
           var v, ref$, ref1$, key$;
-          v = ((ref$ = (ref1$ = this$.data.prj)[key$ = p.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.name];
+          v = ((ref$ = (ref1$ = this$.data.prj)[key$ = p.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
           return Math.max(a, v != null ? v : 1);
         }, 0);
         return val[v]++;
