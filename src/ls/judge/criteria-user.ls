@@ -84,9 +84,17 @@ Ctrl = (opt) ->
             handler: do
               "has-comment": ({node, context}) ~>
                 node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
-              state: ({node, context}) ~> clsset node, @get-state(context)
-              name: ({node, context}) ->
-                node.innerText = context.name
+              state: ({node, context}) ~>
+                span = ld$.find(node, 'span',0)
+                icon = ld$.find(node, 'i',0)
+                state = @get-state(context)
+                icon.classList.remove.apply icon.classList, icon.classList
+                icon.classList.add <[i-check i-circle i-close]>[state]
+                node.classList.remove.apply node.classList, node.classList
+                cls = [<[bg-success text-white]> <[bg-light text-secondary]> <[bg-danger text-white]>]
+                node.classList.add.apply node.classList, (cls[state] ++ <[rounded]>)
+                span.innerText = <[通過 待查 不符]>[state]
+              name: ({node, context}) -> node.innerText = context.name
               key: ({node, context}) -> node.innerText = context.key or ''
               criteria: do
                 list: ({context}) ~> @criteria

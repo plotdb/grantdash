@@ -187,9 +187,17 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
                   return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).comment);
                 },
                 state: function(arg$){
-                  var node, context;
+                  var node, context, span, icon, state, cls;
                   node = arg$.node, context = arg$.context;
-                  return clsset(node, this$.getState(context));
+                  span = ld$.find(node, 'span', 0);
+                  icon = ld$.find(node, 'i', 0);
+                  state = this$.getState(context);
+                  icon.classList.remove.apply(icon.classList, icon.classList);
+                  icon.classList.add(['i-check', 'i-circle', 'i-close'][state]);
+                  node.classList.remove.apply(node.classList, node.classList);
+                  cls = [['bg-success', 'text-white'], ['bg-light', 'text-secondary'], ['bg-danger', 'text-white']];
+                  node.classList.add.apply(node.classList, cls[state].concat(['rounded']));
+                  return span.innerText = ['通過', '待查', '不符'][state];
                 },
                 name: function(arg$){
                   var node, context;

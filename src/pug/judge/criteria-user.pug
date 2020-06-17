@@ -31,7 +31,7 @@ block body
               .mx-3 #[i.i-doc.text-primary] / 帶附註
             table.table.w-100.bg-light.border-bottom.mb-0.shadow-sm
               tr
-                td.text-center.clickable(ld="sort",data-name="state",style="width:2em"): i.i-circle
+                td.text-center.clickable(ld="sort",data-name="state",style="width:5em") 結果
                 td.text-center(ld="sort",data-name="comment",style="width:2em"): i.i-doc
                 //-td.text-right(style="width:4em") 編號
                 td.clickable
@@ -44,7 +44,8 @@ block body
           table.table.w-100.mb-0
             tr.d-none(ld-each="project")
               //- 狀態圖示
-              td(style="width:2em"): i(ld="state")
+              td.text-nowrap.text-sm(style="width:5em")
+                .bg-light(style="padding:.2em .5em",ld="state") #[span.mr-1]#[i]
               //- 註解圖示
               td(style="width:2em"): i.i-doc.text-primary.invisible(ld="has-comment comment")
               //-td(style="width:4em").text-right: span(ld="key")
