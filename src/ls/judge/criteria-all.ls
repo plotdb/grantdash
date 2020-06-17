@@ -14,7 +14,6 @@ Ctrl = (opt) ->
   @view = view = new ldView do
     init-render: false
     root: @root
-
     action: do
       click: do
         detail: ({node}) ~> @ldcv.detail.toggle!
