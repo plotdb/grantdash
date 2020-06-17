@@ -31,7 +31,8 @@ Ctrl = (opt) ->
         comment: ({node}) ~>
           if !@active => return
           @data.prj{}[@active.slug].comment = node.value
-          @update debounced: true
+          @update debounced: 300
+          @view.render {name: 'project', key: @active.slug}
       click: do
         detail: ({node}) ~> @ldcv.detail.toggle!
         criteria: ({node}) ~> @ldcv.criteria.toggle!
@@ -54,6 +55,7 @@ Ctrl = (opt) ->
         action: click: ({node, data}) ~> @sort \criteria, data.name
         handler: ({node, data}) ~> node.innerText = data.name
       project: do
+        key: -> it.slug
         list: ~> @prjs
         init: ({node, local, data}) ~>
           root = node
@@ -141,7 +143,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     if !@sort.inversed => @sort.inversed = {}
     dir = if @sort.inversed[n] => 1 else -1
     verbose = do
-      name: value or {name: "名稱", state: "狀態", comment: "評論"}[name]
+      name: value or {name: "名稱", state: "狀態", comment: "評論長度"}[name]
       dir: if dir > 0 => "順向" else "逆向"
     if hint => notify.send \success, "重新將表格依 #{verbose.name} 做 #{verbose.dir} 排序"
     debounce 100 .then ~>
@@ -151,6 +153,9 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
         @prjs.sort (a, b) ~> dir * (statemap[@get-state(a)] - statemap[@get-state(b)])
       else if name == \name =>
         @prjs.sort (a, b) -> return dir * (if a.name > b.name => 1 else if a.name < b.name => -1 else 0)
+      else if name == \comment =>
+        @prjs.sort (a,b) ~>
+          dir * ((@data.prj{}[a.slug].comment or '').length - (@data.prj{}[b.slug].comment or '').length)
       else if name == \criteria =>
         @prjs.sort (a, b) ~>
           a = @data.prj{}[a.slug].{}value[value]

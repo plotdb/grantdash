@@ -14,7 +14,7 @@ block body
         .p-2 Kirby #[i.i-dart-down]
 
     .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
-      .d-flex.flex-column(style="flex:1 1 50%")
+      .d-flex.flex-column(style="flex:1 1 55%")
 
         .judge-table.flex-grow-1.bg-white.border-top.border-bottom.mt-3.w-100(style="overflow:scroll")
 
@@ -37,7 +37,7 @@ block body
                 td.clickable
                   .d-flex.align-items-end
                     .flex-grow-1.clickable(ld="sort",data-name="name") 提案名稱
-                    .text-sm.text-primary.clickable(ld="criteria") #[i.i-question] 審核條件
+                    //-.text-sm.text-primary.clickable(ld="criteria") #[i.i-question] 審核條件
                 td.text-center.clickable(ld-each="header-criteria",style="width:4em")
                 td.text-center(style="width:4em") 評論
 
@@ -57,9 +57,17 @@ block body
 
         .px-4.py-2.w-100
           .d-flex.align-items-center
-            .mr-4
+            //-.mr-4
               .text-muted.text-sm 距資格審查截止還有
               .text-danger 2 天 15 小時 20 分
+            .mr-4.text-sm
+              .text-muted 資格審查進度
+              .d-flex.align-items-center.my-1(style="line-height:1rem")
+                .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                span.mr-2 通過
+                .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                span 不符
+
             .mr-4.flex-grow-1
               .text-muted.text-sm 完成度 / #[span.text-danger(ld="progress progress-percent") 0]%
               .progress.my-1(style="width:100%")
@@ -67,17 +75,19 @@ block body
                 ld="progress progress-bar",data-name="accept")
                 .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
                 ld="progress progress-bar",data-name="reject")
-            div: .btn.btn-outline-dark 提交審查結果
+            //-div: .btn.btn-outline-dark 提交審查結果
 
 
 
-      div(style="flex:1 1 50%")
+      div(style="flex:1 1 45%")
         .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em")
           .card-body.p-0.position-relative
             iframe.border-0.w-100.h-100(ld="iframe")
             .w-100.h-100.vertical-center.position-absolute.z-float.bg-light(
             ld="iframe-placeholder",style="top:0;left:0")
-              .w-100.text-center.text-muted 點擊提案名稱來瀏覽提案內容
+              .w-100.text-center.text-muted
+                .text-lg 提案瀏覽區
+                div 您可以點擊左方的提案名稱以在此瀏覽該提案內容
             //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
               embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
 

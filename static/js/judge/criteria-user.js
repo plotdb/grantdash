@@ -42,8 +42,12 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
               return;
             }
             ((ref$ = this$.data.prj)[key$ = this$.active.slug] || (ref$[key$] = {})).comment = node.value;
-            return this$.update({
-              debounced: true
+            this$.update({
+              debounced: 300
+            });
+            return this$.view.render({
+              name: 'project',
+              key: this$.active.slug
             });
           }
         },
@@ -116,6 +120,9 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
           }
         },
         project: {
+          key: function(it){
+            return it.slug;
+          },
           list: function(){
             return this$.prjs;
           },
@@ -308,7 +315,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
         name: value || {
           name: "名稱",
           state: "狀態",
-          comment: "評論"
+          comment: "評論長度"
         }[name],
         dir: dir > 0 ? "順向" : "逆向"
       };
@@ -328,6 +335,11 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
             return dir * (a.name > b.name
               ? 1
               : a.name < b.name ? -1 : 0);
+          });
+        } else if (name === 'comment') {
+          this$.prjs.sort(function(a, b){
+            var ref$, key$;
+            return dir * ((((ref$ = this$.data.prj)[key$ = a.slug] || (ref$[key$] = {})).comment || '').length - (((ref$ = this$.data.prj)[key$ = b.slug] || (ref$[key$] = {})).comment || '').length);
           });
         } else if (name === 'criteria') {
           this$.prjs.sort(function(a, b){
