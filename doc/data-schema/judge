@@ -1,0 +1,14 @@
+
+# 評選資料
+
+    {
+      user: {
+	<key>: {
+	  prj: {<prj-slug>: {
+	    value: {<criteria-key>: one of [0,1,2]}
+	    comment: "...plain-text..."
+	  }}, ...
+	}, ...
+      }
+    }
+

@@ -153,6 +153,24 @@ get-prj-list = (req, res) ->
       )
     .then (r={}) -> return r.[]rows.filter(-> it.slug)
 
+api.get \/brd/:brd/grp/:grp/judge-list, aux.signed, (req, res) ->
+  {brd, grp} = req.params{brd, grp}
+  if !(brd and grp) => return aux.r400 res
+  # TODO check user permission
+  Promise.resolve!
+    .then ->
+      io.query """
+      select p.name, p.slug, u.displayname as ownername from prj as p
+      left join users as u on u.key = p.owner
+      where
+        p.detail is not null and
+        p.brd = $1 and
+        p.grp = $2 and
+        p.deleted is not true
+      """, [brd, grp]
+    .then (r={}) -> res.send r.[]rows
+    .catch aux.error-handler res
+
 api.get \/brd/:slug/list, (req, res) ->
   get-prj-list req, res
     .then -> res.send it

@@ -1,16 +1,6 @@
-# {
-#   user: {
-#     <key>: {
-#       <prj-slug>: {
-#         value: {<criteria-key>: one of [0,1,2]}
-#         comment: "...plain-text..."
-#       }, ...
-#     }, ...
-#   }
-# }
+({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeCriteriaUser,
+<[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
 
-({error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeCriteriaUser,
-<[error loader auth ldcvmgr sdbAdapter]>, _
 
 clsmap = [
   <[i-check text-success]>
@@ -24,50 +14,44 @@ clsset = (node, val) ->
   node.classList.add.apply node.classList, newcls
 
 Ctrl = (opt) ->
-  @loader = loader
-  @ <<< opt{brd, grp}
-  @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
-  @prjs = []
-  @data = {}
-  @progress = {}
-  @user = opt.user
-  @for-all = !opt.user
-  @criteria = [{name: "開源", key: 1}, {name: "協作", key: 2}, {name: "參與", key: 3}]
-  @_update = debounce ~> if @user => @ops-out ~> @data
+  @ <<< (obj = new judge-base opt)
+  @data = {prj: {}}
+  @active = null
 
   @ldcv = do
-    comment: new ldCover root: ld$.find(root, '[ld=comment-ldcv]', 0)
-    detail: new ldCover root: ld$.find(root, '[ld=detail-ldcv]', 0)
-    criteria: new ldCover root: ld$.find(root, '[ld=criteria-ldcv]', 0)
+    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0)
+    detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
+    criteria: new ldCover root: ld$.find(@root, '[ld=criteria-ldcv]', 0)
 
   @view = view = new ldView do
-    root: root
+    init-render: false
+    root: @root
     action: do
       input: do
         comment: ({node}) ~>
           if !@active => return
-          @data{}[@active.slug].comment = node.value
+          @data.prj{}[@active.slug].comment = node.value
           @update debounced: true
       click: do
         detail: ({node}) ~> @ldcv.detail.toggle!
         criteria: ({node}) ~> @ldcv.criteria.toggle!
+        sort: ({node}) ~> @sort node.getAttribute \data-name
     text: do
-      "count-total": ({node}) ~> @prjs.length or 0
-      "count-accept": ({node}) ~> @progress.0 or 0
-      "count-reject": ({node}) ~> @progress.2 or 0
-      "count-todo": ({node}) ~> @progress.1 or 0
+      count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
       reviewer: ({node}) ~> if @user => @user.displayname
     handler: do
-      "for-one": ({node}) ~> node.classList.toggle \d-none, @for-all
-      "for-all": ({node}) ~> node.classList.toggle \d-none, !@for-all
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
-      "progress-accept": ({node}) ~> node.style.width = "#{100 * (@progress.0 or 0) / (@prjs.length or 1)}%"
-      "progress-reject": ({node}) ~> node.style.width = "#{100 * (@progress.2 or 0) / (@prjs.length or 1)}%"
-      progress: ({node}) ~>
-        node.innerText = Math.round(100 * ((@progress.0 or 0) + (@progress.2 or 0)) / (@prjs.length or 1))
+      progress: ({node, names}) ~>
+        p = @progress
+        if \progress-bar in names =>
+          n = node.getAttribute(\data-name)
+          node.style.width = "#{100 * p[n] / p.total }%"
+        else if \progress-percent in names =>
+          node.innerText = Math.round(100 * p.done / p.total )
       "header-criteria": do
-        list: ~> if @for-all => [] else @criteria
+        list: ~> @criteria
+        action: click: ({node, data}) ~> @sort \criteria, data.name
         handler: ({node, data}) ~> node.innerText = data.name
       project: do
         list: ~> @prjs
@@ -79,11 +63,10 @@ Ctrl = (opt) ->
             root: node
             context: data
             action: click: do
-              detail: ({node, context}) ~>
-                @ldcv.detail.toggle!
+              detail: ({node, context}) ~> @ldcv.detail.toggle!
               comment: ({node, context}) ~>
                 @active = context
-                view.get(\comment).value = (@data{}[@active.slug].comment or '')
+                view.get(\comment).value = (@data.prj{}[@active.slug].comment or '')
                 @ldcv.comment.toggle!
                 @view.render \comment-name
               name: ({node, context}) ->
@@ -92,111 +75,96 @@ Ctrl = (opt) ->
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
                 @active-node.classList.add \active
-
             text: do
               "count-accept": ({node, context}) ~> (if context.review-count => context.review-count[0] else 0) or 0
               "count-todo": ({node, context}) ~> (if context.review-count => context.review-count[1] else 0) or 0
               "count-reject": ({node, context}) ~> (if context.review-count => context.review-count[2] else 0) or 0
             handler: do
-              "for-all": ({node}) ~> node.classList.toggle \d-none, !@for-all
-              "for-one": ({node}) ~> node.classList.toggle \d-none, @for-all
-              "has-comment": ({node, context}) ~> node.classList.toggle \invisible, !@data[context.slug].comment
-              state: ({node, context}) ~>
-                val = @criteria.reduce(
-                  (a, b) ~>
-                    v = @data{}[context.slug].{}value[b.key]
-                    Math.max(a, if v? => v else 1)
-                  0
-                )
-                clsset node, val
+              "has-comment": ({node, context}) ~>
+                node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
+              state: ({node, context}) ~> clsset node, @get-state(context)
               name: ({node, context}) ->
                 node.innerText = context.name
-              key: ({node, context}) -> node.innerText = context.key
+              key: ({node, context}) -> node.innerText = context.key or ''
               criteria: do
-                list: ({context}) ~> if @for-all => [] else @criteria
+                list: ({context}) ~> @criteria
                 init: ({node, local}) -> local.icon = ld$.find(node, 'i', 0)
                 action: click: ({node, data, context}) ~>
-                  v = @data{}[context.slug].{}value[data.key]
+                  v = @data.prj{}[context.slug].{}value[data.name]
                   v = if v? => v else 1
                   v = ( v + 2 ) % 3
-                  @data[context.slug].value[data.key] = v
-                  @update!
+                  @data.prj{}[context.slug].value[data.name] = v
+                  @get-progress!
                   local.view.render!
+                  @view.render \progress
+                  @update debounced: 10
                 handler: ({local, data, context}) ~>
-                  v = @data{}[context.slug].{}value[data.key]
+                  v = @data.prj{}[context.slug].{}value[data.name]
                   v = if v? => v else 1
                   clsset local.icon, v
         handler: ({node, local, data}) ~>
-          data.review-count = @get-count data.slug
           local.view.setContext data
           local.view.render!
+
   @
 
-Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+Ctrl.prototype = {} <<< judge-base.prototype <<< do
+
+  ops-in: ({data,ops,source}) ->
+    if source => return
+    @data = JSON.parse(JSON.stringify(data))
+    @data.{}prj
+    @render!
+
   render: ->
     @get-progress!
     @view.render!
-  update: (opt={}) ->
-    if !opt.debounced => @_update!now! else @_update!
 
-  fetch: ->
-    ld$.fetch '/dash/api/brd/sch001/list', {method: \GET}, {type: \json}
-      .then ~>
-        @prjs = it
-        @render!
+  fetch-criteria: ->
+    console.log "fetch criteria ... "
+    @criteria = [{name: "開源", key: 1}, {name: "協作", key: 2}, {name: "參與", key: 3}]
 
-  sharedb: ->
-    console.log "prepare sharedb ..."
-    @sdb = sdb = new sharedb-wrapper do
-      url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
-      path: '/dash/ws'
-    @hub = new Hub({sdb})
-    sdb.on \error, -> ldcvmgr.toggle \not-sync
-    sdb.on \close, ~>
-      ldcvmgr.toggle \offline-retry, true
-      sdb.reconnect!
-        .then ~> @getdoc!
-        .then ~>
-          if @user => @adapt {hub: @hub, path: ['user', @user.key]}
-          else @adapt {hub: @hub, path: []}
-        .then -> console.log "admin initialized."
-        .then ~> ldcvmgr.toggle \offline-retry, false
-    sdb.ready!
-  getdoc: ->
-    @hub.doc = null
-    @sdb.get({
-      id: "brd/#{@brd}/grp/#{@grp}/judge/criteria"
-      watch: (ops,source) ~> @hub.fire \change, {ops,source}
-      create: ~> {}
-    })
-      .then (doc) ~>
-        @hub.doc = doc
-        doc.on \op, ~> @render!
-        if @user => @adapt {hub: @hub, path: ['user', @user.key]}
-        else @adapt {hub: @hub, path: []}
-      .catch -> console.log "getdoc failed.", it
+  init: ->
+    Promise.resolve!
+      .then ~> ctrl.auth!
+      .then ~> ctrl.fetch-criteria!
+      .then ~> ctrl.fetch-prjs!
+      .then ~> ctrl.sharedb!
+      .then ~> ctrl.getdoc!
+      .then ~> @sort \name, null, false
+      .then ~> console.log "initied."
+      .catch error
 
-  /*
-  get-detail: (prj-slug) ->
-    review = []
-    for k of @data.user =>
-      val = @data.user[k][prj-slug].value
-      c = @data.user[k][prj-slug].comment
-      if c => {user: k, comment: c}
-      for c in @criteria => count[val[c.key] or 1]++
-  */
+  sort: (name, value, hint = true) ->
+    if hint => loader.on!
+    n = "#name#{if value? => ('-' + value) else ''}"
+    if !@sort.inversed => @sort.inversed = {}
+    dir = if @sort.inversed[n] => 1 else -1
+    verbose = do
+      name: value or {name: "名稱", state: "狀態", comment: "評論"}[name]
+      dir: if dir > 0 => "順向" else "逆向"
+    if hint => notify.send \success, "重新將表格依 #{verbose.name} 做 #{verbose.dir} 排序"
+    debounce 100 .then ~>
+      @sort.inversed[n] = !@sort.inversed[n]
+      statemap = [2 0 1]
+      if name == \state =>
+        @prjs.sort (a, b) ~> dir * (statemap[@get-state(a)] - statemap[@get-state(b)])
+      else if name == \name =>
+        @prjs.sort (a, b) -> return dir * (if a.name > b.name => 1 else if a.name < b.name => -1 else 0)
+      else if name == \criteria =>
+        @prjs.sort (a, b) ~>
+          a = @data.prj{}[a.slug].{}value[value]
+          b = @data.prj{}[b.slug].{}value[value]
+          a = if a? => a else 1
+          b = if b? => b else 1
+          return dir * ( statemap[a] - statemap[b] )
+      if hint => loader.off!
+      @render!
 
-  get-count: (prj-slug) ->
-    count = [0,0,0]
-    for k of @data.user =>
-      val = @data.user[k][prj-slug].value
-      for c in @criteria => count[val[c.key] or 1]++
-    return count
-
-  get-state: ->
+  get-state: (context) ->
     val = @criteria.reduce(
       (a, b) ~>
-        v = @data{}[context.slug].{}value[b.key]
+        v = @data.prj{}[context.slug].{}value[b.name]
         Math.max(a, if v? => v else 1)
       0
     )
@@ -206,27 +174,17 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     @prjs.map (p) ~>
       v = @criteria.reduce(
         (a, b) ~>
-          v = @data{}[p.slug].{}value[b.key]
+          v = @data.prj{}[p.slug].{}value[b.name]
           Math.max(a, if v? => v else 1)
         0
       )
       val[v]++
-    @progress = val
+    @progress = do
+      accept: val.0
+      pending: val.1
+      reject: val.2
+      done: val.0 + val.2
+      total: (@prjs.length or 1)
 
-  ops-in: ({data,ops,source}) ->
-    if source => return
-    @data = JSON.parse(JSON.stringify(data))
-    @render!
-
-
-auth.get!
-  .then (g) ->
-    ctrl = new Ctrl do
-      #user: g.user
-      root: document.body
-      brd: \sch001
-      grp: \4rFUP+03IS05ZD09ku03KMlsh
-    Promise.resolve!
-      .then -> ctrl.sharedb!
-      .then -> ctrl.getdoc!
-      .then -> ctrl.fetch!
+ctrl = new Ctrl root: document.body
+ctrl.init!

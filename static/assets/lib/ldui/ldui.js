@@ -11180,6 +11180,13 @@ var slice$ = [].slice;
       var _, i$, ref$, len$, k, this$ = this;
       this.fire('beforeRender');
       _ = function(n){
+        var ref$, key;
+        if (typeof n === 'object') {
+          ref$ = [n.name, n.key], n = ref$[0], key = ref$[1];
+          if (!Array.isArray(key)) {
+            key = [key];
+          }
+        }
         if (this$.map.nodes[n]) {
           this$.map.nodes[n].map(function(d, i){
             d.name = n;
@@ -11189,7 +11196,22 @@ var slice$ = [].slice;
         }
         if (this$.map.eaches[n] && this$.handler[n]) {
           return this$.map.eaches[n].map(function(it){
-            return this$.procEach(n, it);
+            var getkey, ret;
+            if (!(key != null)) {
+              return this$.procEach(n, it);
+            }
+            getkey = this$.handler[n].key || function(it){
+              return it;
+            };
+            it.nodes.map(function(d, i){
+              return in$(getkey(d._data), key);
+            });
+            if (!(ret = it.nodes.filter(function(it){
+              return getkey(it._data) === key;
+            })[0])) {
+              return;
+            }
+            return this$._render(n, it._obj, it.idx, this$.handler[n]);
           });
         }
       };
