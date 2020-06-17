@@ -1,4 +1,4 @@
-({error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeFinalUser,
+({error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeFinalAll,
 <[error loader auth ldcvmgr sdbAdapter]>, _
 
 Ctrl = (opt) ->
@@ -31,8 +31,12 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     ld$.fetch '/dash/api/brd/test-brd/list', {method: \GET}, {type: \json}
       .then ~>
         @prjs = it
-        data = @prjs.map (d,i) -> [i, 0, d.name, 0, 0, 0, 0, 1, '']
-        data = [["編號", "評論", "名稱", "創意", "技術", "設計", "總分", "排名", "評論"]] ++ data
+        data = @prjs.map (d,i) -> ['', i, '', d.name, 0, 1, 0, 1, 1, '', '']
+        data = (
+          [ ["",  "",  "", "評審", "評審A", "", "評審B", "", "平均", "孔多塞", "決選", "優勝"]] ++
+          [<[標註 編號 評論 名稱 分數 排名 分數 排名 排名 排名 註記 註記]>] ++
+          data
+        )
         @sheet.load-data data
         @sheet.render!
         @render!
@@ -48,7 +52,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       ldcvmgr.toggle \offline-retry, true
       sdb.reconnect!
         .then ~> @getdoc!
-        .then ~> @adapt {hub: @hub, path: ['user', @user.key]}
+        .then ~> @adapt {hub: @hub, path: []}
         .then -> console.log "admin initialized."
         .then ~> ldcvmgr.toggle \offline-retry, false
     sdb.ready!
@@ -64,21 +68,19 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       .then (doc) ~>
         @hub.doc = doc
         doc.on \op, ~> @render!
-        if @user => @adapt {hub: @hub, path: ['user', @user.key]}
-        else @adapt {hub: @hub, path: []}
+        @adapt {hub: @hub, path: []}
       .catch -> console.log "getdoc failed.", it
 
   ops-in: ({data,ops,source}) ->
     if source => return
     @data = JSON.parse(JSON.stringify(data))
-    ret = for r of @data.{}value => for c of @data.value{}[r] => (@data.value[r][c] or 0)
-    @sheet.populateFromArray 1, 3, ret
+    #ret = for r of @data.{}value => for c of @data.value{}[r] => (@data.value[r][c] or 0)
+    #@sheet.populateFromArray 1, 3, ret
     @render!
 
 auth.get!
   .then (g) ->
     ctrl = new Ctrl do
-      user: g.user
       root: document.body
       brd: \test-brd
       grp: \4jUmMh07zZ05kl0Col03v-Bhu
@@ -90,7 +92,7 @@ auth.get!
       .then -> console.log "initied."
 
 init-hot = (opt) ->
-  dom = edit
+  dom = example
   Handsontable.renderers.registerRenderer \myrenderer, (instance, td, row, col, prop, value, cellProperties) ->
     Handsontable.renderers.TextRenderer.apply @, arguments
   hot = new Handsontable dom, {
@@ -99,12 +101,12 @@ init-hot = (opt) ->
     filters: true
     dropdownMenu: true
     rowHeights: 25
-    colWidths: [40,50,180,50,50,50,50,50,250]
+    colWidths: [30,50,30,150,40,40,40,40,40,40,40,40,40,40],
     minRows: 50
     minCols: 15
     stretchH: \all
-    fixedRowsTop: 1
-    fixedColumnsLeft: 3
+    fixedRowsTop: 2
+    fixedColumnsLeft: 4
     cells: (row, col) -> return {renderer: \myrenderer}
   } <<< opt
   hot
