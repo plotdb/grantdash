@@ -23,7 +23,7 @@ Ctrl = (opt) ->
     detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
     criteria: new ldCover root: ld$.find(@root, '[ld=criteria-ldcv]', 0)
 
-  @view = view = new ldView do
+  @view.local = view = new ldView do
     init-render: false
     root: @root
     action: do
@@ -32,15 +32,13 @@ Ctrl = (opt) ->
           if !@active => return
           @data.prj{}[@active.slug].comment = node.value
           @update debounced: 300
-          @view.render {name: 'project', key: @active.slug}
+          @view.local.render {name: 'project', key: @active.slug}
       click: do
         detail: ({node}) ~> @ldcv.detail.toggle!
         criteria: ({node}) ~> @ldcv.criteria.toggle!
         sort: ({node}) ~> @sort node.getAttribute(\data-name), node.getAttribute(\data-value)
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
-      reviewer: ({node}) ~> if @user => @user.displayname
-      "grp-name": ({node}) ~> "#{@brdinfo.name} / #{@grpinfo.info.name}"
     handler: do
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
@@ -71,14 +69,14 @@ Ctrl = (opt) ->
                 @data.prj{}[context.slug].value = name
                 local.view.render!
                 @get-progress!
-                @view.render <[progress]>
+                @view.local.render <[progress]>
                 @update debounced: 10
               detail: ({node, context}) ~> @ldcv.detail.toggle!
               comment: ({node, context}) ~>
                 @active = context
                 view.get(\comment).value = (@data.prj{}[@active.slug].comment or '')
                 @ldcv.comment.toggle!
-                @view.render \comment-name
+                @view.local.render \comment-name
               name: ({node, context}) ->
                 view.get("iframe").setAttribute \src, "/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
@@ -113,67 +111,21 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
 
   render: ->
     @get-progress!
-    @view.render!
-
-  fetch-info: ->
-    console.log "fetch info ... "
-    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/info", {method: \POST}, {json: {fields: <[criteria]>}, type: \json}
-      .then (ret) ~>
-        @brdinfo = ret.brd
-        @grpinfo = ret.grp
-        @criteria = ret.grp.criteria.entries
+    @view.base.render!
+    @view.local.render!
 
   init: ->
     Promise.resolve!
-      .then ~> ctrl.auth!
+      .then ~> @auth!
+      .then ~> @init-view!
       .then ~> @user = @global.user
-      .then ~> ctrl.fetch-info!
-      .then ~> ctrl.fetch-prjs!
-      .then ~> ctrl.sharedb!
-      .then ~> ctrl.getdoc!
+      .then ~> @fetch-info!
+      .then ~> @fetch-prjs!
+      .then ~> @sharedb!
+      .then ~> @getdoc!
       .then ~> @sort \name, null, false
       .then ~> console.log "initied."
       .catch error
-
-  sort: (name, value, hint = true) ->
-    if hint => loader.on!
-    n = "#name#{if value? => ('-' + value) else ''}"
-    if !@sort.inversed => @sort.inversed = {}
-    dir = if @sort.inversed[n] => 1 else -1
-    verbose = do
-      name: value or {name: "名稱", state: "狀態", comment: "評論長度"}[name]
-      dir: if dir > 0 => "順向" else "逆向"
-    if name == \count =>
-      verbose.name = "#{{accept: "通過", pending: "待審", reject: "不符"}[value]}的數量"
-    else if name == \primary =>
-      verbose.name = "#{{accept: "通過", pending: "待審", reject: "不符"}[value]} 的結果"
-    if hint => notify.send \success, "重新將表格依 #{verbose.name} 做 #{verbose.dir} 排序"
-    debounce 100 .then ~>
-      @sort.inversed[n] = !@sort.inversed[n]
-      statemap = [2 0 1]
-      if name == \state =>
-        @prjs.sort (a, b) ~> dir * (statemap[a.state] - statemap[b.state])
-      else if name == \name =>
-        @prjs.sort (a, b) -> return dir * (if a.name > b.name => 1 else if a.name < b.name => -1 else 0)
-      else if name == \comment =>
-        @prjs.sort (a,b) ~>
-          dir * ((@data.prj{}[a.slug].comment or '').length - (@data.prj{}[b.slug].comment or '').length)
-      else if name == \criteria =>
-        @prjs.sort (a, b) ~>
-          a = @data.prj{}[a.slug].{}value[value]
-          b = @data.prj{}[b.slug].{}value[value]
-          a = if a? => a else 1
-          b = if b? => b else 1
-          return dir * ( statemap[a] - statemap[b] )
-      else if name == \primary =>
-        @prjs.sort (a, b) ~>
-          a = if @data.prj{}[a.slug].{}value == value => 1 else 0
-          b = if @data.prj{}[b.slug].{}value == value => 1 else 0
-          return dir * (a - b)
-
-
-      if hint => loader.off!
-      @render!
 
   get-state: (context) ->
     context.state = @criteria.reduce(
@@ -182,8 +134,6 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
         Math.max(a, if v? => v else 1)
       0
     )
-
-
 
   get-progress: ->
     @progress = ret = {done: 0, accept: 0, pending: 0, reject: 0, total: (@prjs.length or 1)}

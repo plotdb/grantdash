@@ -30,7 +30,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
         root: ld$.find(this.root, '[ld=criteria-ldcv]', 0)
       })
     };
-    this.view = view = new ldView({
+    this.view.local = view = new ldView({
       initRender: false,
       root: this.root,
       action: {
@@ -45,7 +45,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
             this$.update({
               debounced: 300
             });
-            return this$.view.render({
+            return this$.view.local.render({
               name: 'project',
               key: this$.active.slug
             });
@@ -74,18 +74,6 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
           var node;
           node = arg$.node;
           return this$.progress[node.getAttribute('data-name')] || 0;
-        },
-        reviewer: function(arg$){
-          var node;
-          node = arg$.node;
-          if (this$.user) {
-            return this$.user.displayname;
-          }
-        },
-        "grp-name": function(arg$){
-          var node;
-          node = arg$.node;
-          return this$.brdinfo.name + " / " + this$.grpinfo.info.name;
         }
       },
       handler: {
@@ -149,7 +137,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                     ((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).value = name;
                     local.view.render();
                     this$.getProgress();
-                    this$.view.render(['progress']);
+                    this$.view.local.render(['progress']);
                     return this$.update({
                       debounced: 10
                     });
@@ -165,7 +153,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                     this$.active = context;
                     view.get('comment').value = ((ref$ = this$.data.prj)[key$ = this$.active.slug] || (ref$[key$] = {})).comment || '';
                     this$.ldcv.comment.toggle();
-                    return this$.view.render('comment-name');
+                    return this$.view.local.render('comment-name');
                   },
                   name: function(arg$){
                     var node, context;
@@ -236,122 +224,30 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
     },
     render: function(){
       this.getProgress();
-      return this.view.render();
-    },
-    fetchInfo: function(){
-      var this$ = this;
-      console.log("fetch info ... ");
-      return ld$.fetch("/dash/api/brd/" + this.brd + "/grp/" + this.grp + "/info", {
-        method: 'POST'
-      }, {
-        json: {
-          fields: ['criteria']
-        },
-        type: 'json'
-      }).then(function(ret){
-        this$.brdinfo = ret.brd;
-        this$.grpinfo = ret.grp;
-        return this$.criteria = ret.grp.criteria.entries;
-      });
+      this.view.base.render();
+      return this.view.local.render();
     },
     init: function(){
       var this$ = this;
       return Promise.resolve().then(function(){
-        return ctrl.auth();
+        return this$.auth();
+      }).then(function(){
+        return this$.initView();
       }).then(function(){
         return this$.user = this$.global.user;
       }).then(function(){
-        return ctrl.fetchInfo();
+        return this$.fetchInfo();
       }).then(function(){
-        return ctrl.fetchPrjs();
+        return this$.fetchPrjs();
       }).then(function(){
-        return ctrl.sharedb();
+        return this$.sharedb();
       }).then(function(){
-        return ctrl.getdoc();
+        return this$.getdoc();
       }).then(function(){
         return this$.sort('name', null, false);
       }).then(function(){
         return console.log("initied.");
       })['catch'](error);
-    },
-    sort: function(name, value, hint){
-      var n, dir, verbose, this$ = this;
-      hint == null && (hint = true);
-      if (hint) {
-        loader.on();
-      }
-      n = name + "" + (value != null ? '-' + value : '');
-      if (!this.sort.inversed) {
-        this.sort.inversed = {};
-      }
-      dir = this.sort.inversed[n]
-        ? 1
-        : -1;
-      verbose = {
-        name: value || {
-          name: "名稱",
-          state: "狀態",
-          comment: "評論長度"
-        }[name],
-        dir: dir > 0 ? "順向" : "逆向"
-      };
-      if (name === 'count') {
-        verbose.name = {
-          accept: "通過",
-          pending: "待審",
-          reject: "不符"
-        }[value] + "的數量";
-      } else if (name === 'primary') {
-        verbose.name = {
-          accept: "通過",
-          pending: "待審",
-          reject: "不符"
-        }[value] + " 的結果";
-      }
-      if (hint) {
-        notify.send('success', "重新將表格依 " + verbose.name + " 做 " + verbose.dir + " 排序");
-      }
-      return debounce(100).then(function(){
-        var statemap;
-        this$.sort.inversed[n] = !this$.sort.inversed[n];
-        statemap = [2, 0, 1];
-        if (name === 'state') {
-          this$.prjs.sort(function(a, b){
-            return dir * (statemap[a.state] - statemap[b.state]);
-          });
-        } else if (name === 'name') {
-          this$.prjs.sort(function(a, b){
-            return dir * (a.name > b.name
-              ? 1
-              : a.name < b.name ? -1 : 0);
-          });
-        } else if (name === 'comment') {
-          this$.prjs.sort(function(a, b){
-            var ref$, key$;
-            return dir * ((((ref$ = this$.data.prj)[key$ = a.slug] || (ref$[key$] = {})).comment || '').length - (((ref$ = this$.data.prj)[key$ = b.slug] || (ref$[key$] = {})).comment || '').length);
-          });
-        } else if (name === 'criteria') {
-          this$.prjs.sort(function(a, b){
-            var ref$, ref1$, key$;
-            a = ((ref$ = (ref1$ = this$.data.prj)[key$ = a.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[value];
-            b = ((ref$ = (ref1$ = this$.data.prj)[key$ = b.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[value];
-            a = a != null ? a : 1;
-            b = b != null ? b : 1;
-            return dir * (statemap[a] - statemap[b]);
-          });
-        } else if (name === 'primary') {
-          this$.prjs.sort(function(a, b){
-            var ref$, ref1$, key$;
-            a = ((ref$ = (ref1$ = this$.data.prj)[key$ = a.slug] || (ref1$[key$] = {})).value || (ref$.value = {})) === value ? 1 : 0;
-            b = ((ref$ = (ref1$ = this$.data.prj)[key$ = b.slug] || (ref1$[key$] = {})).value || (ref$.value = {})) === value ? 1 : 0;
-            return dir * (a - b);
-          });
-        }
-        if (hint) {
-          loader.off();
-        }
-        return this$.render();
-      });
     },
     getState: function(context){
       var this$ = this;

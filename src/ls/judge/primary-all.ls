@@ -1,5 +1,17 @@
-({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeCriteriaAll,
+({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgePrimaryAll,
 <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
+
+
+clsmap = [
+  <[i-check text-success]>
+  <[i-circle text-secondary]>
+  <[i-close text-danger]>
+]
+clsset = (node, val) ->
+  newcls = clsmap[val]
+  oldcls = Array.from(node.classList)
+  if oldcls.length => node.classList.remove.apply node.classList, oldcls
+  node.classList.add.apply node.classList, newcls
 
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
@@ -15,6 +27,12 @@ Ctrl = (opt) ->
     init-render: false
     root: @root
     action: do
+      input: do
+        comment: ({node}) ~>
+          if !@active => return
+          @data.prj{}[@active.slug].comment = node.value
+          @update debounced: 300
+          @view.local.render {name: 'project', key: @active.slug}
       click: do
         detail: ({node}) ~> @ldcv.detail.toggle!
         criteria: ({node}) ~> @ldcv.criteria.toggle!
@@ -31,6 +49,10 @@ Ctrl = (opt) ->
           node.style.width = "#{100 * p[n] / p.total }%"
         else if \progress-percent in names =>
           node.innerText = Math.round(100 * p.done / p.total )
+      "header-criteria": do
+        list: ~> @criteria
+        action: click: ({node, data}) ~> @sort \criteria, data.key
+        handler: ({node, data}) ~> node.innerText = data.name
       project: do
         key: -> it.slug
         list: ~> @prjs
@@ -42,46 +64,38 @@ Ctrl = (opt) ->
             root: node
             context: data
             action: click: do
-              detail: ({node, context}) ~> @ldcv.detail.toggle!
-              comment: ({node, context}) ~>
-                @active = context
-                view.get(\comment).value = (@data.prj{}[@active.slug].comment or '')
-                @ldcv.comment.toggle!
-                @view.local.render \comment-name
               name: ({node, context}) ->
                 view.get("iframe").setAttribute \src, "/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
                 @active-node.classList.add \active
+              pick: ({node, context}) ~>
+                obj = @data.{}prj{}[context.slug]
+                obj.picked = !obj.picked
+                local.view.render!
+                @update!
             handler: do
-              count: ({node, context}) ->
-                n = node.getAttribute(\data-name)
-                node.innerHTML = ["""
-                <div style="width:.3em;display:inline-block">
-                <div class="rounded-circle bg-cover bg-portrait bg-dark border border-light"
-                style="width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/s/avatar/#{i}.png);">
-                </div></div>
-                """ for i in context.count[n]].join('')
+              pick: ({node, context}) ~>
+                cls = [<[i-check text-white bg-success]>, <[i-circle text-secondary bg-light]>]
+                obj = @data.{}prj{}[context.slug]
+                cl = node.classList
+                cl.add.apply cl, if obj.picked => cls.0 else cls.1
+                cl.remove.apply cl, if obj.picked => cls.1 else cls.0
               "has-comment": ({node, context}) ~>
                 node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
-              state: ({node, context}) ~>
-                span = ld$.find(node, 'span',0)
-                icon = ld$.find(node, 'i',0)
-                state = context.state
-                icon.classList.remove.apply icon.classList, icon.classList
-                icon.classList.add <[i-check i-circle i-close]>[state]
-                node.classList.remove.apply node.classList, node.classList
-                cls = [<[bg-success text-white]> <[bg-light text-secondary]> <[bg-danger text-white]>]
-                node.classList.add.apply node.classList, (cls[state] ++ <[rounded]>)
-                span.innerText = <[通過 待查 不符]>[state]
-              name: ({node, context}) ->
-                node.innerText = context.name
+              name: ({node, context}) -> node.innerText = context.name
               key: ({node, context}) -> node.innerText = context.key or ''
+              progress: ({node, context}) ~>
+                n = node.getAttribute(\data-name)
+                node.style.width = "#{100 * context.{}count[n] / (context.{}count.total or 1)}%"
+              count: ({node, context}) ~>
+                n = node.getAttribute(\data-name)
+                node.innerText = context{}count[n] or 0
 
         handler: ({node, local, data}) ~>
           local.view.setContext data
-          @get-count data
+          @get-state data
           local.view.render!
 
   @
@@ -96,6 +110,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
 
   render: ->
     @get-progress!
+    @get-count!
     @view.base.render!
     @view.local.render!
 
@@ -111,30 +126,25 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> console.log "initied."
       .catch error
 
-  get-count: (context) ->
-    context.count = count = {accept: [], pending: [], reject: []}
-    for k,user of @data.{}user =>
-      val = @criteria.reduce(
-        (a, b) ~>
-          v = user.prj{}[context.slug].{}value[b.key]
-          Math.max(a, if v? => v else 1)
-        0
-      )
-      count[<[accept pending reject]>[val]].push k
-      context.state = if count.reject.length => 2 else if count.pending.length => 1 else 0
+  get-state: (context) ->
+    context.state = @criteria.reduce(
+      (a, b) ~>
+        v = @data.prj{}[context.slug].{}value[b.key]
+        Math.max(a, if v? => v else 1)
+      0
+    )
+
+  get-count: ->
+    len = [k for k of @data.user].length
+    @prjs.map (p,i) ~>
+      p.count = count = {accept: 0, pending: 0, reject: 0, total: len}
+      for k,u of @data.user => if (v = u.prj[p.slug].value) => count[v]++
+    console.log @data
 
   get-progress: ->
-
-    val = {0: 0, 1: 0, 2: 0}
-    @prjs.map (p) ~>
-      if !(p.state?) => @get-count(p)
-      val[p.state]++
-    @progress = do
-      accept: val.0
-      pending: val.1
-      reject: val.2
-      done: val.0 + val.2
-      total: (@prjs.length or 1)
+    @progress = ret = {done: 0, accept: 0, pending: 0, reject: 0, total: (@prjs.length or 1)}
+    @prjs.map (p) ~> if (v = @data.prj{}[p.slug].value) => ret[v]++
+    ret.done = (ret.accept + ret.pending + ret.reject) or 0
 
 ctrl = new Ctrl root: document.body
 ctrl.init!
