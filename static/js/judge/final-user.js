@@ -135,11 +135,9 @@ ldc.register('judgeFinalUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAdapte
     opsIn: function(arg$){
       var data, ops, source, ret, res$, r, ref$, lresult$, c;
       data = arg$.data, ops = arg$.ops, source = arg$.source;
-      console.log('here');
       if (source) {
         return;
       }
-      console.log(ops);
       this.data = JSON.parse(JSON.stringify(data));
       res$ = [];
       for (r in (ref$ = this.data).value || (ref$.value = {})) {
@@ -150,7 +148,6 @@ ldc.register('judgeFinalUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAdapte
         res$.push(lresult$);
       }
       ret = res$;
-      console.log("0.0: ", ret[0][0], this.data.value[0][0]);
       this.sheet.populateFromArray(1, 3, ret);
       return this.render();
     }
