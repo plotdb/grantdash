@@ -14,11 +14,9 @@ ldc.register('judgeFinalUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAdapte
     this.prjs = [];
     this.data = {};
     this._update = debounce(function(){
-      if (this$.user) {
-        return this$.opsOut(function(){
-          return this$.data;
-        });
-      }
+      return this$.opsOut(function(){
+        return this$.data;
+      });
     });
     return this;
   };
@@ -38,14 +36,12 @@ ldc.register('judgeFinalUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAdapte
       return this.sheet = initHot({
         afterChange: function(changes){
           changes == null && (changes = []);
-          return changes.map(function(arg$){
-            var row, prop, old, cur, r, c, ref$;
+          changes.map(function(arg$){
+            var row, prop, old, cur, ref$, key$;
             row = arg$[0], prop = arg$[1], old = arg$[2], cur = arg$[3];
-            r = row - 1;
-            c = prop - 3;
-            ((ref$ = this$.data.value)[r] || (ref$[r] = {}))[c] = cur;
-            return this$.update();
+            return ((ref$ = this$.data.value)[key$ = row - 1] || (ref$[key$] = {}))[prop - 3] = cur;
           });
+          return this$.update();
         }
       });
     },
@@ -89,7 +85,10 @@ ldc.register('judgeFinalUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAdapte
         return sdb.reconnect().then(function(){
           return this$.getdoc();
         }).then(function(){
-          return this$.adapt();
+          return this$.adapt({
+            hub: this$.hub,
+            path: ['user', this$.user.key]
+          });
         }).then(function(){
           return console.log("admin initialized.");
         }).then(function(){
@@ -134,17 +133,25 @@ ldc.register('judgeFinalUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAdapte
       });
     },
     opsIn: function(arg$){
-      var data, ops, source, r, ref$, c;
+      var data, ops, source, ret, res$, r, ref$, lresult$, c;
       data = arg$.data, ops = arg$.ops, source = arg$.source;
+      console.log('here');
       if (source) {
         return;
       }
+      console.log(ops);
       this.data = JSON.parse(JSON.stringify(data));
+      res$ = [];
       for (r in (ref$ = this.data).value || (ref$.value = {})) {
+        lresult$ = [];
         for (c in (ref$ = this.data.value)[r] || (ref$[r] = {})) {
-          this.sheet.setDataAtCell(+r + 1, +c + 3, this.data.value[r][c] || 0);
+          lresult$.push(this.data.value[r][c] || 0);
         }
+        res$.push(lresult$);
       }
+      ret = res$;
+      console.log("0.0: ", ret[0][0], this.data.value[0][0]);
+      this.sheet.populateFromArray(1, 3, ret);
       return this.render();
     }
   });

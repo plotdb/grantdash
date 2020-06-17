@@ -58,6 +58,7 @@ sharedbWrapper = function(opt){
   backend.use('readSnapshots', function(arg$, cb){
     var collection, snapshots, agent, ref$, req, session, user, id;
     collection = arg$.collection, snapshots = arg$.snapshots, agent = arg$.agent;
+    console.log('readsnapshots');
     if (!agent.stream.ws) {
       return cb();
     }
@@ -81,6 +82,7 @@ sharedbWrapper = function(opt){
   backend.use('reply', function(arg$, cb){
     var collection, agent, reply, ref$, req, session, user, id;
     collection = arg$.collection, agent = arg$.agent, reply = arg$.reply;
+    console.log('reply');
     if (!agent.stream.ws) {
       return cb();
     }
@@ -103,6 +105,7 @@ sharedbWrapper = function(opt){
   backend.use('receive', function(arg$, cb){
     var collection, agent, data, ref$, req, session, user, id;
     collection = arg$.collection, agent = arg$.agent, data = arg$.data;
+    console.log('receive');
     if (!agent.stream.ws) {
       return cb();
     }

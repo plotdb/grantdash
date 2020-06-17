@@ -156,7 +156,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       ldcvmgr.toggle \offline-retry, true
       sdb.reconnect!
         .then ~> @getdoc!
-        .then ~> @adapt!
+        .then ~>
+          if @user => @adapt {hub: @hub, path: ['user', @user.key]}
+          else @adapt {hub: @hub, path: []}
         .then -> console.log "admin initialized."
         .then ~> ldcvmgr.toggle \offline-retry, false
     sdb.ready!

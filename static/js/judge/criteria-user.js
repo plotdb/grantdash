@@ -349,7 +349,17 @@ ldc.register('judgeCriteriaUser', ['error', 'loader', 'auth', 'ldcvmgr', 'sdbAda
         return sdb.reconnect().then(function(){
           return this$.getdoc();
         }).then(function(){
-          return this$.adapt();
+          if (this$.user) {
+            return this$.adapt({
+              hub: this$.hub,
+              path: ['user', this$.user.key]
+            });
+          } else {
+            return this$.adapt({
+              hub: this$.hub,
+              path: []
+            });
+          }
         }).then(function(){
           return console.log("admin initialized.");
         }).then(function(){

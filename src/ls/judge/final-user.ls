@@ -7,8 +7,7 @@ Ctrl = (opt) ->
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @prjs = []
   @data = {}
-  @_update = debounce ~> if @user => @ops-out ~> @data
-
+  @_update = debounce ~> @ops-out ~> @data
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
@@ -21,11 +20,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     console.log "init sheet ... "
     @sheet = init-hot {
       afterChange: (changes = []) ~>
-        changes.map ([row, prop, old, cur]) ~>
-          r = row - 1
-          c = prop - 3
-          @data.value{}[r][c] = cur
-          @update!
+        # TODO make it more efficient
+        changes.map ([row, prop, old, cur]) ~> @data.value{}[row - 1][prop - 3] = cur
+        #console.log "after change total count: ", changes.length, "is dirty? ", dirty
+        @update!
     }
 
   fetch: ->
@@ -50,7 +48,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       ldcvmgr.toggle \offline-retry, true
       sdb.reconnect!
         .then ~> @getdoc!
-        .then ~> @adapt!
+        .then ~> @adapt {hub: @hub, path: ['user', @user.key]}
         .then -> console.log "admin initialized."
         .then ~> ldcvmgr.toggle \offline-retry, false
     sdb.ready!
@@ -73,8 +71,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   ops-in: ({data,ops,source}) ->
     if source => return
     @data = JSON.parse(JSON.stringify(data))
-    for r of @data.{}value => for c of @data.value{}[r] =>
-      @sheet.setDataAtCell (+r + 1), (+c + 3), (@data.value[r][c] or 0)
+    ret = for r of @data.{}value => for c of @data.value{}[r] => (@data.value[r][c] or 0)
+    @sheet.populateFromArray 1, 3, ret
     @render!
 
 auth.get!

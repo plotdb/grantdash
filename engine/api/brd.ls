@@ -188,6 +188,19 @@ app.get \/brd/:slug, aux.signed, (req, res) ->
       res.render \pages/under-construction.pug, lc{brd, projects}
     .catch aux.error-handler res
 
+api.get \/brd/:brd/grpinfo, (req, res) ->
+  if !(brd = req.params.slug) => return aux.r400 res
+  if !(grp = req.body.grp) => return aux.r400 res
+  fields = req.body.[]fields.filter -> it in <[grade criteria form]>
+  io.query "select key,name,description,slug,detail from brd where slug = $1", [brd]
+    .then (r={}) ->
+      if !(ret = r.[]rows.0) => return aux.reject 404
+      if !(g = ret.detail.[]group.filter(-> it.key == grp).0) => return aux.reject 404
+      grpinfo = g{info, key}
+      for f in fields => grpinfo[f] = g[f]
+      res.send grpinfo
+    .catch aux.error-handler res
+
 api.get \/brd/:slug/form/, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   io.query "select key,name,description,slug,detail from brd where slug = $1", [slug]
