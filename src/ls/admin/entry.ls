@@ -21,7 +21,7 @@ Ctrl = (opt) ->
           view.render!
           @update!
         "new-entry": ({node, evt}) ~>
-          obj.data.entries.push (new-data = {name: "新項目", description: "未準備詳細描述的項目"})
+          obj.data.entries.push (new-data = {name: "新項目", description: "未準備詳細描述的項目", key: suuid!})
           obj.active = new-data
           view.render!
           @update!

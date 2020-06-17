@@ -46,7 +46,8 @@ ldc.register('adminEntry', ['sdbAdapter'], function(arg$){
             node = arg$.node, evt = arg$.evt;
             obj.data.entries.push(newData = {
               name: "新項目",
-              description: "未準備詳細描述的項目"
+              description: "未準備詳細描述的項目",
+              key: suuid()
             });
             obj.active = newData;
             view.render();
