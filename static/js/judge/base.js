@@ -180,7 +180,8 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
           name: "名稱",
           state: "狀態",
           comment: "評論長度",
-          shortlist: "入選標記"
+          shortlist: "入選標記",
+          budget: "預算"
         }[name] || value,
         dir: dir > 0 ? "順向" : "逆向"
       };
@@ -213,6 +214,10 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
             return dir * (a.name > b.name
               ? 1
               : a.name < b.name ? -1 : 0);
+          });
+        } else if (name === 'budget') {
+          this$.prjs.sort(function(a, b){
+            return dir * (a.info.budget - b.info.budget);
           });
         } else if (name === 'comment') {
           this$.prjs.sort(function(a, b){

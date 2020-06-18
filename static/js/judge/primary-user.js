@@ -168,21 +168,36 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                   }
                 }
               },
+              text: {
+                name: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  return context.name;
+                },
+                ownername: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  return context.info.teamname || context.ownername || '';
+                },
+                key: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  return context.key || '';
+                },
+                budget: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  if (!context.info.budget) {
+                    return '';
+                  }
+                  return Math.round(context.info.budget / 10000) + "萬";
+                }
+              },
               handler: {
                 "has-comment": function(arg$){
                   var node, context, ref$, key$;
                   node = arg$.node, context = arg$.context;
                   return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).comment);
-                },
-                name: function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.innerText = context.name;
-                },
-                key: function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.innerText = context.key || '';
                 },
                 option: function(arg$){
                   var node, local, context, name, cls, act, ref$, key$;

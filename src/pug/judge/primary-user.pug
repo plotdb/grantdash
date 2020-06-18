@@ -20,20 +20,26 @@ block body
             .p-2.d-flex.align-items-center.border-bottom.border-secondary.bg-light.sticky.shadow-sm(style="top:0")
               .mr-2.text-right.px-2(style="width:50px") 編號
               .mr-2.text-right.px-2(style="width:50px") 資格
-              .flex-grow-1.clickable(ld="sort",data-name="name") 提案名稱
-              .mx-2.d-flex.text-muted.text-center
+              .flex-grow-1.clickable.mr-2(ld="sort",data-name="name") 提案名稱
+              .mr-2.text-right.px-2(ld="sort",data-name="budget",style="width:50px") 預算
+              .mr-2.d-flex.text-muted.text-center
                 .mx-2.clickable(ld="sort",data-name="primary",data-value="accept") 推薦
                 .mx-2.clickable(ld="sort",data-name="primary",data-value="pending") 面議
                 .mx-2.clickable(ld="sort",data-name="primary",data-value="reject") 汰除
                 .mx-2 評論
 
-            .px-2.py-1.d-flex.align-items-center.border-bottom.border-light(ld-each="project")
+            .px-2.py-2.d-flex.align-items-center.border-bottom.border-light(ld-each="project")
               .mr-2.text-right.px-2(ld="index",style="width:50px")
               .mr-2.text-center.px-2(ld="criteria",style="width:50px") #[i.i-check.text-success]
-              .flex-grow-1.text-truncate
+              .flex-grow-1.text-truncate.mr-2
                 .text-underline.clickable(ld="name")
                 .text-sm.text-muted(ld="ownername")
-              .mx-2.d-flex.text-muted.text-center.clickable(style="height:2em")
+              .mr-2.text-right.px-2.text-nowrap(style="width:70px")
+                span.text-sm.text-nowrap(ld="budget")
+                span.text-sm.text-muted 元
+
+
+              .mr-2.d-flex.text-muted.text-center.clickable(style="height:2em")
                 .mx-2.rounded.vertical-center(ld="option",data-name="accept",style="width:2em"): i.i-check
                 .mx-2.rounded.vertical-center(ld="option",data-name="pending",style="width:2em"): i.i-circle
                 .mx-2.rounded.vertical-center(ld="option",data-name="reject",style="width:2em"): i.i-close
@@ -47,7 +53,7 @@ block body
               .text-muted.text-sm 距資格審查截止還有
               .text-danger 2 天 15 小時 20 分
             .mr-4.text-sm
-              .text-muted 資格審查進度
+              .text-muted 初審進度
               .d-flex.align-items-center.my-1(style="line-height:1rem")
                 .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                 span.mr-2 通過

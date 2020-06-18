@@ -121,7 +121,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                     var i$, ref$, len$, results$ = [];
                     for (i$ = 0, len$ = (ref$ = context.count[n]).length; i$ < len$; ++i$) {
                       user = ref$[i$];
-                      results$.push("<div style=\"width:.3em;line-height:1em;display:inline-block\">\n<div class=\"rounded-circle bg-cover bg-portrait bg-dark border border-light\"\nstyle=\"width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/s/avatar/" + user + ".png);\">\n</div></div>");
+                      results$.push("<div style=\"width:.3em;display:inline-block\">\n<div class=\"rounded-circle bg-cover bg-portrait bg-dark border border-light\"\nstyle=\"width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/s/avatar/" + user + ".png);\">\n</div></div>");
                     }
                     return results$;
                   }()).join('');

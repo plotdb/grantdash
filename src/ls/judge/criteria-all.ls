@@ -58,7 +58,7 @@ Ctrl = (opt) ->
               count: ({node, context}) ->
                 n = node.getAttribute(\data-name)
                 node.innerHTML = ["""
-                <div style="width:.3em;line-height:1em;display:inline-block">
+                <div style="width:.3em;display:inline-block">
                 <div class="rounded-circle bg-cover bg-portrait bg-dark border border-light"
                 style="width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/s/avatar/#{user}.png);">
                 </div></div>

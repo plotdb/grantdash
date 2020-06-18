@@ -87,7 +87,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     if !@sort.inversed => @sort.inversed = {}
     dir = if @sort.inversed[n] => 1 else -1
     verbose = do
-      name: {name: "名稱", state: "狀態", comment: "評論長度", shortlist: "入選標記"}[name] or value
+      name: {name: "名稱", state: "狀態", comment: "評論長度", shortlist: "入選標記", budget: "預算"}[name] or value
       dir: if dir > 0 => "順向" else "逆向"
     if name == \count =>
       verbose.name = "#{{accept: "通過", pending: "待審", reject: "不符"}[value]}的數量"
@@ -101,6 +101,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         @prjs.sort (a, b) ~> dir * (statemap[a.state] - statemap[b.state])
       else if name == \name =>
         @prjs.sort (a, b) -> return dir * (if a.name > b.name => 1 else if a.name < b.name => -1 else 0)
+      else if name == \budget =>
+        @prjs.sort (a,b) ~> dir * (a.info.budget - b.info.budget)
       else if name == \comment =>
         @prjs.sort (a,b) ~>
           dir * ((@data.prj{}[a.slug].comment or '').length - (@data.prj{}[b.slug].comment or '').length)

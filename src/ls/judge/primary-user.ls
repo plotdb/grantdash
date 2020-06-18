@@ -83,11 +83,16 @@ Ctrl = (opt) ->
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
                 @active-node.classList.add \active
+            text: do
+              name: ({context}) -> context.name
+              ownername: ({context}) -> context.info.teamname or context.ownername or ''
+              key: ({context}) -> context.key or ''
+              budget: ({context}) ->
+                if !context.info.budget => return ''
+                return "#{Math.round(context.info.budget / 10000)}萬"
             handler: do
               "has-comment": ({node, context}) ~>
                 node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
-              name: ({node, context}) -> node.innerText = context.name
-              key: ({node, context}) -> node.innerText = context.key or ''
               option: ({node, local, context}) ~>
                 name = node.getAttribute(\data-name)
                 cls = {accept: "bg-success", pending: "bg-warning", reject: "bg-danger"}[name]
