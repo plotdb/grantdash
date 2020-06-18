@@ -28,16 +28,16 @@ module["form-budget"] = module-init: ->
             ['分類', '項目', '預估', '', '', '實際', '', '', '執行率']
             ['', '', '自籌', '補助', '總計', '自籌', '補助', '總計', '']
           ]
-          get-data = ~> head ++ @block.value.sheet or [["設備","( 範例 ) 電腦", 20000, 10000]]
+          get-data = ~> head ++ (@block.{}value.sheet or [["設備","( 範例 ) 電腦", 20000, 10000]])
           update = (changes) ~>
             context.total = 0
-            data.slice 2 .map (d) ->
+            data.slice 2 .filter(->it).map (d) ->
               d.4 = if isval(d.2) or isval(d.3) => (+d.2 + +d.3) else ''
               d.7 = if isval(d.5) or isval(d.6) => (+d.5 + +d.6) else ''
               context.total += +d.4
             if changes.length => hot.loadData data
             debounce 10 .then -> view.render \total
-            @block.value.sheet = data.slice(2).map -> it.slice(0,4)
+            @block.value.sheet = data.slice(2).filter(->it).map -> it.slice(0,4)
             @update!
 
           Handsontable.renderers.registerRenderer(
@@ -72,9 +72,7 @@ module["form-budget"] = module-init: ->
             cells: (row, col) -> return {renderer: \budget-renderer}
             colWidths: [50,120,55,55,55,55,55,55]
             afterChange: (changes = []) ~> update changes
-
           }
-
           hot.updateSettings contextMenu: items:
             "add_row_above":
               name: "在上方新增一列"
@@ -384,14 +382,30 @@ module["form-tag"] = module-init: ->
 
 purpose = do
   map: do
-    title: { name: "標題", block: <[form-short-answer]> }
-    description: { name: "簡介", block: <[form-short-answer form-long-answer]> }
-    thumb: { name: "縮圖", block: <[form-thumbnail]> }
-    tag: { name: "標籤", block: <[form-radio]> }
-    category: { name: "分類", block: <[form-tag]> }
-    teamname: { name: "團隊名", block: <[form-short-answer]> }
-    uid: { name: "統編", block: <[form-short-answer]> }
-    budget: { name: "預算", block: <[form-budget]> }
+    title:
+      name: "標題", block: <[form-short-answer]>
+      get: (v={}) -> v.content or ''
+    description:
+      name: "簡介", block: <[form-short-answer form-long-answer]>
+      get: (v={}) -> v.content or ''
+    thumb:
+      name: "縮圖", block: <[form-thumbnail]>
+      get: (v={}) -> (v.list or []).0 or ''
+    tag:
+      name: "標籤", block: <[form-radio]>
+      get: (v={}) -> (v.list or [])
+    category:
+      name: "分類", block: <[form-tag]>
+      get: (v={}) -> (v.list or []).0 or ''
+    teamname:
+      name: "團隊名", block: <[form-short-answer]>
+      get: (v={}) -> v.content or ''
+    uid:
+      name: "統編", block: <[form-short-answer]>
+      get: (v={}) -> v.content or ''
+    budget:
+      name: "預算", block: <[form-budget]>
+      get: (v={}) -> (v.sheet or []).reduce(((a,b) -> a + + b.2 + +b.3),0)
   match: (p, b) -> b.name in (p.block or [])
 purpose.list = [[k,v] for k,v of purpose.map].map -> {key: it.0} <<< it.1
 
@@ -567,5 +581,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   clone: -> @hub.clone @block
   move: (dir) -> @hub.move @block, dir
   schema: schema
+
+Ctrl.purpose = purpose
 
 return Ctrl

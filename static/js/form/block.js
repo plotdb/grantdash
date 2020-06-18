@@ -57,11 +57,14 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               node = arg$.node, context = arg$.context;
               head = [['分類', '項目', '預估', '', '', '實際', '', '', '執行率'], ['', '', '自籌', '補助', '總計', '自籌', '補助', '總計', '']];
               getData = function(){
-                return head.concat(this$.block.value.sheet) || [["設備", "( 範例 ) 電腦", 20000, 10000]];
+                var ref$;
+                return head.concat(((ref$ = this$.block).value || (ref$.value = {})).sheet || [["設備", "( 範例 ) 電腦", 20000, 10000]]);
               };
               update = function(changes){
                 context.total = 0;
-                data.slice(2).map(function(d){
+                data.slice(2).filter(function(it){
+                  return it;
+                }).map(function(d){
                   d[4] = isval(d[2]) || isval(d[3]) ? +d[2] + +d[3] : '';
                   d[7] = isval(d[5]) || isval(d[6]) ? +d[5] + +d[6] : '';
                   return context.total += +d[4];
@@ -72,7 +75,9 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                 debounce(10).then(function(){
                   return view.render('total');
                 });
-                this$.block.value.sheet = data.slice(2).map(function(it){
+                this$.block.value.sheet = data.slice(2).filter(function(it){
+                  return it;
+                }).map(function(it){
                   return it.slice(0, 4);
                 });
                 return this$.update();
@@ -806,35 +811,69 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
     map: {
       title: {
         name: "標題",
-        block: ['form-short-answer']
+        block: ['form-short-answer'],
+        get: function(v){
+          v == null && (v = {});
+          return v.content || '';
+        }
       },
       description: {
         name: "簡介",
-        block: ['form-short-answer', 'form-long-answer']
+        block: ['form-short-answer', 'form-long-answer'],
+        get: function(v){
+          v == null && (v = {});
+          return v.content || '';
+        }
       },
       thumb: {
         name: "縮圖",
-        block: ['form-thumbnail']
+        block: ['form-thumbnail'],
+        get: function(v){
+          v == null && (v = {});
+          return (v.list || [])[0] || '';
+        }
       },
       tag: {
         name: "標籤",
-        block: ['form-radio']
+        block: ['form-radio'],
+        get: function(v){
+          v == null && (v = {});
+          return v.list || [];
+        }
       },
       category: {
         name: "分類",
-        block: ['form-tag']
+        block: ['form-tag'],
+        get: function(v){
+          v == null && (v = {});
+          return (v.list || [])[0] || '';
+        }
       },
       teamname: {
         name: "團隊名",
-        block: ['form-short-answer']
+        block: ['form-short-answer'],
+        get: function(v){
+          v == null && (v = {});
+          return v.content || '';
+        }
       },
       uid: {
         name: "統編",
-        block: ['form-short-answer']
+        block: ['form-short-answer'],
+        get: function(v){
+          v == null && (v = {});
+          return v.content || '';
+        }
       },
       budget: {
         name: "預算",
-        block: ['form-budget']
+        block: ['form-budget'],
+        get: function(v){
+          v == null && (v = {});
+          return (v.sheet || []).reduce(function(a, b){
+            return a + +b[2] + +b[3];
+          }, 0);
+        }
       }
     },
     match: function(p, b){
@@ -1262,6 +1301,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
     },
     schema: schema
   });
+  Ctrl.purpose = purpose;
   return Ctrl;
 });
 function in$(x, xs){
