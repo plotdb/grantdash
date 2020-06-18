@@ -58,22 +58,22 @@ Ctrl = (opt) ->
               count: ({node, context}) ->
                 n = node.getAttribute(\data-name)
                 node.innerHTML = ["""
-                <div style="width:.3em;display:inline-block">
+                <div style="width:.3em;line-height:1em;display:inline-block">
                 <div class="rounded-circle bg-cover bg-portrait bg-dark border border-light"
-                style="width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/s/avatar/#{i}.png);">
+                style="width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/s/avatar/#{user}.png);">
                 </div></div>
-                """ for i in context.count[n]].join('')
+                """ for user in context.count[n]].join('')
               "has-comment": ({node, context}) ~>
                 node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
               state: ({node, context}) ~>
                 span = ld$.find(node, 'span',0)
                 icon = ld$.find(node, 'i',0)
-                state = context.state
+                state = context.state or 1
                 icon.classList.remove.apply icon.classList, icon.classList
                 icon.classList.add <[i-check i-circle i-close]>[state]
                 node.classList.remove.apply node.classList, node.classList
                 cls = [<[bg-success text-white]> <[bg-light text-secondary]> <[bg-danger text-white]>]
-                node.classList.add.apply node.classList, (cls[state] ++ <[rounded]>)
+                node.classList.add.apply node.classList, ((cls[state] or []) ++ <[rounded]>)
                 span.innerText = <[通過 待查 不符]>[state]
               name: ({node, context}) ->
                 node.innerText = context.name

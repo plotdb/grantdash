@@ -114,14 +114,14 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
               },
               handler: {
                 count: function(arg$){
-                  var node, context, n, i;
+                  var node, context, n, user;
                   node = arg$.node, context = arg$.context;
                   n = node.getAttribute('data-name');
                   return node.innerHTML = (function(){
                     var i$, ref$, len$, results$ = [];
                     for (i$ = 0, len$ = (ref$ = context.count[n]).length; i$ < len$; ++i$) {
-                      i = ref$[i$];
-                      results$.push("<div style=\"width:.3em;display:inline-block\">\n<div class=\"rounded-circle bg-cover bg-portrait bg-dark border border-light\"\nstyle=\"width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/s/avatar/" + i + ".png);\">\n</div></div>");
+                      user = ref$[i$];
+                      results$.push("<div style=\"width:.3em;line-height:1em;display:inline-block\">\n<div class=\"rounded-circle bg-cover bg-portrait bg-dark border border-light\"\nstyle=\"width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/s/avatar/" + user + ".png);\">\n</div></div>");
                     }
                     return results$;
                   }()).join('');
@@ -136,12 +136,12 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                   node = arg$.node, context = arg$.context;
                   span = ld$.find(node, 'span', 0);
                   icon = ld$.find(node, 'i', 0);
-                  state = context.state;
+                  state = context.state || 1;
                   icon.classList.remove.apply(icon.classList, icon.classList);
                   icon.classList.add(['i-check', 'i-circle', 'i-close'][state]);
                   node.classList.remove.apply(node.classList, node.classList);
                   cls = [['bg-success', 'text-white'], ['bg-light', 'text-secondary'], ['bg-danger', 'text-white']];
-                  node.classList.add.apply(node.classList, cls[state].concat(['rounded']));
+                  node.classList.add.apply(node.classList, (cls[state] || []).concat(['rounded']));
                   return span.innerText = ['通過', '待查', '不符'][state];
                 },
                 name: function(arg$){

@@ -73,7 +73,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       create: ~> {}
     }).then _
     @hub.doc = doc
-    @adapt {hub: @hub, path: (if @user => ['user', @user] else [])}
+    @adapt {hub: @hub, path: (if @user => ['user', @user.key] else [])}
 
   ops-in: ->
 

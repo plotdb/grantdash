@@ -149,7 +149,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         return this$.adapt({
           hub: this$.hub,
           path: this$.user
-            ? ['user', this$.user]
+            ? ['user', this$.user.key]
             : []
         });
       });
