@@ -52,21 +52,20 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         }
       });
     },
-    _update: function(){
-      var this$ = this;
-      return this.opsOut(function(){
-        return this$.data;
-      });
-    },
     update: function(opt){
       var this$ = this;
       opt == null && (opt = {});
-      if (!opt.debounced) {
-        return this._update();
-      } else {
-        return debounce(opt.debounced).then(function(){
-          return this$._update();
+      if (!this._update) {
+        this._update = debounce(function(){
+          return this$.opsOut(function(){
+            return this$.data;
+          });
         });
+      }
+      if (!opt.debounced) {
+        return this._update().now();
+      } else {
+        return this._update.delay(opt.debounced)();
       }
     },
     fetchPrjs: function(){

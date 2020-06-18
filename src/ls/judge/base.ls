@@ -29,10 +29,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         reviewer: ({node}) ~> if @user => @user.displayname
         "grp-name": ({node}) ~> "#{@brdinfo.name} / #{@grpinfo.info.name}"
 
-  _update: -> @ops-out ~> @data
   update: (opt={}) ->
-    if !opt.debounced => @_update!
-    else debounce opt.debounced .then ~> @_update!
+    if !@_update => @_update = debounce ~> @ops-out ~> @data
+    if !opt.debounced => @_update!now!
+    else @_update.delay(opt.debounced)!
   fetch-prjs: ->
     console.log "fetch prjs ... "
     # TODO unify prj list with general list api

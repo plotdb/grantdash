@@ -4,6 +4,15 @@ block vars
   - ctrl.navtop.placeholder = false
   - ctrl.foot.shown = false
 block body
+
+  .ldcv(ld="comment-ldcv"): .base.w-480: .inner.card.shadow-sm
+    .card-header.shadow-sm.position-relative.z-float
+      p.mb-0 資格審核附註
+      h4.mb-0(ld="comment-name")
+    textarea.form-control.border-0.rounded-0(ld="comment",
+    rows="5",placeholder="在這裡輸入您的附註 ... ")
+    .card-footer.text-right: .btn.btn-primary(data-ldcv-set="") 完成
+
   .h-100.w-100.d-flex.flex-column
     .p-2.d-flex
       .flex-grow-1.p-2
@@ -19,7 +28,7 @@ block body
           .w-100
             .p-2.d-flex.align-items-center.border-bottom.border-secondary.bg-light.sticky.shadow-sm(style="top:0")
               //-.mr-2.text-right.px-2(style="width:50px") 編號
-              //-.mr-2.text-right.px-2(style="width:50px") 資格
+              .mr-2.text-right.px-2.clickable(ld="sort",data-name="comment",style="width:50px") 評論
               .flex-grow-1.clickable.mr-2(ld="sort",data-name="name") 提案名稱
               .mr-2.text-right.px-2.clickable(ld="sort",data-name="budget",style="width:50px") 預算
               .mr-2.d-flex.text-muted.text-center
@@ -30,11 +39,12 @@ block body
 
             .px-2.py-2.d-flex.align-items-center.border-bottom.border-light(ld-each="project")
               //-.mr-2.text-right.px-2(ld="index",style="width:50px")
-              //-.mr-2.text-center.px-2(ld="criteria",style="width:50px") #[i.i-check.text-success]
+              //-.mr-2.text-center.px-2(ld="has-comment",style="width:50px") #[i.i-doc]
+              .mr-2.text-center.px-2(style="width:50px"): i.i-doc.text-primary.invisible(ld="has-comment comment")
               .flex-grow-1.text-truncate.mr-2
                 .text-underline.clickable(ld="name")
                 .text-sm.text-muted(ld="ownername")
-              .mr-2.text-right.text-nowrap(style="width:70px")
+              .mr-2.text-right.text-nowrap(style="width:75px")
                 div
                   span.text-sm.text-muted.mr-1 總數
                   b.text-sm.text-nowrap(ld="budget")

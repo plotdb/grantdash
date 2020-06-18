@@ -21,7 +21,8 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
     this.active = null;
     this.ldcv = {
       comment: new ldCover({
-        root: ld$.find(this.root, '[ld=comment-ldcv]', 0)
+        root: ld$.find(this.root, '[ld=comment-ldcv]', 0),
+        escape: false
       }),
       detail: new ldCover({
         root: ld$.find(this.root, '[ld=detail-ldcv]', 0)

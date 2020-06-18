@@ -19,10 +19,11 @@ Ctrl = (opt) ->
   @active = null
 
   @ldcv = do
-    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0)
+    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0), escape: false
     detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
     criteria: new ldCover root: ld$.find(@root, '[ld=criteria-ldcv]', 0)
 
+  render-debounce = debounce ~> @view.local.render {name: 'project', key: @active.slug}
   @view.local = view = new ldView do
     init-render: false
     root: @root
@@ -31,8 +32,8 @@ Ctrl = (opt) ->
         comment: ({node}) ~>
           if !@active => return
           @data.prj{}[@active.slug].comment = node.value
-          @update debounced: 300
-          @view.local.render {name: 'project', key: @active.slug}
+          @update debounced: 1000
+          render-debounce!
       click: do
         detail: ({node}) ~> @ldcv.detail.toggle!
         criteria: ({node}) ~> @ldcv.criteria.toggle!

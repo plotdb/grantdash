@@ -13,7 +13,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
     return node.classList.add.apply(node.classList, newcls);
   };
   Ctrl = function(opt){
-    var obj, view, this$ = this;
+    var obj, renderDebounce, view, this$ = this;
     import$(this, obj = new judgeBase(opt));
     this.data = {
       prj: {}
@@ -21,7 +21,8 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
     this.active = null;
     this.ldcv = {
       comment: new ldCover({
-        root: ld$.find(this.root, '[ld=comment-ldcv]', 0)
+        root: ld$.find(this.root, '[ld=comment-ldcv]', 0),
+        escape: false
       }),
       detail: new ldCover({
         root: ld$.find(this.root, '[ld=detail-ldcv]', 0)
@@ -30,6 +31,12 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
         root: ld$.find(this.root, '[ld=criteria-ldcv]', 0)
       })
     };
+    renderDebounce = debounce(function(){
+      return this$.view.local.render({
+        name: 'project',
+        key: this$.active.slug
+      });
+    });
     this.view.local = view = new ldView({
       initRender: false,
       root: this.root,
@@ -43,12 +50,9 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
             }
             ((ref$ = this$.data.prj)[key$ = this$.active.slug] || (ref$[key$] = {})).comment = node.value;
             this$.update({
-              debounced: 300
+              debounced: 1000
             });
-            return this$.view.local.render({
-              name: 'project',
-              key: this$.active.slug
-            });
+            return renderDebounce();
           }
         },
         click: {

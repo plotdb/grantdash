@@ -19,7 +19,7 @@ Ctrl = (opt) ->
   @active = null
 
   @ldcv = do
-    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0)
+    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0), escape: false
     detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
     criteria: new ldCover root: ld$.find(@root, '[ld=criteria-ldcv]', 0)
 
