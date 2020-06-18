@@ -638,6 +638,21 @@ var vars = {root: ""}
 ;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 ;pug_debug_line = 4;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
 ctrl.navtop.placeholder = false;
+;pug_debug_line = 5;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
+var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
+;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
+var purpose = grp.form.purpose || {};
+;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
+thumb = (prj.thumb ? `url(/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb})` : 'none')
+;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
+var meta = {};
+;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
+if(prj && prj.detail.info) {
+  meta.title = prj.detail.info.title;
+  meta.description = prj.detail.info.description;
+}
+if(prj.thumb) { meta.thumbnail = thumb; }
+
 ;pug_debug_line = 13;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003Chtml\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
@@ -655,13 +670,6 @@ pug_mixins["css"]("/dash/assets/lib/ldui/ldui.min.css");
 ;pug_debug_line = 20;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_mixins["css"]("/dash/css/index.css");
 ;pug_debug_line = 21;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
-;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
-var meta = {};
-;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
-if(prj && prj.detail.info) {
-  meta.title = prj.detail.info.title;
-  meta.description = prj.detail.info.description;
-}
 ;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 if(!meta) { meta = {} }
 ;pug_debug_line = 13;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
@@ -669,37 +677,38 @@ if(!meta.title) { meta.title = "Grant Dash"; }
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 if(!meta.description) { meta.description = ""; }
 ;pug_debug_line = 15;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
-if(!meta.thumb) { meta.thumb = {}}
-;pug_debug_line = 16;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 if ((meta.url)) {
-;pug_debug_line = 17;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
+;pug_debug_line = 16;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Cmeta" + (" property=\"og:url\""+pug_attr("content", meta.url, true, true)) + "\u003E";
 }
-;pug_debug_line = 18;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
+;pug_debug_line = 17;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Cmeta" + (" property=\"og:title\""+pug_attr("content", meta.title, true, true)) + "\u003E";
-;pug_debug_line = 19;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
+;pug_debug_line = 18;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Cmeta" + (" property=\"og:description\""+pug_attr("content", meta.description, true, true)) + "\u003E";
-;pug_debug_line = 20;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
+;pug_debug_line = 19;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Cmeta property=\"og:locale\" content=\"zh_TW\"\u003E";
-;pug_debug_line = 21;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
+;pug_debug_line = 20;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Cmeta" + (" property=\"og:image\""+pug_attr("content", meta.thumbnail, true, true)) + "\u003E";
+;pug_debug_line = 21;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
+if ((meta.thumb)) {
 ;pug_debug_line = 22;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Cmeta" + (" property=\"og:image:type\""+pug_attr("content", meta.thumb.type || "image/jpeg", true, true)) + "\u003E";
 ;pug_debug_line = 23;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Cmeta" + (" property=\"og:image:width\""+pug_attr("content", meta.thumb.width || "1200", true, true)) + "\u003E";
 ;pug_debug_line = 24;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Cmeta" + (" property=\"og:image:height\""+pug_attr("content", meta.thumb.height || "630", true, true)) + "\u003E";
+}
 ;pug_debug_line = 25;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Cmeta" + (" property=\"og:type\""+pug_attr("content", meta.ogtype || "website", true, true)) + "\u003E";
 ;pug_debug_line = 26;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmeta.pug";
 pug_html = pug_html + "\u003Clink" + (" rel=\"icon\" type=\"image\u002Fx-icon\""+pug_attr("href", meta.favicon || "/favicon.ico", true, true)) + "\u003E";
-;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
+;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
 if (pageInfo && pageInfo.cssUrl) {
-;pug_debug_line = 15;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
+;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
 pug_mixins["css"](pageInfo.cssUrl);
 }
 else {
-;pug_debug_line = 17;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
+;pug_debug_line = 22;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
 pug_mixins["css"]("/dash/css/custom/index.css");
 }
 pug_html = pug_html + "\u003C\u002Fhead\u003E";
@@ -3622,12 +3631,6 @@ pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner text-lg mt-4\"\u0
 ;pug_debug_line = 29;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ldNotify\"\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
-;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
-var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
-;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
-var purpose = grp.form.purpose || {};
-;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
-thumb = (prj.thumb ? `url(/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb})` : 'none')
 ;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";
 pug_html = pug_html + "\u003Cdiv class=\"gd-prj-view typeset heading-contrast\"\u003E";
 ;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fprj\u002Fview.pug";

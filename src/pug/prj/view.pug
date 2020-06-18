@@ -2,7 +2,9 @@
 extends /base.pug
 block vars
   - ctrl.navtop.placeholder = false;
-block head
+  - var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
+  - var purpose = grp.form.purpose || {};
+  - thumb = (prj.thumb ? `url(/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb})` : 'none')
   -
     var meta = {};
   -
@@ -10,17 +12,15 @@ block head
       meta.title = prj.detail.info.title;
       meta.description = prj.detail.info.description;
     }
+    if(prj.thumb) { meta.thumbnail = thumb; }
+
+block head
   include /modules/meta.pug
   if pageInfo && pageInfo.cssUrl
     +css(pageInfo.cssUrl)
   else
     +css("/dash/css/custom/index.css")
 block body
-  - var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
-  - var purpose = grp.form.purpose || {};
-  - thumb = (prj.thumb ? `url(/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb})` : 'none')
-
-
   .gd-prj-view.typeset.heading-contrast: .inner
     .gd-prj-view-header.simple
       .thumb(style=`background-image:${thumb}`)
