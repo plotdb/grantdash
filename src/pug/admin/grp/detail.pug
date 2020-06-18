@@ -19,8 +19,19 @@
 
   .p-0
     div(ld="nav-panel default",data-nav="grp-detail",data-name="prj-info")
-      .w-100.mt-4: .aspect-ratio.ratio-2by1.bg-light: .w-100.h-100.vertical-center: .w-100.text-center 尚未啟用
-      //-include prj-info.pug
+      .p-4
+        .row
+          .col-md: .form-group
+            label 聯絡人
+            input.form-control.border.rounded(placeholder="聯絡人")
+          .col-md: .form-group
+            label 聯絡用電子郵件
+            input.form-control.border.rounded(placeholder="電子郵件信箱")
+        .form-group
+          label.mb-0 備註
+          .text-muted.text-sm.mb-2 任何其它關於案件 / 提案人 / 團隊的資訊，可以記載在這裡。
+          textarea.form-control(rows="10")
+
     div(ld="nav-panel",data-nav="grp-detail",data-name="prj-track")
       .w-100.mt-4: .aspect-ratio.ratio-2by1.bg-light: .w-100.h-100.vertical-center: .w-100.text-center 尚未啟用
       //-include track.pug

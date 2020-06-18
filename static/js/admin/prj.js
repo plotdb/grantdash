@@ -11,16 +11,13 @@ ldc.register('adminPrjDetail', ['sdbAdapter', 'prjViewSimple'], function(arg$){
     this.prj = {};
     this.view = new ldView({
       root: root,
-      handler: {
-        name: function(arg$){
-          var node;
-          node = arg$.node;
-          return node.innerText = this$.prj.name || '';
+      text: {
+        name: function(){
+          return this$.prj.name || '';
         },
-        ownername: function(arg$){
-          var node;
-          node = arg$.node;
-          return node.innerText = this$.prj.ownername || '';
+        ownername: function(){
+          var ref$;
+          return ((ref$ = this$.prj).info || (ref$.info = {})).teamname || this$.prj.ownername || '';
         }
       }
     });

@@ -18,6 +18,9 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
           type: 'json'
         }).then(function(it){
           this$.data = it;
+          this$.data.map(function(it){
+            return it.info = it.detail.info;
+          });
           return this$.view.render();
         })['catch'](error());
       }

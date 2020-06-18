@@ -5,9 +5,9 @@ Ctrl = (opt) ->
   @prj = {}
   @view = new ldView do
     root: root
-    handler: do
-      name: ({node}) ~> node.innerText = @prj.name or ''
-      ownername: ({node}) ~> node.innerText = @prj.ownername or ''
+    text: do
+      name: ~> @prj.name or ''
+      ownername: ~> @prj.{}info.teamname or @prj.ownername or ''
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do

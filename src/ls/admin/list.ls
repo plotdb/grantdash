@@ -9,6 +9,7 @@ Ctrl = (opt) ->
       ld$.fetch "/dash/api/brd/#{@toc.brd.slug}/list", {method: \GET}, {type: \json}
         .then ~>
           @data = it
+          @data.map -> it.info = it.detail.info
           @view.render!
         .catch error!
 
