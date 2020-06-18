@@ -272,6 +272,22 @@
         });
       });
     };
+    api.get('/brd/:brd/grp/:grp/judge-list', aux.signed, function(req, res){
+      var ref$, brd, grp;
+      ref$ = {
+        brd: (ref$ = req.params).brd,
+        grp: ref$.grp
+      }, brd = ref$.brd, grp = ref$.grp;
+      if (!(brd && grp)) {
+        return aux.r400(res);
+      }
+      return Promise.resolve().then(function(){
+        return io.query("select p.name, p.slug, u.displayname as ownername from prj as p\nleft join users as u on u.key = p.owner\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
+      }).then(function(r){
+        r == null && (r = {});
+        return res.send(r.rows || (r.rows = []));
+      })['catch'](aux.errorHandler(res));
+    });
     api.get('/brd/:slug/list', function(req, res){
       return getPrjList(req, res).then(function(it){
         return res.send(it);
@@ -329,6 +345,44 @@
         return res.render('pages/under-construction.pug', {
           brd: lc.brd,
           projects: lc.projects
+        });
+      })['catch'](aux.errorHandler(res));
+    });
+    api.post('/brd/:brd/grp/:grp/info', function(req, res){
+      var brd, grp, fields, ref$;
+      if (!((brd = req.params.brd) && (grp = req.params.grp))) {
+        return aux.r400(res);
+      }
+      fields = ((ref$ = req.body).fields || (ref$.fields = [])).filter(function(it){
+        return it === 'grade' || it === 'criteria' || it === 'form';
+      });
+      return io.query("select key,name,description,slug,detail from brd where slug = $1", [brd]).then(function(r){
+        var ret, g, ref$, grpinfo, i$, len$, f;
+        r == null && (r = {});
+        if (!(ret = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        if (!(g = ((ref$ = ret.detail).group || (ref$.group = [])).filter(function(it){
+          return it.key === grp;
+        })[0])) {
+          return aux.reject(404);
+        }
+        grpinfo = {
+          info: g.info,
+          key: g.key
+        };
+        for (i$ = 0, len$ = (ref$ = fields).length; i$ < len$; ++i$) {
+          f = ref$[i$];
+          grpinfo[f] = g[f];
+        }
+        return res.send({
+          brd: {
+            key: ret.key,
+            name: ret.name,
+            description: ret.description,
+            slug: ret.slug
+          },
+          grp: grpinfo
         });
       })['catch'](aux.errorHandler(res));
     });

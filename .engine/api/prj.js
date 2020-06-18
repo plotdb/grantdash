@@ -69,16 +69,16 @@
         };
         delete brd.detail;
         view = (req.query || (req.query = {})).simple != null ? 'prj/view-standalone.pug' : 'prj/view.pug';
-        return res.render(view, (ref$ = {
+        return res.render(view, (ref$ = (ref1$ = {
           prj: lc.prj,
           grp: lc.grp,
           brd: lc.brd,
           pageInfo: lc.pageInfo
-        }, ref$.exports = {
+        }, ref1$.exports = {
           prj: lc.prj,
           brd: lc.brd,
           grp: lc.grp
-        }, ref$));
+        }, ref1$), ref$.domain = req.scope.domain, ref$));
       })['catch'](aux.errorHandler(res));
     });
     api['delete']('/prj/:slug', aux.signed, function(req, res){
