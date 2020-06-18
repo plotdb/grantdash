@@ -4581,7 +4581,7 @@ if (!prj.deleted) {
 ;pug_debug_line = 63;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ch4 class=\"mb-0\"\u003E";
 ;pug_debug_line = 63;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"text-dark\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"text-dark text-truncate\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
 ;pug_debug_line = 63;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = prj.name) ? "" : pug_interp)) + "\u003C\u002Fa\u003E\u003C\u002Fh4\u003E";
 }
@@ -4589,7 +4589,7 @@ else {
 ;pug_debug_line = 65;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ch4 class=\"mb-0\"\u003E";
 ;pug_debug_line = 65;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-dark\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"text-dark text-truncate\"\u003E";
 ;pug_debug_line = 65;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = prj.name) ? "" : pug_interp)) + "\u003C\u002Fdiv\u003E\u003C\u002Fh4\u003E";
 }
@@ -4602,28 +4602,48 @@ pug_html = pug_html + "\u003Cdiv" + (" class=\"text-sm text-muted\""+" ld=\"pret
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cp class=\"text-muted mb-1\"\u003E";
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = prj.description) ? "" : pug_interp)) + "\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + (pug_escape(null == (pug_interp = (prj.description || '').substring(0,22)) ? "" : pug_interp));
+;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + " ...\u003C\u002Fp\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center text-muted text-sm\"\u003E";
+;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"bg-light px-1 rounded\"\u003E";
+;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "資格審查\u003C\u002Fdiv\u003E";
+;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Ci class=\"i-dart-right mx-2\"\u003E\u003C\u002Fi\u003E";
+;pug_debug_line = 72;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"bg-light px-1 rounded d-flex align-items-center\"\u003E";
+;pug_debug_line = 72;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "初審\u003C\u002Fdiv\u003E";
+;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Ci class=\"i-dart-right mx-2\"\u003E\u003C\u002Fi\u003E";
+;pug_debug_line = 74;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"bg-light px-1 rounded\"\u003E";
+;pug_debug_line = 74;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "決選\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 75;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 if (!prj.deleted) {
-;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 76;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-4\"\u003E";
-;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 76;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
-;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 76;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "檢視\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 77;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-2\"\u003E";
-;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 77;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/dash/prj/${prj.slug}/edit`, true, true)) + "\u003E";
-;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 77;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "編輯\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 }
 else {
-;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 79;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-2\"\u003E";
-;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 79;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ca class=\"btn btn-light text-nowrap disabled\"\u003E";
-;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 79;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "已刪除\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 }
 pug_html = pug_html + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
@@ -4659,7 +4679,7 @@ if (!prj.deleted) {
 ;pug_debug_line = 63;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ch4 class=\"mb-0\"\u003E";
 ;pug_debug_line = 63;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Ca" + (" class=\"text-dark\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"text-dark text-truncate\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
 ;pug_debug_line = 63;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = prj.name) ? "" : pug_interp)) + "\u003C\u002Fa\u003E\u003C\u002Fh4\u003E";
 }
@@ -4667,7 +4687,7 @@ else {
 ;pug_debug_line = 65;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ch4 class=\"mb-0\"\u003E";
 ;pug_debug_line = 65;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-dark\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"text-dark text-truncate\"\u003E";
 ;pug_debug_line = 65;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = prj.name) ? "" : pug_interp)) + "\u003C\u002Fdiv\u003E\u003C\u002Fh4\u003E";
 }
@@ -4680,28 +4700,48 @@ pug_html = pug_html + "\u003Cdiv" + (" class=\"text-sm text-muted\""+" ld=\"pret
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cp class=\"text-muted mb-1\"\u003E";
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-pug_html = pug_html + (pug_escape(null == (pug_interp = prj.description) ? "" : pug_interp)) + "\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + (pug_escape(null == (pug_interp = (prj.description || '').substring(0,22)) ? "" : pug_interp));
+;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + " ...\u003C\u002Fp\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center text-muted text-sm\"\u003E";
+;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"bg-light px-1 rounded\"\u003E";
+;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "資格審查\u003C\u002Fdiv\u003E";
+;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Ci class=\"i-dart-right mx-2\"\u003E\u003C\u002Fi\u003E";
+;pug_debug_line = 72;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"bg-light px-1 rounded d-flex align-items-center\"\u003E";
+;pug_debug_line = 72;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "初審\u003C\u002Fdiv\u003E";
+;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Ci class=\"i-dart-right mx-2\"\u003E\u003C\u002Fi\u003E";
+;pug_debug_line = 74;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "\u003Cdiv class=\"bg-light px-1 rounded\"\u003E";
+;pug_debug_line = 74;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+pug_html = pug_html + "決選\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 75;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 if (!prj.deleted) {
-;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 76;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-4\"\u003E";
-;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 76;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/dash/prj/${prj.slug}`, true, true)) + "\u003E";
-;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 76;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "檢視\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 77;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-2\"\u003E";
-;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 77;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-outline-primary text-nowrap\""+pug_attr("href", `/dash/prj/${prj.slug}/edit`, true, true)) + "\u003E";
-;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 77;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "編輯\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 }
 else {
-;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 79;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ml-2\"\u003E";
-;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 79;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Ca class=\"btn btn-light text-nowrap disabled\"\u003E";
-;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 79;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "已刪除\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 }
 pug_html = pug_html + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
@@ -4980,7 +5020,7 @@ pug_mixins["script"]("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js");
 ;pug_debug_line = 48;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_mixins["script"]("/dash/js/util/stage.js");
 ;pug_debug_line = 49;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
-;pug_debug_line = 76;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
+;pug_debug_line = 82;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_mixins["script"]("/dash/js/me/profile.js");
 ;pug_debug_line = 50;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_mixins["script"]("/dash/js/site.js");
