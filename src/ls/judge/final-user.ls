@@ -1,41 +1,16 @@
-({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgePrimaryUser,
+({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeFinalUser,
 <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
-
-
-clsmap = [
-  <[i-check text-success]>
-  <[i-circle text-secondary]>
-  <[i-close text-danger]>
-]
-clsset = (node, val) ->
-  newcls = clsmap[val]
-  oldcls = Array.from(node.classList)
-  if oldcls.length => node.classList.remove.apply node.classList, oldcls
-  node.classList.add.apply node.classList, newcls
 
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
   @data = {prj: {}}
   @active = null
 
-  @ldcv = do
-    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0)
-    detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
-    criteria: new ldCover root: ld$.find(@root, '[ld=criteria-ldcv]', 0)
-
   @view.local = view = new ldView do
     init-render: false
     root: @root
     action: do
-      input: do
-        comment: ({node}) ~>
-          if !@active => return
-          @data.prj{}[@active.slug].comment = node.value
-          @update debounced: 300
-          @view.local.render {name: 'project', key: @active.slug}
       click: do
-        detail: ({node}) ~> @ldcv.detail.toggle!
-        criteria: ({node}) ~> @ldcv.criteria.toggle!
         sort: ({node}) ~> @sort node.getAttribute(\data-name), node.getAttribute(\data-value)
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
@@ -71,12 +46,7 @@ Ctrl = (opt) ->
                 @get-progress!
                 @view.local.render <[progress]>
                 @update debounced: 10
-              detail: ({node, context}) ~> @ldcv.detail.toggle!
-              comment: ({node, context}) ~>
-                @active = context
-                view.get(\comment).value = (@data.prj{}[@active.slug].comment or '')
-                @ldcv.comment.toggle!
-                @view.local.render \comment-name
+
               name: ({node, context}) ->
                 view.get("iframe").setAttribute \src, "/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
@@ -112,12 +82,30 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     if source => return
     @data = JSON.parse(JSON.stringify(data))
     @data.{}prj
+    ret = for r of @data.{}value => for c of @data.value{}[r] => (@data.value[r][c] or 0)
+    @sheet.populateFromArray 1, 3, ret
     @render!
 
   render: ->
     @get-progress!
     @view.base.render!
     @view.local.render!
+
+  init-sheet: ->
+    console.log "init sheet ... "
+    @sheet = init-hot {
+      root: edit
+      afterChange: (changes = []) ~>
+        # TODO make it more efficient
+        changes.map ([row, prop, old, cur]) ~> @data.value{}[row - 1][prop - 3] = cur
+        #console.log "after change total count: ", changes.length, "is dirty? ", dirty
+        @update!
+    }
+    data = @prjs.map (d,i) -> [i, 0, d.name, 0, 0, 0, 0, 1, '']
+    data = [["編號", "評論", "名稱", "創意", "技術", "設計", "總分", "排名", "評論"]] ++ data
+    @sheet.load-data data
+    @sheet.render!
+    @render!
 
   init: ->
     Promise.resolve!
@@ -126,6 +114,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @user = @global.user
       .then ~> @fetch-info!
       .then ~> @fetch-prjs!
+      .then ~> @init-sheet!
       .then ~> @sharedb!
       .then ~> @getdoc!
       .then ~> @sort \name, null, false
@@ -147,3 +136,22 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
 
 ctrl = new Ctrl root: document.body
 ctrl.init!
+
+init-hot = (opt) ->
+  Handsontable.renderers.registerRenderer \myrenderer, (instance, td, row, col, prop, value, cellProperties) ->
+    Handsontable.renderers.TextRenderer.apply @, arguments
+  hot = new Handsontable opt.root, {
+    rowHeaders: true
+    colHeaders: true
+    filters: true
+    dropdownMenu: true
+    rowHeights: 25
+    colWidths: [40,50,220,50,50,50,50,50,250]
+    minRows: 50
+    minCols: 15
+    stretchH: \all
+    fixedRowsTop: 1
+    fixedColumnsLeft: 3
+    cells: (row, col) -> return {renderer: \myrenderer}
+  } <<< opt
+  hot

@@ -18,8 +18,8 @@ block body
         .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow:scroll")
           .w-100
             .p-2.d-flex.align-items-center.border-bottom.border-secondary.bg-light.sticky.shadow-sm(style="top:0")
-              .mr-2.text-right.px-2(style="width:50px") 編號
-              .mr-2.text-right.px-2(style="width:50px") 資格
+              //-.mr-2.text-right.px-2(style="width:50px") 編號
+              //-.mr-2.text-right.px-2(style="width:50px") 資格
               .flex-grow-1.clickable.mr-2(ld="sort",data-name="name") 提案名稱
               .mr-2.text-right.px-2(ld="sort",data-name="budget",style="width:50px") 預算
               .mr-2.d-flex.text-muted.text-center
@@ -29,8 +29,8 @@ block body
                 .mx-2 評論
 
             .px-2.py-2.d-flex.align-items-center.border-bottom.border-light(ld-each="project")
-              .mr-2.text-right.px-2(ld="index",style="width:50px")
-              .mr-2.text-center.px-2(ld="criteria",style="width:50px") #[i.i-check.text-success]
+              //-.mr-2.text-right.px-2(ld="index",style="width:50px")
+              //-.mr-2.text-center.px-2(ld="criteria",style="width:50px") #[i.i-check.text-success]
               .flex-grow-1.text-truncate.mr-2
                 .text-underline.clickable(ld="name")
                 .text-sm.text-muted(ld="ownername")
@@ -44,8 +44,6 @@ block body
                 .mx-2.rounded.vertical-center(ld="option",data-name="pending",style="width:2em"): i.i-circle
                 .mx-2.rounded.vertical-center(ld="option",data-name="reject",style="width:2em"): i.i-close
                 .mx-2.vertical-center(ld="comment",style="width:2em"): i.i-pen
-
-
 
         .px-4.py-2.w-100
           .d-flex.align-items-center
@@ -72,10 +70,6 @@ block body
                 ld="progress progress-bar",data-name="reject")
             //-div: .btn.btn-outline-dark 提交審查結果
 
-
-
-
-
       div(style="flex:1 1 50%")
         .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0
           iframe.border-0.w-100.h-100(ld="iframe")
@@ -86,6 +80,7 @@ block body
               div 您可以點擊左方的提案名稱以在此瀏覽該提案內容
           //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
             embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
+
 block script
   +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
   +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")

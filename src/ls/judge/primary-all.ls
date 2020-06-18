@@ -74,7 +74,14 @@ Ctrl = (opt) ->
                 obj = @data.{}prj{}[context.slug]
                 obj.picked = !obj.picked
                 local.view.render!
-                @update!
+                @update debounced: 10
+            text: do
+              budget: ({context}) ->
+                if !context.info.budget => return ''
+                return "#{Math.round(context.info.budget / 10000)}萬"
+              name: ({context}) -> context.name or ''
+              ownername: ({context}) -> context.info.teamname or context.ownername or ''
+              key: ({context}) -> context.key or ''
             handler: do
               pick: ({node, context}) ~>
                 cls = [<[text-white bg-success]>, <[text-secondary bg-light]>]
@@ -89,8 +96,6 @@ Ctrl = (opt) ->
                 cl.remove.apply cl, if obj.picked => cls.1 else cls.0
               "has-comment": ({node, context}) ~>
                 node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
-              name: ({node, context}) -> node.innerText = context.name
-              key: ({node, context}) -> node.innerText = context.key or ''
               progress: ({node, context}) ~>
                 n = node.getAttribute(\data-name)
                 node.style.width = "#{100 * context.{}count[n] / (context.{}count.total or 1)}%"

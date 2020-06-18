@@ -38,11 +38,16 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     # TODO unify prj list with general list api
     # Always fetch full list, but filter it in client
     ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge-list", {method: \GET}, { type: \json}
-      .then ~> @prjs = it
+      .then ~>
+        @prjs = it
+        @prjs.map -> if it.name.length > 25 => it.name = it.name.substring(0,25) + "..."
 
   fetch-info: ->
     console.log "fetch info ... "
-    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/info", {method: \POST}, {json: {fields: <[criteria]>}, type: \json}
+    ld$.fetch(
+      "/dash/api/brd/#{@brd}/grp/#{@grp}/info"
+      {method: \POST}, {json: {fields: <[criteria grade]>}, type: \json}
+    )
       .then (ret) ~>
         @brdinfo = ret.brd
         @grpinfo = ret.grp

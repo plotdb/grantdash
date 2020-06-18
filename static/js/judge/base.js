@@ -77,7 +77,12 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       }, {
         type: 'json'
       }).then(function(it){
-        return this$.prjs = it;
+        this$.prjs = it;
+        return this$.prjs.map(function(it){
+          if (it.name.length > 25) {
+            return it.name = it.name.substring(0, 25) + "...";
+          }
+        });
       });
     },
     fetchInfo: function(){
@@ -87,7 +92,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         method: 'POST'
       }, {
         json: {
-          fields: ['criteria']
+          fields: ['criteria', 'grade']
         },
         type: 'json'
       }).then(function(ret){

@@ -7,6 +7,7 @@ block head
   style(type="text/css"): :stylus
     tr td:nth-child(4)
       border-right: 2px solid #000
+      text-align: left!important
     tr:nth-child(1) td
       border-bottom: 2px solid #000
     td.active
@@ -16,8 +17,8 @@ block body
   .h-100.w-100.d-flex.flex-column.judge
     .p-2.d-flex
       .flex-grow-1.p-2
-        span.mr-4 沉浸式內容國際合資合製補助計畫
-        span #[i.i-radio.text-success] 決選表 - 王小明委員
+        span.mr-4(ld="grp-name")
+        span #[i.i-radio.text-success] 決選表 - #[span(ld="reviewer")]
       div
         .p-2 Kirby #[i.i-dart-down]
 
@@ -26,7 +27,7 @@ block body
         .flex-grow-1.bg-white.border-top.border-bottom.mt-3
           #edit.w-100.h-100(style="overflow:hidden")
 
-        .px-4.py-2.w-100
+        //-.px-4.py-2.w-100
           .d-flex.align-items-center
             .mr-4
               .text-muted.text-sm 距決選截止還有
@@ -36,6 +37,25 @@ block body
               .progress.my-1(style="width:100%")
                 .progress-bar.progress-bar-striped.progress-bar-animated(style="width:60%")
             div: .btn.btn-outline-dark 提交評選結果
+
+
+        .px-4.py-2.w-100
+          .d-flex.align-items-center
+            //-.mr-4
+              .text-muted.text-sm 距資格審查截止還有
+              .text-danger 2 天 15 小時 20 分
+            .mr-4.text-sm
+              .text-muted 決選進度
+            .mr-4.flex-grow-1
+              .text-muted.text-sm 完成度 / #[span.text-danger(ld="progress progress-percent") 0]%
+              .progress.my-1(style="width:100%")
+                .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(
+                ld="progress progress-bar",data-name="accept")
+                .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(
+                ld="progress progress-bar",data-name="pending")
+                .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
+                ld="progress progress-bar",data-name="reject")
+            //-div: .btn.btn-outline-dark 提交審查結果
 
 
       div(style="flex:2 3 40%")
@@ -50,6 +70,7 @@ block script
   +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
   +script("/dash/js/util/sdb-adapter.js")
   +script("/dash/js/util/hub.js")
+  +script("/dash/js/judge/base.js")
   +script("/dash/js/judge/final-user.js")
   script: :lsc
     ldc.app \judgeFinalUser

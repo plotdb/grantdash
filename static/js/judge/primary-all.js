@@ -147,8 +147,35 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                     obj = (ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.slug] || (ref$[key$] = {});
                     obj.picked = !obj.picked;
                     local.view.render();
-                    return this$.update();
+                    return this$.update({
+                      debounced: 10
+                    });
                   }
+                }
+              },
+              text: {
+                budget: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  if (!context.info.budget) {
+                    return '';
+                  }
+                  return Math.round(context.info.budget / 10000) + "萬";
+                },
+                name: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  return context.name || '';
+                },
+                ownername: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  return context.info.teamname || context.ownername || '';
+                },
+                key: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  return context.key || '';
                 }
               },
               handler: {
@@ -178,16 +205,6 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                   var node, context, ref$, key$;
                   node = arg$.node, context = arg$.context;
                   return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).comment);
-                },
-                name: function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.innerText = context.name;
-                },
-                key: function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.innerText = context.key || '';
                 },
                 progress: function(arg$){
                   var node, context, n;
