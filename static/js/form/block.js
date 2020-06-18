@@ -946,6 +946,9 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                   }
                 }
               }
+              if ((ref$ = data.key) === 'title' || ref$ === 'description' || ref$ === 'thumb' || ref$ === 'tag' || ref$ === 'category' || ref$ === 'teamname') {
+                ((ref$ = this$.block).config || (ref$.config = {}))['public'] = true;
+              }
               this$.update();
               this$.view.block.render();
               return this$.hub.render();

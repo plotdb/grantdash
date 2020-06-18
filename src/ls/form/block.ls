@@ -438,6 +438,7 @@ Ctrl = (opt) ->
           if !purpose.match(data, @block) => return
           @form{}purpose[data.key] = v = if @form{}purpose[data.key] == @block.key => null else @block.key
           if v => for k of @form.purpose => if k != data.key and @form.purpose[k] == v => @form.purpose[k] = null
+          if data.key in <[title description thumb tag category teamname]> => @block.{}config.public = true
           @update!
           @view.block.render!
           @hub.render!
