@@ -35,10 +35,12 @@
           .flex-grow-1
             .clickable.text-underline(ld="name")
             .text-muted.text-sm(ld="ownername")
-          .px-1.text-center(style="width:200px")
+          .px-1.rounded-circle.bg-cover.bg-portrait.bg-dark.mr-2(ld="avatar",style="width:2em;height:2em")
+          .px-1(ld="username")
+          //-.px-1.text-center(style="width:70px")
             //-div 已核銷 #[span(ld="budget-consume")]
             //-.text-sm(ld="budget-detail")
-          .px-1.text-center(ld="stage",style="width:100px")
+          //-.px-1.text-center(ld="stage",style="width:70px")
           .px-1.text-center(style="width:100px")
             .btn.btn-outline-danger.ld-ext-right(ld="delete") 刪除 #[.ld.ld-spin.ld-spinner]
 

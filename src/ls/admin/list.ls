@@ -39,13 +39,15 @@ Ctrl = (opt) ->
               name: ({node, context}) ~>
                 admin-panel.toggle {nav: \main, name: \grp-detail}
                 @set-prj context
+            text: do
+              name: ({context}) -> context.name
+              index: ({context}) -> context.key
+              ownername: ({context}) -> context.{}info.teamname or context.ownername or ''
+              username: ({context}) -> context.ownername or ''
             handler: do
-              name: ({node,context}) ->
-                node.innerText = context.name
-              index: ({node,context}) -> node.innerText = context.key
-              ownername: ({node,context}) -> node.innerText = context.ownername
               "budget-consume": ({node,context}) ->
               "budget-detail": ({node,context}) ->
+              avatar: ({node,context}) -> node.style.background = "url(/s/avatar/#{context.owner}.png)"
 
   @
 

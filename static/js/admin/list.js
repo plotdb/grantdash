@@ -83,22 +83,29 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                   }
                 }
               },
-              handler: {
+              text: {
                 name: function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.innerText = context.name;
+                  var context;
+                  context = arg$.context;
+                  return context.name;
                 },
                 index: function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.innerText = context.key;
+                  var context;
+                  context = arg$.context;
+                  return context.key;
                 },
                 ownername: function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.innerText = context.ownername;
+                  var context;
+                  context = arg$.context;
+                  return (context.info || (context.info = {})).teamname || context.ownername || '';
                 },
+                username: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  return context.ownername || '';
+                }
+              },
+              handler: {
                 "budget-consume": function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
@@ -106,6 +113,11 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                 "budget-detail": function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
+                },
+                avatar: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.style.background = "url(/s/avatar/" + context.owner + ".png)";
                 }
               }
             });
