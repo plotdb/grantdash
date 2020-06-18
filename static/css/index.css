@@ -230,6 +230,46 @@ p {
 .form-block i.active[type=checkbox][ld=state]:before {
   content: "\f034";
 }
+.form-block[data-name=form-budget] .handsontable {
+  font-size: 0.9em;
+}
+.form-block[data-name=form-budget] .handsontable th {
+  background: #f9fafb;
+  vertical-align: middle !important;
+}
+.form-block[data-name=form-budget] .handsontable td.head {
+  background: #f9fafb;
+  vertical-align: middle !important;
+  text-align: center;
+}
+.form-block[data-name=form-budget] .handsontable td.value {
+  vertical-align: middle !important;
+  text-align: right;
+}
+.form-block[data-name=form-budget] .handsontable td:nth-child(5),
+.form-block[data-name=form-budget] .handsontable td:nth-child(6),
+.form-block[data-name=form-budget] .handsontable td:nth-child(7),
+.form-block[data-name=form-budget] .handsontable td:nth-child(8),
+.form-block[data-name=form-budget] .handsontable td:nth-child(9) {
+  background: #f9fafb;
+}
+.form-answer .form-budget-table {
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  font-size: 0.9em;
+  width: 100%;
+}
+.form-answer .form-budget-table th {
+  background: #f9fafb;
+}
+.form-answer .form-budget-table td,
+.form-answer .form-budget-table th {
+  vertical-align: middle;
+  text-align: center;
+  border-left: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  white-space: nowrap;
+}
 .form-block.hint-fresh {
   animation: form-block-hint-fresh 2s 1 forwards;
 }

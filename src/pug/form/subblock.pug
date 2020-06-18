@@ -57,7 +57,16 @@ mixin criteria
     //-.btn.btn-outline-dark(ld="add") 增加條件...
 
 +form-block({name: "form-budget"})
-  #prj-budget.w-100
+  .w-100.position-relative
+    .w-100.z-base.mb-2(ld="budget-root")
+    .bg-light.w-100.py-4.text-center.text-muted.d-none(ld="not is-view") 預算表僅在提案人填表時出現
+    .d-none(ld="is-view"): .d-flex.justify-content-between.align-items-center
+      .btn.btn-outline-secondary.btn-sm(ld="new-row") 新增列
+      div
+        span.mr-2.text-sm.text-muted 總金額
+        span.font-weight-bold(ld="total")
+        span.text-sm 元
+
 
 +form-block({name: "form-checkpoint"})
   .pt-4.px-4

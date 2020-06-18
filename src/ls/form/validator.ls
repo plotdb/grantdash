@@ -40,6 +40,9 @@ return do
     if block.name == \form-checkpoint =>
       data = value.[]list
       is-empty = !data.length or data.filter(-> (it.title and it.desc and it.date)).length != data.length
+    else if block.name == \form-budget =>
+      data = value.sheet.reduce(((a,b) -> a + +b.2 + +b.3), 0)
+      is-empty = !data or isNaN(data)
     else if block.name == \form-datetime =>
       data = value
       is-empty = !(value.start and (!config.range-enabled or value.end))

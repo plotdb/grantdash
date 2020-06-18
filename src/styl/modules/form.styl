@@ -29,20 +29,49 @@
 
 .form-block
   margin-bottom: 1em
-.form-block i.i-radio[ld=state]:before
-  content: "\f00e"
-.form-block i.i-radio.active[ld=state]:before
-  content: "\f00f"
+.form-block
+  i.i-radio[ld=state]:before
+    content: "\f00e"
+  i.i-radio.active[ld=state]:before
+    content: "\f00f"
+  i[type=radio][ld=state]:before
+    content: "\f00e"
+  i.active[type=radio][ld=state]:before
+    content: "\f00f"
+  i[type=checkbox][ld=state]:before
+    content: "\f033"
+  i.active[type=checkbox][ld=state]:before
+    content: "\f034"
 
-.form-block i[type=radio][ld=state]:before
-  content: "\f00e"
-.form-block i.active[type=radio][ld=state]:before
-  content: "\f00f"
+.form-block[data-name=form-budget] .handsontable 
+  font-size: .9em
+  th
+    background: #f9fafb
+    vertical-align: middle!important
+  td.head
+    background: #f9fafb
+    vertical-align: middle!important
+    text-align: center
+  td.value
+    vertical-align: middle!important
+    text-align: right
+  td:nth-child(5), td:nth-child(6), td:nth-child(7), td:nth-child(8), td:nth-child(9)
+    background: #f9fafb
 
-.form-block i[type=checkbox][ld=state]:before
-  content: "\f033"
-.form-block i.active[type=checkbox][ld=state]:before
-  content: "\f034"
+.form-answer
+  .form-budget-table
+    border-right: 1px solid #ccc
+    border-bottom: 1px solid #ccc
+    font-size: .9em
+    width: 100%
+    th
+      background: #f9fafb
+    td,th
+      vertical-align: middle
+      text-align: center
+      border-left: 1px solid #ccc
+      border-top: 1px solid #ccc
+      white-space: nowrap
 
 @keyframes form-block-hint-fresh
   0%

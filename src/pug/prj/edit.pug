@@ -1,14 +1,8 @@
 extends /base.pug
-block body
-  //-include /ui/data/sample.pug
-  include /modules/mixins/index.pug
-  +css("/dash/assets/lib/tail.datetime/0.4.13/css/tail.datetime-harx-light.min.css")
+block head
   +css("/dash/assets/lib/handsontable/handsontable.min.css")
-  +script("/dash/assets/lib/suuid/suuid.bundle.min.js")
-  +script("/dash/assets/lib/handsontable/handsontable.min.js")
-  +script("/dash/assets/lib/ldui/ldui.min.js")
-  +script("/dash/js/reblock/form-reblock.js")
-
+  +css("/dash/assets/lib/tail.datetime/0.4.13/css/tail.datetime-harx-light.min.css")
+block body
   +scope("prj-diff").ldcv.scroll.ldcvmgr(data-name="prj-diff"): .base.w-640(style="height:90%"): .inner.card.h-100
     .sticky.z-fixed(style="top:0")
       .closebtn(data-ldcv-set="")
@@ -32,7 +26,7 @@ block body
           .col-md: .pl-4.value(style="white-space:pre-wrap")
 
   +scope("prj-form-use").w-1024.mx-auto.rwd.typeset.heading-contrast
-    .d-flex
+    .d-flex.w-100
       .mr-4.p-4.rounded.border(style="background:linear-gradient(315deg,#f4f5f6,#fff);min-height:calc(100vh - 7em)")
         .h-100(pd="init-loader",style="width:250px")
         .pb-4.mb-4.h-100.d-none(pd="content")
@@ -92,7 +86,7 @@ block body
                 each i in [1,2,3,4,5]
                   +user.mr-2
 
-      .flex-grow-1
+      .flex-grow-1(style="width:0")
         .d-none(ld="form-sample"): include /form/subblock.pug
         .d-none(ld="view"): include answer.pug
         .d-none(ld="nview"): div(ld="form-list"): div(ld-each="block")
@@ -107,7 +101,7 @@ block body
         //- for space of fixed alert
         +nbr(2)
 
-    .sticky.w-1024.mx-auto(style="bottom:2em;padding-right:1em")
+    .sticky.w-1024.mx-auto.z-float(style="bottom:2em;padding-right:1em")
       .d-none(ld="to-publish"): .alert.alert-info.d-flex.align-items-center.shadow-sm
         .flex-grow-1 您有尚未發布的修改，記得按「儲存並發布」更新提案的最新版本喔！
         div: .btn.btn.btn-primary.mr-2(ld="submit") 儲存並發布
@@ -117,6 +111,10 @@ block body
         div: .btn.btn.btn-warning.mr-2(ld="jump invalid") 跳至待修正項目
 
 block script
+  +script("/dash/assets/lib/suuid/suuid.bundle.min.js")
+  +script("/dash/assets/lib/ldui/ldui.min.js")
+  +script("/dash/js/reblock/form-reblock.js")
+  +script("/dash/assets/lib/handsontable/handsontable.min.js")
   +script("/dash/assets/lib/tail.datetime/0.4.13/js/tail.datetime-full.min.js")
   +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
   +script("/dash/assets/lib/dompurify/2.0.11/purify.min.js")

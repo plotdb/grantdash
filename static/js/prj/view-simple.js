@@ -80,7 +80,7 @@ ldc.register('prjViewSimple', [], function(){
     }
   });
   Ctrl.render = function(arg$){
-    var block, answer, prj, brd, org, result, start, end, ref$, ret, list;
+    var block, answer, prj, brd, org, result, start, end, ref$, ret, list, sheet, total, data;
     block = arg$.block, answer = arg$.answer, prj = arg$.prj, brd = arg$.brd, org = arg$.org;
     result = {};
     if (!(block && answer)) {
@@ -113,6 +113,30 @@ ldc.register('prjViewSimple', [], function(){
           : []);
         result = DOMPurify.sanitize(list.join("<br>"));
       }
+    } else if (block.name === 'form-budget') {
+      sheet = JSON.parse(JSON.stringify(answer.sheet));
+      sheet.map(function(it){
+        return it.push(+it[2] + +it[3]);
+      });
+      total = sheet.reduce(function(a, b){
+        return a + b[4];
+      }, 0);
+      sheet = sheet.map(function(it){
+        var ret;
+        if (!it.filter(function(it){
+          return it;
+        }).length) {
+          return;
+        }
+        ret = it.map(function(it){
+          return "<td>" + (it || ' ') + "</td>";
+        }).join('');
+        return "<tr>" + ret + "</tr>";
+      }).filter(function(it){
+        return it;
+      }).join('');
+      data = "<table class='mb-2 form-budget-table'><tr>\n<th rowspan=\"2\">分類</th>\n<th rowspan=\"2\">項目</th>\n<th colspan=\"3\">預估</th>\n</tr>\n<tr><th>自籌</th><th>補助</th><th>總計</th></tr>\n" + sheet + "\n</table>\n<div class=\"text-right\">\n<span class=\"text-muted text-sm\">總金額</span>\n<span class=\"font-weight-bold\">" + total + "</span>\n<span class=\"text-muted text-sm\">元</span>\n</div>";
+      result = DOMPurify.sanitize(data);
     } else {
       result = '';
     }

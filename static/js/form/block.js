@@ -9,6 +9,181 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
     }
   };
   module = {};
+  module["form-budget"] = {
+    moduleInit: function(){
+      var initView, waitForRootSize, this$ = this;
+      if (!this.viewing) {
+        ld$.find(this.root, '[ld="not is-view"]', 0).classList.toggle('d-none', false);
+        return;
+      }
+      initView = function(){
+        var view;
+        return this$.view.module = view = new ldView({
+          root: this$.root,
+          context: {},
+          action: {
+            click: {
+              "new-row": function(arg$){
+                var node, context, row, that;
+                node = arg$.node, context = arg$.context;
+                row = ((that = context.hot.getSelected())
+                  ? that[0]
+                  : context.hot.countRows()) + 1;
+                return context.hot.alter('insert_row', row, 1);
+              }
+            }
+          },
+          text: {
+            total: function(arg$){
+              var context;
+              context = arg$.context;
+              if (isNaN(context.total)) {
+                return "輸入內容有誤";
+              } else {
+                return context.total || 0;
+              }
+            }
+          },
+          handler: {
+            "is-view": function(arg$){
+              var node, names;
+              node = arg$.node, names = arg$.names;
+              return node.classList.toggle('d-none', in$('not', names) ? true : false);
+            }
+          },
+          init: {
+            "budget-root": function(arg$){
+              var node, context, head, getData, update, isval, hot, data;
+              node = arg$.node, context = arg$.context;
+              head = [['分類', '項目', '預估', '', '', '實際', '', '', '執行率'], ['', '', '自籌', '補助', '總計', '自籌', '補助', '總計', '']];
+              getData = function(){
+                return head.concat(this$.block.value.sheet) || [["設備", "( 範例 ) 電腦", 20000, 10000]];
+              };
+              update = function(changes){
+                context.total = 0;
+                data.slice(2).map(function(d){
+                  d[4] = isval(d[2]) || isval(d[3]) ? +d[2] + +d[3] : '';
+                  d[7] = isval(d[5]) || isval(d[6]) ? +d[5] + +d[6] : '';
+                  return context.total += +d[4];
+                });
+                if (changes.length) {
+                  hot.loadData(data);
+                }
+                debounce(10).then(function(){
+                  return view.render('total');
+                });
+                this$.block.value.sheet = data.slice(2).map(function(it){
+                  return it.slice(0, 4);
+                });
+                return this$.update();
+              };
+              Handsontable.renderers.registerRenderer('budget-renderer', function(instance, td, row, col, prop, value, cellProperties){
+                Handsontable.renderers.TextRenderer.apply(this, arguments);
+                if (row < 2 || col >= 4) {
+                  cellProperties.readOnly = true;
+                }
+                if (row < 2) {
+                  return td.classList.add('head');
+                }
+                if (col > 1) {
+                  return td.classList.add('value');
+                }
+              });
+              isval = function(it){
+                return it != null && (it + "").length;
+              };
+              context.hot = hot = new Handsontable(node, {
+                data: data = getData(),
+                filters: true,
+                dropdownMenu: true,
+                stretchH: 'all',
+                rowHeights: 25,
+                wordWrap: false,
+                minRows: 10,
+                minCols: 9,
+                maxCols: 9,
+                fixedRowsTop: 2,
+                mergeCells: [
+                  {
+                    row: 0,
+                    col: 0,
+                    colspan: 1,
+                    rowspan: 2
+                  }, {
+                    row: 0,
+                    col: 1,
+                    colspan: 1,
+                    rowspan: 2
+                  }, {
+                    row: 0,
+                    col: 2,
+                    colspan: 3,
+                    rowspan: 1
+                  }, {
+                    row: 0,
+                    col: 5,
+                    colspan: 3,
+                    rowspan: 1
+                  }, {
+                    row: 0,
+                    col: 8,
+                    colspan: 1,
+                    rowspan: 2
+                  }
+                ],
+                cells: function(row, col){
+                  return {
+                    renderer: 'budget-renderer'
+                  };
+                },
+                colWidths: [50, 120, 55, 55, 55, 55, 55, 55],
+                afterChange: function(changes){
+                  changes == null && (changes = []);
+                  return update(changes);
+                }
+              });
+              return hot.updateSettings({
+                contextMenu: {
+                  items: {
+                    "add_row_above": {
+                      name: "在上方新增一列",
+                      callback: function(k, o){
+                        return hot.alter('insert_row', hot.getSelected()[0][0], 1);
+                      }
+                    },
+                    "add_row_below": {
+                      name: "在下方新增一列",
+                      callback: function(k, o){
+                        return hot.alter('insert_row', hot.getSelected()[0][0] + 1, 1);
+                      }
+                    },
+                    "del_row": {
+                      name: "刪除列",
+                      callback: function(k, o){
+                        var sel;
+                        sel = hot.getSelected()[0];
+                        hot.alter('remove_row', sel[0], 1);
+                        this$.block.value.sheet.splice(sel[0], 1);
+                        return update([sel[0], sel[1]]);
+                      }
+                    }
+                  }
+                }
+              });
+            }
+          }
+        });
+      };
+      waitForRootSize = function(){
+        if (this$.root.getBoundingClientRect().width) {
+          return initView();
+        } else {
+          return requestAnimationFrame(waitForRootSize);
+        }
+      };
+      return requestAnimationFrame(waitForRootSize);
+    }
+  };
   moduleFile = {
     moduleInit: function(){
       var view, this$ = this;
@@ -768,7 +943,8 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                 }
               }
               this$.update();
-              return this$.view.block.render();
+              this$.view.block.render();
+              return this$.hub.render();
             }
           },
           handler: function(arg$){
@@ -1081,13 +1257,13 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
   });
   return Ctrl;
 });
-function import$(obj, src){
-  var own = {}.hasOwnProperty;
-  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
-  return obj;
-}
 function in$(x, xs){
   var i = -1, l = xs.length >>> 0;
   while (++i < l) if (x === xs[i]) return true;
   return false;
+}
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
 }

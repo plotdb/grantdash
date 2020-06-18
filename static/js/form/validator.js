@@ -106,6 +106,11 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
         isEmpty = !data.length || data.filter(function(it){
           return it.title && it.desc && it.date;
         }).length !== data.length;
+      } else if (block.name === 'form-budget') {
+        data = value.sheet.reduce(function(a, b){
+          return a + +b[2] + +b[3];
+        }, 0);
+        isEmpty = !data || isNaN(data);
       } else if (block.name === 'form-datetime') {
         data = value;
         isEmpty = !(value.start && (!config.rangeEnabled || value.end));

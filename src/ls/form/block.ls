@@ -6,6 +6,97 @@ settext = (n,v) -> if n.innerText != v => n.innerText = v
 
 module = {}
 
+module["form-budget"] = module-init: ->
+  if !@viewing =>
+    ld$.find(@root, '[ld="not is-view"]',0).classList.toggle \d-none, false
+    return
+  init-view = ~>
+    @view.module = view = new ldView do
+      root: @root
+      context: {}
+      action: click: do
+        "new-row": ({node, context}) ->
+          row = (if context.hot.getSelected! => that.0 else context.hot.countRows!) + 1
+          context.hot.alter \insert_row, row, 1
+      text: total: ({context}) ->
+        if isNaN(context.total) => "輸入內容有誤"
+        else return context.total or 0
+      handler: "is-view": ({node,names}) -> node.classList.toggle \d-none, (if \not in names => true else false)
+      init: do
+        "budget-root": ({node, context}) ~>
+          head = [
+            ['分類', '項目', '預估', '', '', '實際', '', '', '執行率']
+            ['', '', '自籌', '補助', '總計', '自籌', '補助', '總計', '']
+          ]
+          get-data = ~> head ++ @block.value.sheet or [["設備","( 範例 ) 電腦", 20000, 10000]]
+          update = (changes) ~>
+            context.total = 0
+            data.slice 2 .map (d) ->
+              d.4 = if isval(d.2) or isval(d.3) => (+d.2 + +d.3) else ''
+              d.7 = if isval(d.5) or isval(d.6) => (+d.5 + +d.6) else ''
+              context.total += +d.4
+            if changes.length => hot.loadData data
+            debounce 10 .then -> view.render \total
+            @block.value.sheet = data.slice(2).map -> it.slice(0,4)
+            @update!
+
+          Handsontable.renderers.registerRenderer(
+            \budget-renderer,
+            (instance, td, row, col, prop, value, cellProperties) ->
+              Handsontable.renderers.TextRenderer.apply @, arguments
+              if row < 2 or col >= 4 => cellProperties.readOnly = true
+              if row < 2 => return td.classList.add \head
+              if col > 1 => return td.classList.add \value
+
+          )
+
+          isval = -> it? and "#{it}".length
+          context.hot = hot = new Handsontable node, {
+            data: data = get-data!
+            filters: true
+            dropdownMenu: true
+            stretchH: \all
+            rowHeights: 25
+            wordWrap: false
+            minRows: 10
+            minCols: 9
+            maxCols: 9
+            fixedRowsTop: 2,
+            mergeCells: [
+              {row: 0, col: 0, colspan: 1, rowspan: 2}
+              {row: 0, col: 1, colspan: 1, rowspan: 2}
+              {row: 0, col: 2, colspan: 3, rowspan: 1}
+              {row: 0, col: 5, colspan: 3, rowspan: 1}
+              {row: 0, col: 8, colspan: 1, rowspan: 2}
+            ]
+            cells: (row, col) -> return {renderer: \budget-renderer}
+            colWidths: [50,120,55,55,55,55,55,55]
+            afterChange: (changes = []) ~> update changes
+
+          }
+
+          hot.updateSettings contextMenu: items:
+            "add_row_above":
+              name: "在上方新增一列"
+              callback: (k,o) -> hot.alter \insert_row, (hot.getSelected!0.0), 1
+            "add_row_below":
+              name: "在下方新增一列"
+              callback: (k,o) -> hot.alter \insert_row, (hot.getSelected!0.0 + 1), 1
+            "del_row":
+              name: "刪除列"
+              callback: (k,o) ~>
+                sel = hot.getSelected!0
+                hot.alter \remove_row, (sel.0), 1
+                @block.value.sheet.splice (sel.0), 1
+                update [sel.0, sel.1]
+
+  # TODO without this, handsontable calculates width incorrectly.
+  wait-for-root-size = ~>
+    if @root.getBoundingClientRect!width => init-view!
+    else requestAnimationFrame wait-for-root-size
+  requestAnimationFrame wait-for-root-size
+
+
 module-file = module-init: ->
   if !@viewing => return
   @view.module = view = new ldView do
@@ -348,6 +439,7 @@ Ctrl = (opt) ->
           if v => for k of @form.purpose => if k != data.key and @form.purpose[k] == v => @form.purpose[k] = null
           @update!
           @view.block.render!
+          @hub.render!
         handler: ({node,data}) ~>
           ld$.find(node, '.flex-grow-1', 0).innerText = data.name
           node.classList.toggle \disabled, !purpose.match(data, @block)

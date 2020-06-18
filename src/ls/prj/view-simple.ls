@@ -5,8 +5,8 @@ Ctrl = (opt) ->
   @form = opt.form
   @answer = opt.answer
   @ <<< opt{prj, brd, org}
-  get-answer = (block) ~> @answer[block.key] or block.value 
-    
+  get-answer = (block) ~> @answer[block.key] or block.value
+
   @view = new ldView do
     root: root
     handler: do
@@ -77,6 +77,34 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
     else
       list = (answer.list ++ if answer.otherValue and answer.other => [answer.otherValue] else [])
       result = DOMPurify.sanitize(list.join "<br>")
+  else if block.name == \form-budget
+    sheet = JSON.parse(JSON.stringify(answer.sheet))
+    sheet.map -> it.push(+it.2 + +it.3)
+    total = sheet.reduce(((a,b) -> a + b.4),0)
+
+    sheet = sheet
+      .map ->
+        if !it.filter(-> it).length => return
+        ret = it.map(-> """<td>#{it or ' '}</td>""").join('')
+        """<tr>#ret</tr>"""
+      .filter -> it
+      .join('')
+    data = """
+    <table class='mb-2 form-budget-table'><tr>
+    <th rowspan="2">分類</th>
+    <th rowspan="2">項目</th>
+    <th colspan="3">預估</th>
+    </tr>
+    <tr><th>自籌</th><th>補助</th><th>總計</th></tr>
+    #sheet
+    </table>
+    <div class="text-right">
+    <span class="text-muted text-sm">總金額</span>
+    <span class="font-weight-bold">#total</span>
+    <span class="text-muted text-sm">元</span>
+    </div>
+    """
+    result = DOMPurify.sanitize data
   else result = ''
   return result
 
