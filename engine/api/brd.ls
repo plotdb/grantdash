@@ -160,7 +160,7 @@ api.get \/brd/:brd/grp/:grp/judge-list, aux.signed, (req, res) ->
   Promise.resolve!
     .then ->
       io.query """
-      select p.name, p.slug, u.displayname as ownername from prj as p
+      select p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p
       left join users as u on u.key = p.owner
       where
         p.detail is not null and
