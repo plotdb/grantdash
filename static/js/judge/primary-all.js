@@ -155,12 +155,22 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
               },
               text: {
                 budget: function(arg$){
-                  var context;
+                  var context, b, total;
                   context = arg$.context;
-                  if (!context.info.budget) {
+                  if (!(b = context.info.budget)) {
                     return '';
                   }
-                  return Math.round(context.info.budget / 10000) + "萬";
+                  total = (b.self || 0) + (b.subsidy || 0);
+                  return Math.round(total / 10000) + "萬";
+                },
+                subsidy: function(arg$){
+                  var context, b, total;
+                  context = arg$.context;
+                  if (!(b = context.info.budget)) {
+                    return '';
+                  }
+                  total = b.subsidy || 0;
+                  return Math.round(total / 10000) + "萬";
                 },
                 name: function(arg$){
                   var context;

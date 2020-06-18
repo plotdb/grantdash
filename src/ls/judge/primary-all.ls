@@ -77,8 +77,13 @@ Ctrl = (opt) ->
                 @update debounced: 10
             text: do
               budget: ({context}) ->
-                if !context.info.budget => return ''
-                return "#{Math.round(context.info.budget / 10000)}萬"
+                if !(b = context.info.budget) => return ''
+                total = (b.self or 0) + (b.subsidy or 0)
+                return "#{Math.round(total / 10000)}萬"
+              subsidy: ({context}) ->
+                if !(b = context.info.budget) => return ''
+                total = b.subsidy or 0
+                return "#{Math.round(total / 10000)}萬"
               name: ({context}) -> context.name or ''
               ownername: ({context}) -> context.info.teamname or context.ownername or ''
               key: ({context}) -> context.key or ''

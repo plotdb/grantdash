@@ -869,10 +869,18 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
         name: "預算",
         block: ['form-budget'],
         get: function(v){
+          var b1, b2;
           v == null && (v = {});
-          return (v.sheet || []).reduce(function(a, b){
-            return a + +b[2] + +b[3];
+          b1 = (v.sheet || []).reduce(function(a, b){
+            return a + +b[2];
           }, 0);
+          b2 = (v.sheet || []).reduce(function(a, b){
+            return a + +b[3];
+          }, 0);
+          return {
+            self: b1,
+            subsidy: b2
+          };
         }
       }
     },

@@ -43,9 +43,14 @@ block body
                 .flex-grow-1.text-truncate
                   .text-underline.clickable(ld="name")
                   .text-sm.text-muted(ld="ownername")
-                .mr-2.text-right.px-2.text-nowrap(style="width:70px")
-                  span.text-sm.text-nowrap(ld="budget")
-                  span.text-sm.text-muted 元
+                .mr-2.text-right.text-nowrap(style="width:70px")
+                  div
+                    span.text-sm.text-muted.mr-1 總數
+                    b.text-sm.text-nowrap(ld="budget")
+                  div
+                    span.text-sm.text-muted.mr-1 補助
+                    b.text-sm.text-nowrap(ld="subsidy")
+
                 .mx-2.rounded.text-center.text-secondary.bg-light.clickable.py-1(
                 ld="pick",style="width:4em"): i
                 .px-1(style="flex:0 0 200px")

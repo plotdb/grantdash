@@ -405,7 +405,10 @@ purpose = do
       get: (v={}) -> v.content or ''
     budget:
       name: "預算", block: <[form-budget]>
-      get: (v={}) -> (v.sheet or []).reduce(((a,b) -> a + + b.2 + +b.3),0)
+      get: (v={}) ->
+        b1 = (v.sheet or []).reduce(((a,b) -> a + +b.2),0)
+        b2 = (v.sheet or []).reduce(((a,b) -> a + +b.3),0)
+        return {self: b1, subsidy: b2}
   match: (p, b) -> b.name in (p.block or [])
 purpose.list = [[k,v] for k,v of purpose.map].map -> {key: it.0} <<< it.1
 

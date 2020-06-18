@@ -21,7 +21,7 @@ block body
               //-.mr-2.text-right.px-2(style="width:50px") 編號
               //-.mr-2.text-right.px-2(style="width:50px") 資格
               .flex-grow-1.clickable.mr-2(ld="sort",data-name="name") 提案名稱
-              .mr-2.text-right.px-2(ld="sort",data-name="budget",style="width:50px") 預算
+              .mr-2.text-right.px-2.clickable(ld="sort",data-name="budget",style="width:50px") 預算
               .mr-2.d-flex.text-muted.text-center
                 .mx-2.clickable(ld="sort",data-name="primary",data-value="accept") 推薦
                 .mx-2.clickable(ld="sort",data-name="primary",data-value="pending") 面議
@@ -34,9 +34,13 @@ block body
               .flex-grow-1.text-truncate.mr-2
                 .text-underline.clickable(ld="name")
                 .text-sm.text-muted(ld="ownername")
-              .mr-2.text-right.px-2.text-nowrap(style="width:70px")
-                span.text-sm.text-nowrap(ld="budget")
-                span.text-sm.text-muted 元
+              .mr-2.text-right.text-nowrap(style="width:70px")
+                div
+                  span.text-sm.text-muted.mr-1 總數
+                  b.text-sm.text-nowrap(ld="budget")
+                div
+                  span.text-sm.text-muted.mr-1 補助
+                  b.text-sm.text-nowrap(ld="subsidy")
 
 
               .mr-2.d-flex.text-muted.text-center.clickable(style="height:2em")
