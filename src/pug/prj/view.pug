@@ -4,15 +4,19 @@ block vars
   - ctrl.navtop.placeholder = false;
   - var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
   - var purpose = grp.form.purpose || {};
-  - thumb = (prj.thumb ? `url(/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb})` : 'none')
   -
     var meta = {};
-  -
     if(prj && prj.detail.info) {
       meta.title = prj.detail.info.title;
       meta.description = prj.detail.info.description;
     }
-    if(prj.thumb) { meta.thumbnail = thumb; }
+    if(prj.thumb) {
+      thumbPath = `/dash/org/${brd.org}/prj/${prj.slug}/upload/${prj.thumb}`;
+      thumb = `url(${thumbPath})`;
+      meta.thumbnail = `https://${domain}${thumbPath}`;
+    } else {
+      thumb = "none";
+    }
 
 block head
   include /modules/meta.pug

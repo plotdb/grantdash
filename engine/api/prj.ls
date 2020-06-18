@@ -30,7 +30,7 @@ app.get \/prj/:slug, (req, res) ->
       delete brd.detail
       view = if (req.{}query.simple)? => \prj/view-standalone.pug
       else \prj/view.pug
-      res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}}
+      res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}} <<< req.scope{domain}
     .catch aux.error-handler res
 
 api.delete \/prj/:slug, aux.signed, (req, res) ->
