@@ -91,7 +91,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       dir: if dir > 0 => "順向" else "逆向"
     if name == \count =>
       verbose.name = "#{{accept: "通過", pending: "待審", reject: "不符"}[value]}的數量"
-    else if name == \primary =>
+    else if name in <[primary primary-all]> =>
       verbose.name = "#{{accept: "推薦", pending: "待審", reject: "汰除"}[value]} 的結果"
     if hint => notify.send \success, "重新將表格依 #{verbose.name} 做 #{verbose.dir} 排序"
     debounce 100 .then ~>
@@ -111,10 +111,12 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
           a = if a? => a else 1
           b = if b? => b else 1
           return dir * ( statemap[a] - statemap[b] )
+      else if name == \primary-all =>
+        @prjs.sort (a, b) ~> return dir * (a.count[value] or 0) - (b.count[value] or 0)
       else if name == \primary =>
         @prjs.sort (a, b) ~>
-          a = if @data.prj{}[a.slug].{}value == value => 1 else 0
-          b = if @data.prj{}[b.slug].{}value == value => 1 else 0
+          a = if @data.prj{}[a.slug].value == value => 1 else 0
+          b = if @data.prj{}[b.slug].value == value => 1 else 0
           return dir * (a - b)
       else if name == \count =>
         @prjs.sort (a, b) ~> dir * (a.count[][value].length - b.count[][value].length)

@@ -153,11 +153,20 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
               },
               handler: {
                 pick: function(arg$){
-                  var node, context, cls, obj, ref$, key$, ref1$, cl;
+                  var node, context, cls, obj, ref$, key$, ref1$, cl, icon;
                   node = arg$.node, context = arg$.context;
-                  cls = [['i-check', 'text-white', 'bg-success'], ['i-circle', 'text-secondary', 'bg-light']];
+                  cls = [['text-white', 'bg-success'], ['text-secondary', 'bg-light']];
                   obj = (ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.slug] || (ref$[key$] = {});
                   cl = node.classList;
+                  cl.add.apply(cl, obj.picked
+                    ? cls[0]
+                    : cls[1]);
+                  cl.remove.apply(cl, obj.picked
+                    ? cls[1]
+                    : cls[0]);
+                  cls = [['i-check'], ['i-circle']];
+                  icon = ld$.find(node, 'i', 0);
+                  cl = icon.classList;
                   cl.add.apply(cl, obj.picked
                     ? cls[0]
                     : cls[1]);
@@ -242,7 +251,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
         return this$.sort('name', null, false);
       }).then(function(){
         return console.log("initied.");
-      })['catch'](error);
+      })['catch'](error());
     },
     getState: function(context){
       var this$ = this;
@@ -262,7 +271,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
         return results$;
       }.call(this)).length;
       return this.prjs.map(function(p, i){
-        var count, k, ref$, u, v, results$ = [];
+        var count, k, ref$, u, v, ref1$, key$, results$ = [];
         p.count = count = {
           accept: 0,
           pending: 0,
@@ -271,7 +280,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
         };
         for (k in ref$ = this$.data.user) {
           u = ref$[k];
-          if (v = u.prj[p.slug].value) {
+          if (v = ((ref1$ = u.prj)[key$ = p.slug] || (ref1$[key$] = {})).value) {
             results$.push(count[v]++);
           }
         }

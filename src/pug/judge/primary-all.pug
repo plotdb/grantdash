@@ -25,13 +25,13 @@ block body
               .mx-2(ld="sort",data-name="shortlist") 入選標記
 
               .d-flex.justify-content-center.align-items-center(style="width:200px")
-                .d-flex.align-items-center(ld="sort",data-name="primary",data-value="accept")
+                .d-flex.align-items-center(ld="sort",data-name="primary-all",data-value="accept")
                   .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                   span.mr-3 推薦
-                .d-flex.align-items-center(ld="sort",data-name="primary",data-value="pending")
+                .d-flex.align-items-center(ld="sort",data-name="primary-all",data-value="pending")
                   .bg-warning.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                   span.mr-3 面議
-                .d-flex.align-items-center(ld="sort",data-name="primary",data-value="reject")
+                .d-flex.align-items-center(ld="sort",data-name="primary-all",data-value="reject")
                   .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                   span 汰除
 
@@ -42,16 +42,13 @@ block body
                 .flex-grow-1.text-truncate
                   .text-underline.clickable(ld="name")
                   .text-sm.text-muted(ld="ownername")
-                .mx-2.rounded.text-center.text-secondary.bg-light.vertical-center.clickable(
-                ld="pick",style="width:4em"): i.i-check
+                .mx-2.rounded.text-center.text-secondary.bg-light.clickable.py-1(
+                ld="pick",style="width:4em"): i
                 .px-1(style="flex:0 0 200px")
                   div: .progress.w-100
-                    .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(
-                    ld="progress",data-name="accept")
-                    .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(
-                    ld="progress",data-name="pending")
-                    .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
-                    ld="progress",data-name="reject")
+                    .progress-bar.bg-success(ld="progress",data-name="accept")
+                    .progress-bar.bg-warning(ld="progress",data-name="pending")
+                    .progress-bar.bg-danger(ld="progress",data-name="reject")
                   .d-flex.align-items-center.text-sm.mt-1.ml-1(style="line-height:1em")
                     each c in [["bg-success","accept"],["bg-warning","pending"],["bg-danger","reject"]]
                       .d-flex.align-items-center.mr-3

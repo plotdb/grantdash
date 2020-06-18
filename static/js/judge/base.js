@@ -190,7 +190,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
           pending: "待審",
           reject: "不符"
         }[value] + "的數量";
-      } else if (name === 'primary') {
+      } else if (name === 'primary' || name === 'primary-all') {
         verbose.name = {
           accept: "推薦",
           pending: "待審",
@@ -228,11 +228,15 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
             b = b != null ? b : 1;
             return dir * (statemap[a] - statemap[b]);
           });
+        } else if (name === 'primary-all') {
+          this$.prjs.sort(function(a, b){
+            return dir * (a.count[value] || 0) - (b.count[value] || 0);
+          });
         } else if (name === 'primary') {
           this$.prjs.sort(function(a, b){
-            var ref$, ref1$, key$;
-            a = ((ref$ = (ref1$ = this$.data.prj)[key$ = a.slug] || (ref1$[key$] = {})).value || (ref$.value = {})) === value ? 1 : 0;
-            b = ((ref$ = (ref1$ = this$.data.prj)[key$ = b.slug] || (ref1$[key$] = {})).value || (ref$.value = {})) === value ? 1 : 0;
+            var ref$, key$;
+            a = ((ref$ = this$.data.prj)[key$ = a.slug] || (ref$[key$] = {})).value === value ? 1 : 0;
+            b = ((ref$ = this$.data.prj)[key$ = b.slug] || (ref$[key$] = {})).value === value ? 1 : 0;
             return dir * (a - b);
           });
         } else if (name === 'count') {

@@ -77,9 +77,14 @@ Ctrl = (opt) ->
                 @update!
             handler: do
               pick: ({node, context}) ~>
-                cls = [<[i-check text-white bg-success]>, <[i-circle text-secondary bg-light]>]
+                cls = [<[text-white bg-success]>, <[text-secondary bg-light]>]
                 obj = @data.{}prj{}[context.slug]
                 cl = node.classList
+                cl.add.apply cl, if obj.picked => cls.0 else cls.1
+                cl.remove.apply cl, if obj.picked => cls.1 else cls.0
+                cls = [<[i-check]>, <[i-circle]>]
+                icon = ld$.find(node, 'i', 0)
+                cl = icon.classList
                 cl.add.apply cl, if obj.picked => cls.0 else cls.1
                 cl.remove.apply cl, if obj.picked => cls.1 else cls.0
               "has-comment": ({node, context}) ~>
@@ -124,7 +129,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @getdoc!
       .then ~> @sort \name, null, false
       .then ~> console.log "initied."
-      .catch error
+      .catch error!
 
   get-state: (context) ->
     context.state = @criteria.reduce(
@@ -138,7 +143,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     len = [k for k of @data.user].length
     @prjs.map (p,i) ~>
       p.count = count = {accept: 0, pending: 0, reject: 0, total: len}
-      for k,u of @data.user => if (v = u.prj[p.slug].value) => count[v]++
+      for k,u of @data.user => if (v = u.prj{}[p.slug].value) => count[v]++
 
   get-progress: ->
     @progress = ret = {done: 0, accept: 0, pending: 0, reject: 0, total: (@prjs.length or 1)}
