@@ -391,6 +391,7 @@ purpose = do
     category: { name: "分類", block: <[form-tag]> }
     teamname: { name: "團隊名", block: <[form-short-answer]> }
     uid: { name: "統編", block: <[form-short-answer]> }
+    budget: { name: "預算", block: <[form-budget]> }
   match: (p, b) -> b.name in (p.block or [])
 purpose.list = [[k,v] for k,v of purpose.map].map -> {key: it.0} <<< it.1
 

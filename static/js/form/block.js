@@ -831,6 +831,10 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
       uid: {
         name: "統編",
         block: ['form-short-answer']
+      },
+      budget: {
+        name: "預算",
+        block: ['form-budget']
       }
     },
     match: function(p, b){
