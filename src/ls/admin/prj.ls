@@ -8,6 +8,13 @@ Ctrl = (opt) ->
     text: do
       name: ~> @prj.name or ''
       ownername: ~> @prj.{}info.teamname or @prj.ownername or ''
+      email: ~> @prj.owneremail or ''
+    handler: do
+      id: ({node}) ~> node.value = @prj.slug
+      username: ({node}) ~>
+        node.href = "/dash/user/#{@prj.owner}"
+        node.innerText = @prj.ownername or ''
+      avatar: ({node}) ~> node.style.background = "url(/s/avatar/#{@prj.owner}.png)"
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do

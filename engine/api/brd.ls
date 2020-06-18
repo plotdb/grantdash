@@ -137,7 +137,7 @@ get-prj-list = (req, res) ->
         [
         """
         with cte as (
-        select p.*,u.displayname as ownername
+        select p.*,u.displayname as ownername, u.username as owneremail
         from prj as p, users as u
         where p.detail is not null and u.key = p.owner and p.brd = $3 and p.deleted is not true
         """,

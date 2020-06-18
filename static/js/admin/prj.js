@@ -18,6 +18,27 @@ ldc.register('adminPrjDetail', ['sdbAdapter', 'prjViewSimple'], function(arg$){
         ownername: function(){
           var ref$;
           return ((ref$ = this$.prj).info || (ref$.info = {})).teamname || this$.prj.ownername || '';
+        },
+        email: function(){
+          return this$.prj.owneremail || '';
+        }
+      },
+      handler: {
+        id: function(arg$){
+          var node;
+          node = arg$.node;
+          return node.value = this$.prj.slug;
+        },
+        username: function(arg$){
+          var node;
+          node = arg$.node;
+          node.href = "/dash/user/" + this$.prj.owner;
+          return node.innerText = this$.prj.ownername || '';
+        },
+        avatar: function(arg$){
+          var node;
+          node = arg$.node;
+          return node.style.background = "url(/s/avatar/" + this$.prj.owner + ".png)";
         }
       }
     });
