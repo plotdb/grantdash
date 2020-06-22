@@ -166,6 +166,11 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
         form.reset();
         return ldld.off();
       }).then(function(){
+        return auth.consent({
+          timing: 'signin',
+          bypass: true
+        });
+      }).then(function(){
         return auth.fire("auth.signin");
       })['catch'](function(){
         action.info('failed');
@@ -275,6 +280,11 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
           return window.location.reload();
         }
         return lda.auth.hide('ok');
+      }).then(function(){
+        return auth.consent({
+          timing: 'signin',
+          bypass: true
+        });
       }).then(function(){
         return auth.fire("auth.signin");
       })['finally'](function(){
@@ -421,24 +431,26 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
         return loader.off();
       });
     },
+    consentTime: {},
     consent: function(opt){
       var type, cfg, cover;
       opt == null && (opt = {});
       type = opt.type || 'tos';
       cfg = (ldsite.consent || (ldsite.consent = {}))[type];
       cover = cfg ? cfg.cover || 'tos-consent' : '';
+      console.log(">>", opt);
       return Promise.resolve().then(function(){
         if (!cfg) {
           return;
         }
-        return auth.get().then(function(g){
-          var time, ref$, ref1$, this$ = this;
+        return auth.fetch().then(function(g){
+          var time, ref$, ref1$, p, this$ = this;
           if (!opt.force && opt.timing && !in$(opt.timing, cfg.timing)) {
             return;
           }
-          time = ((ref$ = (ref1$ = g.user).config || (ref1$.config = {})).consent || (ref$.consent = {}))[type];
-          if (opt.force || !time || time < cfg.time) {
-            return ldcvmgr.getdom(cover).then(function(dom){
+          time = ((ref$ = (ref1$ = g.user).config || (ref1$.config = {})).consent || (ref$.consent = {}))[type] || auth.consentTime[type] || 0;
+          p = !opt.bypass && ((opt.force && Date.now() - time > 10000) || !time || time < (cfg.time || 0))
+            ? ldcvmgr.getdom(cover).then(function(dom){
               var that;
               if (that = ld$.find(dom, 'object', 0)) {
                 that.setAttribute('data', cfg.url);
@@ -451,8 +463,12 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
               if (!it) {
                 return Promise.reject(new ldError(1018));
               }
-            }).then(function(){
+            })
+            : Promise.resolve();
+          if (g.user.key && !((ref$ = (ref1$ = g.user).config || (ref1$.config = {})).consent || (ref$.consent = {}))[type]) {
+            return p.then(function(){
               var json;
+              auth.consentTime[type] = Date.now();
               json = {
                 type: 'consent',
                 name: [type]
@@ -462,18 +478,17 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
               }, {
                 json: json,
                 type: 'json'
+              })['catch'](function(it){
+                return console.log(">", it);
               });
             }).then(function(ret){
               var ref$;
               ret == null && (ret = {});
               return import$((ref$ = g.user).config || (ref$.config = {}), ret);
-            })['catch'](function(it){
-              if (g.user.key) {
-                auth.logout();
-              }
-              return Promise.reject(it);
             });
-          } else {}
+          } else {
+            return p;
+          }
         });
       });
     }
