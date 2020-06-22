@@ -139,6 +139,10 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
       return recaptcha.get('signin').then(function(recaptcha){
         return body.recaptcha = recaptcha;
       }).then(function(){
+        return auth.consent({
+          timing: 'signin'
+        });
+      }).then(function(){
         return ld$.fetch(auth.act === 'login'
           ? auth.api + "/u/login"
           : auth.api + "/u/signup", {
@@ -161,10 +165,6 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
         }
         form.reset();
         return ldld.off();
-      }).then(function(){
-        return auth.consent({
-          timing: 'signin'
-        });
       }).then(function(){
         return auth.fire("auth.signin");
       })['catch'](function(){
@@ -250,7 +250,11 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
         name: 'div'
       });
       document.body.appendChild(div);
-      return this.get().then(function(arg$){
+      return this.get().then(function(){
+        return auth.consent({
+          timing: 'signin'
+        });
+      }).then(function(arg$){
         var csrfToken, login;
         csrfToken = arg$.csrfToken;
         div.innerHTML = "<form target=\"social-login\" action=\"" + auth.api + "/u/auth/" + name + "/\" method=\"post\">\n  <input type=\"hidden\" name=\"_csrf\" value=\"" + csrfToken + "\"/>\n</form>";
@@ -271,10 +275,6 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
           return window.location.reload();
         }
         return lda.auth.hide('ok');
-      }).then(function(){
-        return auth.consent({
-          timing: 'signin'
-        });
       }).then(function(){
         return auth.fire("auth.signin");
       })['finally'](function(){
@@ -425,52 +425,56 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error', 'recaptcha
       var type, cfg, cover;
       opt == null && (opt = {});
       type = opt.type || 'tos';
-      cfg = (ldsite.consent || (ldsite.consent = {}))[type] || {};
-      cover = cfg.cover || 'tos-consent';
-      return auth.get().then(function(g){
-        var time, ref$, ref1$, this$ = this;
-        console.log(g, opt, cfg);
-        if (!opt.force && opt.timing && !in$(opt.timing, cfg.timing)) {
+      cfg = (ldsite.consent || (ldsite.consent = {}))[type];
+      cover = cfg ? cfg.cover || 'tos-consent' : '';
+      return Promise.resolve().then(function(){
+        if (!cfg) {
           return;
         }
-        time = ((ref$ = (ref1$ = g.user).config || (ref1$.config = {})).consent || (ref$.consent = {}))[type];
-        if (opt.force || !time || time < cfg.time) {
-          return ldcvmgr.getdom(cover).then(function(dom){
-            var that;
-            if (that = ld$.find(dom, 'object', 0)) {
-              that.setAttribute('data', cfg.url);
-            }
-            if (that = ld$.find(dom, 'embed', 0)) {
-              that.setAttribute('src', cfg.url);
-            }
-            return ldcvmgr.get(cover);
-          }).then(function(it){
-            if (!it) {
-              return Promise.reject(new ldError(1018));
-            }
-          }).then(function(){
-            var json;
-            json = {
-              type: 'consent',
-              name: [type]
-            };
-            return ld$.fetch(auth.api + "/me/config", {
-              method: 'POST'
-            }, {
-              json: json,
-              type: 'json'
+        return auth.get().then(function(g){
+          var time, ref$, ref1$, this$ = this;
+          if (!opt.force && opt.timing && !in$(opt.timing, cfg.timing)) {
+            return;
+          }
+          time = ((ref$ = (ref1$ = g.user).config || (ref1$.config = {})).consent || (ref$.consent = {}))[type];
+          if (opt.force || !time || time < cfg.time) {
+            return ldcvmgr.getdom(cover).then(function(dom){
+              var that;
+              if (that = ld$.find(dom, 'object', 0)) {
+                that.setAttribute('data', cfg.url);
+              }
+              if (that = ld$.find(dom, 'embed', 0)) {
+                that.setAttribute('src', cfg.url);
+              }
+              return ldcvmgr.get(cover);
+            }).then(function(it){
+              if (!it) {
+                return Promise.reject(new ldError(1018));
+              }
+            }).then(function(){
+              var json;
+              json = {
+                type: 'consent',
+                name: [type]
+              };
+              return ld$.fetch(auth.api + "/me/config", {
+                method: 'POST'
+              }, {
+                json: json,
+                type: 'json'
+              });
+            }).then(function(ret){
+              var ref$;
+              ret == null && (ret = {});
+              return import$((ref$ = g.user).config || (ref$.config = {}), ret);
+            })['catch'](function(it){
+              if (g.user.key) {
+                auth.logout();
+              }
+              return Promise.reject(it);
             });
-          }).then(function(ret){
-            var ref$;
-            ret == null && (ret = {});
-            return import$((ref$ = g.user).config || (ref$.config = {}), ret);
-          })['catch'](function(it){
-            if (g.user.key) {
-              auth.logout();
-            }
-            return Promise.reject(it);
-          });
-        } else {}
+          } else {}
+        });
       });
     }
   };
