@@ -108,6 +108,7 @@ Ctrl = (opt) ->
         submit: ({node}) ->
           if node.classList.contains \disabled => return
           auth.ensure!
+            .then -> if type == \prj => auth.consent {type: \tos, timing: \prj-create, force: true}
             .then ->
               loader.on!
               fd = form.getfd!

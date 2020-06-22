@@ -227,6 +227,14 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
               return;
             }
             return auth.ensure().then(function(){
+              if (type === 'prj') {
+                return auth.consent({
+                  type: 'tos',
+                  timing: 'prj-create',
+                  force: true
+                });
+              }
+            }).then(function(){
               var fd;
               loader.on();
               fd = form.getfd();

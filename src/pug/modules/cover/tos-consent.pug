@@ -1,0 +1,15 @@
+include /modules/common.pug
+.ldcv.ldcvmgr.scroll(data-name="consent",data-lock="true")
+  .base.w-1024.rwd.h-100: .inner.card: .card-body.text-center
+    .d-flex.flex-column.w-100.h-100
+      .text-left
+        h4 在繼續之前...
+        p 請先閱讀並確認您同意我們的使用條款
+      object.w-100.h-100.flex-grow-1.border.mb-2(data="about:blank",type="application/pdf")
+        embed.w-100.h-100.border(src="about:blank",type="application/pdf")
+      .d-flex.justify-content-between
+        //-a.btn.btn-lg.btn-outline-primary(href="about:blank",download="consent.pdf") 下載此文件
+        .btn.btn-lg.btn-outline-primary(data-ldcv-set="") 我不同意
+        .btn.btn-lg.btn-primary(data-ldcv-set="true") 我已詳讀並同意此條款
+      
+

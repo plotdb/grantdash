@@ -4,6 +4,7 @@
   ldc.register \ldsite, <[]>, ->
     return {
       api: \/dash/api
+      consent: tos: {url: \/dash/assets/privacy.pdf, timing: <[signin prj-create]>}
       ldcvmgr-root: \/dash/modules/cover
       avatar-url: -> "/dash/s/avatar/#it.png"
     }

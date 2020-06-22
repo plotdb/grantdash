@@ -198,29 +198,22 @@
         return null;
       })['catch'](aux.errorHandler(res));
     });
-    api.post('/me/legal/', function(req, res){
-      var ref$;
-      if (!(req.user && req.user.key)) {
-        return aux.r400(res);
-      }
-      ((ref$ = req.user).config || (ref$.config = {})).legal = new Date().getTime();
-      return io.query("update users set config = $2 where key = $1", [req.user.key, req.user.config]).then(function(){
-        return res.send();
-      })['catch'](aux.errorHandler(res));
-    });
     api.post('/me/config/', function(req, res){
-      var ref$;
       if (!(req.user && req.user.key)) {
         return aux.r400(res);
       }
       if (!req.body || typeof req.body !== 'object') {
         return aux.r400(res);
       }
-      import$((ref$ = req.user).config || (ref$.config = {}), {
-        legal: req.body.legal
+      if (req.body.type !== 'consent') {
+        return aux.r400(res);
+      }
+      (req.body.name || []).map(function(n){
+        var ref$, ref1$;
+        return ((ref$ = (ref1$ = req.user).config || (ref1$.config = {})).consent || (ref$.consent = {}))[n] = Date.now();
       });
       return io.query("update users set config = $2 where key = $1", [req.user.key, req.user.config]).then(function(){
-        return res.send();
+        return res.send(req.user.config);
       })['catch'](aux.errorHandler(res));
     });
     return api.post('/me/list', aux.signed, function(req, res){
@@ -239,9 +232,4 @@
       })['catch'](aux.errorHandler(res));
     });
   });
-  function import$(obj, src){
-    var own = {}.hasOwnProperty;
-    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
-    return obj;
-  }
 }).call(this);

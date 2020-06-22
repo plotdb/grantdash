@@ -133,20 +133,13 @@ api.put \/me/passwd/, (req, res) ->
     .then -> req.login(req.user, -> res.send!); return null
     .catch aux.error-handler res
 
-# should be replaced by /me/config/
-api.post \/me/legal/, (req, res) ->
-  if !(req.user and req.user.key) => return aux.r400 res
-  req.user.{}config.legal = new Date!getTime!
-  io.query "update users set config = $2 where key = $1", [req.user.key, req.user.config]
-    .then -> res.send!
-    .catch aux.error-handler res
-
 api.post \/me/config/, (req, res) ->
   if !(req.user and req.user.key) => return aux.r400 res
   if !req.body or typeof(req.body) != \object => return aux.r400 res
-  req.user.{}config <<< (req.body{legal})
+  if req.body.type != \consent => return aux.r400 res # only support consent now.
+  (req.body.name or []).map (n) -> req.user.{}config.{}consent[n] = Date.now!
   io.query "update users set config = $2 where key = $1", [req.user.key, req.user.config]
-    .then -> res.send!
+    .then -> res.send(req.user.config)
     .catch aux.error-handler res
 
 api.post \/me/list, aux.signed, (req, res) ->
