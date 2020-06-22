@@ -42,7 +42,20 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
 
 
   init: -> Promise.resolve!then ~>
-    @quill = quill = new Quill \#editor, {theme: \snow}
+    console.log 1
+    @quill = quill = new Quill \#editor, do
+      theme: \snow
+      modules: toolbar: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }]
+        ['bold', 'italic', 'underline', 'strike', 'link']
+        [{ 'align': [] }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'indent': '-1'}, { 'indent': '+1' }],
+        [{ 'color': [] }, { 'background': [] }],
+        ['blockquote', 'code-block'],
+        ['clean']
+      ]
+
     quill.on \text-change, (delta, old-delta, source) ~>
       @data.content = quill.root.innerHTML
       @update!

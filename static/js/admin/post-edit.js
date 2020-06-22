@@ -81,8 +81,36 @@ ldc.register(['ldcvmgr', 'sdbAdapter', 'loader', 'error'], function(arg$){
       var this$ = this;
       return Promise.resolve().then(function(){
         var quill;
+        console.log(1);
         this$.quill = quill = new Quill('#editor', {
-          theme: 'snow'
+          theme: 'snow',
+          modules: {
+            toolbar: [
+              [{
+                'header': [1, 2, 3, 4, 5, 6, false]
+              }], ['bold', 'italic', 'underline', 'strike', 'link'], [{
+                'align': []
+              }], [
+                {
+                  'list': 'ordered'
+                }, {
+                  'list': 'bullet'
+                }
+              ], [
+                {
+                  'indent': '-1'
+                }, {
+                  'indent': '+1'
+                }
+              ], [
+                {
+                  'color': []
+                }, {
+                  'background': []
+                }
+              ], ['blockquote', 'code-block'], ['clean']
+            ]
+          }
         });
         return quill.on('text-change', function(delta, oldDelta, source){
           this$.data.content = quill.root.innerHTML;

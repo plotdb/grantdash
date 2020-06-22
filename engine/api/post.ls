@@ -47,7 +47,7 @@ app.get \/post/:slug, (req, res) ->
       cache.stage.check {io, type: \brd, slug: lc.post.brd}
     .then ({config} = {config: {}}) ->
       if !config["public"] => return aux.reject 403
-      res.render \work/post-view.pug, {exports: lc{post}}
+      res.render \admin/post-view.pug, {exports: lc{post}}
     .catch aux.error-handler res
 
 api.post \/post, aux.signed, (req, res) ->
