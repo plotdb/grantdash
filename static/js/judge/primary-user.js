@@ -81,6 +81,11 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
         }
       },
       handler: {
+        "show-budget": function(arg$){
+          var node, ref$;
+          node = arg$.node;
+          return node.classList.toggle('d-none', !((ref$ = this$.grpinfo.form).purpose || (ref$.purpose = {})).budget);
+        },
         "comment-name": function(arg$){
           var node;
           node = arg$.node;
@@ -208,6 +213,11 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                 }
               },
               handler: {
+                "show-budget": function(arg$){
+                  var node, ref$;
+                  node = arg$.node;
+                  return node.classList.toggle('d-none', !((ref$ = this$.grpinfo.form).purpose || (ref$.purpose = {})).budget);
+                },
                 "has-comment": function(arg$){
                   var node, context, ref$, key$;
                   node = arg$.node, context = arg$.context;

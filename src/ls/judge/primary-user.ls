@@ -41,6 +41,7 @@ Ctrl = (opt) ->
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
     handler: do
+      "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
       progress: ({node, names}) ~>
@@ -97,6 +98,7 @@ Ctrl = (opt) ->
                 total = b.subsidy or 0
                 return "#{Math.round(total / 10000)}萬"
             handler: do
+              "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
               "has-comment": ({node, context}) ~>
                 node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
               option: ({node, local, context}) ~>

@@ -46,7 +46,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     console.log "fetch info ... "
     ld$.fetch(
       "/dash/api/brd/#{@brd}/grp/#{@grp}/info"
-      {method: \POST}, {json: {fields: <[criteria grade]>}, type: \json}
+      {method: \POST}, {json: {fields: <[criteria grade form]>}, type: \json}
     )
       .then (ret) ~>
         @brdinfo = ret.brd
