@@ -40,6 +40,7 @@ Ctrl = (opt) ->
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
     handler: do
+      "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
       progress: ({node, names}) ~>
@@ -88,6 +89,7 @@ Ctrl = (opt) ->
               ownername: ({context}) -> context.info.teamname or context.ownername or ''
               key: ({context}) -> context.key or ''
             handler: do
+              "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
               pick: ({node, context}) ~>
                 cls = [<[text-white bg-success]>, <[text-secondary bg-light]>]
                 obj = @data.{}prj{}[context.slug]

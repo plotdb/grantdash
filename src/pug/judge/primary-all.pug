@@ -22,7 +22,7 @@ block body
               //-.mr-2.text-right.px-2(style="width:50px") 資格
               //-.mr-2.text-right.px-2(style="width:50px") 評論
               .flex-grow-1.clickable(ld="sort",data-name="name") 提案名稱
-              .mr-2.text-right.px-2.clickable(ld="sort",data-name="budget",style="width:50px") 預算
+              .mr-2.text-right.px-2.clickable.d-none(ld="show-budget sort",data-name="budget",style="width:50px") 預算
               .mx-2.clickable(ld="sort",data-name="shortlist") 入選標記
 
               .d-flex.justify-content-center.align-items-center(style="width:200px")
@@ -43,7 +43,7 @@ block body
                 .flex-grow-1.text-truncate
                   .text-underline.clickable(ld="name")
                   .text-sm.text-muted(ld="ownername")
-                .mr-2.text-right.text-nowrap(style="width:75px")
+                .mr-2.text-right.text-nowrap.d-none(ld="show-budget",style="width:75px")
                   div
                     span.text-sm.text-muted.mr-1 總數
                     b.text-sm.text-nowrap(ld="budget")
