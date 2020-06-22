@@ -34,14 +34,13 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
             }
           },
           text: {
-            total: function(arg$){
-              var context;
-              context = arg$.context;
-              if (isNaN(context.total)) {
-                return "輸入內容有誤";
-              } else {
-                return context.total || 0;
-              }
+            value: function(arg$){
+              var node, context, n;
+              node = arg$.node, context = arg$.context;
+              n = node.getAttribute('data-name');
+              return isNaN(context[n])
+                ? "???"
+                : context[n] || 0;
             }
           },
           handler: {
@@ -62,13 +61,16 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
               };
               update = function(changes){
                 context.total = 0;
+                context.subsidy = 0;
                 data.slice(2).filter(function(it){
                   return it;
                 }).map(function(d){
                   d[4] = isval(d[2]) || isval(d[3]) ? +d[2] + +d[3] : '';
                   d[7] = isval(d[5]) || isval(d[6]) ? +d[5] + +d[6] : '';
-                  return context.total += +d[4];
+                  context.total += +d[4];
+                  return context.subsidy += isval(d[3]) ? +d[3] : 0;
                 });
+                context.percent = (Math.round(1000 * context.subsidy / (context.total || 1)) / 10 + "").replace("(.d)d*", "$1");
                 if (changes.length) {
                   hot.loadData(data);
                 }

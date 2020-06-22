@@ -81,6 +81,9 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
     sheet = JSON.parse(JSON.stringify(answer.sheet))
     sheet.map -> it.push(+it.2 + +it.3)
     total = sheet.reduce(((a,b) -> a + b.4),0)
+    subsidy = sheet.reduce(((a,b) -> a + b.3),0)
+    percent = "#{Math.round(1000 * subsidy / (total or 1)) / 10}"
+      .replace "(\.\d)\d*", "$1"
 
     sheet = sheet
       .map ->
@@ -98,10 +101,16 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
     <tr><th>自籌</th><th>補助</th><th>總計</th></tr>
     #sheet
     </table>
-    <div class="text-right">
-    <span class="text-muted text-sm">總金額</span>
-    <span class="font-weight-bold">#total</span>
-    <span class="text-muted text-sm">元</span>
+    <div class="d-flex justify-content-between">
+    <div><span class="text-muted text-sm">總金額</span>
+         <span class="font-weight-bold">#total</span>
+         <span class="text-muted text-sm">元</span></div>
+    <div><span class="text-muted text-sm">補助金額</span>
+         <span class="font-weight-bold">#subsidy</span>
+         <span class="text-muted text-sm">元</span></div>
+    <div><span class="text-muted text-sm">補助比例</span>
+         <span class="font-weight-bold">#percent</span>
+         <span class="text-muted text-sm">元</span></div>
     </div>
     """
     result = DOMPurify.sanitize data

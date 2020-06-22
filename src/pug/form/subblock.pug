@@ -64,9 +64,16 @@ mixin criteria
       .btn.btn-outline-secondary.btn-sm(ld="new-row") 新增列
       div
         span.mr-2.text-sm.text-muted 總金額
-        span.font-weight-bold(ld="total")
+        span.font-weight-bold(ld="value",data-name="total")
         span.text-sm 元
-
+      div
+        span.mr-2.text-sm.text-muted 補助金額
+        span.font-weight-bold(ld="value",data-name="subsidy")
+        span.text-sm 元
+      div
+        span.mr-2.text-sm.text-muted 補助比例
+        span.font-weight-bold(ld="value",data-name="percent")
+        span.text-sm %
 
 +form-block({name: "form-checkpoint"})
   .pt-4.px-4

@@ -80,7 +80,7 @@ ldc.register('prjViewSimple', [], function(){
     }
   });
   Ctrl.render = function(arg$){
-    var block, answer, prj, brd, org, result, start, end, ref$, ret, list, sheet, total, data;
+    var block, answer, prj, brd, org, result, start, end, ref$, ret, list, sheet, total, subsidy, percent, data;
     block = arg$.block, answer = arg$.answer, prj = arg$.prj, brd = arg$.brd, org = arg$.org;
     result = {};
     if (!(block && answer)) {
@@ -121,6 +121,10 @@ ldc.register('prjViewSimple', [], function(){
       total = sheet.reduce(function(a, b){
         return a + b[4];
       }, 0);
+      subsidy = sheet.reduce(function(a, b){
+        return a + b[3];
+      }, 0);
+      percent = (Math.round(1000 * subsidy / (total || 1)) / 10 + "").replace("(.d)d*", "$1");
       sheet = sheet.map(function(it){
         var ret;
         if (!it.filter(function(it){
@@ -135,7 +139,7 @@ ldc.register('prjViewSimple', [], function(){
       }).filter(function(it){
         return it;
       }).join('');
-      data = "<table class='mb-2 form-budget-table'><tr>\n<th rowspan=\"2\">分類</th>\n<th rowspan=\"2\">項目</th>\n<th colspan=\"3\">預估</th>\n</tr>\n<tr><th>自籌</th><th>補助</th><th>總計</th></tr>\n" + sheet + "\n</table>\n<div class=\"text-right\">\n<span class=\"text-muted text-sm\">總金額</span>\n<span class=\"font-weight-bold\">" + total + "</span>\n<span class=\"text-muted text-sm\">元</span>\n</div>";
+      data = "<table class='mb-2 form-budget-table'><tr>\n<th rowspan=\"2\">分類</th>\n<th rowspan=\"2\">項目</th>\n<th colspan=\"3\">預估</th>\n</tr>\n<tr><th>自籌</th><th>補助</th><th>總計</th></tr>\n" + sheet + "\n</table>\n<div class=\"d-flex justify-content-between\">\n<div><span class=\"text-muted text-sm\">總金額</span>\n     <span class=\"font-weight-bold\">" + total + "</span>\n     <span class=\"text-muted text-sm\">元</span></div>\n<div><span class=\"text-muted text-sm\">補助金額</span>\n     <span class=\"font-weight-bold\">" + subsidy + "</span>\n     <span class=\"text-muted text-sm\">元</span></div>\n<div><span class=\"text-muted text-sm\">補助比例</span>\n     <span class=\"font-weight-bold\">" + percent + "</span>\n     <span class=\"text-muted text-sm\">元</span></div>\n</div>";
       result = DOMPurify.sanitize(data);
     } else {
       result = '';

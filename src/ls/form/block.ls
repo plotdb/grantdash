@@ -18,9 +18,10 @@ module["form-budget"] = module-init: ->
         "new-row": ({node, context}) ->
           row = (if context.hot.getSelected! => that.0 else context.hot.countRows!) + 1
           context.hot.alter \insert_row, row, 1
-      text: total: ({context}) ->
-        if isNaN(context.total) => "輸入內容有誤"
-        else return context.total or 0
+      text: do
+        value: ({node,context}) ->
+          n = node.getAttribute(\data-name)
+          return if isNaN(context[n]) => "???" else (context[n] or 0)
       handler: "is-view": ({node,names}) -> node.classList.toggle \d-none, (if \not in names => true else false)
       init: do
         "budget-root": ({node, context}) ~>
@@ -30,11 +31,14 @@ module["form-budget"] = module-init: ->
           ]
           get-data = ~> head ++ (@block.{}value.sheet or [["設備","( 範例 ) 電腦", 20000, 10000]])
           update = (changes) ~>
-            context.total = 0
+            context <<< {total: 0, subsidy: 0}
             data.slice 2 .filter(->it).map (d) ->
               d.4 = if isval(d.2) or isval(d.3) => (+d.2 + +d.3) else ''
               d.7 = if isval(d.5) or isval(d.6) => (+d.5 + +d.6) else ''
               context.total += +d.4
+              context.subsidy += (if isval(d.3) => +d.3 else 0)
+            context.percent = "#{Math.round(1000 * context.subsidy / (context.total or 1)) / 10}"
+              .replace "(\.\d)\d*", "$1"
             if changes.length => hot.loadData data
             debounce 10 .then -> view.render \total
             @block.value.sheet = data.slice(2).filter(->it).map -> it.slice(0,4)
