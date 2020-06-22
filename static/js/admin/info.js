@@ -81,6 +81,9 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
           slugCheck(n, v, e);
           return 1;
         }
+        if (in$(n, ['limit'])) {
+          return 1;
+        }
         return !!v ? 0 : 2;
       }
     });

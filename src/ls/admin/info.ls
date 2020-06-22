@@ -36,6 +36,7 @@ Ctrl = (opt) ->
         if slugs[v]? => return if slugs[v] => 2 else 0
         slug-check n,v,e
         return 1
+      if n in <[limit]> => return 1
       return if !!v => 0 else 2
 
   lc = {}
