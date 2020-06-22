@@ -64,8 +64,10 @@ api.post \/prj/, aux.signed, express-formidable!, (req, res) ->
       io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
-      if !(lc.brd.[]group.filter(->it.key == grp).length) => return aux.reject 404
+      if !(grpinfo = lc.brd.[]group.filter(->it.key == grp).0) => return aux.reject 404
       if !(lc.brd.org) => return aux.reject 404
+      #if (limit = (+grpinfo.{}info.limit or 0)) =>
+
       io.query """
       insert into prj (name,description,brd,grp,slug,owner)
       values ($1,$2,$3,$4,$5,$6) returning key

@@ -141,14 +141,14 @@
         }
         return io.query("select org, slug, key, detail->'group' as group from brd where slug = $1", [brd]);
       }).then(function(r){
-        var ref$;
+        var grpinfo, ref$;
         r == null && (r = {});
         if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
-        if (!((ref$ = lc.brd).group || (ref$.group = [])).filter(function(it){
+        if (!(grpinfo = ((ref$ = lc.brd).group || (ref$.group = [])).filter(function(it){
           return it.key === grp;
-        }).length) {
+        })[0])) {
           return aux.reject(404);
         }
         if (!lc.brd.org) {

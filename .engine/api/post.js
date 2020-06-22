@@ -85,7 +85,7 @@
         if (!config["public"]) {
           return aux.reject(403);
         }
-        return res.render('work/post-view.pug', {
+        return res.render('admin/post-view.pug', {
           exports: {
             post: lc.post
           }
