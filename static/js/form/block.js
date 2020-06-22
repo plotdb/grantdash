@@ -867,6 +867,14 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
           return v.content || '';
         }
       },
+      email: {
+        name: "聯絡信箱",
+        block: ['form-short-answer'],
+        get: function(v){
+          v == null && (v = {});
+          return v.content || '';
+        }
+      },
       budget: {
         name: "預算",
         block: ['form-budget'],

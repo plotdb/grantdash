@@ -407,6 +407,9 @@ purpose = do
     uid:
       name: "統編", block: <[form-short-answer]>
       get: (v={}) -> v.content or ''
+    email:
+      name: "聯絡信箱", block: <[form-short-answer]>
+      get: (v={}) -> v.content or ''
     budget:
       name: "預算", block: <[form-budget]>
       get: (v={}) ->
