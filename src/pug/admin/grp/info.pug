@@ -4,16 +4,26 @@ p.text-muted.mb-4 專案分組您可以在這裡為這個專案分組設定基�
 +scope("grp-info-panel")
   hr.my-4
   .row.align-items-center.mb-4
-    .col-md-2.text-right 分組名稱
+    .col-md-2
+      b 分組名稱
     .col-md
       .form-group.mb-0.ld-ext-right
         input.form-control(name="name")
         .invalid-feedback.position-absolute 分組必須要有名字
 
   .row.align-items-start.mb-4
-    .col-md-2.text-right 分組摘要
+    .col-md-2
+      b 分組摘要
+      p.text-sm.text-muted 簡單介紹這個分組(選填)
     .col-md: textarea.form-control(name="description",rows="4")
 
+
+  .row.align-items-start.mb-4
+    .col-md-2
+      b 提案數量
+      p.text-sm.text-muted 設定同一統編可提案的數量上限。
+
+    .col-md: input.form-control(name="limit",placeholder="留白或 0 則代表沒有限制")
   //-.row.align-items-start.mb-4
     .col-md-2.text-right 分組代碼
     .col-md: input.form-control(name="slug",readonly)
