@@ -80,8 +80,8 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
   else if block.name == \form-budget
     sheet = JSON.parse(JSON.stringify(answer.sheet))
     sheet.map -> it.push(+it.2 + +it.3)
-    total = sheet.reduce(((a,b) -> a + b.4),0)
-    subsidy = sheet.reduce(((a,b) -> a + b.3),0)
+    total = sheet.reduce(((a,b) -> a + +b.4),0)
+    subsidy = sheet.reduce(((a,b) -> a + +b.3),0)
     percent = "#{Math.round(1000 * subsidy / (total or 1)) / 10}"
       .replace "(\.\d)\d*", "$1"
 
@@ -110,7 +110,7 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
          <span class="text-muted text-sm">元</span></div>
     <div><span class="text-muted text-sm">補助比例</span>
          <span class="font-weight-bold">#percent</span>
-         <span class="text-muted text-sm">元</span></div>
+         <span class="text-muted text-sm">%</span></div>
     </div>
     """
     result = DOMPurify.sanitize data
