@@ -311,7 +311,7 @@ module-list = module-init: ->
                 if data.other =>
                   node.removeAttribute \editable
                   node.classList.toggle \flex-grow-1, false
-                settext node, ((if data.other => '其它' else data[node.getAttribute(\data-name)]) or '')
+                settext node, ((if data.other => '其它 / other' else data[node.getAttribute(\data-name)]) or '')
 
 
 module <<< do

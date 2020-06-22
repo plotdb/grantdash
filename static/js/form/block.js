@@ -647,7 +647,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'prjFormCriteria'], function(a
                       node.classList.toggle('flex-grow-1', false);
                     }
                     return settext(node, (data.other
-                      ? '其它'
+                      ? '其它 / other'
                       : data[node.getAttribute('data-name')]) || '');
                   }
                 }
