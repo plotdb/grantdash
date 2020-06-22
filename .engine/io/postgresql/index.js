@@ -79,13 +79,14 @@
             }
             return this$.authio.user.compare(password, user.password);
           }).then(function(it){
+            var ref$;
             if (it) {
               user = import$(user
                 ? user
                 : {}, it);
             }
-            if (!(user.config || (user.config = {})).legal) {
-              (user.config || (user.config = {})).legal = new Date().getTime();
+            if (!((ref$ = user.config || (user.config = {})).consent || (ref$.consent = {})).cookie) {
+              ((ref$ = user.config || (user.config = {})).consent || (ref$.consent = {})).cookie = new Date().getTime();
               return this$.query("update users set config = $2 where key = $1", [user.key, user.config]);
             }
           }).then(function(){
@@ -108,7 +109,7 @@
             if (!displayname) {
               displayname = username.replace(/@.+$/, "");
             }
-            config.legal = new Date().getTime();
+            (config.consent || (config.consent = {})).cookie = new Date().getTime();
             user.username = username;
             user.password = pwHashed;
             user.usepasswd = usepasswd;

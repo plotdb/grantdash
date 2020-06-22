@@ -48,8 +48,8 @@ ret = (config) ->
             @authio.user.compare password, user.password
           .then ~>
             if it => user := (if user => user else {}) <<< it
-            if !user.{}config.legal =>
-              user.{}config.legal = new Date!getTime!
+            if !user.{}config.{}consent.cookie =>
+              user.{}config.{}consent.cookie = new Date!getTime!
               @query "update users set config = $2 where key = $1", [user.key, user.config]
           .then ->
             delete user.password
@@ -65,7 +65,7 @@ ret = (config) ->
           .then (pw-hashed) ~>
             displayname = if detail => detail.displayname or detail.username
             if !displayname => displayname = username.replace(/@.+$/, "")
-            config.legal = new Date!getTime!
+            config.{}consent.cookie = new Date!getTime!
             user <<< {username, password: pw-hashed, usepasswd, displayname, detail, config, createdtime: new Date!}
             @query [
               "insert into users"
