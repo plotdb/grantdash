@@ -131,6 +131,8 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
       toc = @toc
       delete-group = ~>
         @ctrl.brd.group.delete-group it
+      clone-group = ~>
+        @ctrl.brd.group.clone-group it
 
       @ctrl.welcome = new admin-welcome {root: '[ld-scope=admin-welcome]', toc}
       @ctrl.posts = new admin-post-list {root: '[ld-scope=admin-post-list]', brd: toc.brd}
@@ -151,7 +153,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
 
       @ctrl.grp
         ..form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}
-        ..info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group, delete-group}
+        ..info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group, delete-group, clone-group}
         ..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]', brd: toc.brd}
         ..grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}

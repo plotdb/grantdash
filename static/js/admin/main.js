@@ -265,7 +265,7 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
       }
     },
     initCtrl: function(){
-      var ref$, org, brd, setGroup, toc, deleteGroup, x$, y$, z$, z1$, this$ = this;
+      var ref$, org, brd, setGroup, toc, deleteGroup, cloneGroup, x$, y$, z$, z1$, this$ = this;
       ref$ = this.hubs, org = ref$.org, brd = ref$.brd;
       setGroup = function(it){
         return this$.setGroup(it);
@@ -273,6 +273,9 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
       toc = this.toc;
       deleteGroup = function(it){
         return this$.ctrl.brd.group.deleteGroup(it);
+      };
+      cloneGroup = function(it){
+        return this$.ctrl.brd.group.cloneGroup(it);
       };
       this.ctrl.welcome = new adminWelcome({
         root: '[ld-scope=admin-welcome]',
@@ -342,7 +345,8 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
         root: '[ld-scope=grp-info-panel]',
         type: 'grp',
         setGroup: setGroup,
-        deleteGroup: deleteGroup
+        deleteGroup: deleteGroup,
+        cloneGroup: cloneGroup
       });
       z$.perm = new adminPerm({
         toc: toc,

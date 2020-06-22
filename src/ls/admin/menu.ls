@@ -78,6 +78,14 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     @view.render 'grp-entry'
     @update!now!
 
+  clone-group: (v) ->
+    if !(grp = @grps.filter(->it.key == v).0) => return
+    grp = JSON.parse(JSON.stringify(grp))
+    grp.key = suuid!
+    @grps.push grp
+    @view.render 'grp-entry'
+    @update!now!
+
   add-group: ->
     for i from 0 til 100 =>
       key = suuid!

@@ -209,6 +209,14 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
             }
             return this$.opt.deleteGroup(grp.key);
           },
+          "clone-group": function(arg$){
+            var node, grp;
+            node = arg$.node;
+            if (!(grp = this$.adapter.doc.data.group[this$.adapter.path[1]])) {
+              return;
+            }
+            return this$.opt.cloneGroup(grp.key);
+          },
           submit: function(arg$){
             var node;
             node = arg$.node;

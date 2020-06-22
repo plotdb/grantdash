@@ -184,6 +184,19 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
       this.view.render('grp-entry');
       return this.update().now();
     },
+    cloneGroup: function(v){
+      var grp;
+      if (!(grp = this.grps.filter(function(it){
+        return it.key === v;
+      })[0])) {
+        return;
+      }
+      grp = JSON.parse(JSON.stringify(grp));
+      grp.key = suuid();
+      this.grps.push(grp);
+      this.view.render('grp-entry');
+      return this.update().now();
+    },
     addGroup: function(){
       var i$, i, key;
       for (i$ = 0; i$ < 100; ++i$) {

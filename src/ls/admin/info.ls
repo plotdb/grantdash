@@ -100,6 +100,9 @@ Ctrl = (opt) ->
           if node.classList.contains \disabled => return
           if !(grp = @adapter.doc.data.group[@adapter.path.1]) => return
           @opt.delete-group grp.key
+        "clone-group": ({node}) ~>
+          if !(grp = @adapter.doc.data.group[@adapter.path.1]) => return
+          @opt.clone-group grp.key
 
         submit: ({node}) ->
           if node.classList.contains \disabled => return
