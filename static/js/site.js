@@ -5,8 +5,9 @@
       api: '/dash/api',
       consent: {
         tos: {
+          type: 'link',
           url: '/dash/assets/privacy.pdf',
-          timing: ['signin', 'prj-create']
+          timing: ['prj-create']
         }
       },
       ldcvmgrRoot: '/dash/modules/cover',

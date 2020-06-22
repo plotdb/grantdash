@@ -257,9 +257,7 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
                 loader.off();
                 return ldcvmgr.toggle('error');
               });
-            })['catch'](function(){
-              return lda.ldcvmgr.toggle('auth-required');
-            });
+            })['catch'](error());
           }
         }
       }

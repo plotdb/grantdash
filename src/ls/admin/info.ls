@@ -122,7 +122,7 @@ Ctrl = (opt) ->
                 .catch ->
                   loader.off!
                   ldcvmgr.toggle 'error'
-            .catch -> lda.ldcvmgr.toggle 'auth-required'
+            .catch error!
 
   return @
 
