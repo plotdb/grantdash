@@ -1,0 +1,35 @@
+//- module
+
+.profile-view
+  display: flex
+  justify-content: center
+  margin: 0 auto
+  .card-panel
+    margin: 0 1em
+  .info-panel .prj
+    margin: 1.5em
+    display: flex
+    align-items: center
+    flex-wrap: nowrap
+    .action
+      display: flex
+      flex-wrap: nowrap
+
+@media (max-width: 960px)
+  .profile-view
+    flex-wrap: wrap
+    .card-panel
+      margin: 0
+    .info-panel
+      width: 100%
+    .info-panel .prj
+      flex-wrap: wrap
+      margin: 1.5em .5em 2em
+      .state
+        display: none
+      .btn
+        font-size: .9em
+        padding: .187rem .375rem
+      .action
+        margin-top: .5em
+        width: 100%

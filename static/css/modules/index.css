@@ -338,6 +338,50 @@
 .post-view .ql-editor p {
   line-height: 1.5;
 }
+.profile-view {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+.profile-view .card-panel {
+  margin: 0 1em;
+}
+.profile-view .info-panel .prj {
+  margin: 1.5em;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.profile-view .info-panel .prj .action {
+  display: flex;
+  flex-wrap: nowrap;
+}
+@media (max-width: 960px) {
+  .profile-view {
+    flex-wrap: wrap;
+  }
+  .profile-view .card-panel {
+    margin: 0;
+  }
+  .profile-view .info-panel {
+    width: 100%;
+  }
+  .profile-view .info-panel .prj {
+    flex-wrap: wrap;
+    margin: 1.5em 0.5em 2em;
+  }
+  .profile-view .info-panel .prj .state {
+    display: none;
+  }
+  .profile-view .info-panel .prj .btn {
+    font-size: 0.9em;
+    padding: 0.187rem 0.375rem;
+  }
+  .profile-view .info-panel .prj .action {
+    margin-top: 0.5em;
+    width: 100%;
+  }
+}
 .folder-item:hover {
   color: currentColor;
 }
