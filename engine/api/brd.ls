@@ -181,6 +181,7 @@ api.get \/brd/:slug/list, (req, res) ->
 
 app.get \/brd/:slug/list, (req, res) ->
   lc = {}
+  if !(slug = req.params.slug) => return aux.r400 res
   # TODO check stage
   get-prj-list req, res
     .then (ret) ->
