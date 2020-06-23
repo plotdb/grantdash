@@ -14,6 +14,7 @@ block content
       .invalid-feedback 兩組密碼不相符
     input.btn.btn-success.btn-block.mt-2.disabled(type="submit",value="設定密碼")
     input(type="hidden",name="_csrf")
+    input(type="hidden",name="recaptcha")
     +nbr(2)
     .text-muted: small
       p 好的密碼至少要夠長 ( 至少十個字 )。請不要用姓名、電話或生日當您的密碼。

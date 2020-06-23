@@ -1,9 +1,9 @@
 require! <[crypto]>
-require! <[../../aux ../../util/throttle ../../util/mail]>
+require! <[../../aux ../../util/throttle ../../util/mail ../../util/grecaptcha]>
 
 (engine,io) <- (->module.exports = it)  _
 
-engine.router.api.post \/me/passwd/reset/:token, throttle.count.ip-md, (req, res) ->
+engine.router.api.post \/me/passwd/reset/:token, throttle.count.ip-md, grecaptcha, (req, res) ->
   token = req.params.token
   password = {plain: req.body.password}
   io.authio.user.hashing password.plain, true, true

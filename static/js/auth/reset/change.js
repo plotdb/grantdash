@@ -23,8 +23,11 @@
         }
       });
       return auth.get().then(function(global){
-        var token;
         pwReset.fields._csrf.value = global.csrfToken;
+        return auth.recaptcha.get();
+      }).then(function(recaptcha){
+        var token;
+        pwReset.fields.recaptcha.value = recaptcha;
         token = (/^\?token=(.+)$/.exec(window.location.search) || [])[1];
         if (!token) {
           token = (document.cookie || '').split(';').filter(function(it){
