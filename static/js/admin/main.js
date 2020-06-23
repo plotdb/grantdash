@@ -382,15 +382,20 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
             return Promise.resolve();
           }
           payload = this$.hubs[type].doc.data;
-          return ld$.fetch('/dash/api/detail/', {
-            method: 'PUT'
-          }, {
-            json: {
+          return auth.recaptcha.get().then(function(recaptcha){
+            var json;
+            json = {
               payload: payload,
               slug: this$.toc[type].slug,
-              type: type
-            },
-            type: 'json'
+              type: type,
+              recaptcha: recaptcha
+            };
+            return ld$.fetch('/dash/api/detail/', {
+              method: 'PUT'
+            }, {
+              json: json,
+              type: 'json'
+            });
           }).then(function(){
             var ref$;
             this$.toc[type].detail = payload;

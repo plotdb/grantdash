@@ -70,7 +70,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @ctrl-form.on \submit, (answer) ~>
       data = payload: answer, type: \prj, slug: @prj.slug
       ldcvmgr.toggle \publishing, true
-      ld$.fetch "/dash/api/detail", {method: \PUT}, {json: data, type: \json}
+      auth.recaptcha.get!
+        .then (recaptcha) ->
+          data.recaptcha = recaptcha
+          ld$.fetch "/dash/api/detail", {method: \PUT}, {json: data, type: \json}
         .finally -> ldcvmgr.toggle \publishing, false
         .then ~> @prj.detail = JSON.parse(JSON.stringify(answer))
         .then ~> @ctrl-form.render!

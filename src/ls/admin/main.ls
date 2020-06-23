@@ -171,7 +171,10 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
           ps = <[brd org]>.map (type) ~>
             if !(@toc[type]key and @modify[type]dirty) => return Promise.resolve!
             payload = @hubs[type]doc.data
-            ld$.fetch \/dash/api/detail/, {method: \PUT}, {json: {payload, slug: @toc[type]slug, type}, type: \json}
+            auth.recaptcha.get!
+              .then (recaptcha) ~>
+                json = {payload, slug: @toc[type]slug, type, recaptcha}
+                ld$.fetch \/dash/api/detail/, {method: \PUT}, {json, type: \json}
               .then ~>
                 @toc[type]detail = payload
                 @modify[type] <<< data: JSON.stringify(payload), dirty: false

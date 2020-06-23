@@ -109,9 +109,11 @@ Ctrl = (opt) ->
           if node.classList.contains \disabled => return
           auth.ensure!
             .then -> if type == \prj => auth.consent {type: \tos, timing: \prj-create, force: true}
-            .then ->
+            .then -> auth.recaptcha.get!
+            .then (recaptcha) ->
               loader.on!
               fd = form.getfd!
+              fd.append \recaptcha, recaptcha
               ld$.fetch "/dash/api/#type/", {method: \POST, body: fd}, {type: \json}
                 .then (r) ->
                   loader.off!

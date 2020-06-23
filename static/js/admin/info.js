@@ -235,9 +235,12 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
                 });
               }
             }).then(function(){
+              return auth.recaptcha.get();
+            }).then(function(recaptcha){
               var fd;
               loader.on();
               fd = form.getfd();
+              fd.append('recaptcha', recaptcha);
               return ld$.fetch("/dash/api/" + type + "/", {
                 method: 'POST',
                 body: fd

@@ -136,11 +136,14 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
           slug: this$.prj.slug
         };
         ldcvmgr.toggle('publishing', true);
-        return ld$.fetch("/dash/api/detail", {
-          method: 'PUT'
-        }, {
-          json: data,
-          type: 'json'
+        return auth.recaptcha.get().then(function(recaptcha){
+          data.recaptcha = recaptcha;
+          return ld$.fetch("/dash/api/detail", {
+            method: 'PUT'
+          }, {
+            json: data,
+            type: 'json'
+          });
         })['finally'](function(){
           return ldcvmgr.toggle('publishing', false);
         }).then(function(){

@@ -1,4 +1,4 @@
-({ldcvmgr,sdbAdapter,loader,error}) <- ldc.register <[ldcvmgr sdbAdapter loader error]>, _
+({auth, ldcvmgr,sdbAdapter,loader,error}) <- ldc.register <[auth ldcvmgr sdbAdapter loader error]>, _
 
 Ctrl = (opt) ->
   @opt = opt
@@ -23,7 +23,10 @@ Ctrl = (opt) ->
       publish: ({node}) ~>
         data = payload: @data, type: \post, slug: @slug
         ldcvmgr.toggle \publishing, true
-        ld$.fetch "/dash/api/detail", {method: \PUT}, {json: data, type: \json}
+        auth.recaptcha.get!
+          .then (recaptcha) ->
+            data.recaptcha = recaptcha
+            ld$.fetch "/dash/api/detail", {method: \PUT}, {json: data, type: \json}
           .finally -> ldcvmgr.toggle \publishing, false
           .then ->
             ldcvmgr.toggle \published, true

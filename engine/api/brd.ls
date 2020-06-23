@@ -1,5 +1,5 @@
 require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror nodegit suuid mime-types]>
-require! <[../aux ./cache ./common]>
+require! <[../aux ./cache ./common ../util/grecaptcha]>
 (engine,io) <- (->module.exports = it)  _
 
 {deploy, slugs, save-snapshot} = common
@@ -77,7 +77,7 @@ api.post \/upload, aux.signed, express-formidable({multiples:true}), (req, res) 
     .then -> res.send it
     .catch aux.error-handler res
 
-api.put \/detail/, aux.signed, (req, res) ->
+api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
   lc = {}
   {slug, type, payload} = (req.body or {})
   if !(slug and type and payload) => return aux.r400 res
@@ -253,7 +253,7 @@ api.post \/deploy, aux.signed, (req, res) ->
         .catch -> console.log "deploy failed ( #root ): ", it
     .catch aux.error-handler res
 
-api.post \/brd, aux.signed, express-formidable!, (req, res) ->
+api.post \/brd, aux.signed, express-formidable!, grecaptcha, (req, res) ->
   lc = {}
   {name,description,slug,starttime,endtime,org} = req.fields
   if !name or !org or !/^[a-zA-Z0-9+_-]+$/.exec(slug) => return aux.r400 res
@@ -264,12 +264,13 @@ api.post \/brd, aux.signed, express-formidable!, (req, res) ->
       io.query """select slug from org where slug = $1""", [org]
     .then (r={}) ->
       if !(r.[]rows.0) => return aux.reject 404
+      cache.perm.check {io, user: req.user, type: \org, slug: org, action: \owner}
+    .then ->
       io.query """
       insert into brd (name,description,slug,starttime,endtime,org,owner,detail)
       values ($1,$2,$3,$4,$5,$6,$7,$8) returning key
       """, [name, description, slug, (starttime or null), (endtime or null), org, req.user.key, detail]
-    .then (r = {}) ->
-      res.send((r.[]rows or []).0)
+    .then (r = {}) -> res.send((r.[]rows or []).0)
     .catch aux.error-handler res
 
 # following routes are for both brd and org. put it here in brd.ls temporarily.
