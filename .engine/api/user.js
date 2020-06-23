@@ -168,7 +168,7 @@
       if (!req.user || !req.user.usepasswd) {
         return aux.r400(res);
       }
-      if (n.length < 4) {
+      if (n.length < 8) {
         return aux.r400(res, "profile.newPassword.length");
       }
       return io.query("select password from users where key = $1", [req.user.key]).then(function(arg$){

@@ -1,8 +1,10 @@
-require! <[./aux express-rate-limit express-slow-down]>
+require! <[../aux express-rate-limit express-slow-down]>
 
 key = do
-  generic: (req) -> "#{aux.ip}:#{req.baseUrl}#{req.route.path or req.path or '/'}"
-  user: (req) -> "#{(if req.user => req.user.key else 0)}:#{req.baseUrl}#{req.route.path or req.path or '/'}"
+  generic: (req) ->
+    "#{aux.ip}:#{req.baseUrl}#{(req.route and req.route.path) or req.path or '/'}"
+  user: (req) ->
+    "#{(if req.user => req.user.key else 0)}:#{req.baseUrl}#{(req.route and req.route.path) or req.path or '/'}"
 
 # user / ip throttling are for post / put / delete methods.
 

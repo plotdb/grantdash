@@ -216,11 +216,6 @@
       }
       return a;
     },
-    throttling: {
-      key: function(req){
-        return req.ip + ":" + req.originalUrl.replace(/\?.*$/, '');
-      }
-    },
     readJson: function(path){
       return new Promise(function(res, rej){
         return fs.readFile(path, function(e, c){

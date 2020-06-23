@@ -5,8 +5,8 @@ require! <[express body-parser express-session connect-multiparty csurf express-
 require! <[passport passport-local passport-facebook passport-google-oauth20]>
 require! <[nodemailer]>
 require! <[sharedb-wrapper lderror]>
-require! <[./io/postgresql ./api ./ext ./view ./api/cache]>
-require! <[./aux ./throttle ./watch ../secret ./watch/build/mod]>
+require! <[./io/postgresql ./api ./ext ./util/view ./api/cache]>
+require! <[./aux ./util/throttle ./util/grecaptcha ./watch ../secret ./watch/build/mod]>
 require! 'uglify-js': uglify-js, LiveScript: lsc
 config = require "../config/site/#{secret.config}"
 colors = require \colors/safe
@@ -183,7 +183,7 @@ backend = do
     router.api.use \/u, throttle.count.route.user, router.user
 
     router.user
-      ..post \/signup, throttle.count.action.signup, (req, res) ->
+      ..post \/signup, throttle.count.action.signup, grecaptcha, (req, res) ->
         {email,displayname,passwd,config} = req.body{email,displayname,passwd,config}
         if !email or !displayname or passwd.length < 8 => return aux.r400 res
         authio.user.create email, passwd, true, {displayname}, (config or {})
@@ -191,7 +191,7 @@ backend = do
             req.logIn user, -> res.redirect \/dash/api/u/200; return null
             return null
           .catch -> res.redirect \/dash/api/u/403; return null
-      ..post \/login, throttle.count.action.login, passport.authenticate \local, do
+      ..post \/login, throttle.count.action.login, grecaptcha, passport.authenticate \local, do
         successRedirect: \/dash/api/u/200
         failureRedirect: \/dash/api/u/403
 
@@ -210,6 +210,7 @@ backend = do
         global: true, csrfToken: req.csrfToken!, production: config.is-production
         ip: aux.ip req
         user: if req.user => req.user{key, plan, config, displayname, verified, username} else {}
+        recaptcha: secret.{}grecaptcha{sitekey, enabled}
       } <<< ({scope: req.scope or {}}))
       res.cookie 'global', payload, { path: '/', secure: true, domain: ".#{config.domain}" }
       res.send payload
@@ -275,10 +276,10 @@ backend = do
         # otherwise redirect user to login.
         else res.redirect "/auth/?nexturl=#{req.originalUrl}"
       else
+        if err.name == \ldError => res.status 500 .send err
         # ignore some errors that we don't need to take care.
         if (err instanceof URIError) and "#{err.stack}".startsWith('URIError: Failed to decode param') =>
           return res.status 400 .send!
-        else if err.name == \ldError and (err.id in [1000]) => return res.status 404 .send!
         else if err.message.startsWith \TokenError =>
           console.error(
             colors.red.underline("[#{moment!format 'YY/MM/DD HH:mm:ss'}]"),

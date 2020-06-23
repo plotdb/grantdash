@@ -1,5 +1,5 @@
 require! <[crypto express-rate-limit]>
-require! <[../../aux ../../throttle ../util/mail]>
+require! <[../../aux ../../util/throttle ../../util/mail]>
 (engine,io) <- (->module.exports = it)  _
 
 engine.router.api.post \/me/passwd/reset/:token, (req, res) ->

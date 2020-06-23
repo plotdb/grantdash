@@ -1,5 +1,5 @@
 require! <[fs path pug]>
-pug-extapi = require("./watch/build/pug").extapi
+pug-extapi = require("../watch/build/pug").extapi
 reload = require("require-reload")(require)
 
 pug-cached = {}

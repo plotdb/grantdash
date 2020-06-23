@@ -1,5 +1,5 @@
 require! <[fs fs-extra crypto express-rate-limit lderror]>
-require! <[../../aux ../../throttle ../util/mail]>
+require! <[../../aux ../../util/throttle ../../util/mail]>
 (engine,io) <- (->module.exports = it)  _
 
 

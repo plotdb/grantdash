@@ -1,6 +1,6 @@
 require! <[fs colors js-yaml]>
 require! <[nodemailer nodemailer-mailgun-transport]>
-require! <[./md ../../aux ../../../secret]>
+require! <[./md ../aux ../../secret]>
 
 mailgun = nodemailer.createTransport(nodemailer-mailgun-transport(secret.mailgun))
 

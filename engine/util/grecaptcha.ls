@@ -1,4 +1,4 @@
-require! <[request ../../aux ../../../secret lderror]>
+require! <[request ../aux ../../secret lderror]>
 
 module.exports = (req, res, next) ->
   if !(secret.grecaptcha and secret.grecaptcha.enabled) => return next!
