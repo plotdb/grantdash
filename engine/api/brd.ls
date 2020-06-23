@@ -174,12 +174,14 @@ api.get \/brd/:brd/grp/:grp/judge-list, aux.signed, (req, res) ->
     .catch aux.error-handler res
 
 api.get \/brd/:slug/list, (req, res) ->
+  # TODO check stage
   get-prj-list req, res
     .then -> res.send it
     .catch aux.error-handler res
 
 app.get \/brd/:slug/list, (req, res) ->
   lc = {}
+  # TODO check stage
   get-prj-list req, res
     .then (ret) ->
       lc.prjs = ret
@@ -222,6 +224,7 @@ api.post \/brd/:brd/grp/:grp/info, (req, res) ->
       res.send {brd: ret{key,name,description,slug}, grp: grpinfo}
     .catch aux.error-handler res
 
+# TODO who use this?
 api.get \/brd/:slug/form/, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   io.query "select key,name,description,slug,detail from brd where slug = $1 where deleted is not true", [slug]
