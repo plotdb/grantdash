@@ -23,7 +23,7 @@ engine.router.api.post \/me/mail/verify, throttle.count.action.mail, (req, res) 
     .then -> res.send!
     .catch aux.error-handler res, true
 
-engine.app.get \/me/mail/verify/:token, (req, res) ->
+engine.app.get \/me/mail/verify/:token, throttle.count.ip-md, (req, res) ->
   local = {}
   token = req.params.token
   if !token => return aux.r400 res, "", true

@@ -1,8 +1,9 @@
-require! <[crypto express-rate-limit]>
+require! <[crypto]>
 require! <[../../aux ../../util/throttle ../../util/mail]>
+
 (engine,io) <- (->module.exports = it)  _
 
-engine.router.api.post \/me/passwd/reset/:token, (req, res) ->
+engine.router.api.post \/me/passwd/reset/:token, throttle.count.ip-md, (req, res) ->
   token = req.params.token
   password = {plain: req.body.password}
   io.authio.user.hashing password.plain, true, true
@@ -21,7 +22,7 @@ engine.router.api.post \/me/passwd/reset/:token, (req, res) ->
       return null
     .catch aux.error-handler res, true
 
-engine.app.get \/me/passwd/reset/:token, (req, res) ->
+engine.app.get \/me/passwd/reset/:token, throttle.count.ip-md, (req, res) ->
   token = req.params.token
   if !token => return aux.r400 res, "", true
   io.query "select owner,time from pwresettoken where token = $1", [token]

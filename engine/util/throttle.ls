@@ -11,6 +11,7 @@ key = do
 count = do
   user: express-rate-limit       { windowMs:   5 * 60 * 1000, max:  50, keyGenerator: key.user    }
   ip: express-rate-limit         { windowMs:   5 * 60 * 1000, max:  50, keyGenerator: key.generic }
+  ip-md: express-rate-limit      { windowMs:  10 * 60 * 1000, max:  25, keyGenerator: key.generic }
   route: do
     ext: express-rate-limit      { windowMs:   1 * 60 * 1000, max:  30, keyGenerator: key.generic}
     user: express-rate-limit     { windowMs:   1 * 60 * 1000, max:  60, keyGenerator: key.generic }
