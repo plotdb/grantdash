@@ -1,4 +1,4 @@
-({sdbAdapter, error, ldcvmgr}) <- ldc.register \adminPage, <[error sdbAdapter ldcvmgr]>, _
+({auth, sdbAdapter, error, ldcvmgr}) <- ldc.register \adminPage, <[auth error sdbAdapter ldcvmgr]>, _
 Ctrl = (opt) ->
   @type = type = if ~(<[org brd]>.indexOf(opt.type)) => opt.type else null
   if !type => throw new ldError(1015, "admin-page: type is not defined.")
@@ -11,8 +11,10 @@ Ctrl = (opt) ->
     action: do
       click: do
         deploy: ~>
-          payload = {slug: @toc[@type]slug, type: @type}
-          ld$.fetch \/dash/api/deploy, {method: \POST}, {json: payload, type: \json}
+          auth.recaptcha.get!
+            .then (recaptcha) ~>
+              payload = {slug: @toc[@type]slug, type: @type, recaptcha}
+              ld$.fetch \/dash/api/deploy, {method: \POST}, {json: payload, type: \json}
             .then -> ldcvmgr.toggle \deploying
             .catch -> ldcvmgr.toggle "deploy-failed"
         opt: ({node}) ~>

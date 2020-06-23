@@ -1,5 +1,5 @@
 require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror nodegit suuid mime-types]>
-require! <[../aux ./cache ./common ../util/grecaptcha]>
+require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 (engine,io) <- (->module.exports = it)  _
 
 {deploy, slugs, save-snapshot} = common
@@ -17,10 +17,10 @@ app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
     .catch ->
       cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
     .catch ->
-      io.query "select grp,detail from prj where slug = $1", [prj]
+      io.query "select grp,detail from prj where slug = $1 and deleted is not true", [prj]
         .then (r={}) ->
           if !(lc.prj = r.[]rows.0) => return aux.reject 404
-          io.query "select detail from brd where slug = $1", [req.scope.brd]
+          io.query "select detail from brd where slug = $1 and deleted is not true", [req.scope.brd]
         .then (r={}) ->
           if !(lc.brd = r.[]rows.0) => return aux.reject 404
           grps = lc.brd.{}detail.[]group
@@ -84,17 +84,21 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
   info = payload.info or {}
   [name, description] = [(info.name or info.title), info.description]
   cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
-    .then -> io.query "update #type set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
+    .then ->
+      io.query """
+      update #type set detail = $1 where slug = $2 and deleted is not true
+      """, [JSON.stringify(payload), slug]
     .then ->
       if !name => return
       if type == \prj
         thumb = (info.thumb or {}).fn
         io.query """
-        update prj set (name,description,category,tag,thumb) = ($1,$2,$3,$4,$5) where slug = $6
+        update prj set (name,description,category,tag,thumb) = ($1,$2,$3,$4,$5)
+        where slug = $6 and deleted is not true
         """, [name,description,(info.category or ''),JSON.stringify((info.tag or [])),thumb,slug]
       else
         io.query """
-        update #type set (name,description) = ($1,$2)  where slug = $3
+        update #type set (name,description) = ($1,$2) where slug = $3 and deleted is not true
         """, [name,description,slug]
     .then ->
       cache.perm.invalidate {type: type, slug}
@@ -179,7 +183,10 @@ app.get \/brd/:slug/list, (req, res) ->
   get-prj-list req, res
     .then (ret) ->
       lc.prjs = ret
-      io.query "select b.name, b.description, b.slug, b.org, b.detail from brd as b where b.slug = $1", [slug]
+      io.query """
+      select b.name, b.description, b.slug, b.org, b.detail from brd as b
+      where b.slug = $1 and b.deleted is not true
+      """, [slug]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
       lc.grps = lc.brd.detail.group.map -> it{form,key}
@@ -193,7 +200,7 @@ app.get \/brd/:slug, aux.signed, (req, res) ->
   lc = {}
   if !req.user => return aux.r403 res
   if !(slug = req.params.slug) => return aux.r400 res
-  io.query "select * from brd where slug = $1", [slug]
+  io.query "select * from brd where slug = $1 and deleted is not true", [slug]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 404
       if brd.owner != req.user.key => return aux.reject 403
@@ -206,7 +213,7 @@ app.get \/brd/:slug, aux.signed, (req, res) ->
 api.post \/brd/:brd/grp/:grp/info, (req, res) ->
   if !((brd = req.params.brd) and (grp = req.params.grp)) => return aux.r400 res
   fields = req.body.[]fields.filter -> it in <[grade criteria form]>
-  io.query "select key,name,description,slug,detail from brd where slug = $1", [brd]
+  io.query "select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [brd]
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       if !(g = ret.detail.[]group.filter(-> it.key == grp).0) => return aux.reject 404
@@ -217,7 +224,7 @@ api.post \/brd/:brd/grp/:grp/info, (req, res) ->
 
 api.get \/brd/:slug/form/, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
-  io.query "select key,name,description,slug,detail from brd where slug = $1", [slug]
+  io.query "select key,name,description,slug,detail from brd where slug = $1 where deleted is not true", [slug]
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       ret.detail = ret.detail{group}
@@ -225,16 +232,19 @@ api.get \/brd/:slug/form/, (req, res) ->
       res.send ret{key,name,description,slug,detail}
     .catch aux.error-handler res
 
-api.post \/deploy, aux.signed, (req, res) ->
+api.post \/deploy, aux.signed, throttle.count.user-md, grecaptcha, (req, res) ->
   lc = {}
   {slug, type} = (req.body or {})
   if !(slug and type and (type in <[org brd]>)) => return aux.r400 res
   cache.perm.check {io, user: req.user, type, slug, action: \owner}
     .then ->
-      if type == \org => return io.query "select detail->'page'->'info' as info from org where slug = $1", [slug]
+      if type == \org =>
+        return io.query """
+        select detail->'page'->'info' as info from org
+        where slug = $1 and deleted is not true""", [slug]
       io.query """
       select b.detail->'page'->'info' as info, b.org
-      from brd as b where b.slug = $1
+      from brd as b where b.slug = $1 and b.deleted is not true
       """, [slug]
     .then (r={}) ->
       if !((ret = r.[]rows.0) and (lc.git = git = ret.{}info.git)) => return aux.reject 404
@@ -250,7 +260,7 @@ api.post \/deploy, aux.signed, (req, res) ->
         .catch -> console.log "deploy failed ( #root ): ", it
     .catch aux.error-handler res
 
-api.post \/brd, aux.signed, express-formidable!, grecaptcha, (req, res) ->
+api.post \/brd, aux.signed, throttle.count.user-md, express-formidable!, grecaptcha, (req, res) ->
   lc = {}
   {name,description,slug,starttime,endtime,org} = req.fields
   if !name or !org or !/^[a-zA-Z0-9+_-]+$/.exec(slug) => return aux.r400 res
@@ -258,7 +268,7 @@ api.post \/brd, aux.signed, express-formidable!, grecaptcha, (req, res) ->
   io.query "select key from brd where slug = $1", [slug]
     .then (r={}) ->
       if r.rows and r.rows.length => return aux.reject new lderror(1011)
-      io.query """select slug from org where slug = $1""", [org]
+      io.query """select slug from org where slug = $1 and deleted is not true""", [org]
     .then (r={}) ->
       if !(r.[]rows.0) => return aux.reject 404
       cache.perm.check {io, user: req.user, type: \org, slug: org, action: \owner}
@@ -273,25 +283,30 @@ api.post \/brd, aux.signed, express-formidable!, grecaptcha, (req, res) ->
 # following routes are for both brd and org. put it here in brd.ls temporarily.
 
 app.get \/org/:slug/admin, aux.signed, (req, res) ->
-  res.render \admin/index.pug, {org: {slug: req.params.key}}
+  if !(slug = req.params.key) => return aux.r400 res
+  cache.perm.check {io, user: req.user, type: \org, slug, action: \owner}
+    .then ->
+      res.render \admin/index.pug, {org: {slug}}
+      return null
+    .catch aux.error-handler res
 
 app.get \/brd/:slug/admin, aux.signed, (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r404 res
   cache.perm.check {io, user: req.user, type: \brd, slug: slug, action: \owner}
-    .then ->
-      io.query "select * from brd where slug = $1", [slug]
+    .then -> io.query "select * from brd where slug = $1 and deleted is not true", [slug]
     .then (r={}) ->
       if !(brd = r.[]rows.0) => return aux.reject 404
       lc.brd = brd
-      return if !brd.org => Promise.resolve! else io.query "select * from org where slug = $1", [brd.org]
+      return if !brd.org => Promise.resolve!
+      else io.query "select * from org where slug = $1 and deleted is not true", [brd.org]
     .then (r={}) ->
       org = r.{}rows.0
       res.render \admin/index.pug, {org, brd: lc.brd}
       return null
     .catch aux.error-handler res
 
-api.post \/slug-check/:type, (req, res) ->
+api.post \/slug-check/:type, throttle.count.ip, (req, res) ->
   [type,slug] = [req.params.type, req.body.slug]
   if !((type in <[org brd]>) and /^[A-Za-z0-9+_-]+$/.exec(slug)) => return aux.r404 res
   io.query "select key from #type where slug = $1", [slug]

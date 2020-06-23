@@ -1,11 +1,11 @@
 require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror]>
-require! <[../aux ../../secret  ../util/grecaptcha]>
+require! <[../aux ../../secret  ../util/grecaptcha ../util/throttle]>
 (engine,io) <- (->module.exports = it)  _
 
 api = engine.router.api
 app = engine.app
 
-api.post \/org, aux.signed, express-formidable!, grecaptcha, (req, res) ->
+api.post \/org, aux.signed, throttle.count.user-md, express-formidable!, grecaptcha, (req, res) ->
   lc = {}
   {name,description,slug} = req.fields
   if !name or !org or !/^[a-zA-Z0-9+_-]+$/.exec(slug) => return aux.r400 res
