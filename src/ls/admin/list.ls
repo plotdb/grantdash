@@ -13,13 +13,26 @@ Ctrl = (opt) ->
           @view.render!
         .catch error!
 
+  lc = {}
+  render-debounced = debounce ~> @view.render \prj
 
   @view = view = new ldView do
     root: opt.root
+    action: do
+      input: do
+        "search-input": ({node}) ->
+          lc.keyword = node.value
+      keypress: do
+        "search-input": ({node, evt}) ~> if evt.keyCode == 13 => @view.render!
+      click: search: ~> @view.render!
     handler: do
       empty: ({node}) ~> node.classList.toggle \d-none, @data.filter(->it.slug).length
       prj: do
-        list: ~> @data.filter -> it.slug
+        list: ~>
+          @data.filter ->
+            it.slug and ( !lc.keyword or ~(
+              [it.name,it.{}info.teamname,it.username,it.ownername].filter(->it).join(' ').indexOf(lc.keyword)
+            ))
         init: ({node,local,data}) ~>
           local.view = new ldView do
             context: data

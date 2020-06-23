@@ -4,7 +4,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
   var error, loader, notify, ldcvmgr, auth, sdbAdapter, adminPanel, Ctrl;
   error = arg$.error, loader = arg$.loader, notify = arg$.notify, ldcvmgr = arg$.ldcvmgr, auth = arg$.auth, sdbAdapter = arg$.sdbAdapter, adminPanel = arg$.adminPanel;
   Ctrl = function(opt){
-    var view, this$ = this;
+    var lc, renderDebounced, view, this$ = this;
     this.toc = opt.toc;
     this.evtHandler = {};
     this.data = [];
@@ -25,8 +25,35 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
         })['catch'](error());
       }
     });
+    lc = {};
+    renderDebounced = debounce(function(){
+      return this$.view.render('prj');
+    });
     this.view = view = new ldView({
       root: opt.root,
+      action: {
+        input: {
+          "search-input": function(arg$){
+            var node;
+            node = arg$.node;
+            return lc.keyword = node.value;
+          }
+        },
+        keypress: {
+          "search-input": function(arg$){
+            var node, evt;
+            node = arg$.node, evt = arg$.evt;
+            if (evt.keyCode === 13) {
+              return this$.view.render();
+            }
+          }
+        },
+        click: {
+          search: function(){
+            return this$.view.render();
+          }
+        }
+      },
       handler: {
         empty: function(arg$){
           var node;
@@ -38,7 +65,9 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
         prj: {
           list: function(){
             return this$.data.filter(function(it){
-              return it.slug;
+              return it.slug && (!lc.keyword || ~[it.name, (it.info || (it.info = {})).teamname, it.username, it.ownername].filter(function(it){
+                return it;
+              }).join(' ').indexOf(lc.keyword));
             });
           },
           init: function(arg$){

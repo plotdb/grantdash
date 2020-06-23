@@ -5,8 +5,8 @@
     .p-4
       .d-flex
         .input-group
-          input.form-control(placeholder="提案名稱或團隊名稱 ... ( 尚未啟用 )",disabled)
-          .input-group-append: .btn.btn-outline-secondary 搜尋
+          input.form-control(ld="search-input",placeholder="提案名稱或團隊名稱 ...")
+          .input-group-append: .btn.btn-outline-secondary(ld="search") 搜尋
       //-.d-flex.mt-2
         each n in ["所有專案","初選名單","決選名單","獲選名單"]
           .d-flex.align-items-center.mr-4
