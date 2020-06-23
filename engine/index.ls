@@ -6,7 +6,7 @@ require! <[passport passport-local passport-facebook passport-google-oauth20]>
 require! <[nodemailer]>
 require! <[sharedb-wrapper lderror]>
 require! <[./io/postgresql ./api ./ext ./view ./api/cache]>
-require! <[./aux ./watch ../secret ./watch/build/mod]>
+require! <[./aux ./throttle ./watch ../secret ./watch/build/mod]>
 require! 'uglify-js': uglify-js, LiveScript: lsc
 config = require "../config/site/#{secret.config}"
 colors = require \colors/safe
@@ -21,15 +21,6 @@ backend = do
     authio = pgsql.authio
 
     [csp, cors, enable] = [(config.csp or []), config.cors, config.enable or {}]
-
-    throttling = do
-      route:
-        external: express-rate-limit { windowMs:   1 * 60 * 1000, max:  30, keyGenerator: aux.throttling.key }
-        user: express-rate-limit     { windowMs:   1 * 60 * 1000, max:  60, keyGenerator: aux.throttling.key }
-        api: express-rate-limit      { windowMs:   1 * 60 * 1000, max: 120, keyGenerator: aux.throttling.key }
-      auth:
-        signup: express-rate-limit   { windowMs: 120 * 60 * 1000, max:  10, keyGenerator: aux.throttling.key }
-        login: express-rate-limit    { windowMs:   1 * 60 * 1000, max:  30, keyGenerator: aux.throttling.key }
 
     # =========== WEINRE for remote debugging
     if enable.weinre =>
@@ -172,7 +163,7 @@ backend = do
     # ============ Routing
     @router = router = { user: express.Router!, api: express.Router!, ext: express.Router! }
 
-    app.use \/ext, throttling.route.external, router.ext # External API
+    app.use \/ext, throttle.count.route.ext, router.ext # External API
     ext(@, pgsql)
 
     # route preparation
@@ -189,10 +180,10 @@ backend = do
     backend.csrfProtection = csurf!
     app.use backend.csrfProtection
 
-    router.api.use \/u, throttling.route.user, router.user
+    router.api.use \/u, throttle.count.route.user, router.user
 
     router.user
-      ..post \/signup, throttling.auth.signup, (req, res) ->
+      ..post \/signup, throttle.count.action.signup, (req, res) ->
         {email,displayname,passwd,config} = req.body{email,displayname,passwd,config}
         if !email or !displayname or passwd.length < 8 => return aux.r400 res
         authio.user.create email, passwd, true, {displayname}, (config or {})
@@ -200,7 +191,7 @@ backend = do
             req.logIn user, -> res.redirect \/dash/api/u/200; return null
             return null
           .catch -> res.redirect \/dash/api/u/403; return null
-      ..post \/login, throttling.auth.login, passport.authenticate \local, do
+      ..post \/login, throttle.count.action.login, passport.authenticate \local, do
         successRedirect: \/dash/api/u/200
         failureRedirect: \/dash/api/u/403
 
@@ -224,7 +215,7 @@ backend = do
       res.send payload
 
     app.use \/, express.static(path.join(__dirname, '../static'))
-    app.use \/api, throttling.route.api, router.api
+    app.use \/api, throttle.count.route.api, throttle.speed.route.api, router.api
     app.get "/api/health", (req, res) -> res.json {}
 
     # Must review all APIs

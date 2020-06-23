@@ -1,9 +1,6 @@
 require! <[crypto express-rate-limit]>
-require! <[../../aux ../util/mail]>
+require! <[../../aux ../../throttle ../util/mail]>
 (engine,io) <- (->module.exports = it)  _
-
-throttling = do
-  send: express-rate-limit {windowMs: 30 * 60 * 1000 max: 10, keyGenerator: aux.throttling.key }
 
 engine.router.api.post \/me/passwd/reset/:token, (req, res) ->
   token = req.params.token
@@ -42,7 +39,7 @@ engine.app.get \/me/passwd/reset/:token, (req, res) ->
       return null
     .catch aux.error-handler res, true
 
-engine.router.api.post \/me/passwd/reset, throttling.send, (req, res) ->
+engine.router.api.post \/me/passwd/reset, throttle.count.action.mail, (req, res) ->
   email = "#{req.body.email}".trim!
   if !email => return aux.r400 res, "did you provide you email?", true
   obj = {}

@@ -1,11 +1,9 @@
 require! <[fs fs-extra crypto express-rate-limit lderror]>
-require! <[../../aux ../util/mail]>
+require! <[../../aux ../../throttle ../util/mail]>
 (engine,io) <- (->module.exports = it)  _
 
-throttling = do
-  send: express-rate-limit {windowMs: 30 * 60 * 1000 max: 10, keyGenerator: aux.throttling.key }
 
-engine.router.api.post \/me/mail/verify, throttling.send, (req, res) ->
+engine.router.api.post \/me/mail/verify, throttle.count.action.mail, (req, res) ->
   obj = {}
   if !(req.user and req.user.key and req.user.username) => return aux.r400 res, "not login."
   io.query "select key from users where key = $1", [req.user.key]

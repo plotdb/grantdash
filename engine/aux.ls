@@ -85,9 +85,6 @@ base = do
       else => a[k] = b[k]
     a
 
-  throttling: do
-    key: (req) -> "#{req.ip}:#{req.originalUrl.replace(/\?.*$/,'')}"
-
   read-json: (path) -> new Promise (res, rej) ->
     (e, c) <- fs.read-file path, _
     if e => return res null

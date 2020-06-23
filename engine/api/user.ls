@@ -116,7 +116,7 @@ api.post \/user/avatar, aux.signed, express-formidable({multiples:true}), (req, 
 api.put \/me/passwd/, (req, res) ->
   {n,o} = req.body{n,o}
   if !req.user or !req.user.usepasswd => return aux.r400 res
-  if n.length < 4 => return aux.r400 res, ("profile.newPassword.length")
+  if n.length < 8 => return aux.r400 res, ("profile.newPassword.length")
   io.query "select password from users where key = $1", [req.user.key]
     .then ({rows}) ->
       if !rows or !rows.0 => return aux.reject 403
