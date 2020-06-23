@@ -23,7 +23,6 @@ get-prj = (slug) ->
 api.get "/prj/:slug/", aux.signed, (req, res) ->
   cache.perm.check {io, user: req.user, type: \prj, slug: req.params.slug, action: \owner}
     .then -> cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
-    .then (ret) -> if !ret => return aux.reject 403
     .then -> get-prj req.params.slug
     .then (prj = {}) -> res.send prj
     .catch aux.error-handler res
@@ -31,10 +30,8 @@ api.get "/prj/:slug/", aux.signed, (req, res) ->
 app.get \/prj/:slug, (req, res) ->
   lc = {}
   cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-view"}
-    .then (ret) ->
-      if ret => return
-      # TODO judge permission
-      cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge]>}
+    # TODO check judge permission
+    .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge]>}
     .then -> get-prj req.params.slug
     .then (prj) ->
       lc.prj = prj
@@ -57,7 +54,6 @@ app.get \/prj/:slug, (req, res) ->
 api.delete \/prj/:slug, aux.signed, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
-    .then (ret) -> if !ret => return aux.reject 403
     .then -> cache.perm.check {io, user: req.user, type: \prj, slug: slug, action: \owner}
     .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
     .then -> io.query """update prj set deleted = true where slug = $1""", [slug]
@@ -71,9 +67,7 @@ api.post \/prj/, aux.signed, throttle.count.user-md, express-formidable!, grecap
   thumb = (req.files["thumbnail[]"] or {}).path
   slug = suuid!
   cache.stage.check {io, type: \brd, slug: brd, name: "prj-new"}
-    .then (ret) ->
-      if !ret => return aux.reject 403
-      io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
+    .then -> io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
       if !(grpinfo = lc.brd.[]group.filter(->it.key == grp).0) => return aux.reject 404

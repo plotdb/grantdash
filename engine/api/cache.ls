@@ -115,9 +115,9 @@ stage = do
             ret = (cfgs[* - 1] or {})
             if !ret.config => ret.config = {}
             return (@cache[type][slug] = ret)
-          .then (c) -> if !name => return c else c.config[name]
+      .then (c) ->
+        if !name => return c
+        if !c.config[name] => return Promise.reject(new lderror 1012)
+        return true
 
 module.exports = {perm, stage, route}
-
-
-
