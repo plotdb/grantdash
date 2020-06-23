@@ -227,7 +227,7 @@ api.post \/brd/:brd/grp/:grp/info, (req, res) ->
 # TODO who use this?
 api.get \/brd/:slug/form/, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
-  io.query "select key,name,description,slug,detail from brd where slug = $1 where deleted is not true", [slug]
+  io.query "select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [slug]
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       ret.detail = ret.detail{group}

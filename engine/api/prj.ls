@@ -1,26 +1,47 @@
 require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror suuid]>
 require! <[./cache]>
-require! <[../aux]>
+require! <[../aux ../util/throttle ../util/grecaptcha]>
 (engine,io) <- (->module.exports = it)  _
 
 api = engine.router.api
 app = engine.app
 
+get-prj = (slug) ->
+  Promise.resolve!
+    .then ->
+      if !slug => return aux.reject 400
+      io.query """
+      select p.*,u.displayname as ownerName
+      from prj as p, users as u
+      where slug = $1 and p.owner = u.key and p.deleted is not true
+      """, [slug]
+    .then (r={}) ->
+      if !(prj = r.[]rows.0) => return aux.reject 404
+      return prj
+
+# used by project editing. so we only provide this to owner.
+api.get "/prj/:slug/", aux.signed, (req, res) ->
+  cache.perm.check {io, user: req.user, type: \prj, slug: req.params.slug, action: \owner}
+    .then -> cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
+    .then (ret) -> if !ret => return aux.reject 403
+    .then -> get-prj req.params.slug
+    .then (prj = {}) -> res.send prj
+    .catch aux.error-handler res
+
 app.get \/prj/:slug, (req, res) ->
   lc = {}
-  if !(slug = req.params.slug) => return aux.r400 res
-  io.query """
-  select p.*,u.displayname as ownerName
-  from prj as p, users as u
-  where slug = $1 and p.owner = u.key and p.deleted is not true
-  """, [slug]
-    .then (r={}) ->
-      if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
+  cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-view"}
+    .then (ret) ->
+      if ret => return
+      # TODO judge permission
+      cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge]>}
+    .then -> get-prj req.params.slug
+    .then (prj) ->
+      lc.prj = prj
       if !(prj.detail) => return aux.reject 404
-      cache.stage.check {io, type: \brd, slug: lc.prj.brd, name: "prj-view"}
     .then (ret) ->
       if !ret => return aux.reject 403
-      io.query """select name,slug,org,detail from brd where brd.slug = $1""", [lc.prj.brd]
+      io.query """select name,slug,org,detail from brd where slug = $1 and deleted is not true""", [lc.prj.brd]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
       lc.grp = grp = (brd.{}detail.{}group or []).filter(-> it.key == lc.prj.grp).0
@@ -35,27 +56,18 @@ app.get \/prj/:slug, (req, res) ->
 
 api.delete \/prj/:slug, aux.signed, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
-  cache.perm.check {io, user: req.user, type: \prj, slug: slug, action: \owner}
+  cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
+    .then (ret) -> if !ret => return aux.reject 403
+    .then -> cache.perm.check {io, user: req.user, type: \prj, slug: slug, action: \owner}
     .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
     .then -> io.query """update prj set deleted = true where slug = $1""", [slug]
     .then -> res.send {}
     .catch aux.error-handler res
 
-api.get "/prj/:slug/", aux.signed, (req, res) ->
-  if !(slug = req.params.slug) => return aux.r400 res
-  io.query """
-  select p.*, u.displayname as ownername
-  from prj as p, users as u
-  where p.slug = $1 and u.key = p.owner and p.deleted is not true
-  """, [slug]
-    .then (r = {}) -> res.send(r.[]rows.0 or {})
-    .catch aux.error-handler res
-
-api.post \/prj/, aux.signed, express-formidable!, (req, res) ->
+api.post \/prj/, aux.signed, throttle.count.user-md, express-formidable!, grecaptcha, (req, res) ->
   lc = {}
   {name,description,brd,grp} = req.fields
   if !(brd and grp) => return aux.r400 res
-
   thumb = (req.files["thumbnail[]"] or {}).path
   slug = suuid!
   cache.stage.check {io, type: \brd, slug: brd, name: "prj-new"}
