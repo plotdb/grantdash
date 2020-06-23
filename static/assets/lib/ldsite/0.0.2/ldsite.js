@@ -26,10 +26,8 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error'], function(
       if (this.lc.inited) {
         return Promise.resolve();
       }
-      console.log(0);
       return auth.get().then(function(g){
         var ref$;
-        console.log(">", g);
         return ref$ = this$.lc, ref$.global = g, ref$.sitekey = (g.recaptcha || (g.recaptcha = {})).sitekey, ref$.enabled = (g.recaptcha || (g.recaptcha = {})).enabled, ref$;
       }).then(function(){
         var tag;
@@ -205,8 +203,7 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error'], function(
       }, ref$);
       body.passwd = body.passwd.replace(/\t*$/, '');
       return recaptcha.get('signin').then(function(recaptcha){
-        body.recaptcha = recaptcha;
-        return console.log(recaptcha);
+        return body.recaptcha = recaptcha;
       }).then(function(){
         return auth.consent({
           timing: 'signin'
