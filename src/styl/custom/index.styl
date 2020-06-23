@@ -130,14 +130,9 @@ body
     padding-top: 1.5em
     margin-top: 1em
 
-@media(max-width: 1024px)
-  .gd-prj-view .inner
-    width: 95%
-
 .gd-prj-view-header.simple
   display: flex
   margin-bottom: 2.5em
-
   .thumb
     border-radius: .25em
     background-color: #222
@@ -150,8 +145,11 @@ body
     flex: 0 0 auto
 
   .info
-    flex: 1 0 0
+    flex: 1 0 auto
     padding-right: .5em
+    width: 768px
+    max-width: 90%
+    margin: auto
 
   .brd
     font-size: .85em
@@ -224,6 +222,7 @@ body
   padding: 2em 0 4em
   .inner
     width: 1024px
+    max-width: 90%
     height: 100%
     margin: auto
   .block
@@ -239,6 +238,27 @@ body
       margin-top: 1.5em
     p
       opacity: .9
+
+
+@media(max-width: 1024px)
+  .gd-prj-view
+    padding-top: 60px
+  .gd-prj-view .inner
+    width: 95%
+    padding-top: 0
+    margin-top: 0
+  .gd-prj-view-header.simple
+    flex-wrap: wrap
+    .thumb
+      margin: 0 auto 2em
+    .title
+      flex-wrap: wrap
+    h2, .tags
+      margin-bottom: 1em
+    .action
+      width: 100%
+  .gd-prj-view-body.simple .block
+    padding: 1em
 
 @media (max-width: 768px)
   .gd-prj-list-banner > .vertical-center

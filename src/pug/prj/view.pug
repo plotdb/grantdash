@@ -38,12 +38,13 @@ block body
             .tags: each t,$index in prj.tag
               a(href=`/dash/brd/${brd.slug}/list?tag=${t}`, style=`animation-delay:${$index * 0.1}s`)= t
 
-          //-.btn.btn-outline-secondary.btn-sm.ml-2 追蹤 #[i.i-eye]
-          a.btn.btn-sm.ml-2.d-none(
-          ld="btn-edit",href=`/dash/prj/${prj.slug}/edit`) 編輯 #[i.i-pen]
-          .btn.btn-sm.ml-2.has-tips.manual(ld="btn-share")
-            | 分享 #[i.i-link]
-            .hover-tip.tip-sm.top 網址已拷貝
+          .action
+            //-.btn.btn-outline-secondary.btn-sm.mr-2 追蹤 #[i.i-eye]
+            a.btn.btn-sm.mr-2.d-none(
+            ld="btn-edit",href=`/dash/prj/${prj.slug}/edit`) 編輯 #[i.i-pen]
+            .btn.btn-sm.has-tips.manual(ld="btn-share")
+              | 分享 #[i.i-link]
+              .hover-tip.tip-sm.top 網址已拷貝
 
         .user
           .item
