@@ -331,6 +331,13 @@
   background: #ff9 !important;
   box-shadow: inset 0 0 10px 2px #fff;
 }
+.post-view .ql-editor {
+  height: auto;
+  overflow-y: visible;
+}
+.post-view .ql-editor p {
+  line-height: 1.5;
+}
 .folder-item:hover {
   color: currentColor;
 }

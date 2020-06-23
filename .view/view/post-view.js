@@ -3573,15 +3573,17 @@ pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner text-lg mt-4\"\u0
 pug_html = pug_html + "\u003Cdiv class=\"ldNotify\"\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 ;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
-pug_html = pug_html + "\u003Cdiv class=\"w-1024 rwd mx-auto typeset heading-contrast ql-editor\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"post-view\"\u003E";
 ;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
+pug_html = pug_html + "\u003Cdiv class=\"w-1024 rwd mx-auto typeset heading-contrast ql-editor\"\u003E";
+;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
 if (exports && exports.post && exports.post.detail) {
-;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
+;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
 pug_html = pug_html + "\u003Cdiv\u003E";
-;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
+;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
 pug_html = pug_html + (null == (pug_interp = exports.post.detail.content) ? "" : pug_interp) + "\u003C\u002Fdiv\u003E";
 }
-pug_html = pug_html + "\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 31;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 if (ctrl.cover.authpanel) {
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
