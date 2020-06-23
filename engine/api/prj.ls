@@ -17,9 +17,9 @@ app.get \/prj/:slug, (req, res) ->
     .then (r={}) ->
       if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
       if !(prj.detail) => return aux.reject 404
-      cache.stage.check {io, type: \brd, slug: lc.prj.brd}
-    .then ({config} = {config: {}}) ->
-      if !config["prj-view"] => return aux.reject 403
+      cache.stage.check {io, type: \brd, slug: lc.prj.brd, name: "prj-view"}
+    .then (ret) ->
+      if !ret => return aux.reject 403
       io.query """select name,slug,org,detail from brd where brd.slug = $1""", [lc.prj.brd]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
@@ -58,9 +58,9 @@ api.post \/prj/, aux.signed, express-formidable!, (req, res) ->
 
   thumb = (req.files["thumbnail[]"] or {}).path
   slug = suuid!
-  cache.stage.check {io, type: \brd, slug: brd}
-    .then ({config} = {config: {}}) ->
-      if !config["prj-new"] => return aux.reject 403
+  cache.stage.check {io, type: \brd, slug: brd, name: "prj-new"}
+    .then (ret) ->
+      if !ret => return aux.reject 403
       io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404

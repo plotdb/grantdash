@@ -44,9 +44,9 @@ app.get \/post/:slug, (req, res) ->
   """, [slug]
     .then (r={}) ->
       if !(lc.post = post = r.[]rows.0) => return aux.reject 404
-      cache.stage.check {io, type: \brd, slug: lc.post.brd}
-    .then ({config} = {config: {}}) ->
-      if !config["public"] => return aux.reject 403
+      cache.stage.check {io, type: \brd, slug: lc.post.brd, name: \public}
+    .then (ret) ->
+      if !ret => return aux.reject 403
       res.render \admin/post-view.pug, {exports: lc{post}}
     .catch aux.error-handler res
 

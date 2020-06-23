@@ -124,7 +124,7 @@ get-prj-list = (req, res) ->
     .then ->
       {offset,limit} = req.query{offset,limit}
       {keyword,tag,category} = req.query{keyword, category, tag}
-      slug = req.params.slug
+      if !(slug = req.params.slug) => return aux.reject 400
       offset = (if isNaN(+offset) => 0 else +offset ) >? 0
       # TODO we make limit quite large so we dont have to support pagination. at least for now
       limit = (if isNaN(+limit) => 500 else +limit ) <? 500 >? 1
@@ -176,7 +176,6 @@ api.get \/brd/:slug/list, (req, res) ->
 
 app.get \/brd/:slug/list, (req, res) ->
   lc = {}
-  if !(slug = req.params.slug) => return aux.r400 res
   get-prj-list req, res
     .then (ret) ->
       lc.prjs = ret

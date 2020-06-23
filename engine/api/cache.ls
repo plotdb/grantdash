@@ -97,7 +97,7 @@ stage = do
   cache: {}
   supported-types: <[brd]>
   invalidate: ({type, slug}) -> @cache{}[type][slug] = null
-  check: ({io, type, slug}) ->
+  check: ({io, type, slug, name}) ->
     Promise.resolve!
       .then ~>
         if !type in @supported-types => return aux.reject 400
@@ -115,6 +115,7 @@ stage = do
             ret = (cfgs[* - 1] or {})
             if !ret.config => ret.config = {}
             return (@cache[type][slug] = ret)
+          .then (c) -> if !name => return c else c.config[name]
 
 module.exports = {perm, stage, route}
 
