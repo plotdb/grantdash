@@ -34,7 +34,7 @@ block body
 
   +scope("project-list")
     .d-block(ld="panel side")
-      .w-1024.rwd.mx-auto.pt-4
+      .gd-prj-list-head.mx-auto.pt-4
         - var banner = (pageInfo.banner?`url(/dash/org/${brd.org}/brd/${brd.slug}/upload/${pageInfo.banner})`:'none');
         .gd-prj-list-banner(style=`background-image:${banner}`)
           .vertical-center
