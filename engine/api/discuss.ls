@@ -1,4 +1,4 @@
-require! <[fs path lderror suuid ../aux]>
+require! <[fs path lderror suuid ../aux ../util/throttle ../util/grecaptcha]>
 (engine,io) <- (->module.exports = it) _
 
 api = engine.router.api
@@ -40,7 +40,7 @@ api.get \/discuss/, (req, res) ->
           res.send( {discuss: lc.discuss, comments: r.[]rows} )
     .catch aux.error-handler res
 
-api.post \/discuss/, aux.signed, (req, res) ->
+api.post \/discuss/, aux.signed, throttle.count.user, grecaptcha, (req, res) ->
   lc = {}
   Promise.resolve!
     .then ->

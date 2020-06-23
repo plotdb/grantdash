@@ -77,6 +77,9 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
             };
             this$.ldld.on();
             return debounce(1000).then(function(){
+              return auth.recaptcha.get();
+            }).then(function(recaptcha){
+              payload.recaptcha = recaptcha;
               return ld$.fetch('/dash/api/discuss', {
                 method: payload.key ? 'PUT' : 'POST'
               }, {

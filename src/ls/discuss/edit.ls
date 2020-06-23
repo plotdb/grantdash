@@ -37,7 +37,9 @@ Ctrl = (opt) ->
           payload = @data{url, reply, content, slug, key, title}
           @ldld.on!
           debounce 1000
-            .then ->
+            .then -> auth.recaptcha.get!
+            .then (recaptcha) ->
+              payload.recaptcha = recaptcha
               ld$.fetch(
                 \/dash/api/discuss
                 {method: if payload.key => \PUT else \POST}

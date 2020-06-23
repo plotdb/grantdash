@@ -15,6 +15,7 @@ ldc.register('discussView', ['discussEdit'], function(arg$){
     this.edit = new discussEdit({
       root: ld$.find(root, '[ld-scope=edit]', 0)
     });
+    this.comments = [];
     this.edit.init();
     this.edit.on('new-comment', function(c){
       c.distance = this$.comments.length;
@@ -108,6 +109,8 @@ ldc.register('discussView', ['discussEdit'], function(arg$){
       }).then(function(ret){
         this$.comments = ret.comments;
         this$.discuss = ret.discuss;
+        this$.comments = ret.comments || [];
+        this$.discuss = ret.discuss || {};
         return this$.view.render();
       });
     }

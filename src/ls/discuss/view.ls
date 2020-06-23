@@ -5,6 +5,7 @@ Ctrl = (opt) ->
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @data = {url: window.location.pathname} <<< opt.data
   @edit = new discuss-edit root: ld$.find(root, '[ld-scope=edit]', 0)
+  @comments = []
   @edit.init!
   @edit.on \new-comment, (c) ~>
     c <<< { distance: @comments.length, state: \active }
@@ -50,6 +51,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       .finally ~> @loading = false
       .then (ret) ~>
         @ <<< ret{comments, discuss}
+        @comments = ret.comments or []
+        @discuss = ret.discuss or {}
         @view.render!
 
 Ctrl
