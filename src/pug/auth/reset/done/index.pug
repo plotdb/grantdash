@@ -25,4 +25,4 @@ block script
         if it.{}user.key =>
           lda.ldcvmgr.toggle("logged-in")
           debounce 2000 .then -> window.location.href = \/
-        else debounce 2000 .then -> lda.auth.is-on!then -> if !it => ensure!
+        else debounce 2000 .then -> if !(lda.auth.is-on!) => ensure!

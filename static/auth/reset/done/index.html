@@ -17,11 +17,9 @@ ldc.register(['auth', 'ldcvmgr'], function(arg$){
       });
     } else {
       return debounce(2000).then(function(){
-        return lda.auth.isOn().then(function(it){
-          if (!it) {
-            return ensure();
-          }
-        });
+        if (!lda.auth.isOn()) {
+          return ensure();
+        }
       });
     }
   });
