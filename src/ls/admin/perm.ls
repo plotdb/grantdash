@@ -126,7 +126,7 @@ Ctrl = (opt) ->
       payload = {}
       if @org => payload.org = @org.slug
       if @brd => payload.brd = @brd.slug
-      auth.recaptcha.get
+      auth.recaptcha.get!
         .then (recaptcha) ->
           payload.recaptcha = recaptcha
           ld$.fetch "/dash/api/token", {method: \POST}, {json: payload, type: \json}

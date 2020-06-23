@@ -271,7 +271,7 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
         if (this$.brd) {
           payload.brd = this$.brd.slug;
         }
-        return auth.recaptcha.get.then(function(recaptcha){
+        return auth.recaptcha.get().then(function(recaptcha){
           payload.recaptcha = recaptcha;
           return ld$.fetch("/dash/api/token", {
             method: 'POST'
