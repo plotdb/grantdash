@@ -33,11 +33,11 @@
         domain: "." + engine.config.domain
       });
     };
-    api.get("/me/reauth/", function(req, res){
+    api.get('/me/reauth/', function(req, res){
       clearUserCookie(req, res);
       return res.send();
     });
-    app.get("/me/reauth/", function(req, res){
+    app.get('/me/reauth/', function(req, res){
       var that;
       clearUserCookie(req, res);
       return res.redirect("/dash/auth/" + ((that = req.query.nexturl) ? "?nexturl=" + that : ''));

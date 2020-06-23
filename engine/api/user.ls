@@ -17,11 +17,11 @@ clear-user-cookie = (req, res) ->
     res.clearCookie \connect.sid, {path:'/', domain: it}
   res.clearCookie \global, {path:'/', domain: ".#{engine.config.domain}"}
 
-api.get "/me/reauth/", (req, res) ->
+api.get \/me/reauth/, (req, res) ->
   clear-user-cookie req, res
   res.send!
 
-app.get "/me/reauth/", (req, res) ->
+app.get \/me/reauth/, (req, res) ->
   clear-user-cookie req, res
   res.redirect """/dash/auth/#{if req.query.nexturl => ("?nexturl=" + that) else ''}"""
 
