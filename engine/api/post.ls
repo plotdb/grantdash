@@ -1,6 +1,6 @@
 require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror suuid]>
 require! <[./cache]>
-require! <[../aux]>
+require! <[../aux ../util/throttle ../util/grecaptcha]>
 (engine,io) <- (->module.exports = it)  _
 
 api = engine.router.api
@@ -50,7 +50,7 @@ app.get \/post/:slug, (req, res) ->
       res.render \admin/post-view.pug, {exports: lc{post}}
     .catch aux.error-handler res
 
-api.post \/post, aux.signed, (req, res) ->
+api.post \/post, aux.signed, throttle.count.user, grecaptcha, (req, res) ->
   {brd,title} = req.body{brd,title}
   cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \owner}
     .then ->

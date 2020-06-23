@@ -1,5 +1,5 @@
-({notify, loader, ldcvmgr, error, admin-panel}) <- ldc.register \adminPostList,
-<[notify loader ldcvmgr error adminPanel]>, _
+({notify, auth, loader, ldcvmgr, error, admin-panel}) <- ldc.register \adminPostList,
+<[notify auth loader ldcvmgr error adminPanel]>, _
 
 Ctrl = (opt) ->
   @opt = opt
@@ -84,7 +84,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
           action: click: post: ({node}) ~>
             loader.on!
             payload = {brd: @brd.slug, title: @form.values!title}
-            ld$.fetch "/dash/api/post/", {method: \POST}, {json: payload, type: \json}
+            auth.recaptcha.get!
+              .then (recaptcha) ->
+                payload.recaptcha = recaptcha
+                ld$.fetch "/dash/api/post/", {method: \POST}, {json: payload, type: \json}
               .then (ret) ~>
                 @edit ret.slug
                 loader.off!
