@@ -52,16 +52,22 @@
         }
         ldld.on();
         val = form.values();
-        return ld$.fetch('/dash/api/me/passwd/', {
-          method: 'put',
-          body: JSON.stringify({
+        return auth.recaptcha.get().then(function(recaptcha){
+          var json;
+          json = {
             o: val.oldpasswd,
-            n: val.newpasswd1
-          }),
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
-          }
-        }, {})['finally'](function(){
+            n: val.newpasswd1,
+            recaptcha: recaptcha
+          };
+          return ld$.fetch('/dash/api/me/passwd/', {
+            method: 'put',
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8'
+            }
+          }, {
+            json: json
+          });
+        })['finally'](function(){
           return ldld.off();
         }).then(function(){
           notify.send('success', "密碼更新完成");
@@ -72,9 +78,9 @@
       });
     });
   });
-  return ldc.register(['auth', 'ldcvmgr', 'change-password', 'notify'], function(arg$){
-    var auth, ldcvmgr, changePassword, notify, local;
-    auth = arg$.auth, ldcvmgr = arg$.ldcvmgr, changePassword = arg$.changePassword, notify = arg$.notify;
+  return ldc.register(['error', 'auth', 'ldcvmgr', 'change-password', 'notify'], function(arg$){
+    var error, auth, ldcvmgr, changePassword, notify, local;
+    error = arg$.error, auth = arg$.auth, ldcvmgr = arg$.ldcvmgr, changePassword = arg$.changePassword, notify = arg$.notify;
     local = {};
     return auth.get({
       authed: true
@@ -122,29 +128,28 @@
               if (!node.files.length) {
                 return;
               }
-              ldFile.fromFile(node.files[0], 'dataurl').then(function(r){
-                return bg.style.backgroundImage = "url(" + r.result + ")";
-              });
               btn.classList.toggle('running', true);
               fd = new FormData();
               fd.append("avatar", node.files[0]);
-              return ld$.fetch('/dash/api/user/avatar', {
-                method: 'POST',
-                body: fd
-              }, {
-                type: 'json'
+              return auth.recaptcha.get().then(function(recaptcha){
+                fd.append("recaptcha", recaptcha);
+                return ld$.fetch('/dash/api/user/avatar', {
+                  method: 'POST',
+                  body: fd
+                }, {
+                  type: 'json'
+                });
               })['finally'](function(){
-                debounce(1000).then(function(){
+                return debounce(1000).then(function(){
                   return btn.classList.toggle('running', false);
                 });
+              }).then(function(){
+                return ldFile.fromFile(node.files[0], 'dataurl');
+              }).then(function(r){
+                return bg.style.backgroundImage = "url(" + r.result + ")";
+              })['finally'](function(){
                 return node.value = '';
-              }).then(function(it){
-                node.value = "";
-                return console.log("uploaded", it);
-              })['catch'](function(e){
-                console.log(e);
-                return error()(e);
-              });
+              })['catch'](error());
             }
           }
         },
@@ -156,19 +161,21 @@
               root: node
             });
             return node.addEventListener('click', function(){
-              var val, ref$;
+              var val;
               ldld.on();
               val = form.values();
-              return ld$.fetch("/dash/api/user/" + ((ref$ = local.g).user || (ref$.user = {})).key, {
-                method: 'PUT'
-              }, {
-                json: {
-                  description: val.description,
-                  displayname: val.displayname,
-                  title: val.title,
-                  tags: val.tags
-                },
-                type: 'text'
+              return auth.recaptcha.get().then(function(recaptcha){
+                var json, ref$;
+                recaptcha == null && (recaptcha = "");
+                json = (ref$ = {
+                  recaptcha: recaptcha
+                }, ref$.description = val.description, ref$.displayname = val.displayname, ref$.title = val.title, ref$.tags = val.tags, ref$);
+                return ld$.fetch("/dash/api/user/" + ((ref$ = local.g).user || (ref$.user = {})).key, {
+                  method: 'PUT'
+                }, {
+                  json: json,
+                  type: 'text'
+                });
               })['catch'](function(it){
                 ldcvmgr.toggle('error');
                 return console.log(it);

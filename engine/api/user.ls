@@ -1,5 +1,5 @@
 require! <[fs fs-extra crypto read-chunk sharp express-formidable]>
-require! <[../aux]>
+require! <[../aux ../util/throttle ../util/grecaptcha]>
 (engine,io) <- (->module.exports = it)  _
 
 api = engine.router.api
@@ -27,6 +27,8 @@ app.get \/me/reauth/, (req, res) ->
   res.redirect """/dash/auth/#{if req.query.nexturl => ("?nexturl=" + that) else ''}"""
 
 api.delete \/me/, aux.signed, (req, res) ->
+  # for now we dont provide account deletion functionality
+  return aux.r404 res
   key = req.user.key
   req.logout!
   io.query "delete from users where key = $1", [key]
@@ -89,7 +91,7 @@ app.get \/user/:id, aux.numid true, (req, res) ->
 app.get \/me/settings/, aux.needlogin (req, res) ->
   res.render \me/settings.pug, {user: req.user}
 
-api.put \/user/:id, aux.numid false, (req, res) ->
+api.put \/user/:id, throttle.count.user, grecaptcha, aux.numid false, (req, res) ->
   if !req.user or req.user.key != +req.params.id => return aux.r403 res
   {displayname, description, title, tags} = req.body{displayname, description, title, tags}
   displayname = "#displayname".trim!
@@ -101,19 +103,24 @@ api.put \/user/:id, aux.numid false, (req, res) ->
       req.login req.user, -> res.send!
       return null
 
-api.post \/user/avatar, aux.signed, express-formidable({multiples:true}), (req, res) ->
-  if !req.user => return aux.r403 res
-  if !req.files.avatar => return aux.r400 res
-  fs-extra.ensure-dir "static/s/avatar/" 
-    .then ->
-      sharp req.files.avatar.path
-        .resize 200,200
-        .toFile "static/s/avatar/#{req.user.key}.png", (err, info) ->
-          if err => return aux.r500 res, "#{err}"
-          res.send {}
-    .catch -> aux.r500 res
+api.post \/user/avatar,
+  aux.signed,
+  throttle.count.user,
+  express-formidable!,
+  grecaptcha,
+  (req, res) ->
+    if !req.user => return aux.r403 res
+    if !req.files.avatar => return aux.r400 res
+    fs-extra.ensure-dir "static/s/avatar/"
+      .then ->
+        sharp req.files.avatar.path
+          .resize 200,200
+          .toFile "static/s/avatar/#{req.user.key}.png", (err, info) ->
+            if err => return aux.r500 res, "#{err}"
+            res.send {}
+      .catch -> aux.r500 res
 
-api.put \/me/passwd/, (req, res) ->
+api.put \/me/passwd/, aux.signed, throttle.count.user, grecaptcha, (req, res) ->
   {n,o} = req.body{n,o}
   if !req.user or !req.user.usepasswd => return aux.r400 res
   if n.length < 8 => return aux.r400 res, ("profile.newPassword.length")
@@ -129,10 +136,10 @@ api.put \/me/passwd/, (req, res) ->
     .then -> req.login(req.user, -> res.send!); return null
     .catch aux.error-handler res
 
-api.post \/me/config/, (req, res) ->
-  if !(req.user and req.user.key) => return aux.r400 res
+api.post \/me/config/, aux.signed, (req, res) ->
   if !req.body or typeof(req.body) != \object => return aux.r400 res
-  if req.body.type != \consent => return aux.r400 res # only support consent now.
+  # only support consent now.
+  if req.body.type != \consent or !Array.isArray(req.body.name) => return aux.r400 res
   (req.body.name or []).map (n) -> req.user.{}config.{}consent[n] = Date.now!
   io.query "update users set config = $2 where key = $1", [req.user.key, req.user.config]
     .then -> res.send(req.user.config)

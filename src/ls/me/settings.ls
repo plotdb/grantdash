@@ -29,21 +29,22 @@
           if btn.classList.contains(\disabled) => return
           ldld.on!
           val = form.values!
-          ld$.fetch \/dash/api/me/passwd/, {
-            method: \put
-            body: JSON.stringify({o: val.oldpasswd, n: val.newpasswd1})
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' }
-          }, {}
-            .finally ->
-              ldld.off!
+          auth.recaptcha.get!
+            .then (recaptcha) ->
+              json = {o: val.oldpasswd, n: val.newpasswd1, recaptcha}
+              ld$.fetch \/dash/api/me/passwd/, {
+                method: \put
+                headers: { 'Content-Type': 'application/json; charset=UTF-8' }
+              }, {json}
+            .finally -> ldld.off!
             .then ->
               notify.send \success, "密碼更新完成"
               form.reset!
             .catch ->
               notify.send \danger, "密碼更新失敗"
 
-  ldc.register <[auth ldcvmgr change-password notify]>,
-  ({auth, ldcvmgr, change-password, notify}) ->
+  ldc.register <[error auth ldcvmgr change-password notify]>,
+  ({error, auth, ldcvmgr, change-password, notify}) ->
     local = {}
     auth.get {authed: true}
       .catch -> ldcvmgr.toggle("auth-required")
@@ -71,21 +72,18 @@
               if !( bg = ld$.parent(node, '.bg') ) => return
               if !( btn = ld$.parent(node, '.btn') ) => return
               if !node.files.length => return
-              ldFile.fromFile node.files.0, \dataurl
-                .then (r) -> bg.style.backgroundImage = "url(#{r.result})"
               btn.classList.toggle \running, true
               fd = new FormData!
               fd.append "avatar", node.files.0
-              ld$.fetch \/dash/api/user/avatar, {method: \POST, body: fd}, {type: \json}
-                .finally ->
-                  debounce 1000 .then -> btn.classList.toggle \running, false
-                  node.value = ''
-                .then ->
-                  node.value = ""
-                  console.log "uploaded", it
-                .catch (e) ->
-                  console.log e
-                  error! e
+              auth.recaptcha.get!
+                .then (recaptcha) ->
+                  fd.append "recaptcha", recaptcha
+                  ld$.fetch \/dash/api/user/avatar, {method: \POST, body: fd}, {type: \json}
+                .finally -> debounce 1000 .then -> btn.classList.toggle \running, false
+                .then -> ldFile.fromFile node.files.0, \dataurl
+                .then (r) -> bg.style.backgroundImage = "url(#{r.result})"
+                .finally -> node.value = ''
+                .catch error!
 
 
           handler: do
@@ -94,11 +92,14 @@
               node.addEventListener \click, ->
                 ldld.on!
                 val = form.values!
-                ld$.fetch(
-                  "/dash/api/user/#{local.g.{}user.key}"
-                  {method: \PUT}
-                  {json: val{description,displayname,title,tags}, type: \text}
-                )
+                auth.recaptcha.get!
+                  .then (recaptcha = "") ->
+                    json = {recaptcha} <<< val{description,displayname,title,tags}
+                    ld$.fetch(
+                      "/dash/api/user/#{local.g.{}user.key}"
+                      {method: \PUT}, {json, type: \text}
+                    )
+
                   .catch -> ldcvmgr.toggle \error; console.log it
                   .then -> auth.fetch {renew: true}
                   .then -> debounce 500
