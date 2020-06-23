@@ -1,22 +1,29 @@
 //- module
 +scope("admin-post-list")
-  iframe.border-0.w-100.h-100.position-absolute.d-none.z-float(ld="editor",style="top:0;left:0")
+  iframe.border-0.w-100.h-100.position-absolute.d-none.z-float.bg-white(
+  ld="editor",style="top:0;left:0",src="about:blank")
   .rwd.typeset.heading-contast.mx-auto
-    .d-flex.align-items-center
-      .flex-grow-1: h3.mb-0 發布貼文
-      .btn.btn-primary(ld="new-post") 建立文章
-    hr
+    .mb-4
+      .flex-grow-1
+        h3 文章管理
+        p.text-muted 文章列表讓您可以建立簡易的網頁，做為公告、簡章或任何可供使用者線上瀏覽的內容。每一則貼文都會有一個對應網址，在文章發布之後才會公開發表。不同於其他設定，文章列表不會自動更新，但您可點擊「更新列表」來取得最新列表。
+    div
+      .btn.btn-primary.mr-2(ld="new-post") 建立文章
+      .btn.btn-primary.ld-ext-right(ld="sync-list") 更新列表 #[.ld.ld-spinner.ld-spin]
+    hr.mt-4.mb-0
     .ld.ldld.full(ld="loading",style="background:rgba(255,255,255,.6)")
     .py-4.text-center.text-muted.d-none(ld="empty")
       span 尚無任何貼文。#[a.mx-2(ld="new-post",href="#") 建立一則]吧!
     .py-4.border-bottom.d-none(ld-each="post")
       .d-flex.align-items-center
         .flex-grow-1
-          a(ld="title")
+          h5: a(ld="title")
           div
-            a.mr-3(ld="edit",href="#") 編輯
-            a.mr-3(ld="view",href="#",target="_blank",rel="noopener noreferrer") 瀏覽
-            //-a.mr-3.text-danger(ld="delete",href="#") 刪除
+            a(ld="edit",href="#") 編輯
+            span.mx-2 |
+            a(ld="view",href="#",target="_blank",rel="noopener noreferrer") 瀏覽
+            span.mx-2 |
+            a.text-danger(ld="delete",href="#") 刪除
         .mr-2: .user-icon(ld="avatar",style="font-size:2.5em")
         div
           div(ld="owner")

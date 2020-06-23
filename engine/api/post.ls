@@ -52,7 +52,7 @@ app.get \/post/:slug, (req, res) ->
 
 api.post \/post, aux.signed, (req, res) ->
   {brd,title} = req.body{brd,title}
-  cache.perm.check {io, user: req.user, type: \brd, slug: brd}
+  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \owner}
     .then ->
       slug = suuid!
       detail = {content: "", title}
@@ -62,3 +62,12 @@ api.post \/post, aux.signed, (req, res) ->
     .then (r={}) -> res.send(r.[]rows.0 or {})
     .catch aux.error-handler res
 
+api.delete \/post/:slug, aux.signed, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  io.query "select brd,slug,owner from post where slug = $1", [slug]
+    .then (r={}) ->
+      if !(post = r.[]rows.0) => return aux.reject 404
+      cache.perm.check {io, user: req.user, type: \brd, slug: post.brd, action: \owner}
+    .then -> io.query "update post set deleted = true where slug = $1", [slug]
+    .then -> res.send!
+    .catch aux.error-handler res

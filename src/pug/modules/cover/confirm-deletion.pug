@@ -1,0 +1,11 @@
+include /modules/common.pug
+.ldcv.ldcvmgr(data-name="confirm-deletion",data-lock="true")
+  .base.w-480.rwd: .inner.card: .card-body.text-center: .p-4
+    h1 確定要刪除嗎？
+    br
+    .m-auto.text-left.text-muted
+      p 這個刪除動作一旦執行以後，您刪除掉的資料便無法復原。您確定要刪除嗎？
+      br
+    .row.no-gutters
+      .col-md.mr-2: .btn.btn-outline-dark.btn-block.btn-lg.mr-2(data-ldcv-set="") 取消
+      .col-md.ml-2: .btn.btn-danger.btn-block.btn-lg.mr-2(data-ldcv-set="yes") 是的，確定刪除

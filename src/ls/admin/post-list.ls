@@ -1,4 +1,5 @@
-({loader, ldcvmgr, error, admin-panel}) <- ldc.register \adminPostList, <[loader ldcvmgr error adminPanel]>, _
+({notify, loader, ldcvmgr, error, admin-panel}) <- ldc.register \adminPostList,
+<[notify loader ldcvmgr error adminPanel]>, _
 
 Ctrl = (opt) ->
   @opt = opt
@@ -14,18 +15,34 @@ Ctrl = (opt) ->
     root: @root
     action: click: do
       "new-post": ~> @toggle-modal!
+      "sync-list": ({node}) ~>
+        node.classList.add \running
+        @fetch!then -> debounce 1000 .then -> node.classList.remove \running
     handler: do
       empty: ({node}) ~> node.classList.toggle \d-none, (@posts and @posts.length)
       editor: ({node}) -> node.classList.toggle \d-none, true
       post: do
         list: ~> @posts or []
-        init: ({node, local,data}) ~>
+        init: ({node, local, data}) ~>
           node.classList.remove \d-none
           local.view = new ldView do
             root: node
             context: data
             action: click: do
               edit: ({node, context}) ~> @edit context.slug
+              delete: ({node, context}) ~>
+                ldcvmgr.get \confirm-deletion
+                  .then (ret) ~>
+                    if ret != \yes => return
+                    ld$.fetch "/dash/api/post/#{context.slug}", {method: \delete}
+                      .then -> notify.send \success, \文章已刪除
+                      .then ~>
+                        idx = @posts.indexOf(context)
+                        if !(~idx) => return
+                        @posts.splice idx, 1
+                        @view.list.render!
+                  .catch error!
+
             handler: do
               title: ({node, context}) -> node.innerText = context.title
               owner: ({node, context}) -> node.innerText = context.ownername
@@ -68,7 +85,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
             loader.on!
             payload = {brd: @brd.slug, title: @form.values!title}
             ld$.fetch "/dash/api/post/", {method: \POST}, {json: payload, type: \json}
-              .then (ret) ~> 
+              .then (ret) ~>
                 @edit ret.slug
                 loader.off!
                 @ldcv.new-post.toggle false
