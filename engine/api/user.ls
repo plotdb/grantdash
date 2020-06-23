@@ -8,7 +8,6 @@ app = engine.app
 # - clear cookie -
 # sometimes for some unknown reason, users' cookie might corrupted.
 # these two routes help users reset their cookie, and redirect to original page.
-
 clear-user-cookie = (req, res) ->
   res.clearCookie \connect.sid, {path:'/', domain: ".#{engine.config.domain}" }
   # clear all possible cookies that might be used in the past.
@@ -16,6 +15,8 @@ clear-user-cookie = (req, res) ->
   <[localhost loading.io .loading.io]>.map ->
     res.clearCookie \connect.sid, {path:'/', domain: it}
   res.clearCookie \global, {path:'/', domain: ".#{engine.config.domain}"}
+
+api.post \/me/sync/, aux.signed, (req, res) -> res.send req.user
 
 api.get \/me/reauth/, (req, res) ->
   clear-user-cookie req, res
@@ -25,8 +26,7 @@ app.get \/me/reauth/, (req, res) ->
   clear-user-cookie req, res
   res.redirect """/dash/auth/#{if req.query.nexturl => ("?nexturl=" + that) else ''}"""
 
-api.delete \/me/, (req, res) ->
-  if !(req.user and req.user.key) => return aux.r400 res
+api.delete \/me/, aux.signed, (req, res) ->
   key = req.user.key
   req.logout!
   io.query "delete from users where key = $1", [key]
@@ -112,10 +112,6 @@ api.post \/user/avatar, aux.signed, express-formidable({multiples:true}), (req, 
           if err => return aux.r500 res, "#{err}"
           res.send {}
     .catch -> aux.r500 res
-
-api.post \/me/sync/, (req, res) ->
-  if !req.user or !req.user.key => return aux.r400 res
-  res.send req.user
 
 api.put \/me/passwd/, (req, res) ->
   {n,o} = req.body{n,o}

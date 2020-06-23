@@ -33,6 +33,9 @@
         domain: "." + engine.config.domain
       });
     };
+    api.post('/me/sync/', aux.signed, function(req, res){
+      return res.send(req.user);
+    });
     api.get('/me/reauth/', function(req, res){
       clearUserCookie(req, res);
       return res.send();
@@ -42,11 +45,8 @@
       clearUserCookie(req, res);
       return res.redirect("/dash/auth/" + ((that = req.query.nexturl) ? "?nexturl=" + that : ''));
     });
-    api['delete']('/me/', function(req, res){
+    api['delete']('/me/', aux.signed, function(req, res){
       var key;
-      if (!(req.user && req.user.key)) {
-        return aux.r400(res);
-      }
       key = req.user.key;
       req.logout();
       return io.query("delete from users where key = $1", [key])['catch'](function(){
@@ -158,12 +158,6 @@
       })['catch'](function(){
         return aux.r500(res);
       });
-    });
-    api.post('/me/sync/', function(req, res){
-      if (!req.user || !req.user.key) {
-        return aux.r400(res);
-      }
-      return res.send(req.user);
     });
     api.put('/me/passwd/', function(req, res){
       var ref$, n, o;
