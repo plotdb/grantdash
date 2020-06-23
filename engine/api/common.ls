@@ -61,13 +61,14 @@ slugs = ({io, org, brd, prj, post}) -> new Promise (res, rej) ->
     .then (r={}) ->
       if !(ret = r.[]rows.0) => return aux.reject 404
       {org,prj,brd,post} = ret
+      slug = ret[type]
       root = if type == \prj => "users/org/#{org}/prj/#{prj}"
       else if type == \post => "users/org/#{org}/post/#{post}"
       else if type == \brd => "users/org/#{org}/brd/#{brd}"
       else if type == \org => "users/org/#{org}"
       else null
       if !root => return aux.reject 400
-      res(ret <<< {type,root})
+      res(ret <<< {type,root,slug})
     .catch -> rej it
 
 deploy = ({url, root, branch}) ->

@@ -65,15 +65,14 @@ upload = ({root, files}) -> new Promise (res, rej) ->
 api.post \/upload, aux.signed, express-formidable({multiples:true}), grecaptcha, (req, res) ->
   lc = {}
   {org,brd,prj,post,files} = req.fields
-
   files = []
   for name,list of req.files => files ++= list
   if files.length > 10 or files.filter(->it.size >= 10485760).length => return aux.r413 res
-
   slugs {io, org, brd, prj, post}
-    .then ({type, prj, brd, org, root}) ->
-      # TODO verify prj form criteria
-      upload {root, files}
+    .then (ret) -> lc <<< ret
+    .then -> cache.perm.check {io, user: req.user, type: lc.type, slug: lc.slug, action: \owner}
+    # TODO verify prj form criteria
+    .then -> upload {root: lc.root, files}
     .then -> res.send it
     .catch aux.error-handler res
 
@@ -85,8 +84,7 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
   info = payload.info or {}
   [name, description] = [(info.name or info.title), info.description]
   cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
-    .then ->
-      io.query "update #type set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
+    .then -> io.query "update #type set detail = $1 where slug = $2", [JSON.stringify(payload), slug]
     .then ->
       if !name => return
       if type == \prj
