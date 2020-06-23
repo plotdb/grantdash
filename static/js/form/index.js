@@ -342,7 +342,7 @@ ldc.register('prjForm', ['error', 'ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 
               if (!v) {
                 return;
               }
-              if (node = ld$.find(this$.node.list, "#block-" + v.key, 0)) {
+              if (node = ld$.find(this$.node.list, "[id='block-" + v.key + "']", 0)) {
                 return ldui.scrollTo({
                   node: node,
                   jump: true
