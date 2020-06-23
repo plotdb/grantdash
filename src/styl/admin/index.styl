@@ -14,3 +14,17 @@
     transform: rotate(180deg)
 
 
+.admin-config
+  display: flex
+  flex-wrap: wrap
+  .config-switch
+    width: 40%
+    flex: 1 1 auto
+  .config-switch:nth-child(2n+1)
+    margin-right: 2em
+@media (max-width: 960px)
+  .admin-config
+    .config-switch
+      width: 90%
+      margin-right: 0!important
+

@@ -1,14 +1,14 @@
 //- module
-mixin switch-lg(opt)
-  .d-flex.mb-2.pt-2.align-items-center&attributes(attributes)
+mixin config-switch-lg(opt)
+  .config-switch.d-flex.mb-2.pt-2.align-items-center&attributes(attributes)
     .flex-grow-1
       label.mb-0 #{opt.name}
       .text-sm.text-muted #{opt.desc}
     .ml-2
       .switch.switch-lg(ld="switch",data-name=opt.key)
 
-mixin switch(opt)
-  .d-flex.mb-2.pt-2.align-items-center&attributes(attributes)
+mixin config-switch(opt)
+  .config-switch.d-flex.mb-2.pt-2.align-items-center&attributes(attributes)
     .flex-grow-1
       label.mb-0 #{opt.name}
       .text-sm.text-muted #{opt.desc}

@@ -77,19 +77,17 @@ h4 權限設定
 
     .mt-4.px-2
       h5 此名單的權限
-      .row
-        .col-md
-          +switch-lg({name: "管理員", desc: "擁有管理此活動的所有權限", key: "owner"})
-          +switch-lg({name: "建立提案", desc: "在任何階段都可以建立新的提案", key: "prj-new"})
-          +switch-lg({name: "修改提案", desc: "在任何階段都可以修改自己的提案", key: "prj-edit"})
-          //-+switch-lg({name: "管理活動", desc: "設定活動各種資訊", key: "info-edit"})
-          //-+switch-lg({name: "管理權限", desc: "可以修改權限列表", key: "perm-edit"})
-        .col-md
-          +switch-lg({name: "評審", desc: "擁有評審的身份，可以使用評分表", key: "judge"})
-          +switch-lg({name: "建立留言", desc: "在任何階段都可以新增留言", key: "comment-new"})
-          +switch-lg({name: "修改留言", desc: "在任何階段都可以修改自己的留言", key: "comment-edit"})
-          //-+switch-lg({name: "管理留言", desc: "可以修改、刪除或設定留言", key: "comment-admin"})
-          //-+switch-lg({name: "管理提案", desc: "可以編修、刪除、設定提案", key: "prj-admin"})
+      .admin-config
+        +config-switch-lg({name: "管理員", desc: "擁有管理此活動的所有權限", key: "owner"})
+        +config-switch-lg({name: "建立提案", desc: "在任何階段都可以建立新的提案", key: "prj-new"})
+        +config-switch-lg({name: "修改提案", desc: "在任何階段都可以修改自己的提案", key: "prj-edit"})
+        //-+config-switch-lg({name: "管理活動", desc: "設定活動各種資訊", key: "info-edit"})
+        //-+config-switch-lg({name: "管理權限", desc: "可以修改權限列表", key: "perm-edit"})
+        +config-switch-lg({name: "評審", desc: "擁有評審的身份，可以使用評分表", key: "judge"})
+        +config-switch-lg({name: "建立留言", desc: "在任何階段都可以新增留言", key: "comment-new"})
+        +config-switch-lg({name: "修改留言", desc: "在任何階段都可以修改自己的留言", key: "comment-edit"})
+        //-+config-switch-lg({name: "管理留言", desc: "可以修改、刪除或設定留言", key: "comment-admin"})
+        //-+config-switch-lg({name: "管理提案", desc: "可以編修、刪除、設定提案", key: "prj-admin"})
 
   hr
   .d-flex.justify-content-between
