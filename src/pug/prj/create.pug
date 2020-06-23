@@ -1,9 +1,9 @@
 extends /base.pug
 block vars
-  - ctrl.navtop.placeholder = false;
+  - ctrl.navtop.placeholder = false
 block body
-  .w-100.h-100.vertical-center: .text-center.w-100
-    +scope("prj-create").w-480.mx-auto.rwd.pb-4
+  .w-100.h-100.vertical-center: .text-center.w-100(style="padding:60px 0")
+    +scope("prj-create").w-480.mx-auto.rwd
       include /modules/widget/prj-create.pug
 block script
   +script("/dash/js/util/sdb-adapter.js")

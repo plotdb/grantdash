@@ -28,6 +28,8 @@ html
     include modules/cover/offline-retry.pug
     .ldNotify
     block body
+    //- intentional break for allowing contents to scroll above recaptcha logo
+    +nbr(3)
     if ctrl.cover.authpanel
       include /modules/widget/authpanel.pug
       .w-640.mx-auto: +authpanel
