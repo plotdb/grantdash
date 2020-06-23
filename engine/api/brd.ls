@@ -62,7 +62,7 @@ upload = ({root, files}) -> new Promise (res, rej) ->
     .then -> res it
     .catch -> rej it
 
-api.post \/upload, aux.signed, express-formidable({multiples:true}), (req, res) ->
+api.post \/upload, aux.signed, express-formidable({multiples:true}), grecaptcha, (req, res) ->
   lc = {}
   {org,brd,prj,post,files} = req.fields
 

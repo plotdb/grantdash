@@ -85,7 +85,10 @@ Ctrl = (opt) ->
           fd = new FormData!
           fd.append type, slug
           fd.append "#{name}[]", node.files.0
-          ld$.fetch \/dash/api/upload, {method: \POST, body: fd}, {type: \json}
+          auth.recaptcha.get!
+            .then (recaptcha) ->
+              fd.append "recaptcha", recaptcha
+              ld$.fetch \/dash/api/upload, {method: \POST, body: fd}, {type: \json}
             .finally -> debounce 1000 .then -> btn.classList.toggle \running, false
             .then (ret-files) ->
               node.value = ""

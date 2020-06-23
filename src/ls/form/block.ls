@@ -1,4 +1,4 @@
-({ldcvmgr, error, prjFormCriteria}) <- ldc.register \prjFormBlock, <[ldcvmgr error prjFormCriteria]>, _
+({ldcvmgr, error, auth, prjFormCriteria}) <- ldc.register \prjFormBlock, <[ldcvmgr error auth prjFormCriteria]>, _
 
 schema = prjFormCriteria.schema
 
@@ -124,16 +124,19 @@ module-file = module-init: ->
           fd.append \prj, @prj.slug
           context.loading = true
           @view.module.render!
-          ld$.xhr(
-            "/dash/api/upload"
-            {method: \POST, body: fd}
-            {
-              type: \json
-              progress: ({percent}) ~>
-                context.percent = percent
-                @view.module.render!
-            }
-          )
+          auth.recaptcha.get!
+            .then (recaptcha) ->
+              fd.append \recaptcha, recaptcha
+              ld$.xhr(
+                "/dash/api/upload"
+                {method: \POST, body: fd}
+                {
+                  type: \json
+                  progress: ({percent}) ~>
+                    context.percent = percent
+                    @view.module.render!
+                }
+              )
             .then (ret-files = []) ~>
               if !(ret-files and ret-files.length) => return
               cur-list = @block.{}value.[]list

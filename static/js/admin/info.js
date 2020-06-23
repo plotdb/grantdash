@@ -177,11 +177,14 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
             fd = new FormData();
             fd.append(type, slug);
             fd.append(name + "[]", node.files[0]);
-            return ld$.fetch('/dash/api/upload', {
-              method: 'POST',
-              body: fd
-            }, {
-              type: 'json'
+            return auth.recaptcha.get().then(function(recaptcha){
+              fd.append("recaptcha", recaptcha);
+              return ld$.fetch('/dash/api/upload', {
+                method: 'POST',
+                body: fd
+              }, {
+                type: 'json'
+              });
             })['finally'](function(){
               return debounce(1000).then(function(){
                 return btn.classList.toggle('running', false);
