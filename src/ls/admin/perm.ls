@@ -1,4 +1,5 @@
-({ldcvmgr, sdbAdapter, userSearch, error}) <- ldc.register \adminPerm, <[ldcvmgr sdbAdapter userSearch error]>, _
+({ldcvmgr, auth, sdbAdapter, userSearch, error}) <- ldc.register \adminPerm,
+<[ldcvmgr auth sdbAdapter userSearch error]>, _
 Ctrl = (opt) ->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
@@ -125,7 +126,10 @@ Ctrl = (opt) ->
       payload = {}
       if @org => payload.org = @org.slug
       if @brd => payload.brd = @brd.slug
-      ld$.fetch "/dash/api/token", {method: \POST}, {json: payload, type: \json}
+      auth.recaptcha.get
+        .then (recaptcha) ->
+          payload.recaptcha = recaptcha
+          ld$.fetch "/dash/api/token", {method: \POST}, {json: payload, type: \json}
         .then (r = {}) ~>
           if !(r.id and r.token) => return Promise.reject new ldError(400)
           picked = {key: r.id, displayname: r.id, type: \token}

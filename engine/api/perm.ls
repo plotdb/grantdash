@@ -1,5 +1,5 @@
 require! <[fs fs-extra path crypto read-chunk sharp express-formidable uploadr lderror suuid]>
-require! <[../aux ./cache]>
+require! <[../aux ./cache ../util/grecaptcha ../util/throttle]>
 (engine,io) <- (->module.exports = it)  _
 
 api = engine.router.api
@@ -19,7 +19,7 @@ api.get \/stage, (req, res) ->
     .then -> res.send it
     .catch aux.error-handler res
 
-api.post \/token, aux.signed, (req, res) ->
+api.post \/token, aux.signed, grecaptcha, (req, res) ->
   [token,id] = [suuid!, suuid!]
   hint = ({} <<< req.scope <<< req.body){org, brd}
   type = if hint.brd => \brd else \org
