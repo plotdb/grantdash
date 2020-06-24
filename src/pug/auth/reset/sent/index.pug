@@ -2,11 +2,11 @@ extends /auth/base.pug
 block content
   h1 重設密碼連結已寄出。
   p 請檢查您的電子郵件信箱，應該不久就會收到重設密碼信囉。
-  img#img(src="/assets/img/p/auth/reset/sending-mail.svg")
+  img#img(src="/dash/assets/img/p/auth/reset/sending-mail.svg")
   p 
     div 還是沒收到信嗎？別忘了查看您的 #[b 垃圾信件匣].
-    div 或者 #[a(href="/auth/reset/") 再寄一次] / #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 直接聯絡我們]，讓我們協助您。
+    div 或者 #[a(href="/dash/auth/reset/") 再寄一次] / #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 直接聯絡我們]，讓我們協助您。
   script.
     setTimeout(function() {
-      img.setAttribute("src", "/assets/img/p/auth/reset/inbox.svg?" + Math.random().toString(36).substring(2));
+      img.setAttribute("src", "/dash/assets/img/p/auth/reset/inbox.svg?" + Math.random().toString(36).substring(2));
     }, 2000);

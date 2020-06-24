@@ -26,10 +26,10 @@ block content
         p 您所使用的密碼重設連結無效。
       br
       .text-muted
-        p 你所使用的這個密碼重設連結應該是過期了。沒關係，您可以回到 #[a(href="/auth/reset/") 密碼重設頁] 再次發送重設密碼信給自己。
+        p 你所使用的這個密碼重設連結應該是過期了。沒關係，您可以回到 #[a(href="/dash/auth/reset/") 密碼重設頁] 再次發送重設密碼信給自己。
         p 如果這個問題一直發生，您也可以 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 直接聯繫我們 ]，我們可以協助您取回自己的帳號。
 
       br
-      a.btn.btn-primary.btn-lg.btn-block(href="/auth/reset/") 再送一次
+      a.btn.btn-primary.btn-lg.btn-block(href="/dash/auth/reset/") 再送一次
 block script
   +script("/dash/js/auth/reset/change.js")
