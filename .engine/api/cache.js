@@ -29,7 +29,7 @@
       teamname: "零時小學校"
     },
     "dash.taicca.tw": {
-      org: "taicca.tw",
+      org: "taicca-tw",
       teamname: "文化內容策進院"
     }
   };
