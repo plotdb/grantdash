@@ -8,7 +8,6 @@ require! <[sharedb-wrapper lderror]>
 require! <[./io/postgresql ./api ./ext ./util/view ./api/cache]>
 require! <[./aux ./util/throttle ./util/grecaptcha ./watch ../secret ./watch/build/mod]>
 require! 'uglify-js': uglify-js, LiveScript: lsc
-config = require "../config/site/#{secret.config}"
 colors = require \colors/safe
 mod-builder = require "./watch/build/mod"
 custom-builder = require "./watch/custom/"
@@ -16,7 +15,7 @@ custom-builder = require "./watch/custom/"
 backend = do
   update-user: (req) -> req.logIn req.user, ->
   init: -> new Promise (res, rej) ~>
-    config := aux.merge-config config, secret
+    config = secret
     pgsql = new postgresql config
     authio = pgsql.authio
 
@@ -28,7 +27,7 @@ backend = do
       (list) <- csp.map
       if <[connect-src script-src]>.indexOf(list.0) < 0 => return
       list.push "http://#ip:8080"
-      list.push "https://#{config.domain}"
+      if config.domain => list.push "https://#{config.domain}"
 
     # =========== Init Server
     app = express!
@@ -130,7 +129,6 @@ backend = do
         path: \/
         httpOnly: true
         maxAge: 86400000 * 30 * 12 #  1 year
-        #domain: ".#{config.domain}"
     app.use passport.initialize!
     app.use passport.session!
 
@@ -212,7 +210,7 @@ backend = do
         user: if req.user => req.user{key, plan, config, displayname, verified, username} else {}
         recaptcha: secret.{}grecaptcha{sitekey, enabled}
       } <<< ({scope: req.scope or {}}))
-      res.cookie 'global', payload, { path: '/', secure: true, domain: ".#{config.domain}" }
+      res.cookie 'global', payload, { path: '/', secure: true }
       res.send payload
 
     app.use \/, express.static(path.join(__dirname, '../static'))
@@ -266,8 +264,8 @@ backend = do
         #       and connect.side must align with session's cookie setting.
         res
         #  .clearCookie \connect.sid, {path:'/', domain: \localhost} # clear old one
-        #  .clearCookie \connect.sid, {path:'/', config.domain}
-        #  .clearCookie \global, { path: '/', config.domain}
+        #  .clearCookie \connect.sid, {path:'/', domain: config.domain}
+        #  .clearCookie \global, { path: '/', domain: config.domain}
           .status(403)
         # for api we send a ldError object.
         # 1005 tells frontend a csrftoken-mismatch happened, so client can trigger corresponding panel
