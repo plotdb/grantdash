@@ -35,6 +35,10 @@ console.log "output to #outdir ..."
 
 fs-extra.ensure-dir outdir
   .then ->
+    static-dir = if !config["brd-slug"] => path.join(config["user-root"], "org", config["org-slug"], "static")
+    else path.join(config["user-root"], "org", config["org-slug"], "brd", config["brd-slug"], "static")
+    fs-extra.ensure-dir static-dir
+  .then ->
     for n,c of template =>
       for k,v of config =>
         c = c.replace new RegExp("\\${#k}","gm"), v
