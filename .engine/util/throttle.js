@@ -23,6 +23,16 @@
       max: 50,
       keyGenerator: key.generic
     }),
+    userMd: expressRateLimit({
+      windowMs: 10 * 60 * 1000,
+      max: 25,
+      keyGenerator: key.user
+    }),
+    ipMd: expressRateLimit({
+      windowMs: 10 * 60 * 1000,
+      max: 25,
+      keyGenerator: key.generic
+    }),
     route: {
       ext: expressRateLimit({
         windowMs: 1 * 60 * 1000,

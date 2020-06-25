@@ -44,7 +44,7 @@
         return res.send();
       })['catch'](aux.errorHandler(res, true));
     });
-    return engine.app.get('/me/mail/verify/:token', function(req, res){
+    return engine.app.get('/me/mail/verify/:token', throttle.count.ipMd, function(req, res){
       var local, token;
       local = {};
       token = req.params.token;

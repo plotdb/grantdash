@@ -74,12 +74,13 @@
             ? io.query("select o.slug as org, b.slug as brd\nfrom org as o, brd as b\nwhere b.slug = $1 and b.org = o.slug", [brd])
             : type === 'org' ? io.query("select o.slug as org\nfrom org as o\nwhere o.slug = $1", [org]) : void 8;
       return promise.then(function(r){
-        var ret, org, prj, brd, post, root;
+        var ret, org, prj, brd, post, slug, root;
         r == null && (r = {});
         if (!(ret = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
         org = ret.org, prj = ret.prj, brd = ret.brd, post = ret.post;
+        slug = ret[type];
         root = type === 'prj'
           ? "users/org/" + org + "/prj/" + prj
           : type === 'post'
@@ -90,7 +91,7 @@
         if (!root) {
           return aux.reject(400);
         }
-        return res((ret.type = type, ret.root = root, ret));
+        return res((ret.type = type, ret.root = root, ret.slug = slug, ret));
       })['catch'](function(it){
         return rej(it);
       });

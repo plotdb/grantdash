@@ -196,8 +196,8 @@
       return ((ref$ = this.cache)[type] || (ref$[type] = {}))[slug] = null;
     },
     check: function(arg$){
-      var io, type, slug, this$ = this;
-      io = arg$.io, type = arg$.type, slug = arg$.slug;
+      var io, type, slug, name, this$ = this;
+      io = arg$.io, type = arg$.type, slug = arg$.slug, name = arg$.name;
       return Promise.resolve().then(function(){
         var that, ref$;
         if (in$(!type, this$.supportedTypes)) {
@@ -229,6 +229,14 @@
           }
           return this$.cache[type][slug] = ret;
         });
+      }).then(function(c){
+        if (!name) {
+          return c;
+        }
+        if (!c.config[name]) {
+          return Promise.reject(new lderror(1012));
+        }
+        return true;
       });
     }
   };

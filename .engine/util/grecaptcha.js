@@ -6,15 +6,19 @@
   secret = require('../../secret');
   lderror = require('lderror');
   module.exports = function(req, res, next){
+    var recaptcha;
     if (!(secret.grecaptcha && secret.grecaptcha.enabled)) {
       return next();
     }
+    recaptcha = req.body && req.body.recaptcha
+      ? req.body.recaptcha
+      : req.fields ? req.fields.recaptcha : void 8;
     return request({
       url: 'https://www.google.com/recaptcha/api/siteverify',
       method: 'POST',
       form: {
         secret: secret.grecaptcha.secret,
-        response: req.body.recaptcha,
+        response: recaptcha,
         remoteip: aux.ip(req)
       }
     }, function(e, r, b){
