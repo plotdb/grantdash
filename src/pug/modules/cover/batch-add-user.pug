@@ -1,0 +1,12 @@
+include /modules/common.pug
++scope("batch-add-user").ldcv.ldcvmgr(data-name="batch-add-user"): .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
+  h3 加入使用者
+  p.text-left 若您需要一次性的加入多個使用者，您可以在下方貼入空白或逗號分隔的 email 清單，一次加入所有 email 。若加入的 email 尚未註冊，在註冊以後即會獲得指定權限。
+  .m-auto.text-left.text-muted
+    textarea.form-control(ld="list",rows="5")
+    br
+    .row.no-gutters
+      .col-md.mr-2: .btn.btn-outline-dark.btn-block.mr-2(ld="cancel") 取消
+      .col-md.ml-2: .btn.btn-primary.btn-block.mr-2(ld="add") 加入
+
+

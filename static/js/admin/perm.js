@@ -3,7 +3,7 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
   var ldcvmgr, auth, sdbAdapter, userSearch, error, Ctrl;
   ldcvmgr = arg$.ldcvmgr, auth = arg$.auth, sdbAdapter = arg$.sdbAdapter, userSearch = arg$.userSearch, error = arg$.error;
   Ctrl = function(opt){
-    var root, lc, obj, toggleRole, updateView, viewConfig, updateDataDebounced, updateData, view, this$ = this;
+    var root, lc, obj, toggleRole, addUser, updateView, viewConfig, updateDataDebounced, updateData, view, this$ = this;
     this.opt = opt;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
@@ -32,6 +32,33 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
       name = role ? role.name : '';
       type = ~idx ? 'role' : 'list';
       return lc.idx = idx, lc.role = role, lc.name = name, lc.type = type, lc;
+    };
+    addUser = function(picked, update){
+      var role, len, entry;
+      update == null && (update = true);
+      role = (lc.type === 'list'
+        ? lc.pickedRole
+        : lc.role) || obj.cfg.roles[0] || {
+        name: ''
+      };
+      len = obj.cfg.roles.map(function(it){
+        return it.list;
+      }).reduce(function(a, b){
+        return a.concat(b);
+      }, []).filter(function(it){
+        return it.type === picked.type && it.key === picked.key;
+      }).length;
+      if (len) {
+        return false;
+      }
+      entry = (picked.perm = role.name, picked);
+      role.list.push(entry);
+      this$.ctrl.search.clear();
+      if (update) {
+        updateData();
+        updateView();
+      }
+      return true;
     };
     this.updateView = updateView = function(){
       toggleRole();
@@ -256,6 +283,62 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
           return it.classList.toggle('d-none');
         });
       },
+      "batch-add": function(arg$){
+        var node, local, close, batchAdd;
+        node = arg$.node, local = arg$.local;
+        close = function(){
+          local.view.get('list').value = '';
+          return ldcvmgr.toggle('batch-add-user', false);
+        };
+        batchAdd = function(){
+          var ret;
+          ret = (local.view.get('list').value || '').split(/\s|,/).map(function(it){
+            return it.trim();
+          });
+          ret = (local.view.get('list').value || '').split(/\s|,/).map(function(it){
+            return it.trim();
+          }).filter(function(it){
+            return it && isEmail(it);
+          }).map(function(it){
+            return addUser({
+              type: 'email',
+              displayname: it,
+              key: it
+            }, false);
+          }).filter(function(it){
+            return !it;
+          });
+          if (ret.length) {
+            alert("some email already exist");
+          }
+          updateData();
+          updateView();
+          return ldcvmgr.toggle('batch-add-user', false);
+        };
+        return Promise.resolve().then(function(){
+          var this$ = this;
+          if (local.view) {
+            return;
+          }
+          return ldcvmgr.getdom('batch-add-user').then(function(dom){
+            return local.view = new ldView({
+              root: dom,
+              action: {
+                click: {
+                  cancel: function(){
+                    return close();
+                  },
+                  add: function(){
+                    return batchAdd();
+                  }
+                }
+              }
+            });
+          });
+        }).then(function(){
+          return ldcvmgr.toggle('batch-add-user', true);
+        });
+      },
       "newtoken-add": function(arg$){
         var node, role, payload;
         node = arg$.node;
@@ -311,31 +394,12 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
         })['catch'](error());
       },
       "newuser-add": function(arg$){
-        var node, evt, role, picked, len, entry;
+        var node, evt, picked;
         node = arg$.node, evt = arg$.evt;
-        role = (lc.type === 'list'
-          ? lc.pickedRole
-          : lc.role) || obj.cfg.roles[0] || {
-          name: ''
-        };
         if (!(picked = this$.ctrl.search.get())) {
           return;
         }
-        len = obj.cfg.roles.map(function(it){
-          return it.list;
-        }).reduce(function(a, b){
-          return a.concat(b);
-        }, []).filter(function(it){
-          return it.type === picked.type && it.key === picked.key;
-        }).length;
-        if (len) {
-          return alert("user already exist");
-        }
-        entry = (picked.perm = role.name, picked);
-        role.list.push(entry);
-        this$.ctrl.search.clear();
-        updateData();
-        return updateView();
+        return addUser(picked);
       }
     });
     import$(viewConfig.handler, {

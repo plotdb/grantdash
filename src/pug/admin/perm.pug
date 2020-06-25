@@ -58,7 +58,10 @@ h4 權限設定
             .btn.btn-outline-secondary(ld="newuser-add") 增加
 
         .ml-4.mr-2.clickable(ld="newuser-toggle"): i.i-close
-      a.text-sm.mt-1.ml-1(ld="role-view newtoken-add", href="#") 以連結方式加入權限 ...
+      .mt-1.mx-1(ld="role-view")
+        a.text-sm(ld="newtoken-add", href="#") 以連結方式加入權限 ...
+        span.mx-2 或
+        a.text-sm(ld="batch-add", href="#") 以 EMAIL 批次加入
 
 
   .px-0(ld="list-view")

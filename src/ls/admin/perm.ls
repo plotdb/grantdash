@@ -17,6 +17,23 @@ Ctrl = (opt) ->
     type = if ~idx => \role else \list
     lc <<< {idx, role, name, type}
 
+  add-user = (picked, update = true) ~>
+    role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0 or {name: ''}
+    len = obj.cfg.roles
+      .map -> it.list
+      .reduce(((a,b) -> a ++ b), [])
+      .filter -> it.type == picked.type and it.key == picked.key
+      .length
+    if len => return false #alert("user already exist")
+    entry = picked <<< {perm: role.name}
+    role.list.push entry
+    @ctrl.search.clear!
+    if update =>
+      update-data!
+      update-view!
+    return true
+
+
   @update-view = update-view = ->
     toggle-role!
     view.render!
@@ -121,6 +138,35 @@ Ctrl = (opt) ->
         update-view!
   view-config.action.click <<< do
     "newuser-toggle": ({node}) -> view.getAll(\newuser).map -> it.classList.toggle \d-none
+    "batch-add": ({node,local}) ~>
+      close = ->
+        local.view.get('list').value = ''
+        ldcvmgr.toggle \batch-add-user, false
+      batch-add = ->
+        ret = (local.view.get('list').value or '')
+          .split /\s|,/
+          .map -> it.trim!
+        ret = (local.view.get('list').value or '')
+          .split /\s|,/
+          .map -> it.trim!
+          .filter ->it and is-email(it)
+          .map -> add-user {type: \email, displayname: it, key: it}, false
+          .filter -> !it
+        if ret.length => alert "some email already exist"
+        update-data!
+        update-view!
+        ldcvmgr.toggle \batch-add-user, false
+
+      Promise.resolve!
+        .then ->
+          if local.view => return
+          ldcvmgr.getdom \batch-add-user .then (dom) ~>
+            local.view = new ldView do
+              root: dom
+              action: click: do
+                cancel: -> close!
+                add: -> batch-add!
+        .then -> ldcvmgr.toggle \batch-add-user, true
     "newtoken-add": ({node}) ~>
       role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0 or {name: ''}
       payload = {}
@@ -151,19 +197,8 @@ Ctrl = (opt) ->
         .catch error!
 
     "newuser-add": ({node, evt}) ~>
-      role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0 or {name: ''}
       if !(picked = @ctrl.search.get!) => return
-      len = obj.cfg.roles
-        .map -> it.list
-        .reduce(((a,b) -> a ++ b), [])
-        .filter -> it.type == picked.type and it.key == picked.key
-        .length
-      if len => return alert("user already exist")
-      entry = picked <<< {perm: role.name}
-      role.list.push entry
-      @ctrl.search.clear!
-      update-data!
-      update-view!
+      add-user picked
 
   view-config.handler <<< do
     "newuser-role-picked": ({node}) ->

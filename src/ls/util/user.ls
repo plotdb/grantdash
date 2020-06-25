@@ -1,4 +1,8 @@
 # userSearch: search for user.
+# picked:
+#  - type ( either user, email or token )
+#  - displayname
+#  - key
 # ld:
 #   clear - clear field
 #   input - search input box
