@@ -1,4 +1,5 @@
 module.exports = do
+  domain: \root-domain
 
   debug: false
   is-production: false
