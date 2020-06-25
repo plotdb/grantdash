@@ -8,9 +8,8 @@ static/assets/uploads
 doc/memo
 users
 static/s/
-config/nginx/domains/production/
+config/nginx/domains/
 config/nginx/servers/
-config/nginx/local/
 src/ls/work/
 static/js/work/
 static/s/
