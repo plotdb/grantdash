@@ -17,10 +17,10 @@ h4 權限設定
     .col-md
       .form-group.mb-2
         label 角色描述
-        .alert.alert-light.px-2.mb-4.border(style="padding-top:.375em;padding-bottom:.375em")
+        .alert.px-2.mb-4.border(style="padding-top:.375em;padding-bottom:.375em")
           .text-muted(ld="role-desc-all",data-name="") 此列表列出所有出現在權限設定中的用戶，以及他們所擔任角色。
           div(ld="roles-desc")
-            .text-muted.d-none(ld-each="role-desc",contenteditable="true") 角色的簡單描述 ...
+            .d-none(ld-each="role-desc",contenteditable="true") 角色的簡單描述 ...
 
   //-.alert.alert-light.px-2.mb-4.border
     .text-muted(ld="role-desc-all",data-name="") 此列表列出所有出現在權限設定中的用戶，以及他們所擔任角色。
