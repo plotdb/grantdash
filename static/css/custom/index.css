@@ -4,9 +4,11 @@ body {
 #nav-top nav.navbar {
   width: 1024px;
   margin: auto;
+  padding: 0.5rem 0;
 }
 #nav-top nav.navbar a.nav-link,
-#nav-top nav.navbar a.navbar-brand {
+#nav-top nav.navbar a.navbar-brand,
+#nav-top nav.navbar .navbar-brand a {
   color: #222;
 }
 .gd-prj-list-head {

@@ -27,8 +27,18 @@
         global: true,
         root: document.body,
         text: {
-          "brand-name": function(){
-            return g.scope.orgname;
+          "brand-org": function(){
+            return g.scope.orgname || '';
+          },
+          "brand-brd": function(){
+            return g.scope.brdname || '';
+          }
+        },
+        handler: {
+          "has-brand-brd": function(arg$){
+            var node;
+            node = arg$.node;
+            return node.classList.toggle('d-none', !g.scope.brdname);
           }
         }
       });

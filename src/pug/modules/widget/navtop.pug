@@ -7,7 +7,11 @@ if ctrl.navtop.shown
   data-transition=ctrl.navtop.transition,
   data-transition-target=ctrl.navtop.transitionTarget)
     //-a.navbar-brand.text-dark(href="/") Battle Dash
-    a.navbar-brand(pd="brand-name",href="/")
+    .navbar-brand
+      a(pd="brand-org",href="/")
+      span(pd="has-brand-brd")
+        span.mx-2 /
+        a(pd="brand-brd",href="/")
     button.navbar-toggler(type="button",data-toggle="collapse",
     data-target="#nav-top-content"): span.navbar-toggler-icon
     //-ul.navbar-nav.mr-auto
