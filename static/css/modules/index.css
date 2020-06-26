@@ -1,3 +1,9 @@
+#nav-top nav.navbar {
+  padding: 0.5rem 0;
+}
+#nav-top nav.navbar .navbar-brand {
+  font-size: 1em;
+}
 .authpanel,
 .ldcv > .base > .inner.authpanel {
   background: none;

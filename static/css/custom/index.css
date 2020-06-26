@@ -4,10 +4,6 @@ body {
 #nav-top nav.navbar {
   width: 1024px;
   margin: auto;
-  padding: 0.5rem 0;
-}
-#nav-top nav.navbar .navbar-brand {
-  font-size: 1em;
 }
 #nav-top nav.navbar a.nav-link,
 #nav-top nav.navbar a.navbar-brand,

@@ -50,6 +50,12 @@ p {
   background: rgba(0,0,0,0.4) url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDEwMCAxMDAiPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuNCIvPjwvc3ZnPgo=);
   border-radius: 0.25rem;
 }
+#nav-top nav.navbar {
+  padding: 0.5rem 0;
+}
+#nav-top nav.navbar .navbar-brand {
+  font-size: 1em;
+}
 .authpanel,
 .ldcv > .base > .inner.authpanel {
   background: none;
