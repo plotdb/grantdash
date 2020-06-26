@@ -56,6 +56,11 @@ p {
 #nav-top nav.navbar .navbar-brand {
   font-size: 1em;
 }
+#nav-top nav.navbar.text-white a.nav-link,
+#nav-top nav.navbar.text-white a.navbar-brand,
+#nav-top nav.navbar.text-white .navbar-brand a {
+  color: #fff;
+}
 #nav-top nav.navbar a.nav-link,
 #nav-top nav.navbar a.navbar-brand,
 #nav-top nav.navbar .navbar-brand a {
