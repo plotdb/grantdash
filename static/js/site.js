@@ -26,19 +26,19 @@
       return view = new ldView({
         global: true,
         root: document.body,
-        text: {
-          "brand-org": function(){
-            return g.scope.orgname || '';
-          },
-          "brand-brd": function(){
-            return g.scope.brdname || '';
-          }
-        },
         handler: {
-          "has-brand-brd": function(arg$){
+          "brand-org": function(arg$){
             var node;
             node = arg$.node;
-            return node.classList.toggle('d-none', !g.scope.brdname);
+            node.innerText = g.scope.orgname || '';
+            return node.setAttribute('href', "/org/" + g.scope.org);
+          },
+          "brand-brd": function(arg$){
+            var node;
+            node = arg$.node;
+            node.classList.toggle('d-none', !g.scope.brdname);
+            node.innerText = "/ " + (g.scope.brdname || '');
+            return node.setAttribute('href', "/brd/" + g.scope.brd);
           }
         }
       });
