@@ -17,7 +17,7 @@ engine.router.api.post \/me/mail/verify, throttle.count.action.mail, (req, res) 
       mail.by-template(
         \mail-verify
         req.user.username
-        {token: obj.hex, domain: 'grantdash.io', teamname: 'Grant Dash'} <<< req.scope{domain, teamname}
+        {token: obj.hex, domain: 'grantdash.io', orgname: 'Grant Dash'} <<< req.scope{domain, orgname}
         {now: true}
       )
     .then -> res.send!

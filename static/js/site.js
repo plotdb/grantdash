@@ -28,7 +28,7 @@
         root: document.body,
         text: {
           "brand-name": function(){
-            return g.scope.teamname;
+            return g.scope.orgname;
           }
         }
       });

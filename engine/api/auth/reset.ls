@@ -55,7 +55,7 @@ engine.router.api.post \/me/passwd/reset, throttle.count.action.mail, (req, res)
       mail.by-template(
         \reset-password
         email
-        {token: obj.hex, domain: 'grantdash.io', teamname: 'Grant Dash'} <<< req.scope{domain, teamname}
+        {token: obj.hex, domain: 'grantdash.io', orgname: 'Grant Dash'} <<< req.scope{domain, orgname}
         {now: true}
       )
     .then -> res.send ''

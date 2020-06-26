@@ -1,4 +1,4 @@
-from: '"#{teamname} Support" <noreply@#{domain}>'
+from: '"#{orgname} Support" <noreply@#{domain}>'
 subject: '電子郵件信箱認證 / #{domain}'
 content: |
   您好！
@@ -10,4 +10,4 @@ content: |
   [https://#{domain}/dash/me/mail/verify/#{token}](https://#{domain}/dash/me/mail/verify/#{token})
 
   此封郵件由系統自動生成，請勿直接回信，以免您的訊息無人接收。感謝！
-  #{teamname} 團隊
+  #{orgname} 團隊

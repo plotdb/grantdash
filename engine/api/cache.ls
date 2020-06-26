@@ -2,12 +2,12 @@ require! <[permcheck lderror ../aux]>
 
 # TODO hard coded for now but we should query from db in the future.
 coded-domains = do
-  "dev.grantdash.dev": {org: "grantdash-dev", brd: "test-brd", teamname: "Grant Dash Dev"}
-  "dev.gda.sh": {org: "grantdash-dev", brd: "test-brd", teamname: "Grant Dash Dev"}
-  "grantdash.io": {teamname: "Grant Dash"}
-  "taicca.grantdash.io": {org: "taicca-tw", brd: "grantdash-test", teamname: "Taicca Dash"}
-  "sch001.g0v.tw": {org: "g0v-jothon", brd: "sch001", teamname: "零時小學校"}
-  "dash.taicca.tw": {org: "taicca-tw", teamname: "文化內容策進院"}
+  "dev.grantdash.dev": {org: "grantdash-dev", brd: "test-brd", orgname: "Grant Dash Dev"}
+  "dev.gda.sh": {org: "grantdash-dev", orgname: "Grant Dash Dev"}
+  "grantdash.io": {orgname: "Grant Dash"}
+  "taicca.grantdash.io": {org: "taicca-tw", brd: "grantdash-test", orgname: "Taicca Dash"}
+  "sch001.g0v.tw": {org: "g0v-jothon", brd: "sch001", orgname: "零時小學校"}
+  "dash.taicca.tw": {org: "taicca-tw", orgname: "文化內容策進院"}
 
 # route.check: return
 #  - domain
@@ -17,7 +17,8 @@ coded-domains = do
 route = do
   cache: {domain: (coded-domains or {}), brd: {}, prj: {}}
   check: ({io, req, res}) -> Promise.resolve!then ~>
-    pathname = req.originalUrl
+    # some api dont have hint info inside path. thus we use referrer to extract org/brd info
+    pathname = req.get('Referrer') or req.originalUrl
     domain = req.get("host")
     if (brd = /brd\/([^/?]+)/.exec(pathname)) => brd = brd.1
     if (prj = /prj\/([^/?]+)/.exec(pathname)) => prj = prj.1
@@ -44,7 +45,8 @@ route = do
         (domain-cfg.brd and domain-cfg.brd != path-cfg.brd)) and
         domain-cfg.org
         ) => return aux.reject 400
-        return path-cfg <<< domain-cfg{teamname} <<< {domain}
+        ret = path-cfg <<< domain-cfg{orgname} <<< {domain}
+        return path-cfg <<< domain-cfg{orgname} <<< {domain}
 
 perm = do
   cache: {}
