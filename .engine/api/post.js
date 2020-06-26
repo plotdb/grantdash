@@ -79,7 +79,7 @@
           name: 'public'
         });
       }).then(function(){
-        return res.render('view/post-view.pug', {
+        return res.render('view/default/post-view.pug', {
           exports: {
             post: lc.post
           }

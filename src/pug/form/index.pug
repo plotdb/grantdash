@@ -1,0 +1,125 @@
+//- view
+extends /base.pug
+block body
+  -
+    var basic = [
+      {name: "owner", text: "申請人 / 單位"}, 
+      {name: "id", text: "統一編號"}, 
+      {name: "representative", text: "負責人"}, 
+      {name: "addr-register", text: "登記地址"}, 
+      {name: "addr-contact", text: "聯絡地址"}, 
+    ]
+  -
+    var contact = [
+      {name: "name", text: "姓名"},
+      {name: "title", text: "職稱"},
+      {name: "phone", text: "專線電話"},
+      {name: "mobile", text: "手機"},
+      {name: "email", text: "email"},
+    ]
+  .w-640.mx-auto.rounded.border.shadow.p-4
+    h2.mb-4 申請人基本資料
+    .mb-4
+      each entry in basic
+        .form-group
+          label #{entry.text}
+          input.form-control.rounded.border(ld="input",name=entry.name)
+    +nbr(2)
+    h3 聯絡人資訊
+    each entry in contact
+      .form-group
+        label #{entry.text}
+        input.form-control.rounded.border(ld="input",name=entry.name)
+    .my-4: hr
+    .text-right
+      .btn.btn-primary(ld="submit") 更新
+
+block script
+  +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
+  +script("/dash/js/util/sdb-adapter.js")
+  +script("/dash/js/util/hub.js")
+  script: :lsc
+    ldc.register <[ldcvmgr sdbAdapter auth error loader]>, ({ldcvmgr, sdb-adapter, auth, error, loader}) ->
+      Ctrl = (opt) ->
+        @slug = null
+        @detail = {}
+        @data = {}
+        @view = new ldView do
+          root: document.body
+          action:
+            click: do
+              submit: ({node}) ~> @commit!
+            input: do
+              input: ({node}) ~>
+                n = node.getAttribute(\name)
+                old = @data[n]
+                cur = node.value
+                if old == cur => return
+                @data[n] = cur
+                @_update!
+          handler: do
+            input: ({node}) ~>
+              n = node.getAttribute(\name)
+              node.value = @data[n] or ''
+        @_update = debounce ~> @ops-out ~> @data
+        @
+        
+      Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+        update: -> @ops-out ~> @data
+        render: -> @view.render!
+        ops-in: ({data,ops,source}) ->
+          if source => return
+          @data = JSON.parse(JSON.stringify(data))
+          @render!
+
+        init-hub: -> @hub = new Hub({sdb: @sdb})
+        getdoc: ->
+          console.log "get form document ..."
+          @sdb.get({
+            id: "form/#{@slug}"
+            watch: (ops,source) ~> @hub.fire \change, {ops,source}
+            create: ~> {}
+          }).then (doc) ~> @hub.doc = doc
+        fetch: ->
+          auth.recaptcha.get!
+            .then (recaptcha) ->
+              json = {recaptcha, scope: []}
+              ld$.fetch \/dash/api/form, {method: \POST}, {json: json, type: \json}
+            .then (ret) ~>
+              @slug = ret.slug
+            .catch error!
+        commit: ->
+          json = payload: @data, type: \form, slug: @slug
+          ldcvmgr.toggle \publishing, true
+          Promise.resolve!
+            .then ~> @update!
+            .then -> debounce 1000
+            .then -> auth.recaptcha.get!
+            .then (recaptcha) ->
+              json.recaptcha = recaptcha
+              ld$.fetch "/dash/api/detail", {method: \PUT}, {json: json, type: \json}
+            .finally -> ldcvmgr.toggle \publishing, false
+            .then ~> @detail = JSON.parse(JSON.stringify(@data))
+            .then -> ldcvmgr.toggle \published, true
+            .then -> debounce 1000
+            .finally -> ldcvmgr.toggle \published, false
+            .catch error!
+        view-only: ->
+          ld$.fetch "/dash/api/form/#{@slug}", {method: \GET}, {type: \json}
+            .then (ret) ~> @data = ret.detail or {}
+            .then ~> @render!
+
+      ctrl = new Ctrl {}
+      loader.on!
+      ctrl.fetch!
+        .then -> ctrl.view-only!
+        .finally -> loader.off!
+
+      /*
+      ctrl.fetch!
+        .then -> ctrl.sharedb!
+        .then -> ctrl.init-hub!
+        .then -> ctrl.getdoc!
+        .then -> ctrl.adapt {hub: ctrl.hub, path: []}
+        .finally -> loader.off!
+      */

@@ -80,7 +80,7 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
   lc = {}
   {slug, type, payload} = (req.body or {})
   if !(slug and type and payload) => return aux.r400 res
-  if !(type in <[prj brd org post]>) => return aux.r400 res
+  if !(type in <[prj brd org post form]>) => return aux.r400 res
   info = payload.info or {}
   [name, description] = [(info.name or info.title), info.description]
   cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
@@ -103,18 +103,6 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
     .then ->
       cache.perm.invalidate {type: type, slug}
       cache.stage.invalidate {type: type, slug}
-      opt = {io}
-      opt[type] = slug
-      slugs opt
-        .then (ret) ->
-          {root,type,prj,brd,org} = ret
-          release = path.join(root, \upload, \release)
-          draft = path.join(root, \upload, \draft)
-          if !(/^users\//.exec(release) and /^users\//.exec(draft)) => return aux.reject 400
-          fs-extra.ensure-dir release
-            .then -> fs-extra.remove release
-            .then -> fs-extra.ensure-dir draft
-            .then -> fs-extra.move draft, release
     .then ->
       doc_id = "#type/#slug"
       save-snapshot {io, sharedb: engine.sharedb, version: null, doc_id}

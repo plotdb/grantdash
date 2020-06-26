@@ -60,7 +60,7 @@ route = do
 perm = do
   cache: {}
   perm: {}
-  supported-types: <[org brd prj post]>
+  supported-types: <[org brd prj post form]>
   invalidate: ({type, slug}) ->
     @cache{}[type][slug] = {}
     @perm{}[type][slug] = null

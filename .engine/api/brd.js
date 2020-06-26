@@ -172,7 +172,7 @@
       if (!(slug && type && payload)) {
         return aux.r400(res);
       }
-      if (!(type === 'prj' || type === 'brd' || type === 'org' || type === 'post')) {
+      if (!(type === 'prj' || type === 'brd' || type === 'org' || type === 'post' || type === 'form')) {
         return aux.r400(res);
       }
       info = payload.info || {};
@@ -197,34 +197,13 @@
           return io.query("update " + type + " set (name,description) = ($1,$2) where slug = $3 and deleted is not true", [name, description, slug]);
         }
       }).then(function(){
-        var opt;
         cache.perm.invalidate({
           type: type,
           slug: slug
         });
-        cache.stage.invalidate({
+        return cache.stage.invalidate({
           type: type,
           slug: slug
-        });
-        opt = {
-          io: io
-        };
-        opt[type] = slug;
-        return slugs(opt).then(function(ret){
-          var root, type, prj, brd, org, release, draft;
-          root = ret.root, type = ret.type, prj = ret.prj, brd = ret.brd, org = ret.org;
-          release = path.join(root, 'upload', 'release');
-          draft = path.join(root, 'upload', 'draft');
-          if (!(/^users\//.exec(release) && /^users\//.exec(draft))) {
-            return aux.reject(400);
-          }
-          return fsExtra.ensureDir(release).then(function(){
-            return fsExtra.remove(release);
-          }).then(function(){
-            return fsExtra.ensureDir(draft);
-          }).then(function(){
-            return fsExtra.move(draft, release);
-          });
         });
       }).then(function(){
         var doc_id;
@@ -328,7 +307,7 @@
         });
         lc.pageInfo = import$((ref$ = (ref1$ = (ref2$ = lc.brd.detail).page || (ref2$.page = {})).info || (ref1$.info = {})).generic || (ref$.generic = {}), lc.brd.detail.info);
         delete lc.brd.detail;
-        res.render('view/prj-list.pug', lc);
+        res.render('view/default/prj-list.pug', lc);
         return null;
       })['catch'](aux.errorHandler(res));
     });

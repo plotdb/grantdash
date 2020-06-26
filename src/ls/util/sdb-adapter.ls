@@ -7,7 +7,7 @@
 #     - f: a function return modified data object.
 #   - ops-in({data,ops,source}): user should implement this. when remote data changed, ops-in will be called.
 
-<- ldc.register \sdbAdapter, [], _
+({ldcvmgr}) <- ldc.register \sdbAdapter, <[ldcvmgr]>, _
 
 Adapter = (opt = {}) ->
   @ <<< {doc: null, sdb: null, data: null, evt-handler: JSON.parse(JSON.stringify({}))}
@@ -25,6 +25,7 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
     o = @get-data! or obj
     @watch {data: o}
     @hub.on \change, ~> @watch it
+
   get-data: -> 
     if !(o = @doc.data) => return null
     for n in @path => if !(o = (o[n])) => return null
@@ -70,6 +71,25 @@ Adapter.prototype = Object.create(Object.prototype) <<< do
 
 Adapter.interface = do
   adapted: -> !!@adapter
+
+  # it's so common so we move a copy of sharedb() here.
+  # most of adapter users still implement their own version but we can slightly phase them out.
+  sharedb: ->
+    console.log "initializing sharedb connection ..."
+    @sdb = sdb = new sharedb-wrapper do
+      url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
+      path: '/dash/ws'
+    sdb.on \error, -> ldcvmgr.toggle \not-sync
+    sdb.on \close, ~>
+      ldcvmgr.toggle \offline-retry, true
+      sdb.reconnect!
+        .then ~> @getdoc!
+        .then ~> @adapt!
+        .then ~> @render!
+        .then -> console.log "re-inited."
+        .then -> ldcvmgr.toggle \offline-retry, false
+    sdb.ready!
+
   adapt: ({hub, path, type}) ->
     @adapter = adapter = new Adapter path: path
     adapter.on \change, ({ops, source}) ~> @ops-in {data: adapter.data, ops, source}

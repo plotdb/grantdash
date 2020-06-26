@@ -28,7 +28,7 @@ create table if not exists users (
   deleted boolean
 );
 
-create index idx_user_displayname on users (lower(displayname) varchar_pattern_ops);
+create index if not exists idx_user_displayname on users (lower(displayname) varchar_pattern_ops);
 
 create table if not exists perm (
   id text not null unique,
@@ -92,6 +92,19 @@ create table if not exists brd (
   endtime timestamp,
   location text,
   createdtime timestamp not null default now(),
+  state state not null default 'active',
+  deleted bool default false
+);
+
+create table if not exists form (
+  key serial primary key,
+  owner int references users(key) not null,
+  slug text not null unique constraint form_slug_len check (char_length(slug) <= 64),
+  scope text not null unique constraint scope_slug_len check (char_length(scope) <= 256),
+  name text constraint prg_name_len check (char_length(name) <= 100),
+  description text constraint prj_description_len check (char_length(description) <= 500),
+  createdtime timestamp not null default now(),
+  detail jsonb,
   state state not null default 'active',
   deleted bool default false
 );
