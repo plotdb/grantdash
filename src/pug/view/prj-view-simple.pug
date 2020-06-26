@@ -5,7 +5,7 @@ block vars
 block body
   - var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
   - var purpose = grp.form.purpose || {};
-  .p-4: include answer.pug
+  .p-4: include /form/answer.pug
 
 block script
   +script("/dash/js/prj/view.js")

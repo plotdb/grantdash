@@ -44,8 +44,8 @@ app.get \/prj/:slug, (req, res) ->
       if !lc.grp => return aux.reject 400
       lc.grp = grp = grp{form,info}
       delete brd.detail
-      view = if (req.{}query.simple)? => \prj/view-standalone.pug
-      else \prj/view.pug
+      view = if (req.{}query.simple)? => \view/prj-view-simple.pug
+      else \view/prj-viwe.pug
       res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}} <<< req.scope{domain}
     .catch aux.error-handler res
 

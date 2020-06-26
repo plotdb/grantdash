@@ -195,7 +195,7 @@ app.get \/brd/:slug/list, (req, res) ->
       lc.grps = lc.brd.detail.group.map -> it{form,key}
       lc.page-info = lc.brd.detail.{}page.{}info.{}generic <<< lc.brd.detail.info
       delete lc.brd.detail
-      res.render \prj/list.pug, lc
+      res.render \view/prj-list.pug, lc
       return null
     .catch aux.error-handler res
 
