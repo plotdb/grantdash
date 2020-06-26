@@ -81,8 +81,8 @@
         return mail.byTemplate('reset-password', email, (ref1$ = {
           token: obj.hex,
           domain: 'grantdash.io',
-          teamname: 'Grant Dash'
-        }, ref1$.domain = (ref$ = req.scope).domain, ref1$.teamname = ref$.teamname, ref1$), {
+          orgname: 'Grant Dash'
+        }, ref1$.domain = (ref$ = req.scope).domain, ref1$.orgname = ref$.orgname, ref1$), {
           now: true
         });
       }).then(function(){

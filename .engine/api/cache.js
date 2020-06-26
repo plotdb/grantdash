@@ -8,29 +8,28 @@
     "dev.grantdash.dev": {
       org: "grantdash-dev",
       brd: "test-brd",
-      teamname: "Grant Dash Dev"
+      orgname: "Grant Dash Dev"
     },
     "dev.gda.sh": {
       org: "grantdash-dev",
-      brd: "test-brd",
-      teamname: "Grant Dash Dev"
+      orgname: "Grant Dash Dev"
     },
     "grantdash.io": {
-      teamname: "Grant Dash"
+      orgname: "Grant Dash"
     },
     "taicca.grantdash.io": {
       org: "taicca-tw",
       brd: "grantdash-test",
-      teamname: "Taicca Dash"
+      orgname: "Taicca Dash"
     },
     "sch001.g0v.tw": {
       org: "g0v-jothon",
       brd: "sch001",
-      teamname: "零時小學校"
+      orgname: "零時小學校"
     },
     "dash.taicca.tw": {
       org: "taicca-tw",
-      teamname: "文化內容策進院"
+      orgname: "文化內容策進院"
     }
   };
   route = {
@@ -44,7 +43,7 @@
       io = arg$.io, req = arg$.req, res = arg$.res;
       return Promise.resolve().then(function(){
         var pathname, domain, brd, prj, promise, that;
-        pathname = req.originalUrl;
+        pathname = req.get('Referrer') || req.originalUrl;
         domain = req.get("host");
         if (brd = /brd\/([^/?]+)/.exec(pathname)) {
           brd = brd[1];
@@ -55,7 +54,7 @@
         promise = brd
           ? (that = this$.cache.brd[brd])
             ? Promise.resolve(that)
-            : io.query("select b.org from brd as b where b.slug = $1", [brd]).then(function(r){
+            : io.query("select b.org, b.name as brdname\nfrom brd as b\nwhere b.slug = $1 and b.deleted is not true", [brd]).then(function(r){
               var ref$;
               r == null && (r = {});
               return this$.cache.brd[brd] = (ref$ = (r.rows || (r.rows = []))[0] || {}, ref$.brd = brd, ref$);
@@ -63,7 +62,7 @@
           : prj
             ? (that = this$.cache.prj[prj])
               ? Promise.resolve(that)
-              : io.query("select p.brd, b.org from prj as p, brd as b where b.slug = p.brd and p.slug = $1", [prj]).then(function(r){
+              : io.query("select p.brd, b.org, b.name as brdname\nfrom prj as p, brd as b\nwhere b.slug = p.brd and p.slug = $1 and p.deleted is not tru and b.deleted is not true", [prj]).then(function(r){
                 r == null && (r = {});
                 return this$.cache.prj[prj] = (r.rows || (r.rows = []))[0] || {};
               })
@@ -77,7 +76,7 @@
             ? Promise.resolve(that)
             : aux.reject(400);
           return p.then(function(domainCfg){
-            var ref$;
+            var ret, ref$;
             if (!domainCfg) {
               return aux.reject(400);
             }
@@ -87,7 +86,8 @@
             if ((pathCfg.org !== domainCfg.org || (domainCfg.brd && domainCfg.brd !== pathCfg.brd)) && domainCfg.org) {
               return aux.reject(400);
             }
-            return ref$ = (pathCfg.teamname = domainCfg.teamname, pathCfg), ref$.domain = domain, ref$;
+            ret = (ref$ = (pathCfg.orgname = domainCfg.orgname, pathCfg), ref$.domain = domain, ref$);
+            return ref$ = (pathCfg.orgname = domainCfg.orgname, pathCfg), ref$.domain = domain, ref$;
           });
         });
       });
@@ -209,7 +209,7 @@
         if (that = ((ref$ = this$.cache)[type] || (ref$[type] = {}))[slug]) {
           return that;
         }
-        return io.query("select detail->'stage' as stage from brd where slug = $1", [slug]).then(function(r){
+        return io.query("select detail->'stage' as stage from brd where slug = $1 and brd.deleted is not true", [slug]).then(function(r){
           var ret, stage, cfgs;
           r == null && (r = {});
           ret = (r.rows || (r.rows = []))[0];
