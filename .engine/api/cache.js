@@ -62,7 +62,7 @@
           : prj
             ? (that = this$.cache.prj[prj])
               ? Promise.resolve(that)
-              : io.query("select p.brd, b.org, b.name as brdname\nfrom prj as p, brd as b\nwhere b.slug = p.brd and p.slug = $1 and p.deleted is not tru and b.deleted is not true", [prj]).then(function(r){
+              : io.query("select p.brd, b.org, b.name as brdname\nfrom prj as p, brd as b\nwhere b.slug = p.brd and p.slug = $1 and p.deleted is not true and b.deleted is not true", [prj]).then(function(r){
                 r == null && (r = {});
                 return this$.cache.prj[prj] = (r.rows || (r.rows = []))[0] || {};
               })

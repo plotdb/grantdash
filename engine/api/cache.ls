@@ -38,7 +38,7 @@ route = do
         io.query """
         select p.brd, b.org, b.name as brdname
         from prj as p, brd as b
-        where b.slug = p.brd and p.slug = $1 and p.deleted is not tru and b.deleted is not true
+        where b.slug = p.brd and p.slug = $1 and p.deleted is not true and b.deleted is not true
         """, [prj]
           .then (r={}) ~> @cache.prj[prj] = (r.[]rows.0 or {})
     else Promise.resolve(null)
