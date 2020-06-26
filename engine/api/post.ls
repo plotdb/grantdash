@@ -45,7 +45,7 @@ app.get \/post/:slug, (req, res) ->
     .then (r={}) ->
       if !(lc.post = post = r.[]rows.0) => return aux.reject 404
       cache.stage.check {io, type: \brd, slug: lc.post.brd, name: \public}
-    .then -> res.render \view/post-view.pug, {exports: lc{post}}
+    .then -> res.render \view/default/post-view.pug, {exports: lc{post}}
     .catch aux.error-handler res
 
 api.post \/post, aux.signed, throttle.count.user, grecaptcha, (req, res) ->

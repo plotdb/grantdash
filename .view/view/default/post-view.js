@@ -653,7 +653,7 @@ pug_mixins["css"]("/dash/assets/lib/ldui/ldui.min.css");
 ;pug_debug_line = 20;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_mixins["css"]("/dash/css/index.css");
 ;pug_debug_line = 21;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
-;pug_debug_line = 4;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
+;pug_debug_line = 4;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fpost-view.pug";
 pug_html = pug_html + "\u003Clink href=\"\u002F\u002Fcdn.quilljs.com\u002F1.3.7\u002Fquill.snow.css\" rel=\"stylesheet\"\u003E\u003C\u002Fhead\u003E";
 ;pug_debug_line = 22;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003Cbody" + (pug_attr("data-spy", (ctrl.scrollspy?"scroll":false), true, true)+pug_attr("data-target", (ctrl.scrollspy?ctrl.scrollspy:false), true, true)) + "\u003E";
@@ -3576,15 +3576,15 @@ pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner text-lg mt-4\"\u0
 ;pug_debug_line = 29;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ldNotify\"\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
-;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
+;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fpost-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"post-view\"\u003E";
-;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
+;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fpost-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"w-1024 rwd mx-auto typeset heading-contrast ql-editor\"\u003E";
-;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
+;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fpost-view.pug";
 if (exports && exports.post && exports.post.detail) {
-;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
+;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fpost-view.pug";
 pug_html = pug_html + "\u003Cdiv\u003E";
-;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fpost-view.pug";
+;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fpost-view.pug";
 pug_html = pug_html + (null == (pug_interp = exports.post.detail.content) ? "" : pug_interp) + "\u003C\u002Fdiv\u003E";
 }
 pug_html = pug_html + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
