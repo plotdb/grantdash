@@ -13,7 +13,8 @@ coded-domains = do
 #  - domain
 #  - org (optional)
 #  - brd (optional)
-#  - team name ( optional )
+#  - orgname ( optional )
+#  - brdname ( optional )
 route = do
   cache: {domain: (coded-domains or {}), brd: {}, prj: {}}
   check: ({io, req, res}) -> Promise.resolve!then ~>
@@ -25,12 +26,20 @@ route = do
     promise = if brd =>
       if @cache.brd[brd] => Promise.resolve that
       else
-        io.query "select b.org from brd as b where b.slug = $1", [brd]
+        io.query """
+        select b.org, b.name as brdname
+        from brd as b
+        where b.slug = $1 and b.deleted is not true
+        """, [brd]
           .then (r={}) ~> @cache.brd[brd] = ((r.[]rows.0 or {}) <<< {brd})
     else if prj =>
       if @cache.prj[prj] => Promise.resolve that
       else
-        io.query "select p.brd, b.org from prj as p, brd as b where b.slug = p.brd and p.slug = $1", [prj]
+        io.query """
+        select p.brd, b.org, b.name as brdname
+        from prj as p, brd as b
+        where b.slug = p.brd and p.slug = $1 and p.deleted is not tru and b.deleted is not true
+        """, [prj]
           .then (r={}) ~> @cache.prj[prj] = (r.[]rows.0 or {})
     else Promise.resolve(null)
     promise.then (path-cfg) ~>
@@ -105,7 +114,7 @@ stage = do
         if !type in @supported-types => return aux.reject 400
         if !slug => return aux.reject 400
         if @cache{}[type][slug] => return that
-        io.query "select detail->'stage' as stage from brd where slug = $1", [slug]
+        io.query "select detail->'stage' as stage from brd where slug = $1 and brd.deleted is not true", [slug]
           .then (r={}) ~>
             ret = r.[]rows.0
             stage = ret.{}stage.list or []
