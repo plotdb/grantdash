@@ -25,6 +25,7 @@ config = do
  "user-root": path.join(root, "users")
  "org-slug": process.argv.3
  "brd-slug": process.argv.4
+ "server-root": root
 
 template = do
   cert:   fs.read-file-sync("templates/cert.config").toString!
