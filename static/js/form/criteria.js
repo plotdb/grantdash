@@ -20,7 +20,7 @@ ldc.register('prjFormCriteria', [], function(){
         ops: "regex"
       },
       "count": {
-        name: "選項數",
+        name: "項目數",
         ops: "count"
       },
       "file-size": {
@@ -127,7 +127,8 @@ ldc.register('prjFormCriteria', [], function(){
       'form-budget': ['budget-percent', 'budget-number'],
       'form-checkpoint': ['count'],
       'form-tag': ['count'],
-      'form-datetime': []
+      'form-datetime': [],
+      'form-table': ['count']
     },
     'default': {
       'form-budget': [

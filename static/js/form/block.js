@@ -9,6 +9,112 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
     }
   };
   module = {};
+  module["form-table"] = {
+    moduleInit: function(){
+      var initView, waitForRootSize, this$ = this;
+      initView = function(){
+        var view;
+        return this$.view.module = view = new ldView({
+          root: this$.root,
+          context: {},
+          action: {
+            click: {
+              "new-row": function(arg$){
+                var node, context, row, that;
+                node = arg$.node, context = arg$.context;
+                row = ((that = context.hot.getSelected())
+                  ? that[0]
+                  : context.hot.countRows()) + 1;
+                return context.hot.alter('insert_row', row, 1);
+              }
+            }
+          },
+          init: {
+            "table-root": function(arg$){
+              var node, context, getData, update, data, hot;
+              node = arg$.node, context = arg$.context;
+              getData = function(){
+                var h, ref$, b;
+                h = Array.isArray(((ref$ = this$.block).data || (ref$.data = {})).sheet)
+                  ? ((ref$ = this$.block).data || (ref$.data = {})).sheet
+                  : [["範例", "資料", "表格"]];
+                b = Array.isArray(((ref$ = this$.block).value || (ref$.value = {})).sheet)
+                  ? ((ref$ = this$.block).value || (ref$.value = {})).sheet
+                  : [];
+                return h.concat(b);
+              };
+              update = function(changes){
+                var ref$;
+                if (hot) {
+                  if (changes.length) {
+                    hot.loadData(data);
+                  }
+                }
+                if (this$.viewing) {
+                  this$.block.value.sheet = data.slice(1);
+                } else {
+                  ((ref$ = this$.block).data || (ref$.data = {})).sheet = data.slice(0, 1);
+                }
+                return this$.update();
+              };
+              data = getData();
+              context.hot = hot = new Handsontable(node, {
+                data: data,
+                filters: true,
+                dropdownMenu: true,
+                stretchH: 'all',
+                rowHeights: 25,
+                wordWrap: false,
+                minRows: 3,
+                minCols: 3,
+                maxCols: 9,
+                afterChange: function(changes){
+                  changes == null && (changes = []);
+                  return update(changes);
+                }
+              });
+              return hot.updateSettings({
+                contextMenu: {
+                  items: {
+                    "add_row_above": {
+                      name: "在上方新增一列",
+                      callback: function(k, o){
+                        return hot.alter('insert_row', hot.getSelected()[0][0], 1);
+                      }
+                    },
+                    "add_row_below": {
+                      name: "在下方新增一列",
+                      callback: function(k, o){
+                        return hot.alter('insert_row', hot.getSelected()[0][0] + 1, 1);
+                      }
+                    },
+                    "del_row": {
+                      name: "刪除列",
+                      callback: function(k, o){
+                        var sel;
+                        sel = hot.getSelected()[0];
+                        hot.alter('remove_row', sel[0], 1);
+                        this$.block.value.sheet.splice(sel[0], 1);
+                        return update([sel[0], sel[1]]);
+                      }
+                    }
+                  }
+                }
+              });
+            }
+          }
+        });
+      };
+      waitForRootSize = function(){
+        if (this$.root.getBoundingClientRect().width) {
+          return initView();
+        } else {
+          return requestAnimationFrame(waitForRootSize);
+        }
+      };
+      return requestAnimationFrame(waitForRootSize);
+    }
+  };
   module["form-budget"] = {
     moduleInit: function(){
       var initView, waitForRootSize, this$ = this;

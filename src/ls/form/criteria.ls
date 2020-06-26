@@ -6,7 +6,7 @@ schema = do
     "string": {name: "文字", ops: "string"}
     "length": {name: "長度", ops: "count"}
     "regex": {name: "正規式", ops: "regex"}
-    "count": {name: "選項數", ops: "count"}
+    "count": {name: "項目數", ops: "count"}
     "file-size": {name: "檔案大小", ops: "smaller"}
     "file-format": {name: "檔案格式", ops: "extension"}
     "file-count": {name: "檔案數量", ops: "count"}
@@ -49,6 +49,7 @@ schema = do
     'form-checkpoint': <[count]>
     'form-tag': <[count]>
     'form-datetime': <[]>
+    'form-table': <[count]>
   default:
     'form-budget': [
       {type: \budget-percent, op: \gte}

@@ -45,6 +45,7 @@ get-data = do
   "form-radio": ({block}) ->
     value = (block.value or {})
     return ((value.list or []) ++ (if value.other => [value.other-value] else []))
+  "form-table": ({block}) -> ((block.value or {}).sheet or []).filter -> it.filter(->it).length
 
 is-empty = do
   "form-checkpoint": ({block, data}) ->
@@ -53,6 +54,7 @@ is-empty = do
     return !(value.start and (!config.range-enabled or value.end))
   "form-checkbox": ({block, data}) -> !(data.filter(->it).length)
   "form-radio": ({block, data}) -> !(data.filter(->it).length)
+  "form-table": ({block, data}) -> !(data and data.length)
 
 retcode = do
   empty: {result: false, criteria: {invalid: "此為必填項目"}}
@@ -94,7 +96,7 @@ return do
   validate: (block, force = false) ->
     [value, config, empty] = [block.{}value, block.{}config, false]
     if validate[block.name] => return validate[block.name]({block, force})
-    data = if get-data[block.name] => get-data[block.name]
+    data = if get-data[block.name] => get-data[block.name] {block}
     else if value.content => value.content
     else if value.list => data = value.list
     else null

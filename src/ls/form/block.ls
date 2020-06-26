@@ -6,6 +6,61 @@ settext = (n,v) -> if n.innerText != v => n.innerText = v
 
 module = {}
 
+module["form-table"] = module-init: ->
+  init-view = ~>
+    @view.module = view = new ldView do
+      root: @root
+      context: {}
+      action: click: do
+        "new-row": ({node, context}) ->
+          row = (if context.hot.getSelected! => that.0 else context.hot.countRows!) + 1
+          context.hot.alter \insert_row, row, 1
+      init: do
+        "table-root": ({node, context}) ~>
+          get-data = ~>
+            h = if Array.isArray(@block.{}data.sheet) => @block.{}data.sheet else [["範例","資料","表格"]]
+            b = if Array.isArray(@block.{}value.sheet) => @block.{}value.sheet else []
+            return h ++ b
+          update = (changes) ~>
+            if hot => if changes.length => hot.loadData data
+            if @viewing => @block.value.sheet = data.slice(1)
+            else @block.{}data.sheet = data.slice(0,1)
+            @update!
+          data = get-data!
+          context.hot = hot = new Handsontable node, {
+            data: data
+            filters: true
+            dropdownMenu: true
+            stretchH: \all
+            rowHeights: 25
+            wordWrap: false
+            minRows: 3
+            minCols: 3
+            maxCols: 9
+            afterChange: (changes = []) ~> update changes
+          }
+          hot.updateSettings contextMenu: items:
+            "add_row_above":
+              name: "在上方新增一列"
+              callback: (k,o) -> hot.alter \insert_row, (hot.getSelected!0.0), 1
+            "add_row_below":
+              name: "在下方新增一列"
+              callback: (k,o) -> hot.alter \insert_row, (hot.getSelected!0.0 + 1), 1
+            "del_row":
+              name: "刪除列"
+              callback: (k,o) ~>
+                sel = hot.getSelected!0
+                hot.alter \remove_row, (sel.0), 1
+                @block.value.sheet.splice (sel.0), 1
+                update [sel.0, sel.1]
+
+
+  # TODO without this, handsontable calculates width incorrectly.
+  wait-for-root-size = ~>
+    if @root.getBoundingClientRect!width => init-view!
+    else requestAnimationFrame wait-for-root-size
+  requestAnimationFrame wait-for-root-size
+
 module["form-budget"] = module-init: ->
   if !@viewing =>
     ld$.find(@root, '[ld="not is-view"]',0).classList.toggle \d-none, false
@@ -51,7 +106,6 @@ module["form-budget"] = module-init: ->
               if row < 2 or col >= 4 => cellProperties.readOnly = true
               if row < 2 => return td.classList.add \head
               if col > 1 => return td.classList.add \value
-
           )
 
           isval = -> it? and "#{it}".length

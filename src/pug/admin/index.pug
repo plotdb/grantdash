@@ -1,4 +1,6 @@
 extends /admin/base.pug
+block head
+  +css("/dash/assets/lib/handsontable/handsontable.min.css")
 block body
 block script
   +scope("admin").d-flex.flex-column.h-100.position-relative.z-float
@@ -152,6 +154,7 @@ block script
               .btn.btn-sm.btn-outline-light.ml-4(pd="publish-modification") 發布變更
               //-.btn.btn-sm.btn-outline-light.ml-2(pd="restore-settings") 放棄變更
 
+  +script("/dash/assets/lib/handsontable/handsontable.min.js")
   +script("/dash/js/util/sdb-adapter.js")
   +script("/dash/js/util/hub.js")
   +script("/dash/js/util/user.js")

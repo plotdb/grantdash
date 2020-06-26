@@ -122,6 +122,15 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
       return (value.list || []).concat(value.other
         ? [value.otherValue]
         : []);
+    },
+    "form-table": function(arg$){
+      var block;
+      block = arg$.block;
+      return ((block.value || {}).sheet || []).filter(function(it){
+        return it.filter(function(it){
+          return it;
+        }).length;
+      });
     }
   };
   isEmpty = {
@@ -150,6 +159,11 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
       return !data.filter(function(it){
         return it;
       }).length;
+    },
+    "form-table": function(arg$){
+      var block, data;
+      block = arg$.block, data = arg$.data;
+      return !(data && data.length);
     }
   };
   retcode = {
@@ -249,7 +263,9 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
         });
       }
       data = getData[block.name]
-        ? getData[block.name]
+        ? getData[block.name]({
+          block: block
+        })
         : value.content
           ? value.content
           : value.list ? data = value.list : null;
