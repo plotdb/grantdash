@@ -131,10 +131,14 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
             return it.key;
           },
           list: function(){
-            return (lc.list || []).concat([{
-              name: "無",
-              key: null
-            }]);
+            if (lc.list && lc.list.length) {
+              return lc.list;
+            } else {
+              return [{
+                name: "無",
+                key: null
+              }];
+            }
           },
           handler: function(arg$){
             var node, data;

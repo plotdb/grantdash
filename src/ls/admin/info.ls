@@ -63,7 +63,7 @@ Ctrl = (opt) ->
         node.style.backgroundImage = url
       org: do
         key: -> it.key
-        list: -> (lc.list or []) ++ [{name: "無", key: null}]
+        list: -> if lc.list and lc.list.length => lc.list else [{name: "無", key: null}]
         handler: ({node, data}) ->
           node.innerText = data.name + (if !data.slug => '' else " ( #{data.slug} )")
           node.setAttribute \value, (data.slug or '')
