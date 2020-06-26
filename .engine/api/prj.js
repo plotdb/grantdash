@@ -99,7 +99,7 @@
           info: grp.info
         };
         delete brd.detail;
-        view = (req.query || (req.query = {})).simple != null ? 'prj/view-standalone.pug' : 'prj/view.pug';
+        view = (req.query || (req.query = {})).simple != null ? 'view/prj-view-simple.pug' : 'view/prj-viwe.pug';
         return res.render(view, (ref$ = (ref1$ = {
           prj: lc.prj,
           grp: lc.grp,

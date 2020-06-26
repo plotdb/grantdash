@@ -328,7 +328,7 @@
         });
         lc.pageInfo = import$((ref$ = (ref1$ = (ref2$ = lc.brd.detail).page || (ref2$.page = {})).info || (ref1$.info = {})).generic || (ref$.generic = {}), lc.brd.detail.info);
         delete lc.brd.detail;
-        res.render('prj/list.pug', lc);
+        res.render('view/prj-list.pug', lc);
         return null;
       })['catch'](aux.errorHandler(res));
     });
