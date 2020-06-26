@@ -49,5 +49,10 @@ schema = do
     'form-checkpoint': <[count]>
     'form-tag': <[count]>
     'form-datetime': <[]>
+  default:
+    'form-budget': [
+      {type: \budget-percent, op: \gte}
+      {type: \budget-number, op: \gte}
+    ]
 
 return {schema}

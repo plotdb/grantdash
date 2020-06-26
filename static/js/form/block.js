@@ -1125,16 +1125,24 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
             },
             action: {
               click: function(arg$){
-                var node, data, evt, local, n;
+                var node, data, evt, local, n, ops, k;
                 node = arg$.node, data = arg$.data, evt = arg$.evt, local = arg$.local;
                 if (!(n = ld$.parent(evt.target, '.dropdown-item', node))) {
                   return;
                 }
-                if (n.type) {
-                  data.type = n.type;
-                }
                 if (n.op) {
                   data.op = n.op;
+                }
+                if (n.type && data.type !== n.type) {
+                  data.type = n.type;
+                  ops = (prjFormCriteria.schema.types[data.type] || {}).ops;
+                  data.op = (function(){
+                    var results$ = [];
+                    for (k in prjFormCriteria.schema.ops[ops] || {}) {
+                      results$.push(k);
+                    }
+                    return results$;
+                  }())[0] || '?';
                 }
                 this$.update();
                 return local.view.render();

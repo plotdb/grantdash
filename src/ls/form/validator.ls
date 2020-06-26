@@ -34,42 +34,74 @@ validator = do
     convert: (v,i,j) -> [+v,+(i or 0),+(j or 0)]
     le: (v,i) -> v < i
 
-return do
-  validate: (block, force = false) ->
-    [value,config, is-empty] = [block.{}value, block.{}config, false]
-    if block.name == \form-checkpoint =>
-      data = value.[]list
-      is-empty = !data.length or data.filter(-> (it.title and it.desc and it.date)).length != data.length
-    else if block.name == \form-budget =>
-      data = value.sheet.reduce(((a,b) -> a + +b.2 + +b.3), 0)
-      is-empty = !data or isNaN(data)
-    else if block.name == \form-datetime =>
-      data = value
-      is-empty = !(value.start and (!config.range-enabled or value.end))
-    else if block.name in <[form-checkbox form-radio]> =>
-      data = ((value.list or []) ++ (if value.other => [value.other-value] else []))
-      is-empty = !(data.filter(->it).length)
-    else if value.content =>
-      data = value.content
-      is-empty = !data
-    else if value.list =>
-      data = value.list
-      is-empty = !(data and data.length)
-    else
-      [data,is-empty] = [null, true]
+get-data = do
+  "form-checkpoint": ({block}) ->
+    return (block.value or {}).list or []
+  "form-datetime": ({block}) ->
+    return (block.value or {})
+  "form-checkbox": ({block}) ->
+    value = (block.value or {})
+    return ((value.list or []) ++ (if value.other => [value.other-value] else []))
+  "form-radio": ({block}) ->
+    value = (block.value or {})
+    return ((value.list or []) ++ (if value.other => [value.other-value] else []))
 
-    if is-empty and ((config.required and block.touched) or force) =>
-      return {result: false, criteria: {invalid: "此為必填項目"}}
+is-empty = do
+  "form-checkpoint": ({block, data}) ->
+    return !data.length or data.filter(-> (it.title and it.desc and it.date)).length != data.length
+  "form-datetime": ({block, data}) ->
+    return !(value.start and (!config.range-enabled or value.end))
+  "form-checkbox": ({block, data}) -> !(data.filter(->it).length)
+  "form-radio": ({block, data}) -> !(data.filter(->it).length)
 
-    if is-empty => return {}
-    else block.touched = true
-    for c in (block.criteria or [])
-      if !c.enabled => continue
-      type = prjFormCriteria.schema.types[c.type]
-      if !(c.type and type) => continue
-      vtr = validator[type.ops]
-      if !vtr[c.op] => continue
-      [v,i,j] = vtr.convert data, c.input1, c.input2
-      if !(vtr.type(v, i, j) and vtr[c.op](v,i,j)) => return {result: false, criteria: c}
+retcode = do
+  empty: {result: false, criteria: {invalid: "此為必填項目"}}
+  pass: {result: true}
+
+apply-criteria = (c, data) ->
+  if !c.enabled => return null
+  type = prjFormCriteria.schema.types[c.type]
+  if !(c.type and type) => return null
+  vtr = validator[type.ops]
+  if !vtr[c.op] => return null
+  [v,i,j] = vtr.convert data, c.input1, c.input2
+  if !(vtr.type(v, i, j) and vtr[c.op](v,i,j)) => return {result: false, criteria: c}
+  return null
+
+empty-helper = ({block, empty, force}) ->
+  config = block.{}config
+  if empty and ((config.required and block.touched) or force) => return retcode.empty
+  if empty => return {}
+  block.touched = true
+  return null
+
+validate = do
+  "form-budget": ({block, force}) ->
+    sheet = (block.value or {}).sheet or []
+    data = sheet.reduce(((a,b) -> a + +b.2 + +b.3), 0)
+    empty = !data or isNaN(data)
+    if empty-helper({block, empty, force}) => return that
+    total = sheet.reduce(((a,b) -> a + +b.2 + +b.3), 0)
+    subsidy = sheet.reduce(((a,b) -> a + +b.3), 0)
+    percent = (subsidy / (total or 1)) * 100
+    for c in (block.criteria or []) =>
+      if c.type == \budget-percent => data = percent
+      else if c.type == \budget-number => data = subsidy
+      if apply-criteria(c, data) => return that
     return {result: true}
 
+return do
+  validate: (block, force = false) ->
+    [value, config, empty] = [block.{}value, block.{}config, false]
+    if validate[block.name] => return validate[block.name]({block, force})
+    data = if get-data[block.name] => get-data[block.name]
+    else if value.content => value.content
+    else if value.list => data = value.list
+    else null
+    empty = if is-empty[block.name] => is-empty[block.name]({block,data})
+    else if value.content => !value.content
+    else if value.list => !(value.list and value.list.length)
+    else true
+    if empty-helper({block, empty, force}) => return that
+    for c in (block.criteria or []) => if apply-criteria(c, data) => return that
+    return retcode.pass

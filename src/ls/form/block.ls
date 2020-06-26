@@ -509,8 +509,12 @@ Ctrl = (opt) ->
         list: ~> @block.[]criteria
         action: click: ({node, data, evt, local}) ~>
           if !(n = ld$.parent(evt.target, '.dropdown-item', node)) => return
-          if n.type => data.type = n.type
           if n.op => data.op = n.op
+          if n.type and data.type != n.type =>
+            data.type = n.type
+            ops = (prjFormCriteria.schema.types[data.type] or {}).ops
+            data.op = [k for k of (prjFormCriteria.schema.ops[ops] or {})].0 or '?'
+
           @update!
           local.view.render!
         init: ({node, data, local}) ~>

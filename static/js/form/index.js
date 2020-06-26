@@ -232,13 +232,14 @@ ldc.register('prjForm', ['error', 'ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 
               required: true
             },
             criteria: [{
-              enabled: true,
+              enabled: false,
               type: 'number',
               op: 'between'
             }]
           };
-          type = schema.support[name][0];
-          if (type) {
+          if (schema['default'][name]) {
+            newData.criteria = JSON.parse(JSON.stringify(schema['default'][name]));
+          } else if (type = schema.support[name][0]) {
             op = (function(){
               var results$ = [];
               for (k in schema.ops[schema.types[type].ops] || {}) {
