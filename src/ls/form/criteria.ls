@@ -10,6 +10,8 @@ schema = do
     "file-size": {name: "檔案大小", ops: "smaller"}
     "file-format": {name: "檔案格式", ops: "extension"}
     "file-count": {name: "檔案數量", ops: "count"}
+    "budget-percent": {name: "補助比例", ops: "number"}
+    "budget-number": {name: "補助金額", ops: "number"}
   ops:
     extension: do
       "ext": { name: '副檔名 <span class="text-sm">( 逗點分隔 )</span>' }
@@ -43,7 +45,7 @@ schema = do
     'form-checkbox': <[count]>
     'form-file': <[file-size file-format file-count]>
     'form-thumbnail': []
-    'form-budget': <[number]>
+    'form-budget': <[budget-percent budget-number]>
     'form-checkpoint': <[count]>
     'form-tag': <[count]>
     'form-datetime': <[]>

@@ -1106,7 +1106,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
             add: function(){
               var ref$;
               ((ref$ = this$.block).criteria || (ref$.criteria = [])).push({
-                type: 'number'
+                type: prjFormCriteria.support[this$.block.name][0] || 'number'
               });
               return this$.view.criteria.render();
             }

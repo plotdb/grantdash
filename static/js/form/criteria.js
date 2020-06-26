@@ -34,6 +34,14 @@ ldc.register('prjFormCriteria', [], function(){
       "file-count": {
         name: "檔案數量",
         ops: "count"
+      },
+      "budget-percent": {
+        name: "補助比例",
+        ops: "number"
+      },
+      "budget-number": {
+        name: "補助金額",
+        ops: "number"
       }
     },
     ops: {
@@ -116,7 +124,7 @@ ldc.register('prjFormCriteria', [], function(){
       'form-checkbox': ['count'],
       'form-file': ['file-size', 'file-format', 'file-count'],
       'form-thumbnail': [],
-      'form-budget': ['number'],
+      'form-budget': ['budget-percent', 'budget-number'],
       'form-checkpoint': ['count'],
       'form-tag': ['count'],
       'form-datetime': []

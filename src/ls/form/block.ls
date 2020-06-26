@@ -501,7 +501,7 @@ Ctrl = (opt) ->
     root: @root
     action: click: do
       add: ~>
-        @block.[]criteria.push {type: \number}
+        @block.[]criteria.push {type: prjFormCriteria.support[@block.name].0 or \number}
         @view.criteria.render!
     handler: do
       "has-criteria": ({node}) ~> node.classList.toggle \d-none, !@block.[]criteria.length
