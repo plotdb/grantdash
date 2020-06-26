@@ -1,6 +1,11 @@
 #nav-top nav.navbar {
-  padding: 0.5rem 0;
+  margin: auto;
 }
 #nav-top nav.navbar .navbar-brand {
   font-size: 1em;
+}
+#nav-top nav.navbar a.nav-link,
+#nav-top nav.navbar a.navbar-brand,
+#nav-top nav.navbar .navbar-brand a {
+  color: #222;
 }
