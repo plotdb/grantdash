@@ -161,17 +161,19 @@ api.get \/brd/:brd/grp/:grp/judge-list, aux.signed, (req, res) ->
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res
 
-api.get \/brd/:slug/list, (req, res) ->
-  # TODO check stage
-  get-prj-list req, res
+api.get \/brd/:slug/list, throttle.count.user, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  cache.stage.check {io, type: \brd, slug: slug, name: \prj-list-view}
+    .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: slug, action: <[owner judge]>}
+    .then -> get-prj-list req, res
     .then -> res.send it
     .catch aux.error-handler res
 
 app.get \/brd/:slug/list, (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r400 res
-  # TODO check stage
-  get-prj-list req, res
+  cache.stage.check {io, type: \brd, slug: slug, name: \prj-list-view}
+    .then -> get-prj-list req, res
     .then (ret) ->
       lc.prjs = ret
       io.query """
@@ -187,41 +189,20 @@ app.get \/brd/:slug/list, (req, res) ->
       return null
     .catch aux.error-handler res
 
-app.get \/brd/:slug, aux.signed, (req, res) ->
+app.get \/brd/:slug, (req, res) ->
   lc = {}
   if !req.user => return aux.r403 res
   if !(slug = req.params.slug) => return aux.r400 res
   io.query "select * from brd where slug = $1 and deleted is not true", [slug]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 404
-      if brd.owner != req.user.key => return aux.reject 403
+      res.render \pages/under-construction.pug, lc{brd}
+      /*
       io.query "select * from prj where brd = $1 and deleted is not true", [brd.slug]
     .then (r={}) ->
       lc.projects = r.[]rows
       res.render \pages/under-construction.pug, lc{brd, projects}
-    .catch aux.error-handler res
-
-api.post \/brd/:brd/grp/:grp/info, (req, res) ->
-  if !((brd = req.params.brd) and (grp = req.params.grp)) => return aux.r400 res
-  fields = req.body.[]fields.filter -> it in <[grade criteria form]>
-  io.query "select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [brd]
-    .then (r={}) ->
-      if !(ret = r.[]rows.0) => return aux.reject 404
-      if !(g = ret.detail.[]group.filter(-> it.key == grp).0) => return aux.reject 404
-      grpinfo = g{info, key}
-      for f in fields => grpinfo[f] = g[f]
-      res.send {brd: ret{key,name,description,slug}, grp: grpinfo}
-    .catch aux.error-handler res
-
-# TODO who use this?
-api.get \/brd/:slug/form/, (req, res) ->
-  if !(slug = req.params.slug) => return aux.r400 res
-  io.query "select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [slug]
-    .then (r={}) ->
-      if !(ret = r.[]rows.0) => return aux.reject 404
-      ret.detail = ret.detail{group}
-      ret.detail.group = ret.detail.group.map -> it{form, info, key}
-      res.send ret{key,name,description,slug,detail}
+      */
     .catch aux.error-handler res
 
 api.post \/deploy, aux.signed, throttle.count.user-md, grecaptcha, (req, res) ->
@@ -298,9 +279,33 @@ app.get \/brd/:slug/admin, aux.signed, (req, res) ->
       return null
     .catch aux.error-handler res
 
-api.post \/slug-check/:type, throttle.count.ip, (req, res) ->
+api.post \/slug-check/:type, aux.signed, throttle.count.ip, (req, res) ->
   [type,slug] = [req.params.type, req.body.slug]
   if !((type in <[org brd]>) and /^[A-Za-z0-9+_-]+$/.exec(slug)) => return aux.r404 res
   io.query "select key from #type where slug = $1", [slug]
     .then (r = {}) -> res.send {result: if (r.rows or []).length => 'used' else 'free'}
+    .catch aux.error-handler res
+
+#TODO review
+api.post \/brd/:brd/grp/:grp/info, (req, res) ->
+  if !((brd = req.params.brd) and (grp = req.params.grp)) => return aux.r400 res
+  fields = req.body.[]fields.filter -> it in <[grade criteria form]>
+  io.query "select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [brd]
+    .then (r={}) ->
+      if !(ret = r.[]rows.0) => return aux.reject 404
+      if !(g = ret.detail.[]group.filter(-> it.key == grp).0) => return aux.reject 404
+      grpinfo = g{info, key}
+      for f in fields => grpinfo[f] = g[f]
+      res.send {brd: ret{key,name,description,slug}, grp: grpinfo}
+    .catch aux.error-handler res
+
+# TODO who use this?
+api.get \/brd/:slug/form/, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  io.query "select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [slug]
+    .then (r={}) ->
+      if !(ret = r.[]rows.0) => return aux.reject 404
+      ret.detail = ret.detail{group}
+      ret.detail.group = ret.detail.group.map -> it{form, info, key}
+      res.send ret{key,name,description,slug,detail}
     .catch aux.error-handler res
