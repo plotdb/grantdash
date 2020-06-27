@@ -50,6 +50,7 @@ schema = do
     'form-tag': <[count]>
     'form-datetime': <[]>
     'form-table': <[count]>
+    'form-text': <[]>
   default:
     'form-budget': [
       {type: \budget-percent, op: \gte}

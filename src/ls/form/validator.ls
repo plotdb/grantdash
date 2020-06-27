@@ -78,6 +78,7 @@ empty-helper = ({block, empty, force}) ->
   return null
 
 validate = do
+  "form-text": -> return {result: true}
   "form-budget": ({block, force}) ->
     sheet = (block.value or {}).sheet or []
     data = sheet.reduce(((a,b) -> a + +b.2 + +b.3), 0)

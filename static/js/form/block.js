@@ -9,6 +9,120 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
     }
   };
   module = {};
+  module["form-text"] = {
+    moduleInit: function(){
+      var view, this$ = this;
+      if (this.viewing) {
+        return this.view.module = view = new ldView({
+          root: this.root,
+          handler: {
+            "is-view": function(arg$){
+              var node, names;
+              node = arg$.node, names = arg$.names;
+              return node.classList.toggle('d-none', in$("not", names));
+            },
+            title: function(arg$){
+              var node;
+              node = arg$.node;
+              return node.classList.add('d-none');
+            },
+            desc: function(arg$){
+              var node;
+              node = arg$.node;
+              return node.classList.add('d-none');
+            },
+            text: function(arg$){
+              var node, data, content, code;
+              node = arg$.node;
+              data = this$.block.data || {};
+              content = data.content || '';
+              node.innerHTML = data.content;
+              code = data.useMarkdown
+                ? marked(content)
+                : htmlentities(content);
+              return node.innerHTML = DOMPurify.sanitize(code);
+            }
+          }
+        });
+      } else {
+        return this.view.module = view = new ldView({
+          root: this.root,
+          action: {
+            input: {
+              "use-markdown": function(arg$){
+                var node, ref$;
+                node = arg$.node;
+                ((ref$ = this$.block).data || (ref$.data = {})).useMarkdown = node.checked;
+                if (!node.checked) {
+                  this$.preview = false;
+                }
+                this$.update();
+                return view.render();
+              },
+              "input-field": function(arg$){
+                var node, ref$;
+                node = arg$.node;
+                ((ref$ = this$.block).data || (ref$.data = {})).content = node.value;
+                return this$.update();
+              },
+              "toggle-preview": function(arg$){
+                var node;
+                node = arg$.node;
+                this$.preview = !!node.checked;
+                return view.render();
+              }
+            }
+          },
+          handler: {
+            title: function(arg$){
+              var node;
+              node = arg$.node;
+              node.removeAttribute('editable');
+              return node.innerText = "( 說明文字 - 僅做說明用途，不提供用戶輸入 )";
+            },
+            desc: function(arg$){
+              var node;
+              node = arg$.node;
+              return node.classList.add('d-none');
+            },
+            "toggle-preview": function(arg$){
+              var node;
+              node = arg$.node;
+              return node.checked = this$.preview;
+            },
+            "is-view": function(arg$){
+              var node, names;
+              node = arg$.node, names = arg$.names;
+              return node.classList.toggle('d-none', !in$("not", names));
+            },
+            "input-field": function(arg$){
+              var node, ref$;
+              node = arg$.node;
+              return node.value = ((ref$ = this$.block).data || (ref$.data = {})).content || '';
+            },
+            "preview-panel": function(arg$){
+              var node, ref$;
+              node = arg$.node;
+              node.classList.toggle('d-none', !this$.preview);
+              if (this$.preview) {
+                return node.innerHTML = DOMPurify.sanitize(marked(((ref$ = this$.block).data || (ref$.data = {})).content || ''));
+              }
+            },
+            "edit-panel": function(arg$){
+              var node;
+              node = arg$.node;
+              return node.classList.toggle('d-none', !!this$.preview);
+            },
+            "if-markdown": function(arg$){
+              var node, ref$;
+              node = arg$.node;
+              return node.classList.toggle('d-none', !((ref$ = this$.block).data || (ref$.data = {})).useMarkdown);
+            }
+          }
+        });
+      }
+    }
+  };
   module["form-table"] = {
     moduleInit: function(){
       var initView, waitForRootSize, this$ = this;

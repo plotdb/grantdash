@@ -6,6 +6,50 @@ settext = (n,v) -> if n.innerText != v => n.innerText = v
 
 module = {}
 
+module["form-text"] = module-init: ->
+  if @viewing =>
+    @view.module = view = new ldView do
+      root: @root
+      handler: do
+        "is-view": ({node,names}) -> node.classList.toggle \d-none, ("not" in names)
+        title: ({node}) -> node.classList.add \d-none
+        desc: ({node}) -> node.classList.add \d-none
+        text: ({node}) ~>
+          data = (@block.data or {})
+          content = data.content or ''
+          node.innerHTML = data.content
+          code = if data.use-markdown => marked(content) else htmlentities(content)
+          node.innerHTML = DOMPurify.sanitize(code)
+
+  else
+    @view.module = view = new ldView do
+      root: @root
+      action: input: do
+        "use-markdown": ({node}) ~>
+          @block.{}data.use-markdown = node.checked
+          if !node.checked => @preview = false
+          @update!
+          view.render!
+        "input-field": ({node}) ~>
+          @block.{}data.content = node.value
+          @update!
+        "toggle-preview": ({node}) ~>
+          @preview = !!node.checked
+          view.render!
+      handler: do
+        title: ({node}) ->
+          node.removeAttribute \editable
+          node.innerText = "( 說明文字 - 僅做說明用途，不提供用戶輸入 )"
+        desc: ({node}) -> node.classList.add \d-none
+        "toggle-preview": ({node}) ~> node.checked = @preview
+        "is-view": ({node,names}) -> node.classList.toggle \d-none, !("not" in names)
+        "input-field": ({node}) ~> node.value = @block.{}data.content or ''
+        "preview-panel": ({node}) ~>
+          node.classList.toggle \d-none, !@preview
+          if @preview => node.innerHTML = DOMPurify.sanitize(marked(@block.{}data.content or ''))
+        "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
+        "if-markdown": ({node}) ~> node.classList.toggle \d-none, !@block.{}data.use-markdown
+
 module["form-table"] = module-init: ->
   init-view = ~>
     @view.module = view = new ldView do

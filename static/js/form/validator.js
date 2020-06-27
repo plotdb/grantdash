@@ -213,6 +213,11 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
     return null;
   };
   validate = {
+    "form-text": function(){
+      return {
+        result: true
+      };
+    },
     "form-budget": function(arg$){
       var block, force, sheet, data, empty, that, total, subsidy, percent, i$, ref$, len$, c;
       block = arg$.block, force = arg$.force;

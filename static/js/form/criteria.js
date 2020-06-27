@@ -128,7 +128,8 @@ ldc.register('prjFormCriteria', [], function(){
       'form-checkpoint': ['count'],
       'form-tag': ['count'],
       'form-datetime': [],
-      'form-table': ['count']
+      'form-table': ['count'],
+      'form-text': []
     },
     'default': {
       'form-budget': [
