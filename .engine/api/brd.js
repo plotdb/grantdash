@@ -279,8 +279,27 @@
         return res.send(r.rows || (r.rows = []));
       })['catch'](aux.errorHandler(res));
     });
-    api.get('/brd/:slug/list', function(req, res){
-      return getPrjList(req, res).then(function(it){
+    api.get('/brd/:slug/list', throttle.count.user, function(req, res){
+      var slug;
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      return cache.stage.check({
+        io: io,
+        type: 'brd',
+        slug: slug,
+        name: 'prj-list-view'
+      })['catch'](function(){
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: slug,
+          action: ['owner', 'judge']
+        });
+      }).then(function(){
+        return getPrjList(req, res);
+      }).then(function(it){
         return res.send(it);
       })['catch'](aux.errorHandler(res));
     });
@@ -290,7 +309,14 @@
       if (!(slug = req.params.slug)) {
         return aux.r400(res);
       }
-      return getPrjList(req, res).then(function(ret){
+      return cache.stage.check({
+        io: io,
+        type: 'brd',
+        slug: slug,
+        name: 'prj-list-view'
+      }).then(function(){
+        return getPrjList(req, res);
+      }).then(function(ret){
         lc.prjs = ret;
         return io.query("select b.name, b.description, b.slug, b.org, b.detail from brd as b\nwhere b.slug = $1 and b.deleted is not true", [slug]);
       }).then(function(r){
@@ -311,7 +337,7 @@
         return null;
       })['catch'](aux.errorHandler(res));
     });
-    app.get('/brd/:slug', aux.signed, function(req, res){
+    app.get('/brd/:slug', function(req, res){
       var lc, slug;
       lc = {};
       if (!req.user) {
@@ -326,84 +352,8 @@
         if (!(lc.brd = brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
-        if (brd.owner !== req.user.key) {
-          return aux.reject(403);
-        }
-        return io.query("select * from prj where brd = $1 and deleted is not true", [brd.slug]);
-      }).then(function(r){
-        r == null && (r = {});
-        lc.projects = r.rows || (r.rows = []);
         return res.render('pages/under-construction.pug', {
-          brd: lc.brd,
-          projects: lc.projects
-        });
-      })['catch'](aux.errorHandler(res));
-    });
-    api.post('/brd/:brd/grp/:grp/info', function(req, res){
-      var brd, grp, fields, ref$;
-      if (!((brd = req.params.brd) && (grp = req.params.grp))) {
-        return aux.r400(res);
-      }
-      fields = ((ref$ = req.body).fields || (ref$.fields = [])).filter(function(it){
-        return it === 'grade' || it === 'criteria' || it === 'form';
-      });
-      return io.query("select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [brd]).then(function(r){
-        var ret, g, ref$, grpinfo, i$, len$, f;
-        r == null && (r = {});
-        if (!(ret = (r.rows || (r.rows = []))[0])) {
-          return aux.reject(404);
-        }
-        if (!(g = ((ref$ = ret.detail).group || (ref$.group = [])).filter(function(it){
-          return it.key === grp;
-        })[0])) {
-          return aux.reject(404);
-        }
-        grpinfo = {
-          info: g.info,
-          key: g.key
-        };
-        for (i$ = 0, len$ = (ref$ = fields).length; i$ < len$; ++i$) {
-          f = ref$[i$];
-          grpinfo[f] = g[f];
-        }
-        return res.send({
-          brd: {
-            key: ret.key,
-            name: ret.name,
-            description: ret.description,
-            slug: ret.slug
-          },
-          grp: grpinfo
-        });
-      })['catch'](aux.errorHandler(res));
-    });
-    api.get('/brd/:slug/form/', function(req, res){
-      var slug;
-      if (!(slug = req.params.slug)) {
-        return aux.r400(res);
-      }
-      return io.query("select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [slug]).then(function(r){
-        var ret;
-        r == null && (r = {});
-        if (!(ret = (r.rows || (r.rows = []))[0])) {
-          return aux.reject(404);
-        }
-        ret.detail = {
-          group: ret.detail.group
-        };
-        ret.detail.group = ret.detail.group.map(function(it){
-          return {
-            form: it.form,
-            info: it.info,
-            key: it.key
-          };
-        });
-        return res.send({
-          key: ret.key,
-          name: ret.name,
-          description: ret.description,
-          slug: ret.slug,
-          detail: ret.detail
+          brd: lc.brd
         });
       })['catch'](aux.errorHandler(res));
     });
@@ -548,7 +498,7 @@
         return null;
       })['catch'](aux.errorHandler(res));
     });
-    return api.post('/slug-check/:type', throttle.count.ip, function(req, res){
+    api.post('/slug-check/:type', aux.signed, throttle.count.ip, function(req, res){
       var ref$, type, slug;
       ref$ = [req.params.type, req.body.slug], type = ref$[0], slug = ref$[1];
       if (!((type === 'org' || type === 'brd') && /^[A-Za-z0-9+_-]+$/.exec(slug))) {
@@ -558,6 +508,74 @@
         r == null && (r = {});
         return res.send({
           result: (r.rows || []).length ? 'used' : 'free'
+        });
+      })['catch'](aux.errorHandler(res));
+    });
+    api.post('/brd/:brd/grp/:grp/info', function(req, res){
+      var brd, grp, fields, ref$;
+      if (!((brd = req.params.brd) && (grp = req.params.grp))) {
+        return aux.r400(res);
+      }
+      fields = ((ref$ = req.body).fields || (ref$.fields = [])).filter(function(it){
+        return it === 'grade' || it === 'criteria' || it === 'form';
+      });
+      return io.query("select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [brd]).then(function(r){
+        var ret, g, ref$, grpinfo, i$, len$, f;
+        r == null && (r = {});
+        if (!(ret = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        if (!(g = ((ref$ = ret.detail).group || (ref$.group = [])).filter(function(it){
+          return it.key === grp;
+        })[0])) {
+          return aux.reject(404);
+        }
+        grpinfo = {
+          info: g.info,
+          key: g.key
+        };
+        for (i$ = 0, len$ = (ref$ = fields).length; i$ < len$; ++i$) {
+          f = ref$[i$];
+          grpinfo[f] = g[f];
+        }
+        return res.send({
+          brd: {
+            key: ret.key,
+            name: ret.name,
+            description: ret.description,
+            slug: ret.slug
+          },
+          grp: grpinfo
+        });
+      })['catch'](aux.errorHandler(res));
+    });
+    return api.get('/brd/:slug/form/', function(req, res){
+      var slug;
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      return io.query("select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [slug]).then(function(r){
+        var ret;
+        r == null && (r = {});
+        if (!(ret = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        ret.detail = {
+          group: ret.detail.group
+        };
+        ret.detail.group = ret.detail.group.map(function(it){
+          return {
+            form: it.form,
+            info: it.info,
+            key: it.key
+          };
+        });
+        return res.send({
+          key: ret.key,
+          name: ret.name,
+          description: ret.description,
+          slug: ret.slug,
+          detail: ret.detail
         });
       })['catch'](aux.errorHandler(res));
     });
