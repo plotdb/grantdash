@@ -146,8 +146,10 @@ get-prj-list = (req, res) ->
 api.get \/brd/:brd/grp/:grp/judge-list, aux.signed, (req, res) ->
   {brd, grp} = req.params{brd, grp}
   if !(brd and grp) => return aux.r400 res
-  # TODO check user permission
-  Promise.resolve!
+  cache.stage.check {io, type: \brd, slug: brd}
+    .then (cfg = {}) ->
+      if !(cfg["judge-criteria"] or cfg["judge-primary"] or cfg["judge-final"]) => return aux.reject 403
+      cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
     .then ->
       io.query """
       select p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p
