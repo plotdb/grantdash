@@ -56,5 +56,10 @@ schema = do
       {type: \budget-percent, op: \gte}
       {type: \budget-number, op: \gte}
     ]
+    'form-file': [
+      {type: \file-size, op: \smaller}
+      {type: \file-format, op: \extension}
+      {type: \file-count, op: \count}
+    ]
 
 return {schema}

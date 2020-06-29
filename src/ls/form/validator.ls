@@ -81,6 +81,19 @@ empty-helper = ({block, empty, force}) ->
   return null
 
 validate = do
+  "form-file": ({block, force}) ->
+    value = (block.value or {}).list or []
+    for c in (block.criteria or []) =>
+      if c.type == \file-size =>
+        if value.map(-> it.size).filter(-> it >= +c.input1).length => return {result: false, criteria: c}
+      else if c.type == \file-format =>
+        exts = (c.input1 or "").toLowerCase!.split(',')
+        v = value.map ->
+          ext = ((if it.name => it.name.split('.')[* - 1]) or it.ext or '').toLowerCase!
+        if v.filter(->!(it in exts)).length => return {result: false, criteria: c}
+      else if c.type == \file-count => if apply-criteria(c, value) => return that
+    return {result: true}
+
   "form-text": -> return {result: true}
   "form-budget": ({block, force}) ->
     sheet = (block.value or {}).sheet or []

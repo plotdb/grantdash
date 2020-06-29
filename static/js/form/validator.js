@@ -217,6 +217,51 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
     return null;
   };
   validate = {
+    "form-file": function(arg$){
+      var block, force, value, i$, ref$, len$, c, exts, v, that;
+      block = arg$.block, force = arg$.force;
+      value = (block.value || {}).list || [];
+      for (i$ = 0, len$ = (ref$ = block.criteria || []).length; i$ < len$; ++i$) {
+        c = ref$[i$];
+        if (c.type === 'file-size') {
+          if (value.map(fn$).filter(fn1$).length) {
+            return {
+              result: false,
+              criteria: c
+            };
+          }
+        } else if (c.type === 'file-format') {
+          exts = (c.input1 || "").toLowerCase().split(',');
+          v = value.map(fn2$);
+          if (v.filter(fn3$).length) {
+            return {
+              result: false,
+              criteria: c
+            };
+          }
+        } else if (c.type === 'file-count') {
+          if (that = applyCriteria(c, value)) {
+            return that;
+          }
+        }
+      }
+      return {
+        result: true
+      };
+      function fn$(it){
+        return it.size;
+      }
+      function fn1$(it){
+        return it >= +c.input1;
+      }
+      function fn2$(it){
+        var ext, ref$;
+        return ext = ((it.name ? (ref$ = it.name.split('.'))[ref$.length - 1] : void 8) || it.ext || '').toLowerCase();
+      }
+      function fn3$(it){
+        return !in$(it, exts);
+      }
+    },
     "form-text": function(){
       return {
         result: true
@@ -303,3 +348,8 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
     }
   };
 });
+function in$(x, xs){
+  var i = -1, l = xs.length >>> 0;
+  while (++i < l) if (x === xs[i]) return true;
+  return false;
+}
