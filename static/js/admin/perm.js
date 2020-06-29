@@ -244,38 +244,69 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
             });
           }
         },
-        handler: function(arg$){
-          var node, data, that;
-          node = arg$.node, data = arg$.data;
-          ld$.find(node, 'b', 0).innerText = data.displayname;
-          ld$.find(node, 'span.text-sm', 0).innerText = data.type === 'user'
-            ? "(id " + data.key + ")"
-            : "(" + data.key + ")";
-          if (that = ld$.find(node, '.text-muted', 0)) {
-            return that.innerText = data.perm;
-          }
+        init: function(arg$){
+          var node, local, data;
+          node = arg$.node, local = arg$.local, data = arg$.data;
+          return local.view = new ldView({
+            root: node,
+            context: data,
+            action: {
+              click: {
+                'delete': function(){
+                  var idx, list;
+                  idx = obj.cfg.roles.map(function(it){
+                    return it.name;
+                  }).indexOf(data.perm);
+                  if (!~idx) {
+                    return;
+                  }
+                  list = obj.cfg.roles[idx].list;
+                  if (!~list.indexOf(data)) {
+                    return;
+                  }
+                  list.splice(list.indexOf(data), 1);
+                  updateData();
+                  return updateView();
+                }
+              }
+            },
+            text: {
+              name: function(arg$){
+                var context;
+                context = arg$.context;
+                return context.displayname;
+              },
+              key: function(arg$){
+                var context;
+                context = arg$.context;
+                if (context.type === 'user') {
+                  return "(id " + context.key + ")";
+                } else {
+                  return "(" + context.key + ")";
+                }
+              },
+              role: function(arg$){
+                var context;
+                context = arg$.context;
+                return context.perm;
+              }
+            },
+            handler: {
+              avatar: function(arg$){
+                var node, context;
+                node = arg$.node, context = arg$.context;
+                if (context.type === 'user') {
+                  return node.style.backgroundImage = "url(/dash/s/avatar/" + context.key + ".png)";
+                }
+              }
+            }
+          });
         },
-        action: {
-          click: function(arg$){
-            var node, data, evt, idx, list;
-            node = arg$.node, data = arg$.data, evt = arg$.evt;
-            if (!evt.target.classList.contains('i-close')) {
-              return;
-            }
-            idx = obj.cfg.roles.map(function(it){
-              return it.name;
-            }).indexOf(data.perm);
-            if (!~idx) {
-              return;
-            }
-            list = obj.cfg.roles[idx].list;
-            if (!~list.indexOf(data)) {
-              return;
-            }
-            list.splice(list.indexOf(data), 1);
-            updateData();
-            return updateView();
-          }
+        handler: function(arg$){
+          var node, local, data;
+          node = arg$.node, local = arg$.local, data = arg$.data;
+          local.view.setContext(data);
+          return local.view.render();
         }
       }
     });
@@ -361,7 +392,6 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
         if (this$.brd) {
           payload.brd = this$.brd.slug;
         }
-        console.log(">", this$.org, this$.brd);
         return auth.recaptcha.get().then(function(recaptcha){
           payload.recaptcha = recaptcha;
           return ld$.fetch("/dash/api/token", {

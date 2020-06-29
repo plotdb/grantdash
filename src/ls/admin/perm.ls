@@ -124,21 +124,30 @@ Ctrl = (opt) ->
             .map (r) -> r.list.map(-> it <<< {perm: r.name})
             .reduce(((a,b) -> a ++ b), [])
         else (lc.role.list or []).map -> it <<< {perm: lc.role.name}
-      handler: ({node, data}) ->
-        ld$.find(node, 'b', 0).innerText = data.displayname
-        ld$.find(node, 'span.text-sm', 0).innerText = (
-          if data.type == \user => "(id #{data.key})" else "(#{data.key})"
-        )
-        if ld$.find(node, '.text-muted', 0) => that.innerText = data.perm
-      action: click: ({node, data, evt}) ->
-        if !evt.target.classList.contains(\i-close) => return
-        idx = obj.cfg.roles.map(->it.name).indexOf(data.perm)
-        if !~idx => return
-        list = obj.cfg.roles[idx].list
-        if !~list.indexOf(data) => return
-        list.splice list.indexOf(data), 1
-        update-data!
-        update-view!
+      init: ({node, local, data}) ->
+        local.view = new ldView do
+          root: node
+          context: data
+          action: click: do
+            delete: ->
+              idx = obj.cfg.roles.map(->it.name).indexOf(data.perm)
+              if !~idx => return
+              list = obj.cfg.roles[idx].list
+              if !~list.indexOf(data) => return
+              list.splice list.indexOf(data), 1
+              update-data!
+              update-view!
+          text: do
+            name: ({context}) -> context.displayname
+            key: ({context}) -> if context.type == \user => "(id #{context.key})" else "(#{context.key})"
+            role: ({context}) -> context.perm
+          handler: do
+            avatar: ({node, context}) ->
+              if context.type == \user =>
+                node.style.backgroundImage = "url(/dash/s/avatar/#{context.key}.png)"
+      handler: ({node, local, data}) ->
+        local.view.setContext data
+        local.view.render!
   view-config.action.click <<< do
     "newuser-toggle": ({node}) -> view.getAll(\newuser).map -> it.classList.toggle \d-none
     "batch-add": ({node,local}) ~>
@@ -176,7 +185,6 @@ Ctrl = (opt) ->
       payload = {role: role.key}
       if @org => payload.org = @org.slug
       if @brd => payload.brd = @brd.slug
-      console.log ">", @org, @brd
       auth.recaptcha.get!
         .then (recaptcha) ->
           payload.recaptcha = recaptcha

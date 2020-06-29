@@ -67,16 +67,16 @@ h4 權限設定
   .px-0(ld="list-view")
     .row.no-gutters
       .col-md-6(ld-each="user"): .border.rounded.d-flex.p-2.m-2.align-items-center.shadow-sm
-        .mr-2(style="width:2.75em"): .aspect-ratio.ratio-1by1.bg-dark.rounded
-        .flex-grow-1 #[b]#[span.text-sm.ml-2]#[.text-sm.text-muted]
-        .pr-2: i.i-close.clickable
+        .mr-2(style="width:2.75em"): .aspect-ratio.ratio-1by1.bg-dark.rounded.bg-cover.bg-portrait(ld="avatar")
+        .flex-grow-1 #[b(ld="name")]#[span.text-sm.ml-2(ld="key")]#[.text-sm.text-muted(ld="role")]
+        .pr-2: i.i-close.clickable(ld="delete")
 
   .px-0.d-none(ld="role-view")
     .row.no-gutters
       .col-md-6(ld-each="user"): .border.rounded.d-flex.p-2.m-2.align-items-center.shadow-sm
-        .mr-2(style="width:2.25em"): .aspect-ratio.ratio-1by1.bg-dark.rounded
-        .flex-grow-1 #[b]#[span.text-sm.ml-2]
-        .pr-2: i.i-close.clickable
+        .mr-2(style="width:2.25em"): .aspect-ratio.ratio-1by1.bg-dark.rounded.bg-cover.bg-portrait(ld="avatar")
+        .flex-grow-1 #[b(ld="name")]#[span.text-sm.ml-2(ld="key")]
+        .pr-2: i.i-close.clickable(ld="delete")
 
     .mt-4.px-2
       h5 此名單的權限
