@@ -36,9 +36,9 @@
         ld$.fetch '/dash/api/admin/', {method: \GET}, {type: \json}
           .then (ret) ->
             [brds,orgs] = [ret.[]brds, ret.[]orgs]
-            #if brds.length == 1 => window.location.href = "/dash/brd/#{brds.0.slug}/admin"
+            if brds.length == 1 => window.location.href = "/dash/brd/#{brds.0.slug}/admin"
             lc.list = [] ++ brds.map(-> it <<< {type: \brd}) ++ orgs.map(-> it <<< {type: \org})
-            #if lc.list.length == 1 => window.location.href = "/dash/#{lc.list.0.type}/#{lc.list.0.slug}/admin"
+            if lc.list.length == 1 => window.location.href = "/dash/#{lc.list.0.type}/#{lc.list.0.slug}/admin"
             if !lc.list.length => return ldcvmgr.toggle("no-admin")
             ldcvmgr.getdom('choose-admin-panel')
               .then (dom) ->

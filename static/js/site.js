@@ -57,11 +57,17 @@
         }).then(function(ret){
           var ref$, brds, orgs;
           ref$ = [ret.brds || (ret.brds = []), ret.orgs || (ret.orgs = [])], brds = ref$[0], orgs = ref$[1];
+          if (brds.length === 1) {
+            window.location.href = "/dash/brd/" + brds[0].slug + "/admin";
+          }
           lc.list = [].concat(brds.map(function(it){
             return it.type = 'brd', it;
           }), orgs.map(function(it){
             return it.type = 'org', it;
           }));
+          if (lc.list.length === 1) {
+            window.location.href = "/dash/" + lc.list[0].type + "/" + lc.list[0].slug + "/admin";
+          }
           if (!lc.list.length) {
             return ldcvmgr.toggle("no-admin");
           }
