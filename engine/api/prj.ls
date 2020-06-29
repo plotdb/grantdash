@@ -45,7 +45,7 @@ app.get \/prj/:slug, (req, res) ->
       lc.grp = grp = grp{form,info}
       delete brd.detail
       view = if (req.{}query.simple)? => \view/default/prj-view-simple.pug
-      else \view/default/prj-viwe.pug
+      else \view/default/prj-view.pug
       res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}} <<< req.scope{domain}
     .catch aux.error-handler res
 
