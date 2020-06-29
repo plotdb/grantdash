@@ -7,6 +7,33 @@ require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 api = engine.router.api
 app = engine.app
 
+# landing pages
+landing-page = (type, req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  p = if type == \brd =>
+    io.query """
+    select org, detail->'page'->'info' as pageinfo from brd where deleted is not true and slug = $1
+    """, [slug]
+  else
+    io.query """
+    select detail->'page'->'info' as pageinfo from org where deleted is not true and slug = $1
+    """, [slug]
+  p
+    .then (r={}) ->
+      ret = r.[]rows.0
+      info = ret.pageinfo
+      url = if !(info and (info.opt or \default) == \default and info.{}generic.landing-url) =>
+        if type == \brd => "/dash/private/org/#{ret.org}/brd/#brd/static/index.html"
+        else "/dash/private/org/#{ret.org}/static/index.html"
+      else info.{}generic.landing-url
+      if /^https?:/.exec(url) => return res.status(302).redirect(url)
+      res.set {"X-Accel-Redirect": url}
+      res.send!
+    .catch aux.error-handler res
+
+app.get \/org/:slug, (req, res) -> landing-page \org, req, res
+app.get \/brd/:slug, (req, res) -> landing-page \brd, req, res
+
 # project file permission check
 # X-Accel-Redirect will be intercepted by Nginx, and then use to serve corresponding location.
 # once we config it as internal, it will only accessible through this route.
@@ -132,7 +159,7 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
         update #type set (name,description) = ($1,$2) where slug = $3 and deleted is not true
         """, [name,description,slug]
     .then ->
-      update-permission { type, perm: (payload.perm), slug }
+      if payload.perm => update-permission { type, perm: (payload.perm), slug }
     .then ->
       cache.perm.invalidate {type: type, slug}
       cache.stage.invalidate {type: type, slug}

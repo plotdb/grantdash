@@ -21,10 +21,43 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var deploy, slugs, saveSnapshot, api, app, upload, updatePermission, getPrjList;
+    var deploy, slugs, saveSnapshot, api, app, landingPage, upload, updatePermission, getPrjList;
     deploy = common.deploy, slugs = common.slugs, saveSnapshot = common.saveSnapshot;
     api = engine.router.api;
     app = engine.app;
+    landingPage = function(type, req, res){
+      var slug, p;
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      p = type === 'brd'
+        ? io.query("select org, detail->'page'->'info' as pageinfo from brd where deleted is not true and slug = $1", [slug])
+        : io.query("select detail->'page'->'info' as pageinfo from org where deleted is not true and slug = $1", [slug]);
+      return p.then(function(r){
+        var ret, info, url;
+        r == null && (r = {});
+        ret = (r.rows || (r.rows = []))[0];
+        info = ret.pageinfo;
+        url = !(info && (info.opt || 'default') === 'default' && (info.generic || (info.generic = {})).landingUrl)
+          ? type === 'brd'
+            ? "/dash/private/org/" + ret.org + "/brd/" + brd + "/static/index.html"
+            : "/dash/private/org/" + ret.org + "/static/index.html"
+          : (info.generic || (info.generic = {})).landingUrl;
+        if (/^https?:/.exec(url)) {
+          return res.status(302).redirect(url);
+        }
+        res.set({
+          "X-Accel-Redirect": url
+        });
+        return res.send();
+      })['catch'](aux.errorHandler(res));
+    };
+    app.get('/org/:slug', function(req, res){
+      return landingPage('org', req, res);
+    });
+    app.get('/brd/:slug', function(req, res){
+      return landingPage('brd', req, res);
+    });
     app.get('/org/:org/prj/:prj/upload/:file', function(req, res){
       var ref$, org, prj, file, lc;
       ref$ = {
@@ -237,11 +270,13 @@
           return io.query("update " + type + " set (name,description) = ($1,$2) where slug = $3 and deleted is not true", [name, description, slug]);
         }
       }).then(function(){
-        return updatePermission({
-          type: type,
-          perm: payload.perm,
-          slug: slug
-        });
+        if (payload.perm) {
+          return updatePermission({
+            type: type,
+            perm: payload.perm,
+            slug: slug
+          });
+        }
       }).then(function(){
         cache.perm.invalidate({
           type: type,

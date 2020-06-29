@@ -15,7 +15,7 @@ getwd = ->
   return np
 
 if !(process.argv and process.argv.length > 2) =>
-  console.log "usage: lsc build [domain-name] [org-slug] <brd-slug>"
+  console.log "usage: lsc org [domain-name] [org-slug] <brd-slug>"
   process.exit -1
 
 root = getwd!

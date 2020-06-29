@@ -6,7 +6,7 @@ hr
   .row.no-gutters.mb-4
     .col-md: .mr-4.h-100.pr-3.rounded
       h5 使用預設頁面
-      .text-muted.mb-2 我們將使用預設樣板為您的活動提供基本介紹以及提案列表。
+      .text-muted.mb-2 我們將提供一些便捷的選項供您選擇首頁設置的方式。
       .btn.d-block.btn-outline-secondary(ld="nav-tab opt",data-nav="page-info",data-name="default") 使用這個選項
     .col-md: .px-3.h-100.rounded
       h5 使用 Git Repo
@@ -21,6 +21,12 @@ hr
     h4 使用預設頁面
     p 您的頁面將由 Grant Dash 自動生成。我們會使用組織或活動的基本資訊 ( 名稱、簡介、縮圖等 ) 產生基本的入口頁面，並提供適當的提案列表供訪客瀏覽。
     hr
+
+    .form-group.flex-grow-1
+      label 連結網址
+      input.form-control.rounded.border(ld="custom-landing-url",
+      placeholder="例如, https://some.site/post/lwieurhs128Djkf")
+
     .form-group
       label 客製樣式表網址
       input.form-control.border.rounded(ld="custom-css-url", placeholder="例如, https://some.site/index.css")

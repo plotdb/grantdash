@@ -32,6 +32,9 @@ Ctrl = (opt) ->
         "custom-css-url": ({node}) ~>
           @data.{}generic.css-url = node.value or ''
           @update!
+        "custom-landing-url": ({node}) ~>
+          @data.{}generic.landing-url = node.value or ''
+          @update!
         "git-branch": ({node}) ~>
           @data.{}git.branch = node.value or ''
           @update!
@@ -46,6 +49,7 @@ Ctrl = (opt) ->
         node.classList.toggle \d-none, !((@data.opt or \default) == name)
       "git-url": ({node}) ~> node.value = @data.{}git.url or ''
       "custom-css-url": ({node}) ~> node.value = @data.{}generic.css-url or ''
+      "custom-landing-url": ({node}) ~> node.value = @data.{}generic.landing-url or ''
       "git-branch": ({node}) ~> node.value = @data.{}git.branch or ''
       "git-secret": ({node}) ~> node.value = @data.{}git.secret or ''
       "opt": ({node}) ~>
