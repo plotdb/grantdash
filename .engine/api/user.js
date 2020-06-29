@@ -209,7 +209,7 @@
       })['catch'](aux.errorHandler(res));
     });
     return api.post('/me/list', aux.signed, function(req, res){
-      var offset, limit, type, tables, table;
+      var offset, limit, type, tables, table, p;
       offset = req.body.offset || 0;
       limit = req.body.limit || 100;
       type = req.body.type;
@@ -218,7 +218,10 @@
       if (!(table = tables[tables.indexOf(type)])) {
         return aux.r400(res);
       }
-      return io.query("select key,name,description,slug from " + table + " where owner = $1 offset $2 limit $3", [req.user.key, offset, limit]).then(function(r){
+      p = this.table === 'org'
+        ? io.query("select key,name,description,slug from org where deleted is not true", [])
+        : io.query("select key,name,description,slug from " + table + " where owner = $1 and deleted is not true offset $2 limit $3", [req.user.key, offset, limit]);
+      return p.then(function(r){
         r == null && (r = {});
         return res.send(r.rows || []);
       })['catch'](aux.errorHandler(res));

@@ -154,9 +154,15 @@ api.post \/me/list, aux.signed, (req, res) ->
   table = tables[tables.indexOf(type)]
   if !(table = tables[tables.indexOf(type)]) => return aux.r400 res
 
-  io.query(
-  "select key,name,description,slug from #table where owner = $1 offset $2 limit $3"
-  [req.user.key, offset, limit]
-  )
+  # TODO this is a workaround - we should check all org with permission. but early stage we will have 
+  # only 1 org in system, and we will check ownership when altering org, so we simply list all org.
+  p = if @table == \org =>
+    io.query( "select key,name,description,slug from org where deleted is not true", [])
+  else
+    io.query(
+    "select key,name,description,slug from #table where owner = $1 and deleted is not true offset $2 limit $3"
+    [req.user.key, offset, limit]
+    )
+  p
     .then (r={}) -> res.send (r.rows or [])
     .catch aux.error-handler res
