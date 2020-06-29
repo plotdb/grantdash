@@ -23,8 +23,8 @@ landing-page = (type, req, res) ->
       ret = r.[]rows.0
       info = ret.pageinfo
       url = if !(info and (info.opt or \default) == \default and info.{}generic.landing-url) =>
-        if type == \brd => "/dash/private/org/#{ret.org}/brd/#brd/static/index.html"
-        else "/dash/private/org/#{ret.org}/static/index.html"
+        if type == \brd => "/dash/private/org/#{ret.org}/brd/#slug/static/index.html"
+        else "/dash/private/org/#slug/static/index.html"
       else info.{}generic.landing-url
       if /^https?:/.exec(url) => return res.status(302).redirect(url)
       res.set {"X-Accel-Redirect": url}

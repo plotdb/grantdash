@@ -40,8 +40,8 @@
         info = ret.pageinfo;
         url = !(info && (info.opt || 'default') === 'default' && (info.generic || (info.generic = {})).landingUrl)
           ? type === 'brd'
-            ? "/dash/private/org/" + ret.org + "/brd/" + brd + "/static/index.html"
-            : "/dash/private/org/" + ret.org + "/static/index.html"
+            ? "/dash/private/org/" + ret.org + "/brd/" + slug + "/static/index.html"
+            : "/dash/private/org/" + slug + "/static/index.html"
           : (info.generic || (info.generic = {})).landingUrl;
         if (/^https?:/.exec(url)) {
           return res.status(302).redirect(url);
