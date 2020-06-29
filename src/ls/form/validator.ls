@@ -51,7 +51,8 @@ is-empty = do
   "form-checkpoint": ({block, data}) ->
     return !data.length or data.filter(-> (it.title and it.desc and it.date)).length != data.length
   "form-datetime": ({block, data}) ->
-    return !(value.start and (!config.range-enabled or value.end))
+    config = block.config or {}
+    return !(data.start and (!config.range-enabled or data.end))
   "form-checkbox": ({block, data}) -> !(data.filter(->it).length)
   "form-radio": ({block, data}) -> !(data.filter(->it).length)
   "form-table": ({block, data}) -> !(data and data.length)

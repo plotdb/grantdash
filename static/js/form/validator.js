@@ -142,9 +142,10 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
       }).length !== data.length;
     },
     "form-datetime": function(arg$){
-      var block, data;
+      var block, data, config;
       block = arg$.block, data = arg$.data;
-      return !(value.start && (!config.rangeEnabled || value.end));
+      config = block.config || {};
+      return !(data.start && (!config.rangeEnabled || data.end));
     },
     "form-checkbox": function(arg$){
       var block, data;
