@@ -276,7 +276,7 @@ backend = do
       else
         if err.name == \ldError => res.status 500 .send err
         # ignore some errors that we don't need to take care.
-        if (err instanceof URIError) and "#{err.stack}".startsWith('URIError: Failed to decode param') =>
+        else if (err instanceof URIError) and "#{err.stack}".startsWith('URIError: Failed to decode param') =>
           return res.status 400 .send!
         else if err.message.startsWith \TokenError =>
           console.error(

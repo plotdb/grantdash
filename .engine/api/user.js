@@ -218,7 +218,7 @@
       if (!(table = tables[tables.indexOf(type)])) {
         return aux.r400(res);
       }
-      p = this.table === 'org'
+      p = table === 'org'
         ? io.query("select key,name,description,slug from org where deleted is not true", [])
         : io.query("select key,name,description,slug from " + table + " where owner = $1 and deleted is not true offset $2 limit $3", [req.user.key, offset, limit]);
       return p.then(function(r){

@@ -394,8 +394,7 @@
             } else {
               if (err.name === 'ldError') {
                 res.status(500).send(err);
-              }
-              if (err instanceof URIError && (err.stack + "").startsWith('URIError: Failed to decode param')) {
+              } else if (err instanceof URIError && (err.stack + "").startsWith('URIError: Failed to decode param')) {
                 return res.status(400).send();
               } else if (err.message.startsWith('TokenError')) {
                 console.error(colors.red.underline("[" + moment().format('YY/MM/DD HH:mm:ss') + "]"), colors.yellow(err.message), "[", color.yellow(req.originalUrl.substring(0, 15)), "]");

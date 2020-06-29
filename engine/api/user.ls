@@ -156,7 +156,7 @@ api.post \/me/list, aux.signed, (req, res) ->
 
   # TODO this is a workaround - we should check all org with permission. but early stage we will have 
   # only 1 org in system, and we will check ownership when altering org, so we simply list all org.
-  p = if @table == \org =>
+  p = if table == \org =>
     io.query( "select key,name,description,slug from org where deleted is not true", [])
   else
     io.query(
