@@ -21,7 +21,7 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var deploy, slugs, saveSnapshot, api, app, upload, getPrjList;
+    var deploy, slugs, saveSnapshot, api, app, upload, updatePermission, getPrjList;
     deploy = common.deploy, slugs = common.slugs, saveSnapshot = common.saveSnapshot;
     api = engine.router.api;
     app = engine.app;
@@ -165,6 +165,46 @@
         return res.send(it);
       })['catch'](aux.errorHandler(res));
     });
+    updatePermission = function(arg$){
+      var type, perm, slug, entries;
+      type = arg$.type, perm = arg$.perm, slug = arg$.slug;
+      entries = [];
+      (perm.roles || (perm.roles = [])).map(function(role){
+        return (role.list || (role.list = [])).map(function(it){
+          return entries.push({
+            type: it.type,
+            ref: it.key + "",
+            role: role.key
+          });
+        });
+      });
+      return io.query("select key,type,ref,role from perm where objtype = $1 and objslug = $2", [type, slug]).then(function(r){
+        var perms;
+        r == null && (r = {});
+        perms = (r.rows || (r.rows = [])).filter(function(p){
+          return !entries.filter(function(e){
+            return e.type === p.type && e.ref === p.ref && e.role === p.role;
+          }).length;
+        }).map(function(it){
+          return it.key;
+        });
+        return io.query("delete from perm where objtype = $1 and objslug = $2 and key = ANY($3::int[])", [type, slug, perms]);
+      }).then(function(){
+        return io.query("insert into perm (objtype, objslug, role, type, ref)\n  select t.objtype, t.objslug, t.role, t.type, t.ref from (select\n    unnest($1::text[]) as objtype,\n    unnest($2::text[]) as objslug,\n    unnest($3::text[]) as role,\n    unnest($4::text[]) as type,\n    unnest($5::text[]) as ref\n  ) t\non conflict do nothing", [
+          entries.map(function(){
+            return type;
+          }), entries.map(function(){
+            return slug;
+          }), entries.map(function(it){
+            return it.role;
+          }), entries.map(function(it){
+            return it.type;
+          }), entries.map(function(it){
+            return it.ref;
+          })
+        ]);
+      }).then(function(){});
+    };
     api.put('/detail/', aux.signed, grecaptcha, function(req, res){
       var lc, ref$, slug, type, payload, info, name, description;
       lc = {};
@@ -196,6 +236,12 @@
         } else {
           return io.query("update " + type + " set (name,description) = ($1,$2) where slug = $3 and deleted is not true", [name, description, slug]);
         }
+      }).then(function(){
+        return updatePermission({
+          type: type,
+          perm: payload.perm,
+          slug: slug
+        });
       }).then(function(){
         cache.perm.invalidate({
           type: type,
@@ -457,61 +503,6 @@
       }).then(function(r){
         r == null && (r = {});
         return res.send(((r.rows || (r.rows = [])) || [])[0]);
-      })['catch'](aux.errorHandler(res));
-    });
-    app.get('/org/:slug/admin', aux.signed, function(req, res){
-      var slug;
-      if (!(slug = req.params.key)) {
-        return aux.r400(res);
-      }
-      return cache.perm.check({
-        io: io,
-        user: req.user,
-        type: 'org',
-        slug: slug,
-        action: 'owner'
-      }).then(function(){
-        res.render('admin/index.pug', {
-          org: {
-            slug: slug
-          }
-        });
-        return null;
-      })['catch'](aux.errorHandler(res));
-    });
-    app.get('/brd/:slug/admin', aux.signed, function(req, res){
-      var lc, slug;
-      lc = {};
-      if (!(slug = req.params.slug)) {
-        return aux.r404(res);
-      }
-      return cache.perm.check({
-        io: io,
-        user: req.user,
-        type: 'brd',
-        slug: slug,
-        action: 'owner'
-      }).then(function(){
-        return io.query("select * from brd where slug = $1 and deleted is not true", [slug]);
-      }).then(function(r){
-        var brd;
-        r == null && (r = {});
-        if (!(brd = (r.rows || (r.rows = []))[0])) {
-          return aux.reject(404);
-        }
-        lc.brd = brd;
-        return !brd.org
-          ? Promise.resolve()
-          : io.query("select * from org where slug = $1 and deleted is not true", [brd.org]);
-      }).then(function(r){
-        var org;
-        r == null && (r = {});
-        org = (r.rows || (r.rows = {}))[0];
-        res.render('admin/index.pug', {
-          org: org,
-          brd: lc.brd
-        });
-        return null;
       })['catch'](aux.errorHandler(res));
     });
     api.post('/slug-check/:type', aux.signed, throttle.count.ip, function(req, res){

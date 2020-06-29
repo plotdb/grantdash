@@ -1,0 +1,8 @@
+include /modules/common.pug
++scope("choose-admin-panel").ldcv.ldcvmgr(data-name="choose-admin-panel",data-lock="true")
+  .base.w-640.rwd: .inner.card: .card-body.text-center: .p-2
+    h4 請選擇您要管理的組織 / 活動
+    hr
+    a.p-2.d-block.text-left(ld-each="item")
+    hr
+    .btn.btn-outline-primary(data-ldcv-set="") 關閉對話框

@@ -290,30 +290,6 @@ api.post \/brd, aux.signed, throttle.count.user-md, express-formidable!, grecapt
 
 # following routes are for both brd and org. put it here in brd.ls temporarily.
 
-app.get \/org/:slug/admin, aux.signed, (req, res) ->
-  if !(slug = req.params.key) => return aux.r400 res
-  cache.perm.check {io, user: req.user, type: \org, slug, action: \owner}
-    .then ->
-      res.render \admin/index.pug, {org: {slug}}
-      return null
-    .catch aux.error-handler res
-
-app.get \/brd/:slug/admin, aux.signed, (req, res) ->
-  lc = {}
-  if !(slug = req.params.slug) => return aux.r404 res
-  cache.perm.check {io, user: req.user, type: \brd, slug: slug, action: \owner}
-    .then -> io.query "select * from brd where slug = $1 and deleted is not true", [slug]
-    .then (r={}) ->
-      if !(brd = r.[]rows.0) => return aux.reject 404
-      lc.brd = brd
-      return if !brd.org => Promise.resolve!
-      else io.query "select * from org where slug = $1 and deleted is not true", [brd.org]
-    .then (r={}) ->
-      org = r.{}rows.0
-      res.render \admin/index.pug, {org, brd: lc.brd}
-      return null
-    .catch aux.error-handler res
-
 api.post \/slug-check/:type, aux.signed, throttle.count.ip, (req, res) ->
   [type,slug] = [req.params.type, req.body.slug]
   if !((type in <[org brd]>) and /^[A-Za-z0-9+_-]+$/.exec(slug)) => return aux.r404 res

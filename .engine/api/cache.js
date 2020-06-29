@@ -139,11 +139,11 @@
             return;
           }
           payload.perm = (ref$ = ret.perm || (ret.perm = {})).roles || (ref$.roles = []);
-          return io.query("select id from perm where owner = $1", [user.key]).then(function(r){
+          return io.query("select ref from perm where owner = $1 and objtype = $2 and objslug = $3 and type = 'token'", [user.key, type, slug]).then(function(r){
             var token;
             r == null && (r = {});
             token = (r.rows || (r.rows = [])).map(function(it){
-              return it.id;
+              return it.ref;
             });
             payload.role = {
               user: [user.key],

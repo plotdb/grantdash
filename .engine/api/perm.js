@@ -49,16 +49,26 @@
       })['catch'](aux.errorHandler(res));
     });
     api.post('/token', aux.signed, grecaptcha, function(req, res){
-      var ref$, token, id, hint, type, slug;
+      var ref$, token, id, hint, slug, type, role;
       ref$ = [suuid(), suuid()], token = ref$[0], id = ref$[1];
       hint = {
-        org: (ref$ = import$(import$({}, req.scope), req.body)).org,
-        brd: ref$.brd
+        org: (ref$ = import$({}, req.body)).org,
+        brd: ref$.brd,
+        role: ref$.role
       };
-      type = hint.brd ? 'brd' : 'org';
-      slug = hint.brd
+      if (!(slug = hint.brd
         ? hint.brd
-        : hint.org;
+        : hint.org)) {
+        return aux.r400(res);
+      }
+      if (!(type = hint.brd
+        ? 'brd'
+        : hint.org ? 'org' : null)) {
+        return aux.r400(res);
+      }
+      if (!(role = hint.role)) {
+        return aux.r400(res);
+      }
       return cache.perm.check({
         io: io,
         user: req.user,
@@ -66,7 +76,7 @@
         slug: slug,
         action: 'owner'
       }).then(function(){
-        return io.query("insert into permtoken (token,id) values ($1, $2)", [token, id]);
+        return io.query("insert into permtoken (objtype, objslug, role, token, id) values ($1, $2, $3, $4, $5)", [type, slug, role, token, id]);
       }).then(function(){
         return res.send({
           id: id,
@@ -86,22 +96,31 @@
       });
     });
     return api.put('/token', aux.signed, function(req, res){
-      var token;
+      var lc, token;
+      lc = {};
       if (!(token = req.body.token)) {
         return aux.r400(res);
       }
-      return io.query("select token,id,redeemspan,createdtime from permtoken where token = $1", [token]).then(function(r){
+      return io.query("select objtype, objslug, role, count, token, id, redeemspan, createdtime\nfrom permtoken where token = $1", [token]).then(function(r){
         var ret;
         r == null && (r = {});
-        if (!(ret = (r.rows || (r.rows = []))[0])) {
+        if (!(lc.ret = ret = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
         if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan) {
-          return aux.reject(1013);
+          io.query("delete from permtoken where token = $1", [token]).then(function(){
+            return aux.reject(1013);
+          });
         }
-        return io.query("insert into perm (id, owner) values ($1, $2)", [ret.id, req.user.key]);
-      })['finally'](function(){
-        return io.query("delete from permtoken where token = $1", [token]);
+        return io.query("insert into perm (objtype, objslug, role, type, ref, owner)\nvalues ($1, $2, $3, $4, $5, $6)\non conflict do nothing", [ret.objtype, ret.objslug, ret.role, 'token', ret.id + ":" + ret.count, req.user.key]);
+      }).then(function(){
+        var ret;
+        ret = lc.ret;
+        if (ret.count > 1) {
+          return io.query("update permtoken set count = $1 where token = $2", [ret.count - 1, token]);
+        } else {
+          return io.query("delete from permtoken where token = $1", [token]);
+        }
       }).then(function(){
         return res.send({});
       })['catch'](aux.errorHandler(res));

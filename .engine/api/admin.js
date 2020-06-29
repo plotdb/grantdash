@@ -9,8 +9,88 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var api;
+    var api, app;
     api = engine.router.api;
+    app = engine.app;
+    api.get('/admin/', aux.signed, function(req, res){
+      var lc;
+      lc = {};
+      return io.query("select name, slug from org where owner = $1", [req.user.key]).then(function(r){
+        r == null && (r = {});
+        lc.orgs = r.rows || (r.rows = []);
+        return io.query("select name, slug from brd where owner = $1", [req.user.key]);
+      }).then(function(r){
+        r == null && (r = {});
+        lc.brds = r.rows || (r.rows = []);
+        return io.query("select p.objslug as slug, o.name as name from perm as p, org as o\nwhere p.objtype = 'org' and p.objslug = o.slug and (\n  p.owner = $1\n  or (p.type = 'user' and p.ref = $2)\n  or (p.type = 'email' and p.ref = $3)\n)", [req.user.key, req.user.key + "", req.user.username]);
+      }).then(function(r){
+        r == null && (r = {});
+        lc.orgs = lc.orgs.concat(r.rows || (r.rows = []));
+        return io.query("select p.objslug as slug, b.name as name from perm as p, brd as b\nwhere p.objtype = 'brd' and p.objslug = b.slug and (\n  p.owner = $1\n  or (p.type = 'user' and p.ref = $2)\n  or (p.type = 'email' and p.ref = $3)\n)", [req.user.key, req.user.key + "", req.user.username]);
+      }).then(function(r){
+        r == null && (r = {});
+        lc.brds = lc.brds.concat(r.rows || (r.rows = []));
+        return res.send(lc);
+      })['catch'](aux.errorHandler(res));
+    });
+    app.get('/admin/', aux.signed, function(req, res){
+      return res.render('admin/index.pug');
+    });
+    app.get('/org/:slug/admin', aux.signed, function(req, res){
+      var slug;
+      if (!(slug = req.params.key)) {
+        return aux.r400(res);
+      }
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'org',
+        slug: slug,
+        action: 'owner'
+      }).then(function(){
+        res.render('admin/index.pug', {
+          org: {
+            slug: slug
+          }
+        });
+        return null;
+      })['catch'](aux.errorHandler(res));
+    });
+    app.get('/brd/:slug/admin', aux.signed, function(req, res){
+      var lc, slug;
+      lc = {};
+      if (!(slug = req.params.slug)) {
+        return aux.r404(res);
+      }
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: slug,
+        action: 'owner'
+      }).then(function(){
+        return io.query("select * from brd where slug = $1 and deleted is not true", [slug]);
+      }).then(function(r){
+        var brd;
+        r == null && (r = {});
+        if (!(brd = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        lc.brd = brd;
+        return !brd.org
+          ? Promise.resolve()
+          : io.query("select * from org where slug = $1 and deleted is not true", [brd.org]);
+      }).then(function(r){
+        var org;
+        r == null && (r = {});
+        org = (r.rows || (r.rows = {}))[0];
+        res.render('admin/index.pug', {
+          org: org,
+          brd: lc.brd
+        });
+        return null;
+      })['catch'](aux.errorHandler(res));
+    });
     return api.post('/toc', aux.signed, function(req, res){
       var hint, ref$, lc, permOpt, promise;
       hint = {
