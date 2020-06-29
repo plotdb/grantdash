@@ -73,8 +73,10 @@ apply-criteria = (c, data) ->
 
 empty-helper = ({block, empty, force}) ->
   config = block.{}config
-  if empty and ((config.required and block.touched) or force) => return retcode.empty
-  if empty => return {}
+  if empty =>
+    if !config.required => return retcode.pass
+    if (config.required and (block.touched or force)) => return retcode.empty
+    return {}
   block.touched = true
   return null
 

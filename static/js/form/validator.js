@@ -204,10 +204,13 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
     var block, empty, force, config;
     block = arg$.block, empty = arg$.empty, force = arg$.force;
     config = block.config || (block.config = {});
-    if (empty && ((config.required && block.touched) || force)) {
-      return retcode.empty;
-    }
     if (empty) {
+      if (!config.required) {
+        return retcode.pass;
+      }
+      if (config.required && (block.touched || force)) {
+        return retcode.empty;
+      }
       return {};
     }
     block.touched = true;
