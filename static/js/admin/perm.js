@@ -100,7 +100,8 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
         obj.cfg.roles.push({
           name: name,
           desc: "自訂角色",
-          list: []
+          list: [],
+          key: suuid()
         });
         obj.idx = obj.cfg.roles.length - 1;
         updateData();
@@ -247,6 +248,9 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
           var node, data, that;
           node = arg$.node, data = arg$.data;
           ld$.find(node, 'b', 0).innerText = data.displayname;
+          ld$.find(node, 'span.text-sm', 0).innerText = data.type === 'user'
+            ? "(id " + data.key + ")"
+            : "(" + data.key + ")";
           if (that = ld$.find(node, '.text-muted', 0)) {
             return that.innerText = data.perm;
           }
@@ -344,16 +348,20 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
         node = arg$.node;
         role = (lc.type === 'list'
           ? lc.pickedRole
-          : lc.role) || obj.cfg.roles[0] || {
-          name: ''
+          : lc.role) || obj.cfg.roles[0];
+        if (!role) {
+          return;
+        }
+        payload = {
+          role: role.key
         };
-        payload = {};
         if (this$.org) {
           payload.org = this$.org.slug;
         }
         if (this$.brd) {
           payload.brd = this$.brd.slug;
         }
+        console.log(">", this$.org, this$.brd);
         return auth.recaptcha.get().then(function(recaptcha){
           payload.recaptcha = recaptcha;
           return ld$.fetch("/dash/api/token", {
@@ -363,14 +371,15 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
             type: 'json'
           });
         }).then(function(r){
-          var picked, len, entry;
+          var id, picked, len, entry;
           r == null && (r = {});
           if (!(r.id && r.token)) {
             return Promise.reject(new ldError(400));
           }
+          id = r.id + ":1";
           picked = {
-            key: r.id,
-            displayname: r.id,
+            key: id,
+            displayname: "連結邀請碼",
             type: 'token'
           };
           len = obj.cfg.roles.map(function(it){
@@ -458,6 +467,11 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
       if (!this.obj.cfg.roles) {
         this.obj.cfg.roles = [];
       }
+      this.obj.cfg.roles.map(function(it){
+        if (!it.key) {
+          return it.key = suuid();
+        }
+      });
       return this.updateView();
     }
   });

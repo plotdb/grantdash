@@ -86,9 +86,11 @@ perm = do
           .then (ret) ~>
             if user.key == ret.owner => return
             payload.perm = ret.{}perm.[]roles
-            io.query "select id from perm where owner = $1", [user.key]
+            io.query """
+            select ref from perm where owner = $1 and objtype = $2 and objslug = $3 and type = 'token'
+            """, [user.key, type, slug]
               .then (r={}) ->
-                token = r.[]rows.map -> it.id
+                token = r.[]rows.map -> it.ref
                 payload.role = {user: [user.key], email: [user.username], token}
                 permcheck payload
               .then (cfg) -> if !cfg or !(action.filter(->cfg[it]).length) => return Promise.reject!

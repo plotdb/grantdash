@@ -49,7 +49,7 @@ Ctrl = (opt) ->
       names = obj.cfg.roles.map -> it.name
       for i from 1 til 100 => if !~names.indexOf("角色#i") => break
       name = "角色#{if i < 100 => i else Math.round(Math.random! * 100) + 100}"
-      obj.cfg.roles.push { name: name, desc: "自訂角色", list: [] }
+      obj.cfg.roles.push { name: name, desc: "自訂角色", list: [], key: suuid! }
       obj.idx = obj.cfg.roles.length - 1
       update-data!
       update-view!
@@ -126,6 +126,9 @@ Ctrl = (opt) ->
         else (lc.role.list or []).map -> it <<< {perm: lc.role.name}
       handler: ({node, data}) ->
         ld$.find(node, 'b', 0).innerText = data.displayname
+        ld$.find(node, 'span.text-sm', 0).innerText = (
+          if data.type == \user => "(id #{data.key})" else "(#{data.key})"
+        )
         if ld$.find(node, '.text-muted', 0) => that.innerText = data.perm
       action: click: ({node, data, evt}) ->
         if !evt.target.classList.contains(\i-close) => return
@@ -168,17 +171,20 @@ Ctrl = (opt) ->
                 add: -> batch-add!
         .then -> ldcvmgr.toggle \batch-add-user, true
     "newtoken-add": ({node}) ~>
-      role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0 or {name: ''}
-      payload = {}
+      role = (if lc.type == \list => lc.picked-role else lc.role) or obj.cfg.roles.0
+      if !role => return
+      payload = {role: role.key}
       if @org => payload.org = @org.slug
       if @brd => payload.brd = @brd.slug
+      console.log ">", @org, @brd
       auth.recaptcha.get!
         .then (recaptcha) ->
           payload.recaptcha = recaptcha
           ld$.fetch "/dash/api/token", {method: \POST}, {json: payload, type: \json}
         .then (r = {}) ~>
           if !(r.id and r.token) => return Promise.reject new ldError(400)
-          picked = {key: r.id, displayname: r.id, type: \token}
+          id = "#{r.id}:1"
+          picked = {key: id, displayname: "連結邀請碼", type: \token}
           len = obj.cfg.roles
             .map -> it.list
             .reduce(((a,b) -> a ++ b), [])
@@ -227,6 +233,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     # empty object will be truncated in data thus we clone it to prevent edited
     @obj.cfg = JSON.parse JSON.stringify(data or {})
     if !@obj.cfg.roles => @obj.cfg.roles = []
+    @obj.cfg.roles.map -> if !it.key => it.key = suuid!
     @update-view!
 
 return Ctrl

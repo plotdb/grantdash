@@ -76,6 +76,37 @@ api.post \/upload, aux.signed, express-formidable({multiples:true}), grecaptcha,
     .then -> res.send it
     .catch aux.error-handler res
 
+update-permission = ({type, perm, slug}) ->
+  entries = []
+  perm.[]roles.map (role) ->
+    role.[]list.map (it) ->
+      entries.push {type: it.type, ref: "#{it.key}", role: role.key}
+  io.query "select key,type,ref,role from perm where objtype = $1 and objslug = $2", [type, slug]
+    .then (r={}) ->
+      perms = r.[]rows
+        .filter (p) -> !entries.filter((e) -> e.type == p.type and e.ref == p.ref and e.role == p.role).length
+        .map -> it.key
+      io.query "delete from perm where objtype = $1 and objslug = $2 and key = ANY($3::int[])", [type, slug, perms]
+    .then ->
+      io.query """
+      insert into perm (objtype, objslug, role, type, ref)
+        select t.objtype, t.objslug, t.role, t.type, t.ref from (select
+          unnest($1::text[]) as objtype,
+          unnest($2::text[]) as objslug,
+          unnest($3::text[]) as role,
+          unnest($4::text[]) as type,
+          unnest($5::text[]) as ref
+        ) t
+      on conflict do nothing
+      """, [
+        entries.map(->type),
+        entries.map(->slug),
+        entries.map(->it.role),
+        entries.map(->it.type),
+        entries.map(->it.ref)
+      ]
+    .then -> # finished.
+
 api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
   lc = {}
   {slug, type, payload} = (req.body or {})
@@ -100,6 +131,8 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
         io.query """
         update #type set (name,description) = ($1,$2) where slug = $3 and deleted is not true
         """, [name,description,slug]
+    .then ->
+      update-permission { type, perm: (payload.perm), slug }
     .then ->
       cache.perm.invalidate {type: type, slug}
       cache.stage.invalidate {type: type, slug}

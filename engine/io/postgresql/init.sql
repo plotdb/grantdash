@@ -31,18 +31,29 @@ create table if not exists users (
 create index if not exists idx_user_displayname on users (lower(displayname) varchar_pattern_ops);
 
 create table if not exists perm (
-  id text not null unique,
+  key serial primary key,
   createdtime timestamp not null default now(),
-  owner int not null references users(key) on delete cascade
+  owner int,
+  objtype text not null,
+  objslug text not null constraint perm_objslug_len check (char_length(objslug) <= 64),
+  role text not null constraint perm_role_len check (char_length(role) <= 64),
+  type text,
+  ref text not null constraint org_ref_len check (char_length(ref) <= 64),
+  displayname text
 );
 
+create unique index if not exists perm_index on perm (objslug, objtype, role, type, ref);
 create index if not exists perm_owner on perm (owner);
 
 create table if not exists permtoken (
+  objtype text not null,
+  objslug text not null constraint perm_objslug_len check (char_length(objslug) <= 64),
+  role text not null constraint perm_role_len check (char_length(role) <= 64),
   token text not null unique primary key,
   id text not null unique,
   createdtime timestamp not null default now(),
-  redeemspan int not null default 172800000
+  redeemspan int not null default 172800000,
+  count int not null default 1
 );
 
 create index if not exists permtoken_id on permtoken (id);
