@@ -5,6 +5,25 @@ require! <[../aux ./cache ../util/grecaptcha ../util/throttle]>
 api = engine.router.api
 app = engine.app
 
+/* permission detail
+api.post \/perm, aux.signed, (req, res) ->
+  {brd,org} = req.body{brd,org}
+  if !(brd or org) => return aux.r403 res
+  type = if brd => \brd else \org
+  slug = if brd => brd else org
+  io.query """
+  select p.role,p.type,p.ref,p.owner,u.username,u.displayname
+  from perm as p, users as u
+  where p.objtype = $1 and p.objslug = $2 and (
+  (p.type = 'email' and u.username = p.ref)
+  or (p.type = 'user' and u.key = p.ref::int)
+  or (p.type = 'token' and u.key = p.owner)
+  )
+  """, [type, slug]
+    .then (r={}) -> res.send r.[]rows
+    .catch aux.error-handler res
+*/
+
 api.post \/account, aux.signed, (req, res) ->
   if !(name = req.body.name) => return aux.r404 res
   name = "#{name}".substring(0, 32)
