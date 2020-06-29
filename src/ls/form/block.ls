@@ -223,7 +223,7 @@ module-file = module-init: ->
           context.loading = true
           @view.module.render!
           auth.recaptcha.get!
-            .then (recaptcha) ->
+            .then (recaptcha) ~>
               fd.append \recaptcha, recaptcha
               ld$.xhr(
                 "/dash/api/upload"

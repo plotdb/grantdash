@@ -459,7 +459,6 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
               context.loading = true;
               this$.view.module.render();
               return auth.recaptcha.get().then(function(recaptcha){
-                var this$ = this;
                 fd.append('recaptcha', recaptcha);
                 return ld$.xhr("/dash/api/upload", {
                   method: 'POST',
