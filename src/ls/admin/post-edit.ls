@@ -45,7 +45,6 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
 
 
   init: -> Promise.resolve!then ~>
-    console.log 1
     @quill = quill = new Quill \#editor, do
       theme: \snow
       modules: toolbar: [

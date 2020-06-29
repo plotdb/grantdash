@@ -84,7 +84,6 @@ ldc.register(['auth', 'ldcvmgr', 'sdbAdapter', 'loader', 'error'], function(arg$
       var this$ = this;
       return Promise.resolve().then(function(){
         var quill;
-        console.log(1);
         this$.quill = quill = new Quill('#editor', {
           theme: 'snow',
           modules: {
