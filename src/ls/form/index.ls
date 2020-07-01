@@ -203,8 +203,8 @@ Ctrl = (opt) ->
         "to-publish": ({node}) ~>
           touched = (JSON.stringify(@obj.value) != JSON.stringify(@prj.detail))
           node.classList.toggle \d-none, (!touched or progress!remain)
-        "published": ({node}) ->
-          show = !progress!remain and !((JSON.stringify(@obj.value) != JSON.stringify(@prj.detail)))
+        "published": ({node}) ~>
+          show = !progress!remain and ((JSON.stringify(@obj.value) == JSON.stringify(@prj.detail)))
           node.classList.toggle \d-none, !show
         submit: ({node}) -> node.classList.toggle \disabled, (progress!remain > 0)
         "brd-name": ({node}) -> node.innerText = if opt.brd => (opt.brd.name or '') else '未定的活動'

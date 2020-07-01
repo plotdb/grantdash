@@ -95,15 +95,16 @@ block body
 
         .d-none(ld="nview")
           .mx-4.text-muted
-            div(ld="to-fix"): .d-flex.align-items-center
+            .d-none(ld="to-fix"): .d-flex.align-items-center
               .mr-2: i.i-question.text-primary
               .flex-grow-1 您尚有#[span(ld="remain") 數]個欄位須修正，在請修正完成過後，便能發布您的提案。
               .btn.btn-outline-primary.disabled 發布提案
-            div(ld="to-publish"): .d-flex.align-items-center
+            .d-none(ld="to-publish"): .d-flex.align-items-center
               .mr-2: i.i-question.text-primary
               .flex-grow-1 填完後請記得按下發布，以確保案件正確送出。
-              .btn.btn-primary 發布提案
-            //-div(ld="published"): .d-flex.align-items-center
+              .btn.btn-primary(ld="submit") 發布提案
+            .d-none(ld="published"): .d-flex.align-items-center
+              .flex-grow-1
               .btn.btn-outline-primary.disabled 提案已發布
             //-.flex-grow-1 您的任何修改都會即時儲存到系統中，因此不用擔心資料會遺失。不過，一旦有修改，在您正式按下發布按鈕之前，您的填答並不會正式被更新到您的提案內容中，請在確認完成填答並打算發表的時候，按下「儲存並發布」按鈕。
 

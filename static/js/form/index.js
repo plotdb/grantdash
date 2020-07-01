@@ -405,7 +405,7 @@ ldc.register('prjForm', ['error', 'ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 
           "published": function(arg$){
             var node, show;
             node = arg$.node;
-            show = !progress().remain && !(JSON.stringify(this.obj.value) !== JSON.stringify(this.prj.detail));
+            show = !progress().remain && JSON.stringify(this$.obj.value) === JSON.stringify(this$.prj.detail);
             return node.classList.toggle('d-none', !show);
           },
           submit: function(arg$){
