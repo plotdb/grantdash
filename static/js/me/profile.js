@@ -23,6 +23,11 @@ ldc.register(['error', 'ldcvmgr', 'notify', 'loader'], function(arg$){
               return loader.off();
             }).then(function(){
               return notify.send('success', "提案已刪除");
+            }).then(function(){
+              var n;
+              if (n = ld$.parent(node, '.prj', view.root)) {
+                return ld$.remove(n);
+              }
             })['catch'](error());
           });
         }

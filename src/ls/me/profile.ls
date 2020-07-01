@@ -10,8 +10,8 @@ ldc.register <[error ldcvmgr notify loader]>, ({error, ldcvmgr, notify, loader})
             loader.on!
             ld$.fetch "/dash/api/prj/#{slug}", {method: \delete}
               .finally -> loader.off!
-              .then ->
-                notify.send \success, "提案已刪除"
+              .then -> notify.send \success, "提案已刪除"
+              .then -> if (n = ld$.parent(node, '.prj', view.root)) => ld$.remove n
               .catch error!
 
     handler: do
