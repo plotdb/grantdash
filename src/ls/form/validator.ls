@@ -83,9 +83,14 @@ empty-helper = ({block, empty, force}) ->
 validate = do
   "form-file": ({block, force}) ->
     value = (block.value or {}).list or []
+    if !(value and value.length) => if empty-helper({block, empty: true, force}) => return that
     for c in (block.criteria or []) =>
       if c.type == \file-size =>
-        if value.map(-> it.size).filter(-> it >= +c.input1).length => return {result: false, criteria: c}
+        ret = /^([0-9.,]+)([mk]b)?$/.exec(("#{c.input1 or '0'}").trim!.toLowerCase!)
+        if ret =>
+          limit = ret.1.replace(',','') * (if !ret.2 => 1 else if ret.2 == 'mb' => 1048576 else 1024)
+        else limit = 0
+        if value.map(-> it.size).filter(-> it >= limit).length => return {result: false, criteria: c}
       else if c.type == \file-format =>
         exts = (c.input1 or "").toLowerCase!.split(',')
         v = value.map ->

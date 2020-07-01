@@ -218,12 +218,29 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
   };
   validate = {
     "form-file": function(arg$){
-      var block, force, value, i$, ref$, len$, c, exts, v, that;
+      var block, force, value, that, i$, ref$, len$, c, ret, limit, exts, v;
       block = arg$.block, force = arg$.force;
       value = (block.value || {}).list || [];
+      if (!(value && value.length)) {
+        if (that = emptyHelper({
+          block: block,
+          empty: true,
+          force: force
+        })) {
+          return that;
+        }
+      }
       for (i$ = 0, len$ = (ref$ = block.criteria || []).length; i$ < len$; ++i$) {
         c = ref$[i$];
         if (c.type === 'file-size') {
+          ret = /^([0-9.,]+)([mk]b)?$/.exec(((c.input1 || '0') + "").trim().toLowerCase());
+          if (ret) {
+            limit = ret[1].replace(',', '') * (!ret[2]
+              ? 1
+              : ret[2] === 'mb' ? 1048576 : 1024);
+          } else {
+            limit = 0;
+          }
           if (value.map(fn$).filter(fn1$).length) {
             return {
               result: false,
@@ -252,7 +269,7 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
         return it.size;
       }
       function fn1$(it){
-        return it >= +c.input1;
+        return it >= limit;
       }
       function fn2$(it){
         var ext, ref$;
