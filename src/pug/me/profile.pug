@@ -72,6 +72,7 @@ block body
                       class=(prj.detail?"btn-outline-primary":"disabled btn-light"),
                       href=(prj.detail?`/dash/prj/${prj.slug}`:'#')) 檢視
                     .ml-2: a.btn.btn-outline-primary.text-nowrap(href=`/dash/prj/${prj.slug}/edit`) 編輯
+                    .ml-2: .btn.btn-outline-danger.text-nowrap(ld="delete",data-slug=prj.slug) 刪除
                   else
                     div: a.btn.btn-light.text-nowrap.disabled 已刪除
 
