@@ -402,6 +402,12 @@ ldc.register('prjForm', ['error', 'ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 
             touched = JSON.stringify(this$.obj.value) !== JSON.stringify(this$.prj.detail);
             return node.classList.toggle('d-none', !touched || progress().remain);
           },
+          "published": function(arg$){
+            var node, show;
+            node = arg$.node;
+            show = !progress().remain && !(JSON.stringify(this.obj.value) !== JSON.stringify(this.prj.detail));
+            return node.classList.toggle('d-none', !show);
+          },
           submit: function(arg$){
             var node;
             node = arg$.node;
@@ -416,6 +422,11 @@ ldc.register('prjForm', ['error', 'ldcvmgr', 'prjFormCriteria', 'prjFormBlock', 
             var node, ref$;
             node = arg$.node;
             return node.innerText = opt.grp ? ((ref$ = opt.grp).info || (ref$.info = {})).name || '' : '未定的分組';
+          },
+          "has-detail": function(arg$){
+            var node;
+            node = arg$.node;
+            return node.classList.toggle('d-none', !this$.prj.detail);
           },
           "prj-link": function(arg$){
             var node;

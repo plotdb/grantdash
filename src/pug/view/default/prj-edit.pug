@@ -76,7 +76,7 @@ block body
               .font-weight-bold(ld="brd-name")
               .text-muted(ld="grp-name")
 
-            .mb-4
+            .mb-4(ld="has-detail")
               label.mb-1 瀏覽提案
               div: a.text-truncate(ld="prj-link") 目前發布版本
 
@@ -94,17 +94,26 @@ block body
 
 
         .d-none(ld="nview")
-          .ml-2
-            .text-muted.d-flex
+          .mx-4.text-muted
+            div(ld="to-fix"): .d-flex.align-items-center
               .mr-2: i.i-question.text-primary
-              .flex-grow-1 您的任何修改都會即時儲存到系統中，因此不用擔心資料會遺失。不過，一旦有修改，在您正式按下發布按鈕之前，您的填答並不會正式被更新到您的提案內容中，請在確認完成填答並打算發表的時候，按下「儲存並發布」按鈕。
+              .flex-grow-1 您尚有#[span(ld="remain") 數]個欄位須修正，在請修正完成過後，便能發布您的提案。
+              .btn.btn-outline-primary.disabled 發布提案
+            div(ld="to-publish"): .d-flex.align-items-center
+              .mr-2: i.i-question.text-primary
+              .flex-grow-1 填完後請記得按下發布，以確保案件正確送出。
+              .btn.btn-primary 發布提案
+            //-div(ld="published"): .d-flex.align-items-center
+              .btn.btn-outline-primary.disabled 提案已發布
+            //-.flex-grow-1 您的任何修改都會即時儲存到系統中，因此不用擔心資料會遺失。不過，一旦有修改，在您正式按下發布按鈕之前，您的填答並不會正式被更新到您的提案內容中，請在確認完成填答並打算發表的時候，按下「儲存並發布」按鈕。
+
         //- for space of fixed alert
         +nbr(2)
 
     .sticky.w-1024.mx-auto.z-float(style="bottom:2em;padding-right:1em")
       .d-none(ld="to-publish"): .alert.alert-info.d-flex.align-items-center.shadow-sm
-        .flex-grow-1 您有尚未發布的修改，記得按「儲存並發布」更新提案的最新版本喔！
-        div: .btn.btn.btn-primary.mr-2(ld="submit") 儲存並發布
+        .flex-grow-1 您有尚未發布的修改，記得按「發布提案」更新提案的最新版本喔！
+        div: .btn.btn.btn-primary.mr-2(ld="submit") 發布提案
         //-div: .btn.btn.btn-outline-primary(ld="cancel") 取消並還原
       .d-none(ld="to-fix"): .alert.alert-warning.d-flex.align-items-center.shadow-sm
         .flex-grow-1 您尚有#[span(ld="remain") 數]個欄位須修正，在請修正完成過後，便能發布您的提案。

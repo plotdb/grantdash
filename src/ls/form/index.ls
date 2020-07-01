@@ -203,11 +203,14 @@ Ctrl = (opt) ->
         "to-publish": ({node}) ~>
           touched = (JSON.stringify(@obj.value) != JSON.stringify(@prj.detail))
           node.classList.toggle \d-none, (!touched or progress!remain)
+        "published": ({node}) ->
+          show = !progress!remain and !((JSON.stringify(@obj.value) != JSON.stringify(@prj.detail)))
+          node.classList.toggle \d-none, !show
         submit: ({node}) -> node.classList.toggle \disabled, (progress!remain > 0)
         "brd-name": ({node}) -> node.innerText = if opt.brd => (opt.brd.name or '') else '未定的活動'
         "grp-name": ({node}) -> node.innerText = if opt.grp => (opt.grp.{}info.name or '') else '未定的分組'
-        "prj-link": ({node}) ~>
-          node.setAttribute \href, "/dash/prj/#{@prj.slug}"
+        "has-detail": ({node}) ~> node.classList.toggle \d-none, !@prj.detail
+        "prj-link": ({node}) ~> node.setAttribute \href, "/dash/prj/#{@prj.slug}"
         "owner-avatar": ({node}) ~>
           ld$.find(node, 'div', 0).style.backgroundImage = "url(/dash/s/avatar/#{@prj.owner}.png)"
         "owner-name": ({node}) ~>
