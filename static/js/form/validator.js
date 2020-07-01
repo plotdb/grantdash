@@ -232,6 +232,9 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
       }
       for (i$ = 0, len$ = (ref$ = block.criteria || []).length; i$ < len$; ++i$) {
         c = ref$[i$];
+        if (!c.enabled) {
+          continue;
+        }
         if (c.type === 'file-size') {
           ret = /^([0-9.,]+)([mk]b)?$/.exec(((c.input1 || '0') + "").trim().toLowerCase());
           if (ret) {
@@ -308,6 +311,9 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
       percent = (subsidy / (total || 1)) * 100;
       for (i$ = 0, len$ = (ref$ = block.criteria || []).length; i$ < len$; ++i$) {
         c = ref$[i$];
+        if (!c.enabled) {
+          continue;
+        }
         if (c.type === 'budget-percent') {
           data = percent;
         } else if (c.type === 'budget-number') {

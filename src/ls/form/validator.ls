@@ -85,6 +85,7 @@ validate = do
     value = (block.value or {}).list or []
     if !(value and value.length) => if empty-helper({block, empty: true, force}) => return that
     for c in (block.criteria or []) =>
+      if !c.enabled => continue
       if c.type == \file-size =>
         ret = /^([0-9.,]+)([mk]b)?$/.exec(("#{c.input1 or '0'}").trim!.toLowerCase!)
         if ret =>
@@ -98,7 +99,6 @@ validate = do
         if v.filter(->!(it in exts)).length => return {result: false, criteria: c}
       else if c.type == \file-count => if apply-criteria(c, value) => return that
     return {result: true}
-
   "form-text": -> return {result: true}
   "form-budget": ({block, force}) ->
     sheet = (block.value or {}).sheet or []
@@ -109,6 +109,7 @@ validate = do
     subsidy = sheet.reduce(((a,b) -> a + +b.3), 0)
     percent = (subsidy / (total or 1)) * 100
     for c in (block.criteria or []) =>
+      if !c.enabled => continue
       if c.type == \budget-percent => data = percent
       else if c.type == \budget-number => data = subsidy
       if apply-criteria(c, data) => return that
