@@ -21,7 +21,7 @@ route = do
     # some api dont have hint info inside path. thus we use referrer to extract org/brd info
     domain = req.get("host")
     ret = [req.get('Referrer'), req.originalUrl]
-      .map (pathname)->
+      .map (pathname) ->
         if (brd = /brd\/([^/?]+)/.exec(pathname)) => brd = brd.1
         if (prj = /prj\/([^/?]+)/.exec(pathname)) => prj = prj.1
         {brd,prj}
@@ -47,6 +47,7 @@ route = do
           .then (r={}) ~> @cache.prj[prj] = (r.[]rows.0 or {})
     else Promise.resolve(null)
     promise.then (path-cfg) ~>
+      # TODO deleted prj will lead to null org here
       if path-cfg and !path-cfg.org => return aux.reject 400
       p = if @cache.domain[domain] => Promise.resolve(that)
       else aux.reject 400
