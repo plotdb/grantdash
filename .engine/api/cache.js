@@ -42,15 +42,23 @@
       var io, req, res, this$ = this;
       io = arg$.io, req = arg$.req, res = arg$.res;
       return Promise.resolve().then(function(){
-        var pathname, domain, brd, prj, promise, that;
-        pathname = req.get('Referrer') || req.originalUrl;
+        var domain, ret, brd, prj, promise, that;
         domain = req.get("host");
-        if (brd = /brd\/([^/?]+)/.exec(pathname)) {
-          brd = brd[1];
-        }
-        if (prj = /prj\/([^/?]+)/.exec(pathname)) {
-          prj = prj[1];
-        }
+        ret = [req.get('Referrer'), req.originalUrl].map(function(pathname){
+          var brd, prj;
+          if (brd = /brd\/([^/?]+)/.exec(pathname)) {
+            brd = brd[1];
+          }
+          if (prj = /prj\/([^/?]+)/.exec(pathname)) {
+            prj = prj[1];
+          }
+          return {
+            brd: brd,
+            prj: prj
+          };
+        });
+        brd = ret[0].brd || ret[1].brd;
+        prj = ret[0].prj || ret[1].prj;
         promise = brd
           ? (that = this$.cache.brd[brd])
             ? Promise.resolve(that)
@@ -209,7 +217,7 @@
         if (that = ((ref$ = this$.cache)[type] || (ref$[type] = {}))[slug]) {
           return that;
         }
-        return io.query("select detail->'stage' as stage from brd where slug = $1 and brd.deleted is not true", [slug]).then(function(r){
+        return io.query("select detail->'stage' as stage from brd where slug = $1 and deleted is not true", [slug]).then(function(r){
           var ret, stage, cfgs;
           r == null && (r = {});
           ret = (r.rows || (r.rows = []))[0];

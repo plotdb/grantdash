@@ -19,10 +19,14 @@ route = do
   cache: {domain: (coded-domains or {}), brd: {}, prj: {}}
   check: ({io, req, res}) -> Promise.resolve!then ~>
     # some api dont have hint info inside path. thus we use referrer to extract org/brd info
-    pathname = req.get('Referrer') or req.originalUrl
     domain = req.get("host")
-    if (brd = /brd\/([^/?]+)/.exec(pathname)) => brd = brd.1
-    if (prj = /prj\/([^/?]+)/.exec(pathname)) => prj = prj.1
+    ret = [req.get('Referrer'), req.originalUrl]
+      .map (pathname)->
+        if (brd = /brd\/([^/?]+)/.exec(pathname)) => brd = brd.1
+        if (prj = /prj\/([^/?]+)/.exec(pathname)) => prj = prj.1
+        {brd,prj}
+    brd = ret.0.brd or ret.1.brd
+    prj = ret.0.prj or ret.1.prj
     promise = if brd =>
       if @cache.brd[brd] => Promise.resolve that
       else
@@ -116,7 +120,7 @@ stage = do
         if !type in @supported-types => return aux.reject 400
         if !slug => return aux.reject 400
         if @cache{}[type][slug] => return that
-        io.query "select detail->'stage' as stage from brd where slug = $1 and brd.deleted is not true", [slug]
+        io.query "select detail->'stage' as stage from brd where slug = $1 and deleted is not true", [slug]
           .then (r={}) ~>
             ret = r.[]rows.0
             stage = ret.{}stage.list or []
