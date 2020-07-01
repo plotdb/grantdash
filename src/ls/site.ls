@@ -23,7 +23,8 @@
         handler:
           "brand-org": ({node}) ->
             node.innerText = (g.scope.orgname or '')
-            node.setAttribute \href, "/org/#{g.scope.org}"
+            if g.scope.brd => node.setAttribute \href, "/brd/#{g.scope.brd}"
+            #node.setAttribute \href, "/org/#{g.scope.org}"
           "brand-brd": ({node}) ->
             node.classList.toggle \d-none, !g.scope.brdname
             node.innerText = "/ " + (g.scope.brdname or '')
