@@ -47,7 +47,7 @@ route = do
           .then (r={}) ~> @cache.prj[prj] = (r.[]rows.0 or {})
     else Promise.resolve(null)
     promise.then (path-cfg) ~>
-      # TODO deleted prj will lead to null org here
+      # TODO deleted prj will lead to null org here, thus global api will return 400 error
       if path-cfg and !path-cfg.org => return aux.reject 400
       p = if @cache.domain[domain] => Promise.resolve(that)
       else aux.reject 400
