@@ -1,0 +1,6 @@
+//- view
+extends base.pug
+block script
+  script: :lsc
+    ldc.register <[ldcvmgr]>, ({ldcvmgr}) ->
+      ldcvmgr.toggle \auth-required

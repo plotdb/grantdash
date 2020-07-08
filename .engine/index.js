@@ -393,7 +393,12 @@
               }
             } else {
               if (err.name === 'ldError') {
-                res.status(500).send(err);
+                if (err.id === 1000) {
+                  return res.render("err/custom.pug", {
+                    err: err
+                  });
+                }
+                return res.status(500).send(err);
               } else if (err instanceof URIError && (err.stack + "").startsWith('URIError: Failed to decode param')) {
                 return res.status(400).send();
               } else if (err.message.startsWith('TokenError')) {
