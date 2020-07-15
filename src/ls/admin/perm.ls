@@ -139,7 +139,11 @@ Ctrl = (opt) ->
               update-view!
           text: do
             name: ({context}) -> context.displayname
-            key: ({context}) -> if context.type == \user => "(id #{context.key})" else "(#{context.key})"
+            key: ({context}) ->
+              if context.type == \user => "用戶代碼: #{context.key}"
+              else if context.type == \email => "電子郵件"
+              else if context.type == \token => "連結邀請碼"
+              else ""
             role: ({context}) -> context.perm
           handler: do
             avatar: ({node, context}) ->

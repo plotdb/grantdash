@@ -280,9 +280,13 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
                 var context;
                 context = arg$.context;
                 if (context.type === 'user') {
-                  return "(id " + context.key + ")";
+                  return "用戶代碼: " + context.key;
+                } else if (context.type === 'email') {
+                  return "電子郵件";
+                } else if (context.type === 'token') {
+                  return "連結邀請碼";
                 } else {
-                  return "(" + context.key + ")";
+                  return "";
                 }
               },
               role: function(arg$){
