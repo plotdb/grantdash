@@ -207,7 +207,8 @@ api.get \/brd/:brd/grp/:grp/judge-list, aux.signed, (req, res) ->
   {brd, grp} = req.params{brd, grp}
   if !(brd and grp) => return aux.r400 res
   cache.stage.check {io, type: \brd, slug: brd}
-    .then (cfg = {}) ->
+    .then (c = {}) ->
+      cfg = c.config
       if !(cfg["judge-criteria"] or cfg["judge-primary"] or cfg["judge-final"]) => return aux.reject 403
       cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
     .then ->

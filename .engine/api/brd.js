@@ -357,8 +357,10 @@
         io: io,
         type: 'brd',
         slug: brd
-      }).then(function(cfg){
-        cfg == null && (cfg = {});
+      }).then(function(c){
+        var cfg;
+        c == null && (c = {});
+        cfg = c.config;
         if (!(cfg["judge-criteria"] || cfg["judge-primary"] || cfg["judge-final"])) {
           return aux.reject(403);
         }
