@@ -108,6 +108,7 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
       p = ['group', idx, k]
       if !@ctrl.grp[k].adapted! or force-adapt => @ctrl.grp[k].adapt {hub: @hubs.brd, path: p}
       else @ctrl.grp[k].set-path p
+      if @ctrl.grp[k].set-data => @ctrl.grp[k].set-data @grp
 
     adapt: ->
       {org,brd} = @hubs

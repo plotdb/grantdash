@@ -117,6 +117,11 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
         }
       },
       handler: {
+        "group-key": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.value = this$.data ? this$.data.key : '';
+        },
         bg: function(arg$){
           var node, name, url;
           node = arg$.node;
@@ -275,6 +280,10 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
     return this;
   };
   Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
+    setData: function(data){
+      this.data = data;
+      return this.view.render('group-key');
+    },
     opsIn: function(arg$){
       var data, ops, source, k, ref$, v;
       data = arg$.data, ops = arg$.ops, source = arg$.source;

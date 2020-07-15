@@ -205,12 +205,15 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
         }
         p = ['group', idx, k];
         if (!this$.ctrl.grp[k].adapted() || forceAdapt) {
-          return this$.ctrl.grp[k].adapt({
+          this$.ctrl.grp[k].adapt({
             hub: this$.hubs.brd,
             path: p
           });
         } else {
-          return this$.ctrl.grp[k].setPath(p);
+          this$.ctrl.grp[k].setPath(p);
+        }
+        if (this$.ctrl.grp[k].setData) {
+          return this$.ctrl.grp[k].setData(this$.grp);
         }
       });
     },

@@ -55,6 +55,7 @@ Ctrl = (opt) ->
             view.render!
           .catch -> console.log it
     handler: do
+      "group-key": ({node}) ~> node.value = if @data => @data.key else ''
       bg: ({node}) ~>
         name = node.getAttribute(\data-name)
         url = if type == \org => "url(/dash/org/#slug/upload/#{@form.values![name]})"
@@ -132,6 +133,9 @@ Ctrl = (opt) ->
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+  set-data: (data) ->
+    @data = data
+    @view.render \group-key
   ops-in: ({data,ops,source}) ->
     if source => return
     for k,v of @form.fields => if !(k in <[slug]>) =>
