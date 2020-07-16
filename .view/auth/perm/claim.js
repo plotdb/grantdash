@@ -3596,7 +3596,7 @@ pug_html = pug_html + "\u003Cdiv class=\"my-4\"\u003E";
 ;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fclaim.pug";
 pug_html = pug_html + "您的權限已設定完成。\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fclaim.pug";
-pug_html = pug_html + "\u003Ca class=\"d-block mb-4\" href=\"\u002Fdash\u002Fadmin\"\u003E";
+pug_html = pug_html + "\u003Ca class=\"d-block mb-4\" href=\"#\" onclick=\"lda.general.admin()\"\u003E";
 ;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fclaim.pug";
 pug_html = pug_html + "前往主控台\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 },

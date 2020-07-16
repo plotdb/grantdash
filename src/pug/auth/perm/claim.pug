@@ -6,7 +6,7 @@ block body
   +scope("claimed").ldcv: .base.w-640: .inner
     .typeset.heading-contast.vertical-center.my-0: .w-100.text-center: .p-4
       .my-4 您的權限已設定完成。
-      a.d-block.mb-4(href="/dash/admin") 前往主控台
+      a.d-block.mb-4(href="#",onclick="lda.general.admin()") 前往主控台
 block script
   script: :lsc
     ldc.register <[loader error auth viewLocals]>, ({loader, error, auth, viewLocals}) ->
