@@ -284,7 +284,7 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
                 } else if (context.type === 'email') {
                   return "郵件位址: " + context.key;
                 } else if (context.type === 'token') {
-                  return context.key;
+                  return "代碼: " + context.key;
                 } else {
                   return "";
                 }

@@ -142,7 +142,7 @@ Ctrl = (opt) ->
             key: ({context}) ->
               if context.type == \user => "用戶代碼: #{context.key}"
               else if context.type == \email => "郵件位址: #{context.key}"
-              else if context.type == \token => context.key
+              else if context.type == \token => "代碼: #{context.key}"
               else ""
             role: ({context}) -> context.perm
           handler: do
