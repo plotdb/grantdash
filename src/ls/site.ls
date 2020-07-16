@@ -8,8 +8,6 @@
         type: \link
         url: \/dash/assets/privacy.pdf
         timing: <[prj-create]>
-
-
       ldcvmgr-root: \/dash/modules/cover
       avatar-url: -> "/dash/s/avatar/#it.png"
     }
