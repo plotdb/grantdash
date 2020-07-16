@@ -11,7 +11,7 @@ function pug_rethrow(n,e,r,t){if(!(n instanceof Error))throw n;if(!("undefined"=
 function pug_style(r){if(!r)return"";if("object"==typeof r){var t="";for(var e in r)pug_has_own_property.call(r,e)&&(t=t+e+":"+r[e]+";");return t}return r+""}function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;var pug_debug_filename, pug_debug_line;try {;var locals_for_with = (locals || {});(function (Array, JSON, Math, blockLoader, cssLoader, decache, escape, parentName, prefix, scriptLoader) {;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fadmin\u002Fbase.pug";
 pug_html = pug_html + "\u003C!DOCTYPE html\u003E";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fversion.pug";
-var version = "2502425";
+var version = "3b2ae9f";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
 if ((!blockLoader || !blockLoader["common"])) {
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fstatic\u002Fassets\u002Flib\u002Fldui\u002Fpug\u002Fldui.pug";
@@ -1655,7 +1655,7 @@ pug_html = pug_html + "\u003Cli\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "";
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca href=\"\u002Fauth\u002Freset\u002F\" style=\"color:#0ff\" target=\"_blank\" rel=\"noopener noreferrer\"\u003E";
+pug_html = pug_html + "\u003Ca href=\"\u002Fdash\u002Fauth\u002Freset\u002F\" style=\"color:#0ff\" target=\"_blank\" rel=\"noopener noreferrer\"\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "重設密碼\u003C\u002Fa\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1787,13 +1787,13 @@ pug_html = pug_html + "\u003Cdiv class=\"text-center form-text text-muted small\
 ;pug_debug_line = 52;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "登入即表示您同意我們的 ";
 ;pug_debug_line = 52;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca href=\"\u002Ftos\u002F\" target=\"_blank\" rel=\"noopener noreferrer\"\u003E";
+pug_html = pug_html + "\u003Ca href=\"\u002Fdash\u002Ftos\u002F\" target=\"_blank\" rel=\"noopener noreferrer\"\u003E";
 ;pug_debug_line = 52;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "用戶條款\u003C\u002Fa\u003E";
 ;pug_debug_line = 52;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + " 與 ";
 ;pug_debug_line = 52;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca href=\"\u002Fprivacy\u002F\" target=\"_blank\"\u003E";
+pug_html = pug_html + "\u003Ca href=\"\u002Fdash\u002Fprivacy\u002F\" target=\"_blank\"\u003E";
 ;pug_debug_line = 52;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "隱私權政策\u003C\u002Fa\u003E";
 ;pug_debug_line = 52;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";

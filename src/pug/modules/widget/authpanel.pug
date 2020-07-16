@@ -11,7 +11,7 @@ mixin authpanel
           ul
             li 換一組帳號、密碼或登入方式
             li 確認您的 email 或密碼沒有打錯
-            li #[a(href="/auth/reset/",style="color:#0ff",target="_blank",rel="noopener noreferrer") 重設密碼]
+            li #[a(href="/dash/auth/reset/",style="color:#0ff",target="_blank",rel="noopener noreferrer") 重設密碼]
             li #[a(href="#",onclick="lda.ldcvmgr.toggle('contact');",style="color:#0ff") 與我們聯絡]
 
         .d-none(data-info="token")
@@ -49,7 +49,7 @@ mixin authpanel
             .invalid-feedback 不合格的密碼
           .form-group
             .text-center.form-text.text-muted.small
-              | 登入即表示您同意我們的 #[a(href="/tos/",target="_blank",rel="noopener noreferrer") 用戶條款] 與 #[a(href="/privacy/",target="_blank") 隱私權政策]
+              | 登入即表示您同意我們的 #[a(href="/dash/tos/",target="_blank",rel="noopener noreferrer") 用戶條款] 與 #[a(href="/dash/privacy/",target="_blank") 隱私權政策]
           .btn.btn-success.btn-block.disabled.ld-ext-right(data-action="submit")
             span(data-show="login") 登入
             span(data-show="signup") 註冊
