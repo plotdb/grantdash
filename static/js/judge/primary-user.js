@@ -167,7 +167,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                   name: function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;
-                    view.get("iframe").setAttribute('src', "/prj/" + context.slug + "?simple");
+                    view.get("iframe").setAttribute('src', "/dash/prj/" + context.slug + "?simple");
                     view.get("iframe-placeholder").classList.add('d-none');
                     if (this.activeNode) {
                       this.activeNode.classList.remove('active');

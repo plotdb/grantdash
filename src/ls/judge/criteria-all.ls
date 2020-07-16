@@ -45,11 +45,11 @@ Ctrl = (opt) ->
               detail: ({node, context}) ~> @ldcv.detail.toggle!
               comment: ({node, context}) ~>
                 @active = context
-                view.get(\comment).value = (@data.prj{}[@active.slug].comment or '')
+                view.get(\comment).value = (@data.prj{}[@active.key].comment or '')
                 @ldcv.comment.toggle!
                 @view.local.render \comment-name
               name: ({node, context}) ->
-                view.get("iframe").setAttribute \src, "/prj/#{context.slug}?simple"
+                view.get("iframe").setAttribute \src, "/dash/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
@@ -65,7 +65,7 @@ Ctrl = (opt) ->
                 </div></div>
                 """ for user in context.count[n]].join('')
               "has-comment": ({node, context}) ~>
-                node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
+                node.classList.toggle \invisible, !@data.prj{}[context.key].comment
               state: ({node, context}) ~>
                 span = ld$.find(node, 'span',0)
                 icon = ld$.find(node, 'i',0)
@@ -117,7 +117,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     for k,user of @data.{}user =>
       val = @criteria.reduce(
         (a, b) ~>
-          v = user.prj{}[context.slug].{}value[b.key]
+          v = user.prj{}[context.key].{}value[b.key]
           Math.max(a, if v? => v else 1)
         0
       )

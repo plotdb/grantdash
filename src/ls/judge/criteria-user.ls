@@ -30,7 +30,7 @@ Ctrl = (opt) ->
       input: do
         comment: ({node}) ~>
           if !@active => return
-          @data.prj{}[@active.slug].comment = node.value
+          @data.prj{}[@active.key].comment = node.value
           @update debounced: 300
           @view.local.render {name: 'project', key: @active.slug}
       click: do
@@ -51,7 +51,7 @@ Ctrl = (opt) ->
           node.innerText = Math.round(100 * p.done / p.total )
       "header-criteria": do
         list: ~> @criteria
-        action: click: ({node, data}) ~> @sort \criteria, data.key
+        action: click: ({node, data}) ~> @sort \criteria, data
         handler: ({node, data}) ~> node.innerText = data.name
       project: do
         key: -> it.slug
@@ -67,18 +67,18 @@ Ctrl = (opt) ->
               detail: ({node, context}) ~> @ldcv.detail.toggle!
               comment: ({node, context}) ~>
                 @active = context
-                view.get(\comment).value = (@data.prj{}[@active.slug].comment or '')
+                view.get(\comment).value = (@data.prj{}[@active.key].comment or '')
                 @ldcv.comment.toggle!
                 @view.local.render \comment-name
               name: ({node, context}) ->
-                view.get("iframe").setAttribute \src, "/prj/#{context.slug}?simple"
+                view.get("iframe").setAttribute \src, "/dash/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
                 @active-node.classList.add \active
             handler: do
               "has-comment": ({node, context}) ~>
-                node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
+                node.classList.toggle \invisible, !@data.prj{}[context.key].comment
               state: ({node, context}) ~>
                 span = ld$.find(node, 'span',0)
                 icon = ld$.find(node, 'i',0)
@@ -95,16 +95,16 @@ Ctrl = (opt) ->
                 list: ({context}) ~> @criteria
                 init: ({node, local}) -> local.icon = ld$.find(node, 'i', 0)
                 action: click: ({node, data, context}) ~>
-                  v = @data.prj{}[context.slug].{}value[data.key]
+                  v = @data.prj{}[context.key].{}value[data.key]
                   v = if v? => v else 1
                   v = ( v + 2 ) % 3
-                  @data.prj{}[context.slug].value[data.key] = v
+                  @data.prj{}[context.key].value[data.key] = v
                   @get-progress!
                   @view.local.render {name: 'project', key: context.slug}
                   @view.local.render <[progress count]>
                   @update debounced: 10
                 handler: ({local, data, context}) ~>
-                  v = @data.prj{}[context.slug].{}value[data.key]
+                  v = @data.prj{}[context.key].{}value[data.key]
                   v = if v? => v else 1
                   clsset local.icon, v
         handler: ({node, local, data}) ~>
@@ -143,7 +143,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
   get-state: (context) ->
     context.state = @criteria.reduce(
       (a, b) ~>
-        v = @data.prj{}[context.slug].{}value[b.key]
+        v = @data.prj{}[context.key].{}value[b.key]
         Math.max(a, if v? => v else 1)
       0
     )
@@ -153,7 +153,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @prjs.map (p) ~>
       v = @criteria.reduce(
         (a, b) ~>
-          v = @data.prj{}[p.slug].{}value[b.key]
+          v = @data.prj{}[p.key].{}value[b.key]
           Math.max(a, if v? => v else 1)
         0
       )

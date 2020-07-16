@@ -138,7 +138,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       console.log("get judge document ... ");
       this.hub.doc = null;
       return this.sdb.get({
-        id: "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type,
+        id: "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/user/" + this.user.key,
         watch: function(ops, source){
           return this$.hub.fire('change', {
             ops: ops,
@@ -172,7 +172,11 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       if (hint) {
         loader.on();
       }
-      n = name + "" + (value != null ? '-' + value : '');
+      if (name === 'criteria') {
+        n = name + "-" + value.key;
+      } else {
+        n = name + "" + (value != null ? '-' + value : '');
+      }
       if (!this.sort.inversed) {
         this.sort.inversed = {};
       }
@@ -201,6 +205,8 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
           pending: "待審",
           reject: "汰除"
         }[value] + " 的結果";
+      } else if (name === 'criteria') {
+        verbose.name = value.name;
       }
       if (hint) {
         notify.send('success', "重新將表格依 " + verbose.name + " 做 " + verbose.dir + " 排序");
@@ -226,13 +232,13 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         } else if (name === 'comment') {
           this$.prjs.sort(function(a, b){
             var ref$, key$;
-            return dir * ((((ref$ = this$.data.prj)[key$ = a.slug] || (ref$[key$] = {})).comment || '').length - (((ref$ = this$.data.prj)[key$ = b.slug] || (ref$[key$] = {})).comment || '').length);
+            return dir * ((((ref$ = this$.data.prj)[key$ = a.key] || (ref$[key$] = {})).comment || '').length - (((ref$ = this$.data.prj)[key$ = b.key] || (ref$[key$] = {})).comment || '').length);
           });
         } else if (name === 'criteria') {
           this$.prjs.sort(function(a, b){
             var ref$, ref1$, key$;
-            a = ((ref$ = (ref1$ = this$.data.prj)[key$ = a.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[value];
-            b = ((ref$ = (ref1$ = this$.data.prj)[key$ = b.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[value];
+            a = ((ref$ = (ref1$ = this$.data.prj)[key$ = a.key] || (ref1$[key$] = {})).value || (ref$.value = {}))[value.key];
+            b = ((ref$ = (ref1$ = this$.data.prj)[key$ = b.key] || (ref1$[key$] = {})).value || (ref$.value = {}))[value.key];
             a = a != null ? a : 1;
             b = b != null ? b : 1;
             return dir * (statemap[a] - statemap[b]);
@@ -244,8 +250,8 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         } else if (name === 'primary') {
           this$.prjs.sort(function(a, b){
             var ref$, key$;
-            a = ((ref$ = this$.data.prj)[key$ = a.slug] || (ref$[key$] = {})).value === value ? 1 : 0;
-            b = ((ref$ = this$.data.prj)[key$ = b.slug] || (ref$[key$] = {})).value === value ? 1 : 0;
+            a = ((ref$ = this$.data.prj)[key$ = a.key] || (ref$[key$] = {})).value === value ? 1 : 0;
+            b = ((ref$ = this$.data.prj)[key$ = b.key] || (ref$[key$] = {})).value === value ? 1 : 0;
             return dir * (a - b);
           });
         } else if (name === 'count') {
@@ -256,8 +262,8 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         } else if (name === 'shortlist') {
           this$.prjs.sort(function(a, b){
             var ref$, key$;
-            a = ((ref$ = this$.data.prj)[key$ = a.slug] || (ref$[key$] = {})).picked ? 1 : 0;
-            b = ((ref$ = this$.data.prj)[key$ = b.slug] || (ref$[key$] = {})).picked ? 1 : 0;
+            a = ((ref$ = this$.data.prj)[key$ = a.key] || (ref$[key$] = {})).picked ? 1 : 0;
+            b = ((ref$ = this$.data.prj)[key$ = b.key] || (ref$[key$] = {})).picked ? 1 : 0;
             return dir * (a - b);
           });
         }

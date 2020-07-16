@@ -95,14 +95,14 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                     var node, context, ref$, key$;
                     node = arg$.node, context = arg$.context;
                     this$.active = context;
-                    view.get('comment').value = ((ref$ = this$.data.prj)[key$ = this$.active.slug] || (ref$[key$] = {})).comment || '';
+                    view.get('comment').value = ((ref$ = this$.data.prj)[key$ = this$.active.key] || (ref$[key$] = {})).comment || '';
                     this$.ldcv.comment.toggle();
                     return this$.view.local.render('comment-name');
                   },
                   name: function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;
-                    view.get("iframe").setAttribute('src', "/prj/" + context.slug + "?simple");
+                    view.get("iframe").setAttribute('src', "/dash/prj/" + context.slug + "?simple");
                     view.get("iframe-placeholder").classList.add('d-none');
                     if (this.activeNode) {
                       this.activeNode.classList.remove('active');
@@ -129,7 +129,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                 "has-comment": function(arg$){
                   var node, context, ref$, key$;
                   node = arg$.node, context = arg$.context;
-                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).comment);
+                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment);
                 },
                 state: function(arg$){
                   var node, context, span, icon, state, cls;
@@ -223,7 +223,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
       return results$;
       function fn$(a, b){
         var v, ref$, ref1$, key$;
-        v = ((ref$ = (ref1$ = user.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
+        v = ((ref$ = (ref1$ = user.prj)[key$ = context.key] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
         return Math.max(a, v != null ? v : 1);
       }
     },

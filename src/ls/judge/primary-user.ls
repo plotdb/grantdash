@@ -80,7 +80,7 @@ Ctrl = (opt) ->
                 @ldcv.comment.toggle!
                 @view.local.render \comment-name
               name: ({node, context}) ->
-                view.get("iframe").setAttribute \src, "/prj/#{context.slug}?simple"
+                view.get("iframe").setAttribute \src, "/dash/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root

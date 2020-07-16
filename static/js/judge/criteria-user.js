@@ -42,7 +42,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
             if (!this$.active) {
               return;
             }
-            ((ref$ = this$.data.prj)[key$ = this$.active.slug] || (ref$[key$] = {})).comment = node.value;
+            ((ref$ = this$.data.prj)[key$ = this$.active.key] || (ref$[key$] = {})).comment = node.value;
             this$.update({
               debounced: 300
             });
@@ -104,7 +104,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
             click: function(arg$){
               var node, data;
               node = arg$.node, data = arg$.data;
-              return this$.sort('criteria', data.key);
+              return this$.sort('criteria', data);
             }
           },
           handler: function(arg$){
@@ -140,14 +140,14 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
                     var node, context, ref$, key$;
                     node = arg$.node, context = arg$.context;
                     this$.active = context;
-                    view.get('comment').value = ((ref$ = this$.data.prj)[key$ = this$.active.slug] || (ref$[key$] = {})).comment || '';
+                    view.get('comment').value = ((ref$ = this$.data.prj)[key$ = this$.active.key] || (ref$[key$] = {})).comment || '';
                     this$.ldcv.comment.toggle();
                     return this$.view.local.render('comment-name');
                   },
                   name: function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;
-                    view.get("iframe").setAttribute('src', "/prj/" + context.slug + "?simple");
+                    view.get("iframe").setAttribute('src', "/dash/prj/" + context.slug + "?simple");
                     view.get("iframe-placeholder").classList.add('d-none');
                     if (this.activeNode) {
                       this.activeNode.classList.remove('active');
@@ -161,7 +161,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
                 "has-comment": function(arg$){
                   var node, context, ref$, key$;
                   node = arg$.node, context = arg$.context;
-                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).comment);
+                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment);
                 },
                 state: function(arg$){
                   var node, context, span, icon, state, cls;
@@ -201,10 +201,10 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
                     click: function(arg$){
                       var node, data, context, v, ref$, ref1$, key$;
                       node = arg$.node, data = arg$.data, context = arg$.context;
-                      v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[data.key];
+                      v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).value || (ref$.value = {}))[data.key];
                       v = v != null ? v : 1;
                       v = (v + 2) % 3;
-                      ((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).value[data.key] = v;
+                      ((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).value[data.key] = v;
                       this$.getProgress();
                       this$.view.local.render({
                         name: 'project',
@@ -219,7 +219,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
                   handler: function(arg$){
                     var local, data, context, v, ref$, ref1$, key$;
                     local = arg$.local, data = arg$.data, context = arg$.context;
-                    v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[data.key];
+                    v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).value || (ref$.value = {}))[data.key];
                     v = v != null ? v : 1;
                     return clsset(local.icon, v);
                   }
@@ -281,7 +281,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
       var this$ = this;
       return context.state = this.criteria.reduce(function(a, b){
         var v, ref$, ref1$, key$;
-        v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
+        v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
         return Math.max(a, v != null ? v : 1);
       }, 0);
     },
@@ -296,7 +296,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
         var v;
         v = this$.criteria.reduce(function(a, b){
           var v, ref$, ref1$, key$;
-          v = ((ref$ = (ref1$ = this$.data.prj)[key$ = p.slug] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
+          v = ((ref$ = (ref1$ = this$.data.prj)[key$ = p.key] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
           return Math.max(a, v != null ? v : 1);
         }, 0);
         return val[v]++;

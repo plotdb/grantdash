@@ -73,7 +73,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     console.log "get judge document ... "
     @hub.doc = null
     (doc) <~ @sdb.get({
-      id: "brd/#{@brd}/grp/#{@grp}/judge/#{@type}"
+      id: "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/user/#{@user.key}"
       watch: (ops,source) ~> @hub.fire \change, {ops,source}
       create: ~> {}
     }).then _
@@ -88,7 +88,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
 
   sort: (name, value, hint = true) ->
     if hint => loader.on!
-    n = "#name#{if value? => ('-' + value) else ''}"
+    if name == \criteria => n = "#{name}-#{value.key}"
+    else n = "#name#{if value? => ('-' + value) else ''}"
     if !@sort.inversed => @sort.inversed = {}
     dir = if @sort.inversed[n] => 1 else -1
     verbose = do
@@ -98,6 +99,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       verbose.name = "#{{accept: "通過", pending: "待審", reject: "不符"}[value]}的數量"
     else if name in <[primary primary-all]> =>
       verbose.name = "#{{accept: "推薦", pending: "待審", reject: "汰除"}[value]} 的結果"
+    else if name == \criteria =>
+      verbose.name = value.name
     if hint => notify.send \success, "重新將表格依 #{verbose.name} 做 #{verbose.dir} 排序"
     debounce 100 .then ~>
       @sort.inversed[n] = !@sort.inversed[n]
@@ -110,11 +113,11 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         @prjs.sort (a,b) ~> dir * (a.info.budget - b.info.budget)
       else if name == \comment =>
         @prjs.sort (a,b) ~>
-          dir * ((@data.prj{}[a.slug].comment or '').length - (@data.prj{}[b.slug].comment or '').length)
+          dir * ((@data.prj{}[a.key].comment or '').length - (@data.prj{}[b.key].comment or '').length)
       else if name == \criteria =>
         @prjs.sort (a, b) ~>
-          a = @data.prj{}[a.slug].{}value[value]
-          b = @data.prj{}[b.slug].{}value[value]
+          a = @data.prj{}[a.key].{}value[value.key]
+          b = @data.prj{}[b.key].{}value[value.key]
           a = if a? => a else 1
           b = if b? => b else 1
           return dir * ( statemap[a] - statemap[b] )
@@ -122,15 +125,15 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         @prjs.sort (a, b) ~> return dir * (a.count[value] or 0) - (b.count[value] or 0)
       else if name == \primary =>
         @prjs.sort (a, b) ~>
-          a = if @data.prj{}[a.slug].value == value => 1 else 0
-          b = if @data.prj{}[b.slug].value == value => 1 else 0
+          a = if @data.prj{}[a.key].value == value => 1 else 0
+          b = if @data.prj{}[b.key].value == value => 1 else 0
           return dir * (a - b)
       else if name == \count =>
         @prjs.sort (a, b) ~> dir * (a.count[][value].length - b.count[][value].length)
       else if name == \shortlist =>
         @prjs.sort (a, b) ~>
-          a = if @data.prj{}[a.slug].picked => 1 else 0
-          b = if @data.prj{}[b.slug].picked => 1 else 0
+          a = if @data.prj{}[a.key].picked => 1 else 0
+          b = if @data.prj{}[b.key].picked => 1 else 0
           return dir * (a - b)
       if hint => loader.off!
       @render!

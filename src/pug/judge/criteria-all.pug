@@ -1,20 +1,17 @@
 extends /base.pug
 block vars
-  - ctrl.navtop.shown = false
+  - ctrl.navtop.shown = true
   - ctrl.navtop.placeholder = false
-  - ctrl.navtop.className = "navbar-light bg-semi-light"
+  - ctrl.navtop.className = "bg-none"
   - ctrl.foot.shown = false
   - isall = false
 block head
+block navtop-item
+  ul.navbar-nav.mr-auto
+    li.nav-item: a.nav-link(href="#") #[i.i-radio.text-success] 資格審查總表
 block body
   .h-100.w-100.d-flex.flex-column
-    .p-2.d-flex
-      .flex-grow-1.p-2
-        span.mr-4(ld="grp-name")
-        span #[i.i-radio.text-success] 資格審查總表
-      div
-        .p-2 Kirby #[i.i-dart-down]
-
+    div(style="padding-top:60px")
     .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
       .d-flex.flex-column(style="flex:1 1 55%")
 
