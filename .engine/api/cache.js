@@ -42,9 +42,12 @@
       var io, req, res, this$ = this;
       io = arg$.io, req = arg$.req, res = arg$.res;
       return Promise.resolve().then(function(){
-        var domain, ret, brd, prj, promise, that;
+        var domain, paths, ret, brd, prj, promise, that;
         domain = req.get("host");
-        ret = [req.get('Referrer'), req.originalUrl].map(function(pathname){
+        paths = /api/.exec(req.originalUrl)
+          ? [req.get('Referrer'), req.originalUrl]
+          : [req.originalUrl];
+        ret = paths.map(function(pathname){
           var brd, prj;
           if (brd = /brd\/([^/?]+)/.exec(pathname)) {
             brd = brd[1];
@@ -57,8 +60,8 @@
             prj: prj
           };
         });
-        brd = ret[0].brd || ret[1].brd;
-        prj = ret[0].prj || ret[1].prj;
+        brd = ret[0].brd || (ret[1] ? ret[1].brd : null);
+        prj = ret[0].prj || (ret[1] ? ret[1].prj : null);
         promise = brd
           ? (that = this$.cache.brd[brd])
             ? Promise.resolve(that)

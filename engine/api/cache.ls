@@ -20,13 +20,14 @@ route = do
   check: ({io, req, res}) -> Promise.resolve!then ~>
     # some api dont have hint info inside path. thus we use referrer to extract org/brd info
     domain = req.get("host")
-    ret = [req.get('Referrer'), req.originalUrl]
+    paths = if /api/.exec(req.originalUrl) => [req.get('Referrer'), req.originalUrl] else [req.originalUrl]
+    ret = paths
       .map (pathname) ->
         if (brd = /brd\/([^/?]+)/.exec(pathname)) => brd = brd.1
         if (prj = /prj\/([^/?]+)/.exec(pathname)) => prj = prj.1
         {brd,prj}
-    brd = ret.0.brd or ret.1.brd
-    prj = ret.0.prj or ret.1.prj
+    brd = ret.0.brd or (if ret.1 => ret.1.brd else null )
+    prj = ret.0.prj or (if ret.1 => ret.1.prj else null )
     promise = if brd =>
       if @cache.brd[brd] => Promise.resolve that
       else
