@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+lsc load &
+lsc load &
+lsc load &
+lsc load &
+lsc load &
+lsc load &

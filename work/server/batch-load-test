@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+trap "kill 0" exit
+
+lsc pload 1 &
+lsc pload 2 &
+lsc pload 3 &
+lsc pload 4 &
+lsc pload 5 &
+lsc pload 6 &
+lsc pload 7 &
+lsc pload 8 &
+lsc pload 9 &
+lsc pload 10 &
+
+wait
