@@ -141,8 +141,8 @@ Ctrl = (opt) ->
             name: ({context}) -> context.displayname
             key: ({context}) ->
               if context.type == \user => "用戶代碼: #{context.key}"
-              else if context.type == \email => "電子郵件"
-              else if context.type == \token => "連結邀請碼"
+              else if context.type == \email => "郵件位址: #{context.key}"
+              else if context.type == \token => context.key
               else ""
             role: ({context}) -> context.perm
           handler: do

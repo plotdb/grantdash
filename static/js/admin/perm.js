@@ -282,9 +282,9 @@ ldc.register('adminPerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'userSearch', 'error
                 if (context.type === 'user') {
                   return "用戶代碼: " + context.key;
                 } else if (context.type === 'email') {
-                  return "電子郵件";
+                  return "郵件位址: " + context.key;
                 } else if (context.type === 'token') {
-                  return "連結邀請碼";
+                  return context.key;
                 } else {
                   return "";
                 }
