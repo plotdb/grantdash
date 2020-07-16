@@ -1,0 +1,87 @@
+extends /base.pug
+block body
+  .w-1024.mx-auto.rwd.typeset.heading-contrast
+    h1 load test
+    textarea.form-control(rows="10",ld="textarea")
+    .btn.btn-outline-secondary(ld="plus") Plus
+block script
+  +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
+  +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
+  +script("/dash/js/util/sdb-adapter.js")
+  +script("/dash/js/util/hub.js")
+  +script("/dash/js/load.js")
+  script: :lsc
+
+    ({notify, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \load-test,
+    <[notify error loader auth ldcvmgr sdbAdapter]>, _
+
+    names = <[mary john joe david steve sam samuel paul willy eagle rachal <[evoke inflation duke fan activity conflict freeze disaster sit finger praise pedestrian assault lobby center affinity refrigerator obese produce brake we dribble school money cooperative evolution tumour meet chocolate bathroom traction read concede admiration heaven dominate treat distance precedent definite qualify lay vision inspiration flu tile bar shiver classroom nap orbit association pack combine skin graphic rotate senior hunter chicken facility computing health approach initial prosecution heart banish lighter landowner institution piano examination zone die ruin distance effect safari model despair mine van snarl characteristic pier true suffer old mushroom category inspector resist proportion monkey leader necklace presentation office power]>
+
+    id = Math.floor(Math.random! * names.length)
+    id = +window.location.search.replace("?", "") or 0
+    name = names[id % names.length]
+
+    Ctrl = (opt) ->
+      @view = new ldView do
+        root: document.body
+        action: click: do
+          plus: ~>
+            @data["kirby"] = (@data["kirby"] or 0) + 1
+            @update!
+            @view.render!
+        handler: do
+          textarea: ({node}) ~> node.value = JSON.stringify(@data or '')
+      @
+
+    Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+      update: -> @ops-out ~> @data
+      ops-in: ({data, ops, source}) ->
+        @data = JSON.parse(JSON.stringify(data))
+        @view.render!
+
+      sharedb: ->
+        console.log "prepare sharedb ..."
+        @sdb = sdb = new sharedb-wrapper do
+          url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
+          path: '/dash/ws'
+        @hub = new Hub({sdb})
+        sdb.on \error, -> ldcvmgr.toggle \not-sync
+        sdb.on \close, ~>
+          ldcvmgr.toggle \offline-retry, true
+          sdb.reconnect!
+            .then ~> @getdoc!
+            .then ~> @adapt {hub: @hub, path: []}
+            .then -> console.log "reinitialized."
+            .then ~> ldcvmgr.toggle \offline-retry, false
+        sdb.ready!
+
+      getdoc: ->
+        console.log "get judge document ... "
+        @hub.doc = null
+        id = "load-test"
+        (doc) <~ @sdb.get({
+          id: id
+          watch: (ops,source) ~> @hub.fire \change, {ops,source}
+          create: ~> {}
+        }).then _
+        @hub.doc = doc
+        @adapt {hub: @hub, path: []}
+
+    ctrl = new Ctrl {}
+    ctrl.sharedb!
+      .then -> ctrl.getdoc!
+      .then ->
+        setInterval (->
+          obj = ctrl.data[name]
+          op1 = if obj => {p: [name], od: obj} else null
+          op2 = {p: [name], oi: (obj? and +obj + 1) or 0}
+          if op1 => ops = [op1, op2] else ops = [op2]
+          console.log name, op2.oi
+          ctrl.hub.doc.submitOp ops
+        ), 1000
+
+
+
+  script: :lsc
+    ldc.app \load-test
+     
