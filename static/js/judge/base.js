@@ -134,11 +134,16 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       return sdb.ready();
     },
     getdoc: function(){
-      var this$ = this;
+      var id, this$ = this;
       console.log("get judge document ... ");
       this.hub.doc = null;
+      if (this.user) {
+        id = "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/user/" + this.user.key;
+      } else {
+        id = "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/";
+      }
       return this.sdb.get({
-        id: "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/user/" + this.user.key,
+        id: id,
         watch: function(ops, source){
           return this$.hub.fire('change', {
             ops: ops,
