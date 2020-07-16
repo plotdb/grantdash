@@ -32,7 +32,8 @@
     ldc.action do
       admin: ->
         lc = {}
-        ld$.fetch '/dash/api/admin/', {method: \GET}, {type: \json}
+        auth.ensure!
+          .then -> ld$.fetch '/dash/api/admin/', {method: \GET}, {type: \json}
           .then (ret) ->
             [brds,orgs] = [ret.[]brds, ret.[]orgs]
             if brds.length == 1 => window.location.href = "/dash/brd/#{brds.0.slug}/admin"
@@ -52,7 +53,6 @@
                         #{if data.type == \brd => '活動' else '組織'} / #{data.name}
                         """
                 ldcvmgr.toggle \choose-admin-panel
-
           .catch error!
   ldc.app \general
 )!

@@ -52,10 +52,12 @@
       admin: function(){
         var lc;
         lc = {};
-        return ld$.fetch('/dash/api/admin/', {
-          method: 'GET'
-        }, {
-          type: 'json'
+        return auth.ensure().then(function(){
+          return ld$.fetch('/dash/api/admin/', {
+            method: 'GET'
+          }, {
+            type: 'json'
+          });
         }).then(function(ret){
           var ref$, brds, orgs;
           ref$ = [ret.brds || (ret.brds = []), ret.orgs || (ret.orgs = [])], brds = ref$[0], orgs = ref$[1];
