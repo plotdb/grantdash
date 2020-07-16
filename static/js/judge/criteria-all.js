@@ -203,7 +203,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
         return this$.sort('name', null, false);
       }).then(function(){
         return console.log("initied.");
-      })['catch'](error);
+      })['catch'](error());
     },
     getCount: function(context){
       var count, k, ref$, ref1$, user, val, results$ = [], this$ = this;

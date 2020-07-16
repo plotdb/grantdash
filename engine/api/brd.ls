@@ -203,7 +203,8 @@ get-prj-list = (req, res) ->
       )
     .then (r={}) -> return r.[]rows.filter(-> it.slug)
 
-api.get \/brd/:brd/grp/:grp/judge-list, aux.signed, (req, res) ->
+api.get \/brd/:brd/grp/:grp/judge-list, (req, res) ->
+  if !(req.user and req.user.key) => return aux.r403 res
   {brd, grp} = req.params{brd, grp}
   if !(brd and grp) => return aux.r400 res
   cache.stage.check {io, type: \brd, slug: brd}

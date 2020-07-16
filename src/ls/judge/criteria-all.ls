@@ -110,7 +110,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @getdoc!
       .then ~> @sort \name, null, false
       .then ~> console.log "initied."
-      .catch error
+      .catch error!
 
   get-count: (context) ->
     context.count = count = {accept: [], pending: [], reject: []}

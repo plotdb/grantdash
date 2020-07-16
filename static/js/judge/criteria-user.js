@@ -275,7 +275,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
         return this$.sort('name', null, false);
       }).then(function(){
         return console.log("initied.");
-      })['catch'](error);
+      })['catch'](error());
     },
     getState: function(context){
       var this$ = this;

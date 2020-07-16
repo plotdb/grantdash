@@ -344,8 +344,11 @@
         });
       });
     };
-    api.get('/brd/:brd/grp/:grp/judge-list', aux.signed, function(req, res){
+    api.get('/brd/:brd/grp/:grp/judge-list', function(req, res){
       var ref$, brd, grp;
+      if (!(req.user && req.user.key)) {
+        return aux.r403(res);
+      }
       ref$ = {
         brd: (ref$ = req.params).brd,
         grp: ref$.grp
