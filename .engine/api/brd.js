@@ -21,42 +21,112 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var deploy, slugs, saveSnapshot, api, app, landingPage, upload, updatePermission, getPrjList;
+    var deploy, slugs, saveSnapshot, api, app, landing, landingPage, upload, updatePermission, getPrjList;
     deploy = common.deploy, slugs = common.slugs, saveSnapshot = common.saveSnapshot;
     api = engine.router.api;
     app = engine.app;
-    landingPage = function(type, req, res){
-      var slug, p;
+    landing = {
+      org: function(arg$){
+        var slug, req, res, lc;
+        slug = arg$.slug, req = arg$.req, res = arg$.res;
+        lc = {};
+        if (!slug) {
+          return aux.r404(res);
+        }
+        return io.query("select * from org where org.slug = $1 and org.deleted is not true", [slug]).then(function(r){
+          r == null && (r = {});
+          if (!(lc.org = (r.rows || (r.rows = []))[0])) {
+            return aux.r404(res);
+          }
+          return io.query("select name,description,slug,key from brd where brd.org = $1 and brd.deleted is not true\norder by createdtime desc", [slug]);
+        }).then(function(r){
+          var brds;
+          r == null && (r = {});
+          brds = r.rows || (r.rows = []);
+          return res.render('view/default/org.pug', {
+            org: lc.org,
+            brds: brds
+          });
+        });
+      },
+      brd: function(arg$){
+        var slug, req, res, lc;
+        slug = arg$.slug, req = arg$.req, res = arg$.res;
+        lc = {};
+        if (!slug) {
+          return aux.r404(res);
+        }
+        return io.query("select * from brd where slug = $1 and deleted is not true", [slug]).then(function(r){
+          r == null && (r = {});
+          if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
+            return aux.r404(res);
+          }
+          return res.render('view/default/brd.pug', {
+            brd: lc.brd
+          });
+        });
+      }
+    };
+    landingPage = function(type, slug, req, res){
+      var lc, p;
+      lc = {};
+      p = type === 'brd'
+        ? io.query("select name, description, slug, key, org, detail->'page'->'info' as pageinfo\nfrom brd where deleted is not true and slug = $1", [slug])
+        : io.query("select name, description, slug, key, detail->'page'->'info' as pageinfo\nfrom org where deleted is not true and slug = $1", [slug]);
+      return p.then(function(r){
+        var ret, info, indexPath;
+        r == null && (r = {});
+        lc[type] = ret = (r.rows || (r.rows = []))[0];
+        info = ret.pageinfo;
+        if (info && (info.opt || 'default') === 'default' && (info.generic || (info.generic = {})).landingUrl) {
+          return Promise.resolve((info.generic || (info.generic = {})).landingUrl);
+        } else {
+          indexPath = type === 'brd'
+            ? "org/" + ret.org + "/brd/" + slug + "/static/index.html"
+            : "org/" + slug + "/static/index.html";
+          return fsExtra.exists(path.join("users", indexPath)).then(function(it){
+            return it ? path.join("/dash/private", indexPath) : null;
+          });
+        }
+      }).then(function(url){
+        if (url) {
+          if (/^https?:/.exec(url)) {
+            return res.status(302).redirect(url);
+          }
+          res.set({
+            "X-Accel-Redirect": url
+          });
+          return res.send();
+        }
+        return landing[type]({
+          slug: slug,
+          req: req,
+          res: res
+        });
+      })['catch'](aux.errorHandler(res));
+    };
+    app.get('/', function(req, res){
+      var slug, type;
+      if (!(req.scope && req.scope.org)) {
+        return aux.r404(res);
+      }
+      slug = req.scope.org || req.scope.brd;
+      type = req.scope.brd ? 'brd' : 'org';
+      return landingPage(type, slug, req, res);
+    });
+    app.get('/org/:slug', function(req, res){
+      var slug;
       if (!(slug = req.params.slug)) {
         return aux.r400(res);
       }
-      p = type === 'brd'
-        ? io.query("select org, detail->'page'->'info' as pageinfo from brd where deleted is not true and slug = $1", [slug])
-        : io.query("select detail->'page'->'info' as pageinfo from org where deleted is not true and slug = $1", [slug]);
-      return p.then(function(r){
-        var ret, info, url;
-        r == null && (r = {});
-        ret = (r.rows || (r.rows = []))[0];
-        info = ret.pageinfo;
-        url = !(info && (info.opt || 'default') === 'default' && (info.generic || (info.generic = {})).landingUrl)
-          ? type === 'brd'
-            ? "/dash/private/org/" + ret.org + "/brd/" + slug + "/static/index.html"
-            : "/dash/private/org/" + slug + "/static/index.html"
-          : (info.generic || (info.generic = {})).landingUrl;
-        if (/^https?:/.exec(url)) {
-          return res.status(302).redirect(url);
-        }
-        res.set({
-          "X-Accel-Redirect": url
-        });
-        return res.send();
-      })['catch'](aux.errorHandler(res));
-    };
-    app.get('/org/:slug', function(req, res){
-      return landingPage('org', req, res);
+      return landingPage('org', slug, req, res);
     });
     app.get('/brd/:slug', function(req, res){
-      return landingPage('brd', req, res);
+      var slug;
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      return landingPage('brd', slug, req, res);
     });
     app.get('/org/:org/prj/:prj/upload/:file', function(req, res){
       var ref$, org, prj, file, lc;

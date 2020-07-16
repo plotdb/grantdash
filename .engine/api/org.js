@@ -20,28 +20,6 @@
     var api, app;
     api = engine.router.api;
     app = engine.app;
-    app.get('/', function(req, res){
-      var lc;
-      lc = {};
-      if (!(req.scope && req.scope.org)) {
-        return aux.r404(res);
-      }
-      return io.query("select * from org where org.slug = $1 and org.deleted is not true", [req.scope.org]).then(function(r){
-        r == null && (r = {});
-        if (!(lc.org = (r.rows || (r.rows = []))[0])) {
-          return aux.r404(res);
-        }
-        return io.query("select name,description,slug,key from brd where brd.org = $1 and brd.deleted is not true\norder by createdtime desc", [req.scope.org]);
-      }).then(function(r){
-        var brds;
-        r == null && (r = {});
-        brds = r.rows || (r.rows = []);
-        return res.render('view/default/org.pug', {
-          org: lc.org,
-          brds: brds
-        });
-      })['catch'](aux.errorHandler(res));
-    });
     return api.post('/org', aux.signed, throttle.count.userMd, expressFormidable(), grecaptcha, function(req, res){
       var lc, ref$, name, description, slug, detail;
       lc = {};

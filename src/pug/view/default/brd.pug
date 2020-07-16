@@ -1,0 +1,15 @@
+//- view
+extends /base.pug
+block vars
+  - ctrl.navtop.shown = true
+  - ctrl.navtop.placeholder = true
+  - ctrl.navtop.className="bg-none"
+  - ctrl.foot.shown = false
+block body
+  .w-768.rwd.mx-auto.typeset.heading-contrast
+    h3 #{brd.name}
+    p #{(brd.description || '').substring(0,100)} ...
+    .py-2
+      .btn.btn-sm.btn-outline-secondary.mr-2(onclick="lda.general.admin()") 主控台
+      a.btn.btn-sm.btn-outline-secondary.mr-2(href="/dash/me/") 個人頁面
+    +nbr(1)

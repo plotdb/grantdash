@@ -7,32 +7,71 @@ require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 api = engine.router.api
 app = engine.app
 
+landing = do
+  org: ({slug, req, res}) ->
+    lc = {}
+    if !slug => return aux.r404 res
+    io.query "select * from org where org.slug = $1 and org.deleted is not true", [slug]
+      .then (r={}) ->
+        if !(lc.org = r.[]rows.0) => return aux.r404 res
+        io.query """
+        select name,description,slug,key from brd where brd.org = $1 and brd.deleted is not true
+        order by createdtime desc
+        """, [slug]
+      .then (r={}) ->
+        brds = r.[]rows
+        res.render \view/default/org.pug, {org: lc.org, brds}
+  brd: ({slug, req, res}) ->
+    lc = {}
+    if !slug => return aux.r404 res
+    io.query "select * from brd where slug = $1 and deleted is not true", [slug]
+      .then (r={}) ->
+        if !(lc.brd = r.[]rows.0) => return aux.r404 res
+        res.render \view/default/brd.pug, {brd: lc.brd}
+
 # landing pages
-landing-page = (type, req, res) ->
-  if !(slug = req.params.slug) => return aux.r400 res
+landing-page = (type, slug, req, res) ->
+  lc = {}
   p = if type == \brd =>
     io.query """
-    select org, detail->'page'->'info' as pageinfo from brd where deleted is not true and slug = $1
+    select name, description, slug, key, org, detail->'page'->'info' as pageinfo
+    from brd where deleted is not true and slug = $1
     """, [slug]
   else
     io.query """
-    select detail->'page'->'info' as pageinfo from org where deleted is not true and slug = $1
+    select name, description, slug, key, detail->'page'->'info' as pageinfo
+    from org where deleted is not true and slug = $1
     """, [slug]
   p
     .then (r={}) ->
-      ret = r.[]rows.0
+      lc[type] = ret = r.[]rows.0
       info = ret.pageinfo
-      url = if !(info and (info.opt or \default) == \default and info.{}generic.landing-url) =>
-        if type == \brd => "/dash/private/org/#{ret.org}/brd/#slug/static/index.html"
-        else "/dash/private/org/#slug/static/index.html"
-      else info.{}generic.landing-url
-      if /^https?:/.exec(url) => return res.status(302).redirect(url)
-      res.set {"X-Accel-Redirect": url}
-      res.send!
+      if (info and (info.opt or \default) == \default and info.{}generic.landing-url) =>
+        Promise.resolve(info.{}generic.landing-url)
+      else
+        index-path = if type == \brd => "org/#{ret.org}/brd/#slug/static/index.html"
+        else "org/#slug/static/index.html"
+        fs-extra.exists path.join("users", index-path)
+          .then -> return if it => path.join("/dash/private", index-path) else null
+    .then (url) ->
+      if url =>
+        if /^https?:/.exec(url) => return res.status(302).redirect(url)
+        res.set {"X-Accel-Redirect": url}
+        return res.send!
+      landing[type]({slug, req, res})
     .catch aux.error-handler res
 
-app.get \/org/:slug, (req, res) -> landing-page \org, req, res
-app.get \/brd/:slug, (req, res) -> landing-page \brd, req, res
+app.get \/, (req, res) ->
+  if !(req.scope and req.scope.org) => return aux.r404 res
+  slug = req.scope.org or req.scope.brd
+  type = if req.scope.brd => \brd else \org
+  landing-page type, slug, req, res
+app.get \/org/:slug, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  landing-page \org, slug, req, res
+app.get \/brd/:slug, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  landing-page \brd, slug, req, res
 
 # project file permission check
 # X-Accel-Redirect will be intercepted by Nginx, and then use to serve corresponding location.

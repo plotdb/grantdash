@@ -5,21 +5,6 @@ require! <[../aux ../../secret  ../util/grecaptcha ../util/throttle]>
 api = engine.router.api
 app = engine.app
 
-app.get \/, (req, res) ->
-  lc = {}
-  if !(req.scope and req.scope.org) => return aux.r404 res
-  io.query "select * from org where org.slug = $1 and org.deleted is not true", [req.scope.org]
-    .then (r={}) ->
-      if !(lc.org = r.[]rows.0) => return aux.r404 res
-      io.query """
-      select name,description,slug,key from brd where brd.org = $1 and brd.deleted is not true
-      order by createdtime desc
-      """, [req.scope.org]
-    .then (r={}) ->
-      brds = r.[]rows
-      res.render \view/default/org.pug, {org: lc.org, brds}
-    .catch aux.error-handler res
-
 api.post \/org, aux.signed, throttle.count.user-md, express-formidable!, grecaptcha, (req, res) ->
   lc = {}
   {name,description,slug} = req.fields
