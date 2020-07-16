@@ -48,8 +48,8 @@ Ctrl = (opt) ->
               owner: ({node, context}) -> node.innerText = context.ownername
               date: ({node, context}) -> node.innerText = moment(context.createdtime).format("YYYY-MM-DD hh:mm:ss")
               avatar: ({node, context}) ->
-                node.style.backgroundImage = "url(/s/avatar/#{context.owner}.png)"
-              view: ({node, context}) -> node.setAttribute \href, "/post/#{context.slug}/"
+                node.style.backgroundImage = "url(/dash/s/avatar/#{context.owner}.png)"
+              view: ({node, context}) -> node.setAttribute \href, "/dash/post/#{context.slug}/"
         handler: ({local, data}) ->
           local.view.setContext data
           local.view.render!

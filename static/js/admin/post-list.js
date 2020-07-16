@@ -107,12 +107,12 @@ ldc.register('adminPostList', ['notify', 'auth', 'loader', 'ldcvmgr', 'error', '
                 avatar: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.style.backgroundImage = "url(/s/avatar/" + context.owner + ".png)";
+                  return node.style.backgroundImage = "url(/dash/s/avatar/" + context.owner + ".png)";
                 },
                 view: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.setAttribute('href', "/post/" + context.slug + "/");
+                  return node.setAttribute('href', "/dash/post/" + context.slug + "/");
                 }
               }
             });
