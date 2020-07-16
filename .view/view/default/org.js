@@ -3603,9 +3603,9 @@ pug_html = pug_html + "\u003Cdiv class=\"btn btn-sm btn-outline-secondary mr-2\"
 ;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
 pug_html = pug_html + "主控台\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
-pug_html = pug_html + "\u003Ca class=\"btn btn-sm btn-outline-secondary mr-2\" href=\"\u002Fdash\u002Fme\u002F\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-sm btn-outline-secondary mr-2\" onclick=\"lda.general.profile()\"\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
-pug_html = pug_html + "個人頁面\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "我的案件\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 15;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
 pug_mixins["nbr"](1);
 ;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
