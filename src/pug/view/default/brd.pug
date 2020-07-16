@@ -9,7 +9,16 @@ block body
   .w-768.rwd.mx-auto.typeset.heading-contrast
     h3 #{brd.name}
     p #{(brd.description || '').substring(0,100)} ...
-    .py-2
-      .btn.btn-sm.btn-outline-secondary.mr-2(onclick="lda.general.admin()") 主控台
-      .btn.btn-sm.btn-outline-secondary.mr-2(onclick="lda.general.profile()") 我的案件
+    hr
+    .py-2.d-flex
+      .flex-grow-1
+        if stage.config["prj-list-view"]
+          a.btn.btn-sm.btn-outline-secondary.mr-2(href=`/dash/brd/${brd.slug}/list`) 提案列表
+        if stage.config["prj-new"]
+          a.btn.btn-sm.btn-outline-secondary.mr-2(href=`/dash/brd/${brd.slug}/prj/create`) 建立提案
+        else
+          .btn.btn-sm.btn-text.text-muted 尚未開放提案
+      div
+        a.btn.btn-sm.btn-outline-secondary(href="/") 回首頁
+
     +nbr(1)

@@ -27,7 +27,9 @@ landing = do
     io.query "select * from brd where slug = $1 and deleted is not true", [slug]
       .then (r={}) ->
         if !(lc.brd = r.[]rows.0) => return aux.r404 res
-        res.render \view/default/brd.pug, {brd: lc.brd}
+        cache.stage.check {io, type: \brd, slug}
+      .then (stage) ->
+        res.render \view/default/brd.pug, {brd: lc.brd, stage}
 
 # landing pages
 landing-page = (type, slug, req, res) ->

@@ -61,8 +61,15 @@
           if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
             return aux.r404(res);
           }
+          return cache.stage.check({
+            io: io,
+            type: 'brd',
+            slug: slug
+          });
+        }).then(function(stage){
           return res.render('view/default/brd.pug', {
-            brd: lc.brd
+            brd: lc.brd,
+            stage: stage
           });
         });
       }
