@@ -60,7 +60,7 @@ Ctrl = (opt) ->
                 node.innerHTML = ["""
                 <div style="width:.3em;display:inline-block">
                 <div class="rounded-circle bg-cover bg-portrait bg-dark border border-light has-tips"
-                style="width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/s/avatar/#{user}.png);">
+                style="width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/dash/s/avatar/#{user}.png);">
                 <!--<div class="hover-tip bottom tip-sm">#{user}</div>-->
                 </div></div>
                 """ for user in context.count[n]].join('')

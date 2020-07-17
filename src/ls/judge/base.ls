@@ -72,8 +72,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   getdoc: ->
     console.log "get judge document ... "
     @hub.doc = null
-    if @user => id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/user/#{@user.key}"
-    else id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/"
+    #if @user => id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/user/#{@user.key}"
+    #else id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/"
+    id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/"
     (doc) <~ @sdb.get({
       id: id
       watch: (ops,source) ~> @hub.fire \change, {ops,source}

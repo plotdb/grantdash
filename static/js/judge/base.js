@@ -137,11 +137,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       var id, this$ = this;
       console.log("get judge document ... ");
       this.hub.doc = null;
-      if (this.user) {
-        id = "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/user/" + this.user.key;
-      } else {
-        id = "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/";
-      }
+      id = "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/";
       return this.sdb.get({
         id: id,
         watch: function(ops, source){
