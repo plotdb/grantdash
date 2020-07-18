@@ -7,7 +7,6 @@
   codedDomains = {
     "dev.grantdash.dev": {
       org: "grantdash-dev",
-      brd: "test-brd",
       orgname: "Grant Dash Dev"
     },
     "dev.gda.sh": {

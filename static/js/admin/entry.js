@@ -42,12 +42,13 @@ ldc.register('adminEntry', ['sdbAdapter'], function(arg$){
             return this$.update();
           },
           "new-entry": function(arg$){
-            var node, evt, newData;
+            var node, evt, key, newData;
             node = arg$.node, evt = arg$.evt;
+            obj.data.lastkey = key = (obj.data.lastkey || 0) + 1;
             obj.data.entries.push(newData = {
               name: "新項目",
               description: "未準備詳細描述的項目",
-              key: suuid()
+              key: key
             });
             obj.active = newData;
             view.render();

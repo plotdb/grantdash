@@ -421,43 +421,6 @@
         });
       });
     };
-    api.get('/brd/:brd/grp/:grp/judge-list', function(req, res){
-      var ref$, brd, grp;
-      if (!(req.user && req.user.key)) {
-        return aux.r403(res);
-      }
-      ref$ = {
-        brd: (ref$ = req.params).brd,
-        grp: ref$.grp
-      }, brd = ref$.brd, grp = ref$.grp;
-      if (!(brd && grp)) {
-        return aux.r400(res);
-      }
-      return cache.stage.check({
-        io: io,
-        type: 'brd',
-        slug: brd
-      }).then(function(c){
-        var cfg;
-        c == null && (c = {});
-        cfg = c.config;
-        if (!(cfg["judge-criteria"] || cfg["judge-primary"] || cfg["judge-final"])) {
-          return aux.reject(403);
-        }
-        return cache.perm.check({
-          io: io,
-          user: req.user,
-          type: 'brd',
-          slug: brd,
-          action: ['judge', 'owner']
-        });
-      }).then(function(){
-        return io.query("select p.key, p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p\nleft join users as u on u.key = p.owner\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
-      }).then(function(r){
-        r == null && (r = {});
-        return res.send(r.rows || (r.rows = []));
-      })['catch'](aux.errorHandler(res));
-    });
     api.get('/brd/:slug/list', throttle.count.user, function(req, res){
       var slug;
       if (!(slug = req.params.slug)) {

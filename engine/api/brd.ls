@@ -244,28 +244,6 @@ get-prj-list = (req, res) ->
       )
     .then (r={}) -> return r.[]rows.filter(-> it.slug)
 
-api.get \/brd/:brd/grp/:grp/judge-list, (req, res) ->
-  if !(req.user and req.user.key) => return aux.r403 res
-  {brd, grp} = req.params{brd, grp}
-  if !(brd and grp) => return aux.r400 res
-  cache.stage.check {io, type: \brd, slug: brd}
-    .then (c = {}) ->
-      cfg = c.config
-      if !(cfg["judge-criteria"] or cfg["judge-primary"] or cfg["judge-final"]) => return aux.reject 403
-      cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
-    .then ->
-      io.query """
-      select p.key, p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p
-      left join users as u on u.key = p.owner
-      where
-        p.detail is not null and
-        p.brd = $1 and
-        p.grp = $2 and
-        p.deleted is not true
-      """, [brd, grp]
-    .then (r={}) -> res.send r.[]rows
-    .catch aux.error-handler res
-
 api.get \/brd/:slug/list, throttle.count.user, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   cache.stage.check {io, type: \brd, slug: slug, name: \prj-list-view}

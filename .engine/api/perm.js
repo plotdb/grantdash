@@ -113,7 +113,7 @@
         }
       });
     });
-    return api.put('/token', aux.signed, function(req, res){
+    api.put('/token', aux.signed, function(req, res){
       var lc, token;
       lc = {};
       if (!(token = req.body.token)) {
@@ -138,6 +138,87 @@
           return io.query("update permtoken set count = $1 where token = $2", [ret.count - 1, token]);
         } else {
           return io.query("delete from permtoken where token = $1", [token]);
+        }
+      }).then(function(){
+        return res.send({});
+      })['catch'](aux.errorHandler(res));
+    });
+    api.post('/judgetoken', grecaptcha, function(req, res){
+      var ref$, token, id, brd, grp, email;
+      if (!(req.user && req.user.key)) {
+        return aux.r400(res);
+      }
+      ref$ = [suuid(), suuid()], token = ref$[0], id = ref$[1];
+      ref$ = {
+        brd: (ref$ = req.body).brd,
+        grp: ref$.grp,
+        email: ref$.email
+      }, brd = ref$.brd, grp = ref$.grp, email = ref$.email;
+      if (!(brd && grp)) {
+        return aux.r400(res);
+      }
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: brd,
+        action: 'owner'
+      }).then(function(){
+        return io.query("insert into permtoken_judge (brd, grp, email, token, id) values ($1, $2, $3, $4, $5)", [brd, grp, email, token, id]);
+      }).then(function(){
+        return res.send({
+          id: id,
+          token: token
+        });
+      })['catch'](aux.errorHandler(res));
+    });
+    app.get('/judgetoken/:token', function(req, res){
+      var token;
+      if (!(token = req.params.token)) {
+        return aux.r400(res);
+      }
+      return io.query("select email from permtoken_judge where token = $1", [token]).then(function(r){
+        var ret;
+        r == null && (r = {});
+        if (!(ret = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(400);
+        }
+        return res.render("auth/perm/judge-claim.pug", {
+          exports: {
+            token: token,
+            email: ret.email
+          }
+        });
+      })['catch'](aux.errorHandler(res));
+    });
+    return api.put('/judgetoken', aux.signed, grecaptcha, function(req, res){
+      var lc, token;
+      lc = {};
+      if (!(token = req.body.token)) {
+        return aux.r400(res);
+      }
+      return io.query("select brd, grp, email, count, token, id, redeemspan, createdtime\nfrom permtoken_judge where token = $1", [token]).then(function(r){
+        var ret;
+        r == null && (r = {});
+        if (!(lc.ret = ret = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        if (lc.ret.email !== req.user.username) {
+          return aux.reject(403);
+        }
+        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan) {
+          io.query("delete from permtoken_judge where token = $1", [token]).then(function(){
+            return aux.reject(1013);
+          });
+        }
+        return io.query("insert into perm_judge (brd, grp, type, id, owner)\nvalues ($1, $2, $3, $4, $5)\non conflict do nothing", [ret.brd, ret.grp, 1, ret.id + ":" + ret.count, req.user.key]);
+      }).then(function(){
+        var ret;
+        ret = lc.ret;
+        if (ret.count > 1) {
+          return io.query("update permtoken_judge set count = $1 where token = $2", [ret.count - 1, token]);
+        } else {
+          return io.query("delete from permtoken_judge where token = $1", [token]);
         }
       }).then(function(){
         return res.send({});

@@ -1,0 +1,30 @@
+//- module
++scope("judge-perm")
+  .rwd.mx-auto.typeset.heading-contrast.mt-0
+    h3 評審名單
+    p.text-muted 請在此輸入評審的名稱，以及評審的 email 。輸入完成以後，您可以將各個評審對應的邀請連結提供給對方，對方只要開啟連結即可進入評選作業。
+    br
+    .d-flex.mb-2
+      .flex-grow-1.mr-2
+        .form-group
+          label 評審名稱
+          input.form-control.border.border-secondary.rounded(ld="name",placeholder="姓名")
+      .flex-grow-1.mr-2
+        .form-group
+          label 評審的電子郵件
+          input.form-control.border.border-secondary.rounded(ld="email",placeholder="電子郵件")
+      div
+        .form-group
+          label.d-block &nbsp;
+          .btn.btn-primary.ld.ld-ext-right(ld="add") 加入 #[.ld.ld-spin.ld-spinner]
+
+    .card: .card-body
+      .my-2.d-none(ld-each="judges"): .d-flex.align-items-center
+        .btn.btn-text.text-danger(ld="delete"): i.i-close
+        .btn.btn-text.flex-grow-1.text-left(ld="name")
+        .btn.btn-text.flex-grow-1.text-left(ld="email")
+        .btn.btn-outline-primary.has-tips.manual(ld="copylink")
+          .hover-tip.tip-sm 已複製
+          span.mr-1 複製邀請碼
+          i.i-link
+      .bg-light.p-4.vertical-center(ld="empty"): .text-center.w-100 尚未加入任何評審

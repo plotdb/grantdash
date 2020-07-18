@@ -18,6 +18,7 @@ create table if not exists permtoken_judge (
   grp text not null constraint permtoken_judge_grp_len check (char_length(grp) <= 64),
   token text not null unique primary key,
   id text not null unique,
+  email text,
   createdtime timestamp not null default now(),
   redeemspan int not null default 172800000,
   count int not null default 1

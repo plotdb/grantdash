@@ -2,10 +2,11 @@ ldc.register \adminGuard,
 <[navtop ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
 adminPrjList prjForm adminEntry adminWelcome adminPage
-adminPrjDetail adminPostList]>,
+adminPrjDetail adminPostList adminJudgePerm adminJudgeInfo]>,
 ({navtop, ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
-admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail, admin-post-list}) ->
+admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail,
+admin-post-list, admin-judge-perm, admin-judge-info}) ->
 
   Ctrl = ->
     @loader = loader
@@ -104,11 +105,11 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
       @grp = v
       @hubs.brd.doc.data.group.map (d,i) -> if d.key == v.key => idx := i
       (k) <~ [k for k of @ctrl.grp].map _
+      if @ctrl.grp[k].set-data => @ctrl.grp[k].set-data @grp
       if !@ctrl.grp[k].adapt => return
       p = ['group', idx, k]
       if !@ctrl.grp[k].adapted! or force-adapt => @ctrl.grp[k].adapt {hub: @hubs.brd, path: p}
       else @ctrl.grp[k].set-path p
-      if @ctrl.grp[k].set-data => @ctrl.grp[k].set-data @grp
 
     adapt: ->
       {org,brd} = @hubs
@@ -159,6 +160,8 @@ admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-deta
         ..grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
         ..list = new admin-prj-list {root: '[ld-scope=prj-list]', toc}
+        ..judgePerm = new admin-judge-perm {root: '[ld-scope=judge-perm]', toc, brd: toc.brd}
+        ..judgeInfo = new admin-judge-info {root: '[ld-scope=judge-info]', toc, brd: toc.brd}
 
       @ctrl.prj
         ..main = new admin-prj-detail {root: '[ld-scope=prj-detail]'}

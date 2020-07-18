@@ -51,7 +51,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       .then (ret) ~>
         @brdinfo = ret.brd
         @grpinfo = ret.grp
-        @criteria = ret.grp.criteria.entries
+        if !ret.grp.criteria => ldcvmgr.get('judge-criteria-missing')
+        else @criteria = ret.grp.criteria.entries
 
   sharedb: ->
     console.log "prepare sharedb ..."

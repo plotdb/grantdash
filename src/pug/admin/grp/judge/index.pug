@@ -1,0 +1,25 @@
+//- module
+.navbar.navbar-expand-lg.navbar-light.mb-4.border.shadow-sm.rounded.sticky.z-fixed.bg-white(style="top:15px")
+  .collapse.navbar-collapse
+    ul.nav.nav-pills.mr-auto(ld="nav",data-nav="grp-judge")
+      li.nav-item: .nav-link(ld="nav-tab default",data-name="perm") 評審名單
+      li.nav-item: .nav-link(ld="nav-tab",data-name="criteria") 資格審查
+      li.nav-item: .nav-link(ld="nav-tab",data-name="primary") 初選
+      li.nav-item: .nav-link(ld="nav-tab",data-name="final") 決選
+
+.p-4
+  //-
+    div(ld="nav-panel",data-nav="grp-judge",data-name="perm")
+      include ../perm.pug
+    div(ld="nav-panel",data-nav="grp-judge",data-name="criteria")
+      include criteria.pug
+    div(ld="nav-panel",data-nav="grp-judge",data-name="grade")
+      include grade.pug
+
+  div(ld="nav-panel default",data-nav="grp-judge",data-name="perm"): include perm.pug
+  +scope("judge-info")
+    div(ld="nav-panel",data-nav="grp-judge",data-name="criteria"): include criteria.pug
+    div(ld="nav-panel",data-nav="grp-judge",data-name="primary")
+      .w-100.h-100.bg-light.vertical-center.p-4: .m-4.w-100.text-center 尚未啟用
+    div(ld="nav-panel",data-nav="grp-judge",data-name="final")
+      .w-100.h-100.bg-light.vertical-center.p-4: .m-4.w-100.text-center 尚未啟用

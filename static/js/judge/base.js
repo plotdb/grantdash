@@ -97,7 +97,11 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       }).then(function(ret){
         this$.brdinfo = ret.brd;
         this$.grpinfo = ret.grp;
-        return this$.criteria = ret.grp.criteria.entries;
+        if (!ret.grp.criteria) {
+          return ldcvmgr.get('judge-criteria-missing');
+        } else {
+          return this$.criteria = ret.grp.criteria.entries;
+        }
       });
     },
     sharedb: function(){

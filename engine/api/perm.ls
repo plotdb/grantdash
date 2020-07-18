@@ -57,6 +57,7 @@ app.get \/token/:token, (req, res) ->
   if !(token = req.params.token) => return aux.r400 res
   res.render "auth/perm/claim.pug", {exports: {token}}
 
+# TODO recaptcha
 api.put \/token, aux.signed, (req, res) ->
   lc = {}
   if !(token = req.body.token) => return aux.r400 res
@@ -79,5 +80,52 @@ api.put \/token, aux.signed, (req, res) ->
       if ret.count > 1 =>
         io.query "update permtoken set count = $1 where token = $2", [ret.count - 1, token]
       else io.query "delete from permtoken where token = $1", [token]
+    .then -> res.send {}
+    .catch aux.error-handler res
+
+api.post \/judgetoken, grecaptcha, (req, res) ->
+  if !(req.user and req.user.key) => return aux.r400 res
+  [token,id] = [suuid!, suuid!]
+  {brd, grp, email} = req.body{brd, grp, email}
+  if !(brd and grp) => return aux.r400 res
+  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \owner}
+    .then ->
+      io.query """
+      insert into permtoken_judge (brd, grp, email, token, id) values ($1, $2, $3, $4, $5)
+      """, [brd, grp, email, token, id]
+    .then -> res.send {id, token}
+    .catch aux.error-handler res
+
+app.get \/judgetoken/:token, (req, res) ->
+  if !(token = req.params.token) => return aux.r400 res
+  io.query "select email from permtoken_judge where token = $1", [token]
+    .then (r={}) ->
+      if !(ret = r.[]rows.0) => return aux.reject 400
+      res.render "auth/perm/judge-claim.pug", {exports: {token, email: ret.email}}
+    .catch aux.error-handler res
+
+api.put \/judgetoken, aux.signed, grecaptcha, (req, res) ->
+  lc = {}
+  if !(token = req.body.token) => return aux.r400 res
+  io.query """
+  select brd, grp, email, count, token, id, redeemspan, createdtime
+  from permtoken_judge where token = $1
+  """, [token]
+    .then (r={}) ->
+      if !(lc.ret = ret = r.[]rows.0) => return aux.reject 404
+      if lc.ret.email != req.user.username => return aux.reject 403
+      if Date.now! >= ((new Date(ret.createdtime).getTime!) + ret.redeemspan) =>
+        io.query "delete from permtoken_judge where token = $1", [token]
+          .then -> return aux.reject 1013
+      io.query """
+      insert into perm_judge (brd, grp, type, id, owner)
+      values ($1, $2, $3, $4, $5)
+      on conflict do nothing
+      """, [ret.brd, ret.grp, 1, "#{ret.id}:#{ret.count}", req.user.key]
+    .then ->
+      ret = lc.ret
+      if ret.count > 1 =>
+        io.query "update permtoken_judge set count = $1 where token = $2", [ret.count - 1, token]
+      else io.query "delete from permtoken_judge where token = $1", [token]
     .then -> res.send {}
     .catch aux.error-handler res

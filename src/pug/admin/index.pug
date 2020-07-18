@@ -96,7 +96,7 @@ block script
               .folder-menu
                 .folder-item(ld="nav-tab",data-name="grp-config") 設定
                 .folder-item(ld="nav-tab",data-name="grp-list") 專案列表
-                //-.folder-item(ld="nav-tab",data-name="grp-judge") 評選資訊
+                .folder-item(ld="nav-tab",data-name="grp-judge") 評選資訊
                 .folder-item(ld="nav-tab",data-name="grp-form") 提案表
             .folder-item(ld="grp-add") 新增分組 ...
           .my-4
@@ -140,7 +140,7 @@ block script
               include grp/form.pug
 
             .p-4.d-none(ld="nav-panel",data-nav="main",data-name="grp-judge")
-              include grp/judge.pug
+              include grp/judge/index.pug
 
             .d-none(ld="nav-panel",data-nav="main",data-name="grp-list")
               include grp/list.pug
@@ -155,6 +155,7 @@ block script
               .btn.btn-sm.btn-outline-light.ml-4(pd="publish-modification") 發布變更
               //-.btn.btn-sm.btn-outline-light.ml-2(pd="restore-settings") 放棄變更
 
+  +script("/dash/assets/lib/clipboard.js/2.0.4/clipboard.min.js")
   +script("/dash/assets/lib/handsontable/handsontable.min.js")
   +script("/dash/assets/lib/dompurify/2.0.11/purify.min.js")
   +script("/dash/assets/lib/marked/0.8.0/marked.min.js")
@@ -176,6 +177,8 @@ block script
   +script("/dash/js/admin/page.js")
   +script("/dash/js/admin/prj.js")
   +script("/dash/js/admin/post-list.js")
+  +script("/dash/js/admin/judge-perm.js")
+  +script("/dash/js/admin/judge-info.js")
 
   //- form js files
   +script("/dash/js/form/index.js")
