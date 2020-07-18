@@ -2,7 +2,7 @@ require! <[permcheck lderror ../aux]>
 
 # TODO hard coded for now but we should query from db in the future.
 coded-domains = do
-  "dev.grantdash.dev": {org: "grantdash-dev", brd: "test-brd", orgname: "Grant Dash Dev"}
+  "dev.grantdash.dev": {org: "grantdash-dev", orgname: "Grant Dash Dev"}
   "dev.gda.sh": {org: "grantdash-dev", orgname: "Grant Dash Dev"}
   "grantdash.io": {orgname: "Grant Dash"}
   "taicca.grantdash.io": {org: "taicca-tw", brd: "grantdash-test", orgname: "Taicca Dash"}
