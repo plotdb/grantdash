@@ -255,6 +255,14 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
       this.view.base.render();
       return this.view.local.render();
     },
+    reconnect: function(){
+      var this$ = this;
+      return this.getdoc().then(function(){
+        return this$.sort('name', null, false);
+      }).then(function(){
+        return console.log("initied.");
+      });
+    },
     init: function(){
       var this$ = this;
       return Promise.resolve().then(function(){
@@ -270,11 +278,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
       }).then(function(){
         return this$.sharedb();
       }).then(function(){
-        return this$.getdoc();
-      }).then(function(){
-        return this$.sort('name', null, false);
-      }).then(function(){
-        return console.log("initied.");
+        return this$.reconnect();
       })['catch'](error());
     },
     getState: function(context){

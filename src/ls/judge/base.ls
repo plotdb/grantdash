@@ -64,8 +64,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     sdb.on \close, ~>
       ldcvmgr.toggle \offline-retry, true
       sdb.reconnect!
-        .then ~> @getdoc!
-        .then ~> @adapt {hub: @hub, path: []}
+        .then ~> @reconnect!
         .then -> console.log "reinitialized."
         .then ~> ldcvmgr.toggle \offline-retry, false
     sdb.ready!
@@ -100,9 +99,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       name: {name: "名稱", state: "狀態", comment: "評論長度", shortlist: "入選標記", budget: "預算"}[name] or value
       dir: if dir > 0 => "順向" else "逆向"
     if name == \count =>
-      verbose.name = "#{{accept: "通過", pending: "待審", reject: "不符"}[value]}的數量"
+      verbose.name = "#{{0: "通過", 1: "待審", 2: "不符"}[+value]}的數量"
     else if name in <[primary primary-all]> =>
-      verbose.name = "#{{accept: "推薦", pending: "待審", reject: "汰除"}[value]} 的結果"
+      value = +value
+      verbose.name = "#{{0: "推薦", 1: "待審", 2: "汰除"}[+value]} 的結果"
     else if name == \criteria =>
       verbose.name = value.name
     if hint => notify.send \success, "重新將表格依 #{verbose.name} 做 #{verbose.dir} 排序"
@@ -129,8 +129,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         @prjs.sort (a, b) ~> return dir * (a.count[value] or 0) - (b.count[value] or 0)
       else if name == \primary =>
         @prjs.sort (a, b) ~>
-          a = if @data.prj{}[a.key].value == value => 1 else 0
-          b = if @data.prj{}[b.key].value == value => 1 else 0
+          a = if @data.prj{}[a.key].v == value => 1 else 0
+          b = if @data.prj{}[b.key].v == value => 1 else 0
           return dir * (a - b)
       else if name == \count =>
         @prjs.sort (a, b) ~> dir * (a.count[][value].length - b.count[][value].length)

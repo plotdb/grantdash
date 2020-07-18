@@ -1,7 +1,7 @@
 ({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgePrimaryAll,
 <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
 
-
+typemap = {0: "accept", 1: "pending", 2: "reject"}
 clsmap = [
   <[i-check text-success]>
   <[i-circle text-secondary]>
@@ -112,7 +112,6 @@ Ctrl = (opt) ->
 
         handler: ({node, local, data}) ~>
           local.view.setContext data
-          @get-state data
           local.view.render!
 
   @
@@ -131,6 +130,11 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @view.base.render!
     @view.local.render!
 
+  reconnect: ->
+    @getdoc!
+      .then ~> @sort \name, null, false
+      .then ~> console.log "initied."
+
   init: ->
     Promise.resolve!
       .then ~> @auth!
@@ -138,28 +142,18 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @fetch-info!
       .then ~> @fetch-prjs!
       .then ~> @sharedb!
-      .then ~> @getdoc!
-      .then ~> @sort \name, null, false
-      .then ~> console.log "initied."
+      .then ~> @reconnect!
       .catch error!
-
-  get-state: (context) ->
-    context.state = @criteria.reduce(
-      (a, b) ~>
-        v = @data.prj{}[context.slug].{}value[b.key]
-        Math.max(a, if v? => v else 1)
-      0
-    )
 
   get-count: ->
     len = [k for k of @data.user].length
     @prjs.map (p,i) ~>
       p.count = count = {accept: 0, pending: 0, reject: 0, total: len}
-      for k,u of @data.user => if (v = u.prj{}[p.slug].value) => count[v]++
+      for k,u of @data.user => if (v = u.prj{}[p.key].v)? => count[typemap[v]]++
 
   get-progress: ->
     @progress = ret = {done: 0, accept: 0, pending: 0, reject: 0, total: (@prjs.length or 1)}
-    @prjs.map (p) ~> if (v = @data.prj{}[p.slug].value) => ret[v]++
+    @prjs.map (p) ~> if (v = @data.prj{}[p.key].v) => ret[v]++
     ret.done = (ret.accept + ret.pending + ret.reject) or 0
 
 ctrl = new Ctrl root: document.body

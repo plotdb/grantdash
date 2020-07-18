@@ -100,6 +100,11 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @view.base.render!
     @view.local.render!
 
+  reconnect: ->
+    @getdoc!
+      .then ~> @sort \name, null, false
+      .then ~> console.log "initied."
+
   init: ->
     Promise.resolve!
       .then ~> @auth!
@@ -107,9 +112,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @fetch-info!
       .then ~> @fetch-prjs!
       .then ~> @sharedb!
-      .then ~> @getdoc!
-      .then ~> @sort \name, null, false
-      .then ~> console.log "initied."
+      .then ~> @reconnect!
       .catch error!
 
   get-count: (context) ->

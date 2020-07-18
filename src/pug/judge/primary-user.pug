@@ -32,9 +32,9 @@ block body
               .flex-grow-1.clickable.mr-2(ld="sort",data-name="name") 提案名稱
               .mr-2.text-right.px-2.clickable.d-none(ld="show-budget sort",data-name="budget",style="width:50px") 預算
               .mr-2.d-flex.text-muted.text-center
-                .mx-2.clickable(ld="sort",data-name="primary",data-value="accept") 推薦
-                .mx-2.clickable(ld="sort",data-name="primary",data-value="pending") 面議
-                .mx-2.clickable(ld="sort",data-name="primary",data-value="reject") 汰除
+                .mx-2.clickable(ld="sort",data-name="primary",data-value="0") 推薦
+                .mx-2.clickable(ld="sort",data-name="primary",data-value="1") 面議
+                .mx-2.clickable(ld="sort",data-name="primary",data-value="2") 汰除
                 .mx-2 評論
 
             .px-2.py-2.d-flex.align-items-center.border-bottom.border-light(ld-each="project")
@@ -54,9 +54,9 @@ block body
 
 
               .mr-2.d-flex.text-muted.text-center.clickable(style="height:2em")
-                .mx-2.rounded.vertical-center(ld="option",data-name="accept",style="width:2em"): i.i-check
-                .mx-2.rounded.vertical-center(ld="option",data-name="pending",style="width:2em"): i.i-circle
-                .mx-2.rounded.vertical-center(ld="option",data-name="reject",style="width:2em"): i.i-close
+                .mx-2.rounded.vertical-center(ld="option",data-name="0",style="width:2em"): i.i-check
+                .mx-2.rounded.vertical-center(ld="option",data-name="1",style="width:2em"): i.i-circle
+                .mx-2.rounded.vertical-center(ld="option",data-name="2",style="width:2em"): i.i-close
                 .mx-2.vertical-center(ld="comment",style="width:2em"): i.i-pen
 
         .px-4.py-2.w-100
@@ -76,12 +76,13 @@ block body
             .mr-4.flex-grow-1
               .text-muted.text-sm 完成度 / #[span.text-danger(ld="progress progress-percent") 0]%
               .progress.my-1(style="width:100%")
+                //- 0 - accept, 1 - pending, 2 - reject
                 .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(
-                ld="progress progress-bar",data-name="accept")
+                ld="progress progress-bar",data-name="0")
                 .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(
-                ld="progress progress-bar",data-name="pending")
+                ld="progress progress-bar",data-name="1")
                 .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
-                ld="progress progress-bar",data-name="reject")
+                ld="progress progress-bar",data-name="2")
             //-div: .btn.btn-outline-dark 提交審查結果
 
       div(style="flex:1 1 50%")

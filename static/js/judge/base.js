@@ -123,12 +123,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       sdb.on('close', function(){
         ldcvmgr.toggle('offline-retry', true);
         return sdb.reconnect().then(function(){
-          return this$.getdoc();
-        }).then(function(){
-          return this$.adapt({
-            hub: this$.hub,
-            path: []
-          });
+          return this$.reconnect();
         }).then(function(){
           return console.log("reinitialized.");
         }).then(function(){
@@ -200,16 +195,17 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       };
       if (name === 'count') {
         verbose.name = {
-          accept: "通過",
-          pending: "待審",
-          reject: "不符"
-        }[value] + "的數量";
+          0: "通過",
+          1: "待審",
+          2: "不符"
+        }[+value] + "的數量";
       } else if (name === 'primary' || name === 'primary-all') {
+        value = +value;
         verbose.name = {
-          accept: "推薦",
-          pending: "待審",
-          reject: "汰除"
-        }[value] + " 的結果";
+          0: "推薦",
+          1: "待審",
+          2: "汰除"
+        }[+value] + " 的結果";
       } else if (name === 'criteria') {
         verbose.name = value.name;
       }
@@ -255,8 +251,8 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         } else if (name === 'primary') {
           this$.prjs.sort(function(a, b){
             var ref$, key$;
-            a = ((ref$ = this$.data.prj)[key$ = a.key] || (ref$[key$] = {})).value === value ? 1 : 0;
-            b = ((ref$ = this$.data.prj)[key$ = b.key] || (ref$[key$] = {})).value === value ? 1 : 0;
+            a = ((ref$ = this$.data.prj)[key$ = a.key] || (ref$[key$] = {})).v === value ? 1 : 0;
+            b = ((ref$ = this$.data.prj)[key$ = b.key] || (ref$[key$] = {})).v === value ? 1 : 0;
             return dir * (a - b);
           });
         } else if (name === 'count') {

@@ -185,6 +185,14 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
       this.view.base.render();
       return this.view.local.render();
     },
+    reconnect: function(){
+      var this$ = this;
+      return this.getdoc().then(function(){
+        return this$.sort('name', null, false);
+      }).then(function(){
+        return console.log("initied.");
+      });
+    },
     init: function(){
       var this$ = this;
       return Promise.resolve().then(function(){
@@ -198,11 +206,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
       }).then(function(){
         return this$.sharedb();
       }).then(function(){
-        return this$.getdoc();
-      }).then(function(){
-        return this$.sort('name', null, false);
-      }).then(function(){
-        return console.log("initied.");
+        return this$.reconnect();
       })['catch'](error());
     },
     getCount: function(context){

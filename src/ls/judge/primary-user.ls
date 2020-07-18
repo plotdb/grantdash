@@ -2,6 +2,8 @@
 <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
 
 
+typemap = {0: "accept", 1: "pending", 2: "reject"}
+bgmap = {0: "bg-success", 1: "bg-warning", 2: "bg-danger"}
 clsmap = [
   <[i-check text-success]>
   <[i-circle text-secondary]>
@@ -31,7 +33,7 @@ Ctrl = (opt) ->
       input: do
         comment: ({node}) ~>
           if !@active => return
-          @data.prj{}[@active.slug].comment = node.value
+          @data.prj{}[@active.key].comment = node.value
           @update debounced: 1000
           render-debounce!
       click: do
@@ -39,7 +41,7 @@ Ctrl = (opt) ->
         criteria: ({node}) ~> @ldcv.criteria.toggle!
         sort: ({node}) ~> @sort node.getAttribute(\data-name), node.getAttribute(\data-value)
     text: do
-      count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
+      count: ({node}) ~> @progress[typemap[+node.getAttribute(\data-name)]] or 0
     handler: do
       "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
       "comment-name": ({node}) ~>
@@ -47,7 +49,7 @@ Ctrl = (opt) ->
       progress: ({node, names}) ~>
         p = @progress
         if \progress-bar in names =>
-          n = node.getAttribute(\data-name)
+          n = typemap[+node.getAttribute(\data-name)]
           node.style.width = "#{100 * p[n] / p.total }%"
         else if \progress-percent in names =>
           node.innerText = Math.round(100 * p.done / p.total )
@@ -56,7 +58,7 @@ Ctrl = (opt) ->
         action: click: ({node, data}) ~> @sort \criteria, data.key
         handler: ({node, data}) ~> node.innerText = data.name
       project: do
-        key: -> it.slug
+        key: -> it.key
         list: ~> @prjs
         init: ({node, local, data}) ~>
           root = node
@@ -67,8 +69,8 @@ Ctrl = (opt) ->
             context: data
             action: click: do
               option: ({node, context}) ~>
-                name = node.getAttribute(\data-name)
-                @data.prj{}[context.slug].value = name
+                name = +node.getAttribute(\data-name)
+                @data.prj{}[context.key].v = name
                 local.view.render!
                 @get-progress!
                 @view.local.render <[progress]>
@@ -76,7 +78,7 @@ Ctrl = (opt) ->
               detail: ({node, context}) ~> @ldcv.detail.toggle!
               comment: ({node, context}) ~>
                 @active = context
-                view.get(\comment).value = (@data.prj{}[@active.slug].comment or '')
+                view.get(\comment).value = (@data.prj{}[@active.key].comment or '')
                 @ldcv.comment.toggle!
                 @view.local.render \comment-name
               name: ({node, context}) ->
@@ -100,16 +102,15 @@ Ctrl = (opt) ->
             handler: do
               "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
               "has-comment": ({node, context}) ~>
-                node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
+                node.classList.toggle \invisible, !@data.prj{}[context.key].comment
               option: ({node, local, context}) ~>
-                name = node.getAttribute(\data-name)
-                cls = {accept: "bg-success", pending: "bg-warning", reject: "bg-danger"}[name]
-                act = if (@data.prj{}[context.slug].value == name) => \add else \remove
+                name = +node.getAttribute(\data-name)
+                cls = bgmap[name]
+                act = if (@data.prj{}[context.key].v == name) => \add else \remove
                 node.classList[act].apply node.classList, [cls, 'text-white']
 
         handler: ({node, local, data}) ~>
           local.view.setContext data
-          @get-state data
           local.view.render!
 
   @
@@ -127,6 +128,11 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @view.base.render!
     @view.local.render!
 
+  reconnect: ->
+    @getdoc!
+      .then ~> @sort \name, null, false
+      .then ~> console.log "initied."
+
   init: ->
     Promise.resolve!
       .then ~> @auth!
@@ -135,22 +141,13 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @fetch-info!
       .then ~> @fetch-prjs!
       .then ~> @sharedb!
-      .then ~> @getdoc!
-      .then ~> @sort \name, null, false
-      .then ~> console.log "initied."
-      .catch error
+      .then ~> @reconnect!
 
-  get-state: (context) ->
-    context.state = @criteria.reduce(
-      (a, b) ~>
-        v = @data.prj{}[context.slug].{}value[b.key]
-        Math.max(a, if v? => v else 1)
-      0
-    )
+      .catch error
 
   get-progress: ->
     @progress = ret = {done: 0, accept: 0, pending: 0, reject: 0, total: (@prjs.length or 1)}
-    @prjs.map (p) ~> if (v = @data.prj{}[p.slug].value) => ret[v]++
+    @prjs.map (p) ~> if (v = @data.prj{}[p.key].v)? => ret[typemap[v]]++
     ret.done = (ret.accept + ret.pending + ret.reject) or 0
 
 ctrl = new Ctrl root: document.body

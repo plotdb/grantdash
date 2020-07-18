@@ -7,17 +7,46 @@ require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 api = engine.router.api
 app = engine.app
 
-api.get \/brd/:brd/grp/:grp/judge/criteria/all, (req, res) ->
+api.get \/brd/:brd/grp/:grp/judge/criteria/:scope, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
-  {brd,grp} = req.params{brd,grp}
-  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
+  {brd,grp,scope} = req.params{brd,grp,scope}
+  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[owner]>}
     .then -> io.query "select data from snapshots where doc_id = $1", ["brd/#{brd}/grp/#{grp}/judge/criteria/"]
-    .then (r={}) -> 
+    .then (r={}) ->
       if !(lc.data = data = (r.rows[].0 or {}).data) => return aux.reject 404
       io.query "select key,displayname from users where key = ANY($1::int[])", [[k for k of data.{}user]]
     .then (r={}) ->
       users = r.[]rows
+      res.send {data: lc.data, users}
+    .catch aux.error-handler res
+
+api.get \/brd/:brd/grp/:grp/judge/:type/:scope, (req, res) ->
+  if !(req.user and req.user.key) => return aux.r403 res
+  lc = {}
+  {brd,grp,type,scope} = req.params{brd,grp,type,scope}
+  if !(type in <[primary final]>) => return aux.r400 res
+  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
+    .then -> io.query "select data from snapshots where doc_id = $1", ["brd/#{brd}/grp/#{grp}/judge/#{type}/"]
+    .then (r={}) ->
+      if !(lc.data = data = (r.rows[].0 or {}).data) => return aux.reject 404
+      io.query "select detail from brd where slug = $1", [brd]
+    .then (r={}) ->
+      lc.brd = r.[]rows.0
+      grps = lc.brd.{}detail.[]group
+      if !(lc.grp = lc.brd.{}detail.[]group.filter(-> it.key == grp).0) => return aux.reject 404
+      lc.judges = lc.grp.{}judgePerm.[]list
+      io.query """
+      select p.owner,p.id,u.displayname
+      from perm_judge as p
+      left join users as u on u.key = p.owner
+      where p.id = ANY($1::text[]) and p.brd = $2 and p.grp = $3
+      """, [lc.judges.map(-> it.id), brd, grp]
+    .then (r={}) ->
+      hash = {}
+      lc.judges.map -> hash[it.id] = it
+      users = r.[]rows
+      users.map -> it.name = (hash[it.id] or {}).name
       res.send {data: lc.data, users}
     .catch aux.error-handler res
 

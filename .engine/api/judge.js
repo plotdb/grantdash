@@ -25,22 +25,23 @@
     deploy = common.deploy, slugs = common.slugs, saveSnapshot = common.saveSnapshot;
     api = engine.router.api;
     app = engine.app;
-    api.get('/brd/:brd/grp/:grp/judge/criteria/all', function(req, res){
-      var lc, ref$, brd, grp;
+    api.get('/brd/:brd/grp/:grp/judge/criteria/:scope', function(req, res){
+      var lc, ref$, brd, grp, scope;
       if (!(req.user && req.user.key)) {
         return aux.r403(res);
       }
       lc = {};
       ref$ = {
         brd: (ref$ = req.params).brd,
-        grp: ref$.grp
-      }, brd = ref$.brd, grp = ref$.grp;
+        grp: ref$.grp,
+        scope: ref$.scope
+      }, brd = ref$.brd, grp = ref$.grp, scope = ref$.scope;
       return cache.perm.check({
         io: io,
         user: req.user,
         type: 'brd',
         slug: brd,
-        action: ['judge', 'owner']
+        action: ['owner']
       }).then(function(){
         return io.query("select data from snapshots where doc_id = $1", ["brd/" + brd + "/grp/" + grp + "/judge/criteria/"]);
       }).then(function(r){
@@ -60,6 +61,69 @@
         var users;
         r == null && (r = {});
         users = r.rows || (r.rows = []);
+        return res.send({
+          data: lc.data,
+          users: users
+        });
+      })['catch'](aux.errorHandler(res));
+    });
+    api.get('/brd/:brd/grp/:grp/judge/:type/:scope', function(req, res){
+      var lc, ref$, brd, grp, type, scope;
+      if (!(req.user && req.user.key)) {
+        return aux.r403(res);
+      }
+      lc = {};
+      ref$ = {
+        brd: (ref$ = req.params).brd,
+        grp: ref$.grp,
+        type: ref$.type,
+        scope: ref$.scope
+      }, brd = ref$.brd, grp = ref$.grp, type = ref$.type, scope = ref$.scope;
+      if (!(type === 'primary' || type === 'final')) {
+        return aux.r400(res);
+      }
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: brd,
+        action: ['judge', 'owner']
+      }).then(function(){
+        return io.query("select data from snapshots where doc_id = $1", ["brd/" + brd + "/grp/" + grp + "/judge/" + type + "/"]);
+      }).then(function(r){
+        var data, ref$;
+        r == null && (r = {});
+        if (!(lc.data = data = (((ref$ = r.rows)[0] || (ref$[0] = [])) || {}).data)) {
+          return aux.reject(404);
+        }
+        return io.query("select detail from brd where slug = $1", [brd]);
+      }).then(function(r){
+        var grps, ref$, ref1$;
+        r == null && (r = {});
+        lc.brd = (r.rows || (r.rows = []))[0];
+        grps = (ref$ = (ref1$ = lc.brd).detail || (ref1$.detail = {})).group || (ref$.group = []);
+        if (!(lc.grp = ((ref$ = (ref1$ = lc.brd).detail || (ref1$.detail = {})).group || (ref$.group = [])).filter(function(it){
+          return it.key === grp;
+        })[0])) {
+          return aux.reject(404);
+        }
+        lc.judges = (ref$ = (ref1$ = lc.grp).judgePerm || (ref1$.judgePerm = {})).list || (ref$.list = []);
+        return io.query("select p.owner,p.id,u.displayname\nfrom perm_judge as p\nleft join users as u on u.key = p.owner\nwhere p.id = ANY($1::text[]) and p.brd = $2 and p.grp = $3", [
+          lc.judges.map(function(it){
+            return it.id;
+          }), brd, grp
+        ]);
+      }).then(function(r){
+        var hash, users;
+        r == null && (r = {});
+        hash = {};
+        lc.judges.map(function(it){
+          return hash[it.id] = it;
+        });
+        users = r.rows || (r.rows = []);
+        users.map(function(it){
+          return it.name = (hash[it.id] || {}).name;
+        });
         return res.send({
           data: lc.data,
           users: users
