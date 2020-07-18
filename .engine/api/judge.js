@@ -108,25 +108,32 @@
           return aux.reject(404);
         }
         lc.judges = (ref$ = (ref1$ = lc.grp).judgePerm || (ref1$.judgePerm = {})).list || (ref$.list = []);
-        return io.query("select p.owner,p.id,u.displayname\nfrom perm_judge as p\nleft join users as u on u.key = p.owner\nwhere p.id = ANY($1::text[]) and p.brd = $2 and p.grp = $3", [
+        return io.query("select p.owner as key, p.id, u.displayname\nfrom perm_judge as p\nleft join users as u on u.key = p.owner\nwhere p.id = ANY($1::text[]) and p.brd = $2 and p.grp = $3", [
           lc.judges.map(function(it){
             return it.id;
           }), brd, grp
         ]);
       }).then(function(r){
-        var hash, users;
+        var hash;
         r == null && (r = {});
         hash = {};
         lc.judges.map(function(it){
           return hash[it.id] = it;
         });
-        users = r.rows || (r.rows = []);
-        users.map(function(it){
+        lc.users = r.rows || (r.rows = []);
+        return lc.users.map(function(it){
           return it.name = (hash[it.id] || {}).name;
         });
+      }).then(function(){
+        return io.query("select p.key, p.slug from prj as p\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
+      }).then(function(r){
+        var prjs;
+        r == null && (r = {});
+        prjs = r.rows || (r.rows = []);
         return res.send({
           data: lc.data,
-          users: users
+          users: lc.users,
+          prjs: prjs
         });
       })['catch'](aux.errorHandler(res));
     });

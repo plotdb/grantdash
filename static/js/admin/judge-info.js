@@ -11,14 +11,24 @@ ldc.register('adminJudgeInfo', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admin
       : opt.root;
     this.brd = opt.brd;
     this.grp = null;
+    this.view = {};
+    this.prepare = {};
+    this.data = {};
     adminPanel.on('active', function(arg$){
       var nav, name, panel;
       nav = arg$.nav, name = arg$.name, panel = arg$.panel;
-      if (nav === 'grp-judge' && name === 'criteria') {
-        return this$.view.render();
+      if (!(nav === 'grp-judge')) {
+        return;
+      }
+      if (name === 'criteria') {
+        return this$.view.criteria.render();
+      } else if (name === 'primary') {
+        return this$.prepare.primary().then(function(){
+          return this$.view.primary.render();
+        });
       }
     });
-    this.view = new ldView({
+    this.view.criteria = new ldView({
       root: this.root,
       handler: {
         "criteria-user-link": function(arg$){
@@ -39,12 +49,97 @@ ldc.register('adminJudgeInfo', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admin
         }
       }
     });
+    this.prepare.primary = function(){
+      return ld$.fetch("/dash/api/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/primary/user", {
+        method: 'GET'
+      }, {
+        type: 'json'
+      }).then(function(it){
+        var data;
+        this$.data.primary = data = it;
+        this$.data.primary.users = data.users.map(function(u){
+          var count, obj, ref$;
+          count = {
+            0: 0,
+            1: 0,
+            2: 0,
+            total: 0
+          };
+          obj = (ref$ = data.data.user[u.key] || {}).prj || (ref$.prj = {});
+          data.prjs.map(function(p){
+            var v;
+            if ((v = (obj[p.key] || {}).v) != null) {
+              return count[v]++;
+            }
+          });
+          u.count = count;
+          count.total = count[0] + count[1] + count[2] || 1;
+          return u;
+        });
+        return this$;
+      })['catch'](error());
+    };
+    this.view.primary = new ldView({
+      root: this.root,
+      handler: {
+        "primary-user-link": function(arg$){
+          var node;
+          node = arg$.node;
+          if (!this$.grp) {
+            return;
+          }
+          return node.setAttribute('href', "/dash/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/primary/user");
+        },
+        "primary-all-link": function(arg$){
+          var node;
+          node = arg$.node;
+          if (!this$.grp) {
+            return;
+          }
+          return node.setAttribute('href', "/dash/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/primary/all");
+        },
+        "primary-judge": {
+          list: function(){
+            var ref$, ref1$;
+            return (ref$ = (ref1$ = this$.data).primary || (ref1$.primary = {})).users || (ref$.users = []);
+          },
+          init: function(arg$){
+            var node, local, data;
+            node = arg$.node, local = arg$.local, data = arg$.data;
+            node.classList.toggle('d-none', false);
+            return local.view = new ldView({
+              root: node,
+              context: data,
+              handler: {
+                name: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.innerText = context.name;
+                },
+                "progress-bar": function(arg$){
+                  var node, context, v;
+                  node = arg$.node, context = arg$.context;
+                  v = +node.getAttribute('data-name');
+                  return node.style.width = 100 * context.count[v] / context.count.total + "%";
+                }
+              }
+            });
+          },
+          handler: function(arg$){
+            var local, data;
+            local = arg$.local, data = arg$.data;
+            local.view.setContext = data;
+            return local.view.render();
+          }
+        }
+      }
+    });
     return this;
   };
   Ctrl.prototype = import$(Object.create(Object.prototype), {
+    prepare: function(){},
     setData: function(grp){
-      this.grp = grp;
-      return this.view.render();
+      return this.grp = grp;
     }
   });
   return Ctrl;
