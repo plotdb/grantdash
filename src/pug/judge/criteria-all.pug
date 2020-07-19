@@ -112,24 +112,6 @@ block body
         .mb-4(ld-each="comment")
           div: b(ld="name")
           div(ld="comment")
-        //-
-          .d-flex
-            .mr-4.pr-4
-              .mb-2: b 通過 #[i.i-check.text-success]
-              each i in [1,2,3]
-                +user.mr-2
-            .mr-4.pr-4
-              .mb-2: b 待驗證 #[i.i-circle]
-              each i in [1]
-                +user.mr-2
-            div
-              .mb-2: b 不符 #[i.i-close.text-danger]
-              each i in [1,2]
-                +user.mr-2
-          hr
-          each i in [1,2,3]
-            div: b Kirby Wu:
-            .border-left.pl-2.mb-4 開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。
 
       .card-footer
         .d-flex.justify-content-between
