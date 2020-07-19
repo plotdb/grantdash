@@ -11,15 +11,14 @@ Ctrl = (opt = {}) ->
   admin-panel.on \active, ({nav, name, panel}) ~>
     if !(nav == \grp-judge and name == \criteria) => return
     @prepare!
-      .then ~> @view.render!
-      .catch error!
 
   @view = new ldView do
     root: @root
     init: do
       ldbar: ({node, local}) -> local.ldbar = new ldBar(node)
+    action: click: sync: ~> @prepare!
     handler: do
-      ldbar: ({local}) ~> local.ldbar.set(100 * (@data.progress or 0))
+      ldbar: ({local}) ~> local.ldbar.set(Math.floor(100 * (@data.progress or 0)))
       "criteria-user-link": ({node}) ~>
         if !@grp => return
         node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/criteria/user"
@@ -27,6 +26,7 @@ Ctrl = (opt = {}) ->
         if !@grp => return
         node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/criteria/all"
       "criteria-judge": do
+        key: -> it.key
         list: ~> @data.[]users
         init: ({node, local, data}) ~>
           node.classList.toggle \d-none, false
@@ -45,7 +45,7 @@ Ctrl = (opt = {}) ->
                 percent = Math.floor(100 * (c.0 + c.2) / c.total)
                 node.innerText = "#{percent}%"
         handler: ({local, data}) ->
-          local.view.setContext = data
+          local.view.setContext data
           local.view.render!
 
   @
@@ -59,14 +59,17 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
         count = {0: 0, 1: 0, 2: 0, total: prjs.length}
         users.map (u) -> u.count = {0: 0, 1: 0, 2: 0, total: prjs.length}
         prjs.map (p) ->
+          max-value = -1
           users.map (u) ->
             v = data.user[u.key].prj{}[p.key].{}v
             state = criteria.entries.reduce(((a,b) -> Math.max(a, if v[b.key]? => v[b.key] else 1)), 0)
-            prjs.state = state
+            p.state = state
             u.count[state]++
-            count[state]++
+            if (state == 0 or state == 2) and state > max-value => max-value := state
+          if max-value == -1 => max-value = 1
+          count[max-value]++
         @data.progress = ( count.0 + count.2 ) / count.total
-
+      .then ~> @view.render!
       .catch error!
 
   set-data: (grp) -> @grp = grp

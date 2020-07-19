@@ -18,9 +18,7 @@ ldc.register('adminJudgeCriteria', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'a
       if (!(nav === 'grp-judge' && name === 'criteria')) {
         return;
       }
-      return this$.prepare().then(function(){
-        return this$.view.render();
-      })['catch'](error());
+      return this$.prepare();
     });
     this.view = new ldView({
       root: this.root,
@@ -31,11 +29,18 @@ ldc.register('adminJudgeCriteria', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'a
           return local.ldbar = new ldBar(node);
         }
       },
+      action: {
+        click: {
+          sync: function(){
+            return this$.prepare();
+          }
+        }
+      },
       handler: {
         ldbar: function(arg$){
           var local;
           local = arg$.local;
-          return local.ldbar.set(100 * (this$.data.progress || 0));
+          return local.ldbar.set(Math.floor(100 * (this$.data.progress || 0)));
         },
         "criteria-user-link": function(arg$){
           var node;
@@ -54,6 +59,9 @@ ldc.register('adminJudgeCriteria', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'a
           return node.setAttribute('href', "/dash/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/criteria/all");
         },
         "criteria-judge": {
+          key: function(it){
+            return it.key;
+          },
           list: function(){
             var ref$;
             return (ref$ = this$.data).users || (ref$.users = []);
@@ -90,7 +98,7 @@ ldc.register('adminJudgeCriteria', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'a
           handler: function(arg$){
             var local, data;
             local = arg$.local, data = arg$.data;
-            local.view.setContext = data;
+            local.view.setContext(data);
             return local.view.render();
           }
         }
@@ -129,18 +137,28 @@ ldc.register('adminJudgeCriteria', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'a
           };
         });
         prjs.map(function(p){
-          return users.map(function(u){
+          var maxValue;
+          maxValue = -1;
+          users.map(function(u){
             var v, ref$, ref1$, key$, state;
             v = (ref$ = (ref1$ = data.user[u.key].prj)[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {});
             state = criteria.entries.reduce(function(a, b){
               return Math.max(a, v[b.key] != null ? v[b.key] : 1);
             }, 0);
-            prjs.state = state;
+            p.state = state;
             u.count[state]++;
-            return count[state]++;
+            if ((state === 0 || state === 2) && state > maxValue) {
+              return maxValue = state;
+            }
           });
+          if (maxValue === -1) {
+            maxValue = 1;
+          }
+          return count[maxValue]++;
         });
         return this$.data.progress = (count[0] + count[2]) / count.total;
+      }).then(function(){
+        return this$.view.render();
       })['catch'](error());
     },
     setData: function(grp){

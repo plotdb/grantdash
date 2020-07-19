@@ -159,9 +159,15 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
               },
               handler: {
                 "has-comment": function(arg$){
-                  var node, context, ref$, key$;
+                  var node, context, idx, ref$, key$;
                   node = arg$.node, context = arg$.context;
-                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment);
+                  idx = ((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment ? 1 : 0;
+                  [['i-pen'], ['i-doc', 'text-primary']][1 - idx].map(function(it){
+                    return node.classList.remove(it);
+                  });
+                  return [['i-pen'], ['i-doc', 'text-primary']][idx].map(function(it){
+                    return node.classList.add(it);
+                  });
                 },
                 state: function(arg$){
                   var node, context, span, icon, state, cls;

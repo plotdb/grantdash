@@ -39,7 +39,7 @@ Ctrl = (opt = {}) ->
                 v = +node.getAttribute \data-name
                 node.style.width = "#{100 * context.count[v] / context.count.total}%"
         handler: ({local, data}) ->
-          local.view.setContext = data
+          local.view.setContext data
           local.view.render!
 
   @

@@ -78,7 +78,9 @@ Ctrl = (opt) ->
                 @active-node.classList.add \active
             handler: do
               "has-comment": ({node, context}) ~>
-                node.classList.toggle \invisible, !@data.prj{}[context.key].comment
+                idx = if @data.prj{}[context.key].comment => 1 else 0
+                [<[i-pen]>, <[i-doc text-primary]>][1 - idx].map -> node.classList.remove it
+                [<[i-pen]>, <[i-doc text-primary]>][idx].map -> node.classList.add it
               state: ({node, context}) ~>
                 span = ld$.find(node, 'span',0)
                 icon = ld$.find(node, 'i',0)

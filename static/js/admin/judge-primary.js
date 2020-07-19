@@ -72,7 +72,7 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
           handler: function(arg$){
             var local, data;
             local = arg$.local, data = arg$.data;
-            local.view.setContext = data;
+            local.view.setContext(data);
             return local.view.render();
           }
         }
