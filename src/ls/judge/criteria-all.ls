@@ -64,15 +64,19 @@ Ctrl = (opt) ->
                 @active-node = root
                 @active-node.classList.add \active
             handler: do
-              count: ({node, context}) ->
+              count: ({node, context}) ~>
                 n = node.getAttribute(\data-name)
-                node.innerHTML = ["""
-                <div style="width:.3em;display:inline-block">
-                <div class="rounded-circle bg-cover bg-portrait bg-dark border border-light has-tips"
-                style="width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/dash/s/avatar/#{user}.png);">
-                <!--<div class="hover-tip bottom tip-sm">#{user}</div>-->
-                </div></div>
-                """ for user in context.count[n]].join('')
+                html = ""
+                for user in context.count[n] =>
+                  displayname = if @usermap => @usermap{}[user].displayname else ''
+                  html += """<div style="width:.3em;display:inline-block">
+                  <div class="rounded-circle bg-cover bg-portrait bg-dark border border-light has-tips"
+                  style="width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/dash/s/avatar/#{user}.png);">
+                  <div class="hover-tip bottom tip-sm">#{displayname}</div>
+                  </div></div>
+                  """
+                node.innerHTML = html
+
               detail: ({node, context}) ~>
                 has-comment = ([v for k,v of context.comments].filter -> it).length
                 if !(icon = ld$.find(node, 'i', 0)) => return
@@ -145,6 +149,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       context.state = if count.reject.length => 2 else if count.accept.length => 0 else 1
 
   get-displayname: (list) ->
+    if @usermap and !(list.filter(~>!@usermap[it]).length) => Promise.resolve!
     payload = userkeys: list
     ld$.fetch "/dash/api/usermap/", {method: \PUT}, {json: payload, type: \json}
       .then (ret = []) ~>

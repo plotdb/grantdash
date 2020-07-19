@@ -144,17 +144,16 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
               },
               handler: {
                 count: function(arg$){
-                  var node, context, n, user;
+                  var node, context, n, html, i$, ref$, len$, user, displayname, ref1$;
                   node = arg$.node, context = arg$.context;
                   n = node.getAttribute('data-name');
-                  return node.innerHTML = (function(){
-                    var i$, ref$, len$, results$ = [];
-                    for (i$ = 0, len$ = (ref$ = context.count[n]).length; i$ < len$; ++i$) {
-                      user = ref$[i$];
-                      results$.push("<div style=\"width:.3em;display:inline-block\">\n<div class=\"rounded-circle bg-cover bg-portrait bg-dark border border-light has-tips\"\nstyle=\"width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/dash/s/avatar/" + user + ".png);\">\n<!--<div class=\"hover-tip bottom tip-sm\">" + user + "</div>-->\n</div></div>");
-                    }
-                    return results$;
-                  }()).join('');
+                  html = "";
+                  for (i$ = 0, len$ = (ref$ = context.count[n]).length; i$ < len$; ++i$) {
+                    user = ref$[i$];
+                    displayname = this$.usermap ? ((ref1$ = this$.usermap)[user] || (ref1$[user] = {})).displayname : '';
+                    html += "<div style=\"width:.3em;display:inline-block\">\n<div class=\"rounded-circle bg-cover bg-portrait bg-dark border border-light has-tips\"\nstyle=\"width:1.5em;height:1.5em;margin-left:-.6em;background-image:url(/dash/s/avatar/" + user + ".png);\">\n<div class=\"hover-tip bottom tip-sm\">" + displayname + "</div>\n</div></div>";
+                  }
+                  return node.innerHTML = html;
                 },
                 detail: function(arg$){
                   var node, context, hasComment, k, v, icon;
@@ -291,6 +290,11 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
     },
     getDisplayname: function(list){
       var payload, this$ = this;
+      if (this.usermap && !list.filter(function(it){
+        return !this$.usermap[it];
+      }).length) {
+        Promise.resolve();
+      }
       payload = {
         userkeys: list
       };
