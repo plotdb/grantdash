@@ -24,9 +24,6 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
         root: ld$.find(this.root, '[ld=comment-ldcv]', 0),
         escape: false
       }),
-      detail: new ldCover({
-        root: ld$.find(this.root, '[ld=detail-ldcv]', 0)
-      }),
       criteria: new ldCover({
         root: ld$.find(this.root, '[ld=criteria-ldcv]', 0)
       })

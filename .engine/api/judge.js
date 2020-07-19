@@ -25,6 +25,16 @@
     deploy = common.deploy, slugs = common.slugs, saveSnapshot = common.saveSnapshot;
     api = engine.router.api;
     app = engine.app;
+    api.put('/usermap/', function(req, res){
+      var keys;
+      if (!((keys = req.body.userkeys) && Array.isArray(keys))) {
+        return aux.r400(res);
+      }
+      return io.query("select key,displayname from users where key = ANY($1::int[])", [keys]).then(function(r){
+        r == null && (r = {});
+        return res.send(r.rows || (r.rows = []));
+      })['catch'](aux.errorHandler(res));
+    });
     api.get('/brd/:brd/grp/:grp/judge/criteria/:scope', function(req, res){
       var lc, ref$, brd, grp, scope;
       if (!(req.user && req.user.key)) {

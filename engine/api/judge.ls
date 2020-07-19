@@ -7,6 +7,13 @@ require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 api = engine.router.api
 app = engine.app
 
+# judge doc use username to keep track of result. we use this to get user displayname
+api.put \/usermap/, (req, res) ->
+  if !((keys = req.body.userkeys) and Array.isArray(keys)) => return aux.r400 res
+  io.query "select key,displayname from users where key = ANY($1::int[])", [keys]
+    .then (r={}) -> res.send r.[]rows
+    .catch aux.error-handler res
+
 api.get \/brd/:brd/grp/:grp/judge/criteria/:scope, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}

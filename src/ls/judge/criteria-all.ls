@@ -7,7 +7,6 @@ Ctrl = (opt) ->
   @active = null
 
   @ldcv = do
-    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0)
     detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
     criteria: new ldCover root: ld$.find(@root, '[ld=criteria-ldcv]', 0)
 
@@ -16,7 +15,6 @@ Ctrl = (opt) ->
     root: @root
     action: do
       click: do
-        detail: ({node}) ~> @ldcv.detail.toggle!
         criteria: ({node}) ~> @ldcv.criteria.toggle!
         sort: ({node}) ~> @sort node.getAttribute(\data-name), node.getAttribute(\data-value)
     text: do
@@ -31,6 +29,18 @@ Ctrl = (opt) ->
           node.style.width = "#{100 * p[n] / p.total }%"
         else if \progress-percent in names =>
           node.innerText = Math.round(100 * p.done / p.total )
+      comment: do
+        list: ~> [{user: k, comment: v} for k,v of (@prj or {}).{}comments].filter -> it.comment
+        init: ({node, local, data}) ~>
+          local.view = new ldView do
+            root: node
+            context: data
+            text: do
+              name: ({context}) ~> @usermap[context.user].displayname
+              comment: ({context}) -> context.comment
+        render: ({local, data}) ->
+          local.view.setContext data
+          local.view.render!
       project: do
         key: -> it.slug
         list: ~> @prjs
@@ -42,12 +52,11 @@ Ctrl = (opt) ->
             root: node
             context: data
             action: click: do
-              detail: ({node, context}) ~> @ldcv.detail.toggle!
-              comment: ({node, context}) ~>
-                @active = context
-                view.get(\comment).value = (@data.prj{}[@active.key].comment or '')
-                @ldcv.comment.toggle!
-                @view.local.render \comment-name
+              detail: ({node, context}) ~>
+                @prj = context
+                @view.local.render \comment
+                @ldcv.detail.toggle!
+
               name: ({node, context}) ->
                 view.get("iframe").setAttribute \src, "/dash/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
@@ -64,8 +73,10 @@ Ctrl = (opt) ->
                 <!--<div class="hover-tip bottom tip-sm">#{user}</div>-->
                 </div></div>
                 """ for user in context.count[n]].join('')
-              "has-comment": ({node, context}) ~>
-                node.classList.toggle \invisible, !@data.prj{}[context.key].comment
+              detail: ({node, context}) ~>
+                has-comment = ([v for k,v of context.comments].filter -> it).length
+                if !(icon = ld$.find(node, 'i', 0)) => return
+                icon.classList.toggle \d-none, !has-comment
               state: ({node, context}) ~>
                 span = ld$.find(node, 'span',0)
                 icon = ld$.find(node, 'i',0)
@@ -92,8 +103,14 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
   ops-in: ({data,ops,source}) ->
     if source => return
     @data = JSON.parse(JSON.stringify(data))
-    @data.{}prj
-    @render!
+    userkeys = [k for k of @data.{}user]
+    @get-displayname userkeys
+      .then ~>
+        @prjs.map (p) ~>
+          p.comments = {}
+          for k,v of @data.{}user =>
+            p.comments[k] = (v or {}).{}prj.{}[p.key].comment or ''
+        @render!
 
   render: ->
     @get-progress!
@@ -127,8 +144,15 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       count[<[accept pending reject]>[val]].push k
       context.state = if count.reject.length => 2 else if count.accept.length => 0 else 1
 
-  get-progress: ->
+  get-displayname: (list) ->
+    payload = userkeys: list
+    ld$.fetch "/dash/api/usermap/", {method: \PUT}, {json: payload, type: \json}
+      .then (ret = []) ~>
+        @usermap = {}
+        ret.map ~> @usermap[it.key] = it
+      .catch error!
 
+  get-progress: ->
     val = {0: 0, 1: 0, 2: 0}
     @prjs.map (p) ~>
       if !(p.state?) => @get-count(p)

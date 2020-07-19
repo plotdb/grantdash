@@ -27,7 +27,7 @@ block body
             table.table.w-100.bg-light.border-bottom.mb-0.shadow-sm.text-center
               tr
                 td.clickable(ld="sort",data-name="state",style="width:5em") 結果
-                td.clickable(ld="sort",data-name="comment",style="width:2em") 註
+                //-td.clickable(ld="sort",data-name="comment",style="width:2em") 註
                 //-td.text-right(style="width:4em") 編號
                 td.text-left
                   .d-flex.align-items-end
@@ -36,19 +36,19 @@ block body
                 td.clickable(ld="sort",data-name="count",data-value="accept",style="width:4em") 通過
                 //-td.clickable(ld="sort",data-name="count",data-value="pending",style="width:4em") 待審
                 td.clickable(ld="sort",data-name="count",data-value="reject",style="width:4em") 不符
-                td(style="width:4em") 細節
+                td(ld="sort",data-name="comments",style="width:4em") 細節
 
           table.table.w-100.mb-0.text-center
             tr.d-none(ld-each="project")
               td.text-nowrap(style="width:5em"): .text-sm
                 .bg-light.rounded(style="padding:.2em .5em",ld="state") #[span.mr-1]#[i]
-              td(style="width:2em"): i.i-doc.text-primary.invisible(ld="has-comment comment")
+              //-td(style="width:2em"): i.i-doc.text-primary.invisible(ld="has-comment comment")
               //-td(style="width:4em").text-right: span(ld="key")
               td.text-left: span.text-underline.clickable(ld="name")
               td(ld="count",data-name="accept",style="width:4em;line-height:1em")
               //-td(ld="count",data-name="pending",style="width:4em;line-height:1em")
-              td(ld="count",data-name="reject",style="width:4em;line-height:1em")
-              td(style="width:4em"): i.i-doc
+              td.clickable(ld="count",data-name="reject",style="width:4em;line-height:1em")
+              td.clickable(ld="detail",style="width:4em"): i.i-doc.text-primary
 
 
         .px-4.py-2.w-100
@@ -92,7 +92,7 @@ block body
 
   div
 
-    .ldcv(ld="criteria-ldcv"): .base.w-480: .inner.card.shadow-sm
+    //-.ldcv(ld="criteria-ldcv"): .base.w-480: .inner.card.shadow-sm
       .card-body
         h3 審核資格
         hr
@@ -104,36 +104,33 @@ block body
         .text-right
           .btn.btn-primary(data-ldcv-set="") 關閉
 
-    .ldcv(ld="comment-ldcv"): .base.w-480: .inner.card.shadow-sm
-      .card-header.shadow-sm.position-relative.z-float
-        p.mb-0 資格審核附註
-        h4.mb-0(ld="comment-name")
-      textarea.form-control.border-0.rounded-0(ld="comment",
-      rows="5",placeholder="在這裡輸入您的附註 ... ")
-      .card-footer.text-right: .btn.btn-primary(data-ldcv-set="") 完成
-
     .ldcv(ld="detail-ldcv"): .base.w-480: .inner.card.shadow-sm
       .card-header.shadow-sm.position-relative.z-float
         p.mb-0 資格審核附註
-        h4.mb-0 點對點分散式網路
+        h4.mb-0(ld="comment-name")
       .card-body
-        .d-flex
-          .mr-4.pr-4
-            .mb-2: b 通過 #[i.i-check.text-success]
-            each i in [1,2,3]
-              +user.mr-2
-          .mr-4.pr-4
-            .mb-2: b 待驗證 #[i.i-circle]
-            each i in [1]
-              +user.mr-2
-          div
-            .mb-2: b 不符 #[i.i-close.text-danger]
-            each i in [1,2]
-              +user.mr-2
-        hr
-        each i in [1,2,3]
-          div: b Kirby Wu:
-          .border-left.pl-2.mb-4 開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。
+        .mb-4(ld-each="comment")
+          div: b(ld="name")
+          div(ld="comment")
+        //-
+          .d-flex
+            .mr-4.pr-4
+              .mb-2: b 通過 #[i.i-check.text-success]
+              each i in [1,2,3]
+                +user.mr-2
+            .mr-4.pr-4
+              .mb-2: b 待驗證 #[i.i-circle]
+              each i in [1]
+                +user.mr-2
+            div
+              .mb-2: b 不符 #[i.i-close.text-danger]
+              each i in [1,2]
+                +user.mr-2
+          hr
+          each i in [1,2,3]
+            div: b Kirby Wu:
+            .border-left.pl-2.mb-4 開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。
+
       .card-footer
         .d-flex.justify-content-between
           .btn.btn-primary(data-ldcv-set="") 關閉

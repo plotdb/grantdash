@@ -188,6 +188,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
           name: "名稱",
           state: "狀態",
           comment: "評論長度",
+          comments: "評論長度",
           shortlist: "入選標記",
           budget: "預算"
         }[name] || value,
@@ -195,10 +196,10 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       };
       if (name === 'count') {
         verbose.name = {
-          0: "通過",
-          1: "待審",
-          2: "不符"
-        }[+value] + "的數量";
+          "accept": "通過",
+          "pending": "待審",
+          "reject": "不符"
+        }[value] + "的數量";
       } else if (name === 'primary' || name === 'primary-all') {
         value = +value;
         verbose.name = {
@@ -229,6 +230,10 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         } else if (name === 'budget') {
           this$.prjs.sort(function(a, b){
             return dir * (a.info.budget - b.info.budget);
+          });
+        } else if (name === 'comments') {
+          this$.prjs.sort(function(a, b){
+            return dir * JSON.stringify(a.comments || {}).length - JSON.stringify(b.comments || {}).length;
           });
         } else if (name === 'comment') {
           this$.prjs.sort(function(a, b){

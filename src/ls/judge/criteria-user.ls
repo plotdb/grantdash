@@ -20,7 +20,6 @@ Ctrl = (opt) ->
 
   @ldcv = do
     comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0), escape: false
-    detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
     criteria: new ldCover root: ld$.find(@root, '[ld=criteria-ldcv]', 0)
 
   @view.local = view = new ldView do

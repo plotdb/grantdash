@@ -115,32 +115,6 @@ block body
       rows="5",placeholder="在這裡輸入您的附註 ... ")
       .card-footer.text-right: .btn.btn-primary(data-ldcv-set="") 完成
 
-    .ldcv(ld="detail-ldcv"): .base.w-480: .inner.card.shadow-sm
-      .card-header.shadow-sm.position-relative.z-float
-        p.mb-0 資格審核附註
-        h4.mb-0 點對點分散式網路
-      .card-body
-        .d-flex
-          .mr-4.pr-4
-            .mb-2: b 通過 #[i.i-check.text-success]
-            each i in [1,2,3]
-              +user.mr-2
-          .mr-4.pr-4
-            .mb-2: b 待驗證 #[i.i-circle]
-            each i in [1]
-              +user.mr-2
-          div
-            .mb-2: b 不符 #[i.i-close.text-danger]
-            each i in [1,2]
-              +user.mr-2
-        hr
-        each i in [1,2,3]
-          div: b Kirby Wu:
-          .border-left.pl-2.mb-4 開發一個網頁工具，使用者可以輸入關鍵字，快速瀏覽開放過的相關資料和政府辦理民眾資料申請的情形。
-      .card-footer
-        .d-flex.justify-content-between
-          .btn.btn-primary(data-ldcv-set="") 關閉
-
 block script
   +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
   +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")

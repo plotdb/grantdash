@@ -96,10 +96,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     if !@sort.inversed => @sort.inversed = {}
     dir = if @sort.inversed[n] => 1 else -1
     verbose = do
-      name: {name: "名稱", state: "狀態", comment: "評論長度", shortlist: "入選標記", budget: "預算"}[name] or value
+      name: {name: "名稱", state: "狀態", comment: "評論長度", comments: "評論長度", shortlist: "入選標記", budget: "預算"}[name] or value
       dir: if dir > 0 => "順向" else "逆向"
     if name == \count =>
-      verbose.name = "#{{0: "通過", 1: "待審", 2: "不符"}[+value]}的數量"
+      verbose.name = "#{{"accept": "通過", "pending": "待審", "reject": "不符"}[value]}的數量"
     else if name in <[primary primary-all]> =>
       value = +value
       verbose.name = "#{{0: "推薦", 1: "待審", 2: "汰除"}[+value]} 的結果"
@@ -115,6 +115,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         @prjs.sort (a, b) -> return dir * (if a.name > b.name => 1 else if a.name < b.name => -1 else 0)
       else if name == \budget =>
         @prjs.sort (a,b) ~> dir * (a.info.budget - b.info.budget)
+      else if name == \comments =>
+        @prjs.sort (a,b) ~>
+          dir * JSON.stringify(a.comments or {}).length - JSON.stringify(b.comments or {}).length
       else if name == \comment =>
         @prjs.sort (a,b) ~>
           dir * ((@data.prj{}[a.key].comment or '').length - (@data.prj{}[b.key].comment or '').length)
@@ -161,7 +164,4 @@ symbol = do
   accept: <[i-check text-success]>
   pending: <[i-circle text-secondary]>
   reject: <[i-close text-danger]>
-
-
-  
 */

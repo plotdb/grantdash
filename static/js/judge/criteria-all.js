@@ -10,9 +10,6 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
     };
     this.active = null;
     this.ldcv = {
-      comment: new ldCover({
-        root: ld$.find(this.root, '[ld=comment-ldcv]', 0)
-      }),
       detail: new ldCover({
         root: ld$.find(this.root, '[ld=detail-ldcv]', 0)
       }),
@@ -25,11 +22,6 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
       root: this.root,
       action: {
         click: {
-          detail: function(arg$){
-            var node;
-            node = arg$.node;
-            return this$.ldcv.detail.toggle();
-          },
           criteria: function(arg$){
             var node;
             node = arg$.node;
@@ -68,6 +60,50 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
             return node.innerText = Math.round(100 * p.done / p.total);
           }
         },
+        comment: {
+          list: function(){
+            var k, v;
+            return (function(){
+              var ref$, ref1$, results$ = [];
+              for (k in ref$ = (ref1$ = this.prj || {}).comments || (ref1$.comments = {})) {
+                v = ref$[k];
+                results$.push({
+                  user: k,
+                  comment: v
+                });
+              }
+              return results$;
+            }.call(this$)).filter(function(it){
+              return it.comment;
+            });
+          },
+          init: function(arg$){
+            var node, local, data;
+            node = arg$.node, local = arg$.local, data = arg$.data;
+            return local.view = new ldView({
+              root: node,
+              context: data,
+              text: {
+                name: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  return this$.usermap[context.user].displayname;
+                },
+                comment: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  return context.comment;
+                }
+              }
+            });
+          },
+          render: function(arg$){
+            var local, data;
+            local = arg$.local, data = arg$.data;
+            local.view.setContext(data);
+            return local.view.render();
+          }
+        },
         project: {
           key: function(it){
             return it.slug;
@@ -89,15 +125,9 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                   detail: function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;
+                    this$.prj = context;
+                    this$.view.local.render('comment');
                     return this$.ldcv.detail.toggle();
-                  },
-                  comment: function(arg$){
-                    var node, context, ref$, key$;
-                    node = arg$.node, context = arg$.context;
-                    this$.active = context;
-                    view.get('comment').value = ((ref$ = this$.data.prj)[key$ = this$.active.key] || (ref$[key$] = {})).comment || '';
-                    this$.ldcv.comment.toggle();
-                    return this$.view.local.render('comment-name');
                   },
                   name: function(arg$){
                     var node, context;
@@ -126,10 +156,23 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                     return results$;
                   }()).join('');
                 },
-                "has-comment": function(arg$){
-                  var node, context, ref$, key$;
+                detail: function(arg$){
+                  var node, context, hasComment, k, v, icon;
                   node = arg$.node, context = arg$.context;
-                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment);
+                  hasComment = (function(){
+                    var ref$, results$ = [];
+                    for (k in ref$ = context.comments) {
+                      v = ref$[k];
+                      results$.push(v);
+                    }
+                    return results$;
+                  }()).filter(function(it){
+                    return it;
+                  }).length;
+                  if (!(icon = ld$.find(node, 'i', 0))) {
+                    return;
+                  }
+                  return icon.classList.toggle('d-none', !hasComment);
                 },
                 state: function(arg$){
                   var node, context, span, icon, state, cls;
@@ -171,14 +214,29 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
   };
   Ctrl.prototype = import$(import$({}, judgeBase.prototype), {
     opsIn: function(arg$){
-      var data, ops, source, ref$;
+      var data, ops, source, userkeys, res$, k, ref$, this$ = this;
       data = arg$.data, ops = arg$.ops, source = arg$.source;
       if (source) {
         return;
       }
       this.data = JSON.parse(JSON.stringify(data));
-      (ref$ = this.data).prj || (ref$.prj = {});
-      return this.render();
+      res$ = [];
+      for (k in (ref$ = this.data).user || (ref$.user = {})) {
+        res$.push(k);
+      }
+      userkeys = res$;
+      return this.getDisplayname(userkeys).then(function(){
+        this$.prjs.map(function(p){
+          var k, ref$, ref1$, v, key$, ref2$, results$ = [];
+          p.comments = {};
+          for (k in ref$ = (ref1$ = this$.data).user || (ref1$.user = {})) {
+            v = ref$[k];
+            results$.push(p.comments[k] = ((ref1$ = (ref2$ = v || {}).prj || (ref2$.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).comment || '');
+          }
+          return results$;
+        });
+        return this$.render();
+      });
     },
     render: function(){
       this.getProgress();
@@ -230,6 +288,24 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
         v = ((ref$ = (ref1$ = user.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[b.key];
         return Math.max(a, v != null ? v : 1);
       }
+    },
+    getDisplayname: function(list){
+      var payload, this$ = this;
+      payload = {
+        userkeys: list
+      };
+      return ld$.fetch("/dash/api/usermap/", {
+        method: 'PUT'
+      }, {
+        json: payload,
+        type: 'json'
+      }).then(function(ret){
+        ret == null && (ret = []);
+        this$.usermap = {};
+        return ret.map(function(it){
+          return this$.usermap[it.key] = it;
+        });
+      })['catch'](error());
     },
     getProgress: function(){
       var val, this$ = this;
