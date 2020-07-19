@@ -2,6 +2,7 @@
 extends /admin/base.pug
 block head
   +css("/dash/assets/lib/handsontable/handsontable.min.css")
+  +css("/dash/assets/lib/ldbar/loading-bar.min.css")
 block body
 block script
   +scope("admin").d-flex.flex-column.h-100.position-relative.z-float
@@ -155,6 +156,7 @@ block script
               .btn.btn-sm.btn-outline-light.ml-4(pd="publish-modification") 發布變更
               //-.btn.btn-sm.btn-outline-light.ml-2(pd="restore-settings") 放棄變更
 
+  +script("/dash/assets/lib/ldbar/loading-bar.min.js")
   +script("/dash/assets/lib/clipboard.js/2.0.4/clipboard.min.js")
   +script("/dash/assets/lib/handsontable/handsontable.min.js")
   +script("/dash/assets/lib/dompurify/2.0.11/purify.min.js")
@@ -178,7 +180,8 @@ block script
   +script("/dash/js/admin/prj.js")
   +script("/dash/js/admin/post-list.js")
   +script("/dash/js/admin/judge-perm.js")
-  +script("/dash/js/admin/judge-info.js")
+  +script("/dash/js/admin/judge-criteria.js")
+  +script("/dash/js/admin/judge-primary.js")
 
   //- form js files
   +script("/dash/js/form/index.js")

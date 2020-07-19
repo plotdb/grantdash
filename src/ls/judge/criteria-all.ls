@@ -69,7 +69,7 @@ Ctrl = (opt) ->
               state: ({node, context}) ~>
                 span = ld$.find(node, 'span',0)
                 icon = ld$.find(node, 'i',0)
-                state = context.state or 1
+                state = if context.state? => context.state else 1
                 icon.classList.remove.apply icon.classList, icon.classList
                 icon.classList.add <[i-check i-circle i-close]>[state]
                 node.classList.remove.apply node.classList, node.classList
@@ -120,12 +120,12 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     for k,user of @data.{}user =>
       val = @criteria.reduce(
         (a, b) ~>
-          v = user.prj{}[context.key].{}value[b.key]
+          v = user.prj{}[context.key].{}v[b.key]
           Math.max(a, if v? => v else 1)
         0
       )
       count[<[accept pending reject]>[val]].push k
-      context.state = if count.reject.length => 2 else if count.pending.length => 1 else 0
+      context.state = if count.reject.length => 2 else if count.accept.length => 0 else 1
 
   get-progress: ->
 

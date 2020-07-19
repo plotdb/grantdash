@@ -58,12 +58,30 @@
           return results$;
         }())]);
       }).then(function(r){
-        var users;
         r == null && (r = {});
-        users = r.rows || (r.rows = []);
+        lc.users = r.rows || (r.rows = []);
+        return io.query("select detail from brd where slug = $1", [brd]);
+      }).then(function(r){
+        var grps, ref$, ref1$;
+        r == null && (r = {});
+        lc.brd = (r.rows || (r.rows = []))[0];
+        grps = (ref$ = (ref1$ = lc.brd).detail || (ref1$.detail = {})).group || (ref$.group = []);
+        if (!(lc.grp = ((ref$ = (ref1$ = lc.brd).detail || (ref1$.detail = {})).group || (ref$.group = [])).filter(function(it){
+          return it.key === grp;
+        })[0])) {
+          return aux.reject(404);
+        }
+        lc.criteria = (ref$ = lc.grp).criteria || (ref$.criteria = {});
+        return io.query("select p.key, p.slug from prj as p\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
+      }).then(function(r){
+        var prjs;
+        r == null && (r = {});
+        prjs = r.rows || (r.rows = []);
         return res.send({
           data: lc.data,
-          users: users
+          users: lc.users,
+          prjs: prjs,
+          criteria: lc.criteria
         });
       })['catch'](aux.errorHandler(res));
     });

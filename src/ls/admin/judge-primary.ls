@@ -1,4 +1,4 @@
-({ldcvmgr, auth, sdbAdapter, error, admin-panel}) <- ldc.register \adminJudgeInfo,
+({ldcvmgr, auth, sdbAdapter, error, admin-panel}) <- ldc.register \adminJudgePrimary,
 <[ldcvmgr auth sdbAdapter error adminPanel]>, _
 
 Ctrl = (opt = {}) ->
@@ -7,42 +7,15 @@ Ctrl = (opt = {}) ->
   @brd = opt.brd
   @grp = null
   @view = {}
-  @prepare = {}
   @data = {}
 
   admin-panel.on \active, ({nav, name, panel}) ~>
-    if !(nav == \grp-judge) => return
-    if name == \criteria => @view.criteria.render!
-    else if name == \primary =>
-      @prepare.primary!
-        .then ~> @view.primary.render!
-
-  @view.criteria = new ldView do
-    root: @root
-    handler: do
-      "criteria-user-link": ({node}) ~>
-        if !@grp => return
-        node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/criteria/user"
-      "criteria-all-link": ({node}) ~>
-        if !@grp => return
-        node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/criteria/all"
-
-  @prepare.primary = ~>
-    ld$.fetch "/dash/api/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/user", {method: \GET}, {type: \json}
-      .then ~>
-        @data.primary = data = it
-        @data.primary.users = data.users.map (u) ->
-          count = {0: 0, 1: 0, 2: 0, total: 0}
-          obj = (data.data.user[u.key] or {}).{}prj
-          data.prjs.map (p) -> if (v = (obj[p.key] or {}).v)? => count[v]++
-          u.count = count
-          count.total = (count.0 + count.1 + count.2) or 1
-          u
-
-        @
+    if !(nav == \grp-judge and name == \primary) => return
+    @prepare!
+      .then ~> @view.render!
       .catch error!
 
-  @view.primary = new ldView do
+  @view = new ldView do
     root: @root
     handler: do
       "primary-user-link": ({node}) ~>
@@ -52,7 +25,7 @@ Ctrl = (opt = {}) ->
         if !@grp => return
         node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/all"
       "primary-judge": do
-        list: ~> @data.{}primary.[]users
+        list: ~> @data.[]users
         init: ({node, local, data}) ~>
           node.classList.toggle \d-none, false
           local.view = new ldView do
@@ -65,17 +38,26 @@ Ctrl = (opt = {}) ->
               "progress-bar": ({node, context}) ->
                 v = +node.getAttribute \data-name
                 node.style.width = "#{100 * context.count[v] / context.count.total}%"
-
         handler: ({local, data}) ->
           local.view.setContext = data
           local.view.render!
-
-
 
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< do
   prepare: ->
+    ld$.fetch "/dash/api/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/all", {method: \GET}, {type: \json}
+      .then ~>
+        @data = data = it
+        @users = data.users.map (u) ->
+          count = {0: 0, 1: 0, 2: 0, total: 0}
+          obj = (data.data.user[u.key] or {}).{}prj
+          data.prjs.map (p) -> if (v = (obj[p.key] or {}).v)? => count[v]++
+          u.count = count
+          count.total = (count.0 + count.1 + count.2) or 1
+          u
+      .catch error!
+
   set-data: (grp) -> @grp = grp
 
 Ctrl

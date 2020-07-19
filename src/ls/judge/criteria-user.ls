@@ -95,16 +95,16 @@ Ctrl = (opt) ->
                 list: ({context}) ~> @criteria
                 init: ({node, local}) -> local.icon = ld$.find(node, 'i', 0)
                 action: click: ({node, data, context}) ~>
-                  v = @data.prj{}[context.key].{}value[data.key]
+                  v = @data.prj{}[context.key].{}v[data.key]
                   v = if v? => v else 1
                   v = ( v + 2 ) % 3
-                  @data.prj{}[context.key].value[data.key] = v
+                  @data.prj{}[context.key].v[data.key] = v
                   @get-progress!
                   @view.local.render {name: 'project', key: context.slug}
                   @view.local.render <[progress count]>
                   @update debounced: 10
                 handler: ({local, data, context}) ~>
-                  v = @data.prj{}[context.key].{}value[data.key]
+                  v = @data.prj{}[context.key].{}v[data.key]
                   v = if v? => v else 1
                   clsset local.icon, v
         handler: ({node, local, data}) ~>
@@ -146,7 +146,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
   get-state: (context) ->
     context.state = @criteria.reduce(
       (a, b) ~>
-        v = @data.prj{}[context.key].{}value[b.key]
+        v = @data.prj{}[context.key].{}v[b.key]
         Math.max(a, if v? => v else 1)
       0
     )
@@ -156,7 +156,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @prjs.map (p) ~>
       v = @criteria.reduce(
         (a, b) ~>
-          v = @data.prj{}[p.key].{}value[b.key]
+          v = @data.prj{}[p.key].{}v[b.key]
           Math.max(a, if v? => v else 1)
         0
       )

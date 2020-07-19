@@ -136,7 +136,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                   node = arg$.node, context = arg$.context;
                   span = ld$.find(node, 'span', 0);
                   icon = ld$.find(node, 'i', 0);
-                  state = context.state || 1;
+                  state = context.state != null ? context.state : 1;
                   icon.classList.remove.apply(icon.classList, icon.classList);
                   icon.classList.add(['i-check', 'i-circle', 'i-close'][state]);
                   node.classList.remove.apply(node.classList, node.classList);
@@ -222,12 +222,12 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
         count[['accept', 'pending', 'reject'][val]].push(k);
         results$.push(context.state = count.reject.length
           ? 2
-          : count.pending.length ? 1 : 0);
+          : count.accept.length ? 0 : 1);
       }
       return results$;
       function fn$(a, b){
         var v, ref$, ref1$, key$;
-        v = ((ref$ = (ref1$ = user.prj)[key$ = context.key] || (ref1$[key$] = {})).value || (ref$.value = {}))[b.key];
+        v = ((ref$ = (ref1$ = user.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[b.key];
         return Math.max(a, v != null ? v : 1);
       }
     },

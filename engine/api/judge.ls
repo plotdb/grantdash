@@ -17,8 +17,24 @@ api.get \/brd/:brd/grp/:grp/judge/criteria/:scope, (req, res) ->
       if !(lc.data = data = (r.rows[].0 or {}).data) => return aux.reject 404
       io.query "select key,displayname from users where key = ANY($1::int[])", [[k for k of data.{}user]]
     .then (r={}) ->
-      users = r.[]rows
-      res.send {data: lc.data, users}
+      lc.users = r.[]rows
+      io.query "select detail from brd where slug = $1", [brd]
+    .then (r={}) ->
+      lc.brd = r.[]rows.0
+      grps = lc.brd.{}detail.[]group
+      if !(lc.grp = lc.brd.{}detail.[]group.filter(-> it.key == grp).0) => return aux.reject 404
+      lc.criteria = lc.grp.{}criteria
+      io.query """
+      select p.key, p.slug from prj as p
+      where
+        p.detail is not null and
+        p.brd = $1 and
+        p.grp = $2 and
+        p.deleted is not true
+      """, [brd, grp]
+    .then (r={}) ->
+      prjs = r.[]rows
+      res.send {data: lc.data, users: lc.users, prjs, criteria: lc.criteria}
     .catch aux.error-handler res
 
 api.get \/brd/:brd/grp/:grp/judge/:type/:scope, (req, res) ->

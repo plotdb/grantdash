@@ -1,8 +1,41 @@
 //- module
-.rwd.mx-auto.typeset.heading-contrast.mt-0
-  h3 資格審查
-  p.text-muted 資格審查為工作人員初審作業，為減少評審所需評選的提案數以及避免評審花費時間在驗證提案作業所做的預審。資格審查員不需另行邀請，但需具有活動管理員之權限。
-  a.btn.btn-outline-primary.mr-2(ld="criteria-user-link",target="_blank",rel="noopener noreferrer",
-  href="#") 進行審查
-  a.btn.btn-outline-primary(ld="criteria-all-link",target="_blank", rel="noopener noreferrer",
-  href="#") 瀏覽總表
+
+style(type="text/css"): :stylus
+  div[ld-scope=judge-criteria] div[ld=ldbar]
+    svg path { stroke-width: 9 }
+    svg path.mainline { stroke: #09f }
+    .ldBar-label {
+      font-size: 1.5em;
+      text-align: center
+    }
+    .ldBar-label:after {
+      font-size: .5em;
+    }
+    .ldBar-label:before {
+      font-size: .6em;
+      content: "整體進度";
+      display: block
+    }
+
++scope("judge-criteria")
+  .rwd.mx-auto.typeset.heading-contrast.mt-0
+    h3 資格審查
+    p.text-muted 資格審查為工作人員初審作業，為減少評審所需評選的提案數以及避免評審花費時間在驗證提案作業所做的預審。資格審查員不需另行邀請，但需具有活動管理員之權限。
+
+    a.btn.btn-outline-primary.mr-2(ld="criteria-user-link",target="_blank",rel="noopener noreferrer",
+    href="#") 進行審查
+    a.btn.btn-outline-primary(ld="criteria-all-link",target="_blank", rel="noopener noreferrer",
+    href="#") 瀏覽總表
+    .row.py-4
+      .col-md-5: .px-4
+        .aspect-ratio.ratio-1by1
+          .ldBar.w-100.h-100.label-center(ld="ldbar",data-value="75",data-preset="circle")
+      .col-md-7
+        .d-none.my-2(ld-each="criteria-judge"): .d-flex.align-items-center
+          a.mr-2(href="#",style="flex:0 0 10em",ld="name",target="_blank", rel="noopener noreferrer")
+          .flex-grow-1(ld="progress")
+            .progress
+              .progress-bar.progress-bar-striped.bg-success(ld="progress-bar",data-name="0",style="width:50%")
+              .progress-bar.progress-bar-striped.bg-danger(ld="progress-bar",data-name="2",style="width:10%")
+          .text-sm.text-muted.ml-2(ld="percent")
+
