@@ -8,6 +8,7 @@ Ctrl = (opt = {}) ->
   @grp = null
   @view = {}
   @data = {}
+  return @
 
   admin-panel.on \active, ({nav, name, panel}) ~>
     if !(nav == \grp-judge and name == \primary) => return

@@ -13,6 +13,7 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
     this.grp = null;
     this.view = {};
     this.data = {};
+    return this;
     adminPanel.on('active', function(arg$){
       var nav, name, panel;
       nav = arg$.nav, name = arg$.name, panel = arg$.panel;
