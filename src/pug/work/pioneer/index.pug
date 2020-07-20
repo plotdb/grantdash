@@ -1,0 +1,421 @@
+extends /base.pug
+block head
+  style(type="text/css"): :stylus
+    .typeset.heading-contrast
+      input.form-control { border-radius: .25em; border: 1px solid #ccc; }
+      .form-group { margin-bottom: 1.5rem }
+block body
+  mixin input-inline(opt)
+    input.form-control.d-inline-block.form-control-sm(style=`width:${opt.len}em`)&attributes(attributes)
+  .w-768.rwd.mx-auto.typeset.heading-contrast
+    h3 109年度加速文化內容開發與科技創新應用補助申請案
+    br
+    form
+      .form-group
+        label 計畫名稱
+        input.form-control
+      .form-group
+        label 申請組別
+
+        .form-check.mr-4
+          input#fi-grp-1.form-check-input(type="radio",name="grp",value="1")
+          label.form-check-label(for="fi-grp-1") 文化內容開發
+        .ml-4
+          .form-check
+            input#fi-grp1-1.form-check-input(type="radio",name="grp1-type",value="1")
+            label.form-check-label(for="fi-grp1-1") 原生內容開發(以系統性之方法，挖掘具國際市場性或社會共感之在地文化素材，開發出各式原生內容 IP 或作品雛型) 
+          .form-check
+            input#fi-grp1-2.form-check-input(type="radio",name="grp1-type",value="2")
+            label.form-check-label(for="fi-grp1-2") 原生內容轉譯(以系統性之方法，將具有國際市場潛力之既有臺灣原生內容 IP，轉譯為具內容產業市場性之故事文本或產品雛型) 
+          .form-check
+            input#fi-grp1-3.form-check-input(type="radio",name="grp1-type",value="3")
+            label.form-check-label(for="fi-grp1-3") 原創故事孵化(整合創作者進行文化內容開發，建立在地文化素材轉譯為各種不同類型故事文本並佈局系列性 IP之工作模式，引導創作者聯結市場，協助加速孵化內容創作，開發優質 IP 及其產值極大化。)
+        .form-check
+          input#fi-grp-2.form-check-input(type="radio",name="grp",value="2")
+          label.form-check-label(for="fi-grp-2") 內容產業領航行動方案
+        .ml-4
+          .form-check
+            input#fi-grp2-1.form-check-input(type="radio",name="grp2-type",value="1")
+            label.form-check-label(for="fi-grp2-1") 影視產業
+          .form-check
+            input#fi-grp2-2.form-check-input(type="radio",name="grp2-type",value="1")
+            label.form-check-label(for="fi-grp2-2") 藝術產業
+          .form-check
+            input#fi-grp2-3.form-check-input(type="radio",name="grp2-type",value="1")
+            label.form-check-label(for="fi-grp2-3") 流行音樂產業
+          .form-check
+            input#fi-grp2-4.form-check-input(type="radio",name="grp2-type",value="1")
+            label.form-check-label(for="fi-grp2-4") 動漫產業
+          .form-check
+            input#fi-grp2-5.form-check-input(type="radio",name="grp2-type",value="1")
+            label.form-check-label(for="fi-grp2-5") 出版產業
+          .form-check
+            input#fi-grp2-6.form-check-input(type="radio",name="grp2-type",value="1")
+            label.form-check-label(for="fi-grp2-6")
+              .d-flex
+                span.text-nowrap.mr-2 其他
+                input.form-control.form-control-sm.form-control-inline
+
+
+
+      .form-group
+        label 申請單位
+        input.form-control
+
+      .form-group
+        label.mb-0 計畫摘要說明
+        p.text-muted.text-sm 請以300-500字，簡要說明工作項目、執行方式、執行期程及效益等內容
+        textarea.form-control(rows="6")
+
+      .form-group
+        label 執行期程
+        p.bg-light.p-2 109 年 #[+input-inline({len:3})] 月 #[+input-inline({len:3})] 日至 109 年 11 月 30 日
+
+      .card.mb-4: .card-body
+        h4 計劃經費
+        hr
+        .form-group
+          label 計劃總經費
+          p.bg-light.p-2 新臺幣 #[+input-inline({len:6})] 元整 ( 含稅 )
+
+        .form-group
+          label 自籌款
+          p.bg-light.p-2 新臺幣 #[+input-inline({len:6})] 元整 ( 含稅 )，比例： #[+input-inline({len:3})] %
+
+        .form-group
+          label 申請經費
+          p.bg-light.p-2 新臺幣 #[+input-inline({len:6})] 元整 ( 含稅 )，比例： #[+input-inline({len:3})] % ( 不得逾本案計畫書總經費之 49% )
+
+        .form-group
+          label 其它補助
+          p.text-sm.text-muted 本計畫是否申請或已獲其他機關(單位)經費補助
+          .form-check
+            input#fi-other-sub-1.form-check-input(type="radio",name="other-sub",value="0")
+            label.form-check-label(for="fi-other-sub-1") 否
+          .form-check
+            input#fi-other-sub-2.form-check-input(type="radio",name="other-sub",value="1")
+            label.form-check-label(for="fi-other-sub-2") 是，本計畫已獲 #[+input-inline({len:6})] 補助新臺幣 #[+input-inline({len:6})] 元。
+
+      h3 一、申請者
+      h5 申請單位基本資料
+      hr
+      .row
+        .col-md
+          .form-group
+            label 申請人 / 單位
+            input.form-control
+        .col-md
+          .form-group
+            label 統一編號
+            input.form-control
+      .row
+        .col-md
+          .form-group
+            label 負責人
+            input.form-control
+        .col-md
+          .form-group
+            label 員工人數
+            input.form-control
+      .row
+        .col-md
+          .form-group
+            label 資本額
+            .py-1 新臺幣 #[+input-inline({len:8})] 元整
+        .col-md
+          .form-group
+            label 成立時間
+            .py-1 民國 #[+input-inline({len:3})] 年 #[+input-inline({len:3})] 月
+
+      .form-group
+        label 登記地址
+        input.form-control
+      .form-group
+        label 聯絡地址
+        input.form-control
+      h5 聯絡人資訊
+      .card: .card-body
+        .row
+          .col-md
+            .form-group
+              label 姓名
+              input.form-control
+          .col-md
+            .form-group
+              label 職稱
+              input.form-control
+        .row
+          .col-md
+            .form-group
+              label 專線電話
+              input.form-control
+          .col-md
+            .form-group
+              label 手機
+              input.form-control
+        .row
+          .col-md
+            .form-group
+              label Email
+              input.form-control
+          .col-md
+
+      h5 申請者過去三年接受補助情形
+      hr
+      table.table.table-bordered
+        thead
+          tr
+            th 年度
+            th 受補助計畫名稱(政府補助案名)
+            th 補助機關
+            th 補助金額
+        tbody
+          each i in [1,2,3,4]
+            tr #[td &nbsp;]#[td]#[td]#[td]
+      .btn.btn-outline-secondary.btn-sm 新增一項 #[i.i-plus]
+
+      +nbr(2)
+      .form-group
+        h5 民國 106 年至 108 年實績
+        hr
+        .form-check
+          input#fi-portfolio-1.form-check-input(type="radio",name="portfolio",value="1")
+          label.form-check-label(for="fi-portfolio-1") 有
+        .form-check
+          input#fi-portfolio-0.form-check-input(type="radio",name="portfolio",value="0")
+          label.form-check-label(for="fi-portfolio-0") 無 ( 勾本項者以下免填 )
+
+      table.table.table-bordered.mb-1
+        thead
+          tr
+            th 計畫名稱
+            th 簡要說明
+        tbody
+          each i in [1,2]
+            tr #[td &nbsp;]#[td]
+      p.text-muted 請於簡要說明中記載 (一)實績說明(時間、計畫概述、執行情形等) 以及 (二)相關效益
+      .btn.btn-outline-secondary.btn-sm 新增一項 #[i.i-plus]
+
+      h3 二、計畫緣起
+      .form-group
+        label.mb-0 計畫背景說明
+        p.text-sm.text-muted 如產業現況及發展趨勢等。
+        textarea.form-control(rows="6")
+      .form-group
+        label.mb-0 計畫目標
+        p.text-sm.text-muted 請敘明本計畫預計達成之具體目標。
+        textarea.form-control(rows="6")
+
+      h3 三、計畫內容
+      p.text-muted 請依據所申請之組別，陳述相關計畫內容。
+
+      h6 (一) 計畫執行架構
+      .form-group
+        .text-muted 包括構想、執行方法及策略。
+        textarea.form-control(rows="6")
+      h6 (二) 內容開發規劃與可行性
+      .form-group
+        .text-muted 1.請說明系統化開發IP之工作方法，並說明這套方法如何提升產製效率、產量及IP內容品質(如內容結構、張力、角色魅力……等)。
+        textarea.form-control(rows="6")
+      .form-group
+        .text-muted 2.請說明所開發之臺灣原生故事內容 (說明應包含主題、特色與類型。如預計使用之素材或文化內容係取材他人著作或創意改編者，應檢附原著作、衍生著作及各該著作之著作財產權人同意利用或改編之書面授權文件─如附件二。)
+        textarea.form-control(rows="6")
+      .form-group
+        .text-muted 3.請說明故事開發完成後，預計發表的主要型態(如電影、影集、劇場、漫畫、動畫、遊戲、展演、體驗、出版、等)，並請說明整體開發規劃。
+        textarea.form-control(rows="6")
+      .form-group
+        h6 (三) 請就計畫所提預計開發之臺灣原生IP說明其市場與類型、目標觀眾、國內外市場分析與利基。
+        textarea.form-control(rows="6")
+
+      h3 四、計畫整體預期效益
+      p.text-muted 就如產業案例模式、市場效益、競爭優勢、原生文化內容產值(量) 提升、創造力等，提出質化及量化效益。
+
+      h6 (一)請說明本計畫工作方法之創新性。
+      .form-group
+        textarea.form-control(rows="6")
+      h6 (二)請說明本計畫是否可改善創作者勞動條件，若是則請進一步說明預計改善情形。
+      .form-group
+        textarea.form-control(rows="6")
+      h6 (三)請針對計畫預計產出之項目、產品與市場銜接規劃及效益等說明。
+      .text-muted 例如授權應用規劃、商業合作規劃、融資規劃、預計產值或其他商業效益等
+      .form-group
+        textarea.form-control(rows="6")
+      h6 (四)請具體描寫全案預計執行成果符合補助要點精神之說明。
+      .form-group
+        textarea.form-control(rows="6")
+      h6 (五)質化效益
+      .form-group
+        textarea.form-control(rows="6")
+      h6 (六)量化效益
+      .form-group
+        textarea.form-control(rows="6")
+
+      table.table.table-bordered.mb-1
+        thead
+          tr
+            th 項次
+            th(colspan="2") 績效指標
+            th 效益
+            th 備註或說明
+        tbody
+          each i in [1,2,3,4]
+            tr #[td &nbsp;]#[td]#[td]#[td]#[td]
+      p.text-muted 本量化效益表亦作為結案考核項目之一，務請仔細填寫。
+      .btn.btn-outline-secondary.btn-sm 新增一項 #[i.i-plus]
+
+      h3 六、工作團隊及過往實績說明
+      p.text-muted 含執行本計畫外部合作單位及公司內部成員
+
+      h5 (一)外部合作單位
+      table.table.table-bordered.mb-1
+        thead
+          tr
+            th 公司名稱 / 姓名
+            th 本計畫擔任職位
+            th 合作意向說明
+            th 經歷簡述
+        tbody
+          tr
+            td &nbsp;
+            td
+            td
+              .form-check
+                input#fi-coop-1.form-check-input(type="radio",name="coop",value="1")
+                label.form-check-label(for="fi-coop-1") 已確定合作，如附件五
+              .form-check
+                input#fi-coop-2.form-check-input(type="radio",name="coop",value="2")
+                label.form-check-label(for="fi-coop-2") 已取得書面合作意向如附件五，但尚未做最後確認
+              .form-check
+                input#fi-coop-3.form-check-input(type="radio",name="coop",value="3")
+                label.form-check-label(for="fi-coop-3") 取得口頭合作意象，但尚未取得書面
+              .form-check
+                input#fi-coop-4.form-check-input(type="radio",name="coop",value="4")
+                label.form-check-label(for="fi-coop-4") 尚未取得聯繫
+            td
+
+      p.text-muted 若編列顧問費用，務請填入顧問資料（最高學歷、經歷及可勝任之理由）。
+      .btn.btn-outline-secondary.btn-sm 新增一項 #[i.i-plus]
+
+      h5 (二)內部團隊成員
+      table.table.table-bordered.mb-1
+        thead
+          tr
+            th 本計畫擔任職位
+            th 姓名
+            th 經歷簡述
+        tbody
+          tr
+            td &nbsp;
+            td
+            td
+
+      p.text-muted.mb-0 1.請分項計畫主持人資料均應填列。
+      p.text-muted 2.至少應列出本計畫主要人員、若編列人事費，務請填入團隊人員資料。
+      .btn.btn-outline-secondary.btn-sm 新增一項 #[i.i-plus]
+
+      h3 七、計畫執行期程與進度規劃
+      p.text-muted 各查核點應載明預計完成之工作內容及預算進度
+      h5 (一)計畫執行預估執行期程
+
+      .form-group
+        label 全案執行期程
+        .bg-light.p-2 自 109 年 #[+input-inline({len:3})] 月 #[+input-inline({len:3})] 日至 109 年 #[+input-inline({len:3})] 月 #[+input-inline({len:3})] 日
+
+      table.table.table-bordered.mb-1
+        thead
+          tr
+            th 執行項目
+            th 執行內容
+            th 預估期程
+        tbody
+          tr
+            td
+            td
+            td 自 109 年 #[+input-inline({len:3})] 月 #[+input-inline({len:3})] 日至 109 年 #[+input-inline({len:3})] 月 #[+input-inline({len:3})] 日
+      .btn.btn-outline-secondary.btn-sm 新增一項 #[i.i-plus]
+
+      h5 (二)預定查核點說明
+
+      table.table.table-bordered.mb-1
+        thead
+          tr
+            th 查核項目
+            th 預定完成時間
+            th 預定完成內容
+        tbody
+          tr
+            td
+            td 109 年 #[+input-inline({len:3})] 月 #[+input-inline({len:3})] 日
+            td
+
+      p.text-muted 查核項目應配合預算進度及具體完成事項且可評估分析者，產出應有具體指標及規格並須量化。
+      .btn.btn-outline-secondary.btn-sm 新增一項 #[i.i-plus]
+      h3 八、預估經費總預算明細表
+
+      table.table.table-bordered.mb-1
+        thead
+          tr
+            th(rowspan="2") 預算科目
+            th(rowspan="2") 預算細目
+            th(rowspan="2") 單價 ( 元 )
+            th(rowspan="2") 數量/單位
+            th(rowspan="2") 小計 ( 元 )
+            th(colspan="2") 分攤金額
+            th(rowspan="2") 備註
+          tr
+            th 自籌款
+            th 補助款
+
+        tbody
+          tr #[td &nbsp;]#[td]#[td]#[td]#[td]#[td]#[td]#[td]
+
+      .btn.btn-outline-secondary.btn-sm.mb-4 新增一項 #[i.i-plus]
+      table.table.table-bordered
+        tbody
+          tr
+            td(colspan="5") 小計
+            td
+            td
+            td
+          tr
+            td(colspan="5") 補助比例（補助款不得逾本案計畫書總經費之49%）
+            td 0%
+            td 0%
+            td
+          tr
+            td(colspan="5") 總計
+            td(colspan="2")
+            td
+      h3 九、計畫說明附件
+      .form-group
+        label.mb-0 附件一
+        .text-muted 公司登記立案證明文件或財團(社團)法人、大專院校、學術研究機構或團體登記證書及章程影本
+        div: .btn.btn-upload.btn-primary 上傳檔案 #[input(type="file")]
+      .form-group
+        label.mb-0 附件二
+        .text-muted 原著作、衍生著作及各該著作之著作財產權人書面授權文件
+        div: .btn.btn-upload.btn-primary 上傳檔案 #[input(type="file")]
+      .form-group
+        label.mb-0 附件三
+        .text-muted 申請者最近二年無欠繳稅捐之證明文件影本
+        div: .btn.btn-upload.btn-primary 上傳檔案 #[input(type="file")]
+      .form-group
+        label.mb-0 附件四
+        .text-muted 票據交換機構或銀行出具之申請人最近一年內無退票紀錄證明
+        div: .btn.btn-upload.btn-primary 上傳檔案 #[input(type="file")]
+      .form-group
+        label.mb-0 附件五
+        .text-muted 工作團隊合作意向證明文件
+        .form-check.mr-4
+          input#fi-coop-appendix-1.form-check-input(type="radio",name="coop-appendix",value="1")
+          label.form-check-label(for="fi-coop-appendix-1") 已確定合作
+        .form-check.mr-4
+          input#fi-coop-appendix-2.form-check-input(type="radio",name="coop-appendix",value="2")
+          label.form-check-label(for="fi-coop-appendix-2") 已取得書面合作意向，但尚未做最後確認
+        div: .btn.btn-upload.btn-primary 上傳檔案 #[input(type="file")]
+
+      .form-group
+        label 切結書
+        br
+        .btn.btn-upload.btn-primary 上傳檔案 #[input(type="file")]
+
