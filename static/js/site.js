@@ -3,13 +3,6 @@
   ldc.register('ldsite', [], function(){
     return {
       api: '/dash/api',
-      consent: {
-        tos: {
-          type: 'link',
-          url: '/dash/assets/privacy.pdf',
-          timing: ['prj-create']
-        }
-      },
       ldcvmgrRoot: '/dash/modules/cover',
       avatarUrl: function(it){
         return "/dash/s/avatar/" + it + ".png";
