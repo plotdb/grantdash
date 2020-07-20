@@ -53,23 +53,6 @@
         slug: brd,
         action: ['owner']
       }).then(function(){
-        return io.query("select data from snapshots where doc_id = $1", ["brd/" + brd + "/grp/" + grp + "/judge/criteria/"]);
-      }).then(function(r){
-        var data, ref$, k;
-        r == null && (r = {});
-        if (!(lc.data = data = (((ref$ = r.rows)[0] || (ref$[0] = [])) || {}).data)) {
-          return aux.reject(404);
-        }
-        return io.query("select key,displayname from users where key = ANY($1::int[])", [(function(){
-          var results$ = [];
-          for (k in data.user || (data.user = {})) {
-            results$.push(k);
-          }
-          return results$;
-        }())]);
-      }).then(function(r){
-        r == null && (r = {});
-        lc.users = r.rows || (r.rows = []);
         return io.query("select detail from brd where slug = $1", [brd]);
       }).then(function(r){
         var grps, ref$, ref1$;
@@ -81,17 +64,35 @@
         })[0])) {
           return aux.reject(404);
         }
-        lc.criteria = (ref$ = lc.grp).criteria || (ref$.criteria = {});
-        return io.query("select p.key, p.slug from prj as p\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
+        return lc.criteria = (ref$ = lc.grp).criteria || (ref$.criteria = {});
+      }).then(function(){
+        return io.query("select data from snapshots where doc_id = $1", ["brd/" + brd + "/grp/" + grp + "/judge/criteria/"]);
       }).then(function(r){
-        var prjs;
+        var data, ref$, k;
         r == null && (r = {});
-        prjs = r.rows || (r.rows = []);
-        return res.send({
-          data: lc.data,
-          users: lc.users,
-          prjs: prjs,
-          criteria: lc.criteria
+        if (!(lc.data = data = (((ref$ = r.rows)[0] || (ref$[0] = [])) || {}).data)) {
+          return res.send({});
+        }
+        return io.query("select key,displayname from users where key = ANY($1::int[])", [(function(){
+          var results$ = [];
+          for (k in data.user || (data.user = {})) {
+            results$.push(k);
+          }
+          return results$;
+        }())]).then(function(r){
+          r == null && (r = {});
+          lc.users = r.rows || (r.rows = []);
+          return io.query("select p.key, p.slug from prj as p\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
+        }).then(function(r){
+          var prjs;
+          r == null && (r = {});
+          prjs = r.rows || (r.rows = []);
+          return res.send({
+            data: lc.data,
+            users: lc.users,
+            prjs: prjs,
+            criteria: lc.criteria
+          });
         });
       })['catch'](aux.errorHandler(res));
     });
@@ -117,13 +118,6 @@
         slug: brd,
         action: ['judge', 'owner']
       }).then(function(){
-        return io.query("select data from snapshots where doc_id = $1", ["brd/" + brd + "/grp/" + grp + "/judge/" + type + "/"]);
-      }).then(function(r){
-        var data, ref$;
-        r == null && (r = {});
-        if (!(lc.data = data = (((ref$ = r.rows)[0] || (ref$[0] = [])) || {}).data)) {
-          return aux.reject(404);
-        }
         return io.query("select detail from brd where slug = $1", [brd]);
       }).then(function(r){
         var grps, ref$, ref1$;
@@ -135,33 +129,41 @@
         })[0])) {
           return aux.reject(404);
         }
-        lc.judges = (ref$ = (ref1$ = lc.grp).judgePerm || (ref1$.judgePerm = {})).list || (ref$.list = []);
+        return lc.judges = (ref$ = (ref1$ = lc.grp).judgePerm || (ref1$.judgePerm = {})).list || (ref$.list = []);
+      }).then(function(){
+        return io.query("select data from snapshots where doc_id = $1", ["brd/" + brd + "/grp/" + grp + "/judge/" + type + "/"]);
+      }).then(function(r){
+        var data, ref$;
+        r == null && (r = {});
+        if (!(lc.data = data = (((ref$ = r.rows)[0] || (ref$[0] = [])) || {}).data)) {
+          return res.send({});
+        }
         return io.query("select p.owner as key, p.id, u.displayname\nfrom perm_judge as p\nleft join users as u on u.key = p.owner\nwhere p.id = ANY($1::text[]) and p.brd = $2 and p.grp = $3", [
           lc.judges.map(function(it){
             return it.id;
           }), brd, grp
-        ]);
-      }).then(function(r){
-        var hash;
-        r == null && (r = {});
-        hash = {};
-        lc.judges.map(function(it){
-          return hash[it.id] = it;
-        });
-        lc.users = r.rows || (r.rows = []);
-        return lc.users.map(function(it){
-          return it.name = (hash[it.id] || {}).name;
-        });
-      }).then(function(){
-        return io.query("select p.key, p.slug from prj as p\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
-      }).then(function(r){
-        var prjs;
-        r == null && (r = {});
-        prjs = r.rows || (r.rows = []);
-        return res.send({
-          data: lc.data,
-          users: lc.users,
-          prjs: prjs
+        ]).then(function(r){
+          var hash;
+          r == null && (r = {});
+          hash = {};
+          lc.judges.map(function(it){
+            return hash[it.id] = it;
+          });
+          lc.users = r.rows || (r.rows = []);
+          return lc.users.map(function(it){
+            return it.name = (hash[it.id] || {}).name;
+          });
+        }).then(function(){
+          return io.query("select p.key, p.slug from prj as p\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
+        }).then(function(r){
+          var prjs;
+          r == null && (r = {});
+          prjs = r.rows || (r.rows = []);
+          return res.send({
+            data: lc.data,
+            users: lc.users,
+            prjs: prjs
+          });
         });
       })['catch'](aux.errorHandler(res));
     });
