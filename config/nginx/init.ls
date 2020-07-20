@@ -26,18 +26,20 @@ if !config["domain-name"] => console.log "run without main domain ( single site 
 else console.log "configure a centralized site #{config['domain-name']} ..."
 
 template = do
-  server: fs.read-file-sync("templates/server.config").toString!
+  main: fs.read-file-sync("templates/server.config").toString!
+  down: fs.read-file-sync("templates/down.config").toString!
 
 outdir = path.join \servers
 console.log "output to #outdir ..."
 
 fs-extra.ensure-dir outdir
   .then ->
+
     for n,c of template =>
       for k,v of config =>
         c = c.replace new RegExp("\\${#k}","gm"), v
       c = c.split "# ${if-domain-name}"
-      c = if config["domain-name"] => c.0 + c.1 else c.0
-      fs.write-file-sync path.join(outdir, "main.config"), c
+      c = if config["domain-name"] => c.0 + (c.1 or '') else c.0
+      fs.write-file-sync path.join(outdir, "#n.config"), c
 
 console.log "done."
