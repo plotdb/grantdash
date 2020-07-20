@@ -32,7 +32,6 @@ block body
               tr
                 td.clickable(ld="sort",data-name="state",style="width:5em") 結果
                 //-td(ld="sort",data-name="comment",style="width:2em") 註
-                //-td.text-right(style="width:4em") 編號
                 td.clickable.text-left
                   .d-flex.align-items-end
                     .flex-grow-1.clickable(ld="sort",data-name="name") 提案名稱
@@ -45,7 +44,6 @@ block body
               td.text-nowrap(style="width:5em"): .text-sm
                 .bg-light.rounded(style="padding:.2em .5em",ld="state") #[span.mr-1]#[i]
               //-td(style="width:2em"): i.i-doc.text-primary.invisible(ld="has-comment comment")
-              //-td(style="width:4em").text-right: span(ld="key")
               td.clickable: span.text-underline(ld="name")
               td.text-center.clickable(ld-each="criteria",style="width:5em"): i
               td.text-center.clickable(ld="comment",style="width:5em")
