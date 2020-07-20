@@ -121,6 +121,11 @@ ldc.register('adminJudgeCriteria', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'a
           data: it.data,
           criteria: it.criteria
         }, prjs = ref$.prjs, users = ref$.users, data = ref$.data, criteria = ref$.criteria;
+        ref$ = [
+          prjs || [], users || [], data || {}, criteria || {
+            entries: []
+          }
+        ], prjs = ref$[0], users = ref$[1], data = ref$[2], criteria = ref$[3];
         this$.data.users = users;
         count = {
           0: 0,

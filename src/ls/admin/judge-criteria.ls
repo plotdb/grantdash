@@ -55,6 +55,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     ld$.fetch "/dash/api/brd/#{@brd.slug}/grp/#{@grp.key}/judge/criteria/all", {method: \GET}, {type: \json}
       .then ~>
         {prjs, users, data, criteria} = it{prjs, users, data, criteria}
+        [prjs, users, data, criteria] = [prjs or [], users or [], data or {}, criteria or {entries: []}]
         @data.users = users
         count = {0: 0, 1: 0, 2: 0, total: prjs.length}
         users.map (u) -> u.count = {0: 0, 1: 0, 2: 0, total: prjs.length}
