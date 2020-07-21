@@ -611,7 +611,7 @@ ldc.register('auth', ['ldsite', 'ldcvmgr', 'loader', 'util', 'error'], function(
             now: true
           });
         } else {
-          return email.setAttribute('readonly', false);
+          return email.removeAttribute('readonly');
         }
       }).then(function(){
         return ldcvmgr.get('authpanel');
