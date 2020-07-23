@@ -213,7 +213,6 @@ backend = do
       res.cookie 'global', payload, { path: '/', secure: true }
       res.send payload
 
-    app.use \/, express.static(path.join(__dirname, '../static'))
     app.use \/api, throttle.count.route.api, throttle.speed.route.api, router.api
     app.get "/api/health", (req, res) -> res.json {}
 
@@ -247,6 +246,7 @@ backend = do
     @ <<< {config, app, express, multi, pgsql}
 
     api @, pgsql
+    app.use \/, express.static(path.join(__dirname, '../static'))
     app.use (req, res, next) ~> aux.r404 res, "", true
 
     # Try to handle this:

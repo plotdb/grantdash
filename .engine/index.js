@@ -307,7 +307,6 @@
           });
           return res.send(payload);
         });
-        app.use('/', express['static'](path.join(__dirname, '../static')));
         app.use('/api', throttle.count.route.api, throttle.speed.route.api, router.api);
         app.get("/api/health", function(req, res){
           return res.json({});
@@ -373,6 +372,7 @@
         this$.multi = multi;
         this$.pgsql = pgsql;
         api(this$, pgsql);
+        app.use('/', express['static'](path.join(__dirname, '../static')));
         app.use(function(req, res, next){
           return aux.r404(res, "", true);
         });
