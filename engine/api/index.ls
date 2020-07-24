@@ -1,5 +1,6 @@
 require! <[fs path]>
 require! <[./admin ./user ./prj ./brd ./org ./judge ./perm ./discuss ./post ./form ./auth/reset ./auth/verify]>
+
 module.exports = (engine, io) ->
   user engine, io
   reset engine, io
@@ -13,3 +14,7 @@ module.exports = (engine, io) ->
   post engine, io
   perm engine, io
   form engine, io
+  try
+    require! <[./flagship]>
+    flagship engine, io
+  catch e

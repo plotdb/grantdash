@@ -16,6 +16,7 @@
   reset = require('./auth/reset');
   verify = require('./auth/verify');
   module.exports = function(engine, io){
+    var flagship, e;
     user(engine, io);
     reset(engine, io);
     verify(engine, io);
@@ -27,6 +28,12 @@
     prj(engine, io);
     post(engine, io);
     perm(engine, io);
-    return form(engine, io);
+    form(engine, io);
+    try {
+      flagship = require('./flagship');
+      return flagship(engine, io);
+    } catch (e$) {
+      return e = e$;
+    }
   };
 }).call(this);

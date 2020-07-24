@@ -11,6 +11,9 @@ block head
       margin-top: 5em
     .form-check-input.is-valid ~ .form-check-label
       color: inherit
+    .page
+      page-break-after: always
+      margin-bottom: 5em
 
 block body
 
@@ -56,7 +59,7 @@ block body
   .w-1024.rwd.mx-auto.typeset.heading-contrast.position-relative: form#form
     .page
       h3 申請書
-      p 編號: #[span(ld="id")]
+      p 編號: #[span(ld="fill", data-name="docid")]
 
       .form-group
         label 計畫名稱
@@ -64,15 +67,15 @@ block body
         .invalid-feedback 不可留白
 
       label 計畫類別（壹與貳為單選）：
-      +radio("group", "1", true) 壹、內容開發組
+      +radio("group", "內容開發組", true) 壹、內容開發組
       .ml-4
         span 一、單選
         .ml-4
-          +radio("group1-type", "1", true) 原生內容開發孵育：以在地文化素材，開發、孵育具社會共感、國際市場潛力的各式原生內容IP或作品雛型
-          +radio("group1-type", "2", false) 原生內容轉譯：將具有國際市場潛力之既有臺灣原生內容 IP，轉譯為具市場潛力的產品雛型
+          +radio("group1-type", "原生內容開發孵育", true) 原生內容開發孵育：以在地文化素材，開發、孵育具社會共感、國際市場潛力的各式原生內容IP或作品雛型
+          +radio("group1-type", "原生內容轉譯", false) 原生內容轉譯：將具有國際市場潛力之既有臺灣原生內容 IP，轉譯為具市場潛力的產品雛型
         span 二、可複選
         .ml-4: +category("group1-category")
-      +radio("group", "2", false) 貳、產業策進組 
+      +radio("group", "產業策進組", false) 貳、產業策進組 
       .ml-4: +category("group2-category")
 
       h3 申請人基本資料
@@ -169,7 +172,7 @@ block body
         +radio("has-sub", "0", true) 無 ( 勾本項者以下免填 )
         +radio("has-sub", "1", false) 有
 
-      div(ld="toggler",data-name="has-sub")
+      div(ldform,ld="toggler",data-name="has-sub")
         table.table.table-bordered
           thead
             tr
@@ -237,9 +240,97 @@ block body
           +radio("incorp-type", "2", false) 財團(社團)法人
           +radio("incorp-type", "3", false) 大專院校
           +radio("incorp-type", "4", false) 學術研究機構或團體
+        label 上傳檔案
+        p 上傳最新版登記證書 / 章程 / 核發函文 其中兩者
+        .btn.btn-upload.btn-primary.mr-4 上傳文件1 #[input(type="file",name="coop-memo-1")]
+        .btn.btn-upload.btn-primary 上傳文件2 #[input(type="file",name="coop-memo-2")]
 
-        .btn.btn-upload.btn-primary.mr-4 上傳檔案 #[input(type="file",name="coop-memo")]
-        .btn.btn-upload.btn-primary 上傳檔案 #[input(type="file",name="coop-memo")]
+      h5 計畫摘要
+
+      .form-group
+        label.mb-0 工作項目 ( 200 字以內 )
+        textarea.form-control(rows="6",name="abs-item")
+        .invalid-feedback 字數不符
+
+      .form-group
+        label.mb-0 執行方式 ( 200 字以內 )
+        textarea.form-control(rows="6",name="abs-method")
+        .invalid-feedback 字數不符
+
+      .form-group
+        label.mb-0 執行期程 ( 200 字以內 )
+        textarea.form-control(rows="6",name="abs-timeline")
+        .invalid-feedback 字數不符
+
+      .form-group
+        label.mb-0 執行效益 ( 200 字以內 )
+        textarea.form-control(rows="6",name="abs-outcome")
+        .invalid-feedback 字數不符
+
+
+    .page
+      h3 109年度文化內容開發與產業策進方案切結書
+
+      p 茲保證「」計畫案（以下簡稱本計畫案）及立切結書人（即申請人）符合下列事項：
+      p 一、承諾申請補助計畫之文件、資料均無虛偽不實之情事，且符合「109年度加速文化內容開發與科技創新應用補助要點」規定。
+      p 二、承諾相同或類似之申請案計畫書無獲本院、文化部及其所屬機關(構)、政府捐助之財團法人及財團法人國家文化藝術基金會補助之情形。
+      p 三、承諾計畫案如獲補助，以申請者名義執行獲補助之計畫。
+      p 四、本計畫如獲補助，承諾依文化內容策進院核定之計畫書所載內容執行，且需符合「109年度加速文化內容開發與科技創新應用補助要點」規定；計畫書有變更者，亦同。
+      p 五、本計畫案如獲補助，承諾不得將獲補助金資格或計畫書轉讓予他人。
+      p 六、本計畫案如獲補助，使用補助金額辦理採購時，補助金額占採購金額半數以上，且補助金額在新臺幣一百萬元以上者，承諾應依政府採購法相關規定辦理採購，並受文化內容策進院監督。
+      p 七、本計畫案如獲補助，應擔保計畫書內容及依計畫書所辦理之各項工作，均無侵害他人權利或違反法律規定之情事。
+      p 八、本計畫案如獲補助，文化內容策進院及文化部於獲補助案執行期間，得要求獲補助者提供書面資料或出席會議說明，並依本院之意見確實執行。另自簽約日起至本院核撥最後一期補助金次日止及其後一年期間內，應配合出席計畫相關宣傳活動。
+      p 九、本計畫案如獲補助，應承諾依預算法第六十二條之一規定，不得以置入性行銷進行政策宣導。如有政策宣導，應標示為「廣告」，並揭示本院及文化部全銜。
+      p 十、本計畫之內部團隊成員與跨國合製案將依中國民國所得稅法及相關法令規定辦理所得申報扣繳及歸戶事宜，如有不實，願負一切法律責任。十
+      p 一、獲補助者應於簽約前配合提供本部核定之計畫書摘要，並無償授權文化部、本院及本院再授權之人，為不限目的、時間、地域及方式(包括但不限於紙本、簡報、網路傳輸)之利用。獲補助者並同意對文化部、本院及本院再授權之人不行使著作人格權。文化部及本院並得另以開放資料(Open Data)之方式對外開放。開放資料授權利用，依據行政院訂定之政府開放資料授權條款http://data.gov.tw/license辦理。
+      p 此致
+      p 文化內容策進院
+      p 立切結書人（即申請人）：#[span(ld="fill", data-name="contact-name")] （公司章，列印後用印正本）
+      p 負  責  人：#[span(ld="fill",data-name="pic")] （簽章，列印後用印正本）
+      p 身分證字號： #[span(ld="fill", data-name="uid")]
+
+      p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+
+
+    .page
+      h3 個人資料蒐集、處理、利用同意書
+
+      p 茲授權文化內容策進院依「個人資料保護法」及其他相關法令之規定，蒐集、管理及處理本人之資料，文化內容策進院基於特定目的得儲存、建檔、轉介、運用及處理本人所提供之各項資料。特此同意如上。
+      p 此致
+      p 文化內容策進院
+
+      .form-check
+        input#fi-consent.form-check-input(type="checkbox",name="consent",value="consent")
+        label.form-check-label(for="fi-consent") 我已閱讀並接受「授權文化內容策進院蒐集使用個人資料說明」。（記得勾選）
+      p 立切結書人(即申請人)： #[span(ld="fill", data-name="contact-name")] （公司章，列印後用印正本）
+      p 負責人：#[span(ld="fill", data-name="pic")] （簽章，列印後用印正本）
+      p 身分證字號： #[span(ld="fill", data-name="uid")]
+
+      p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+
+      h3 授權文化內容策進院蒐集使用個人資料說明
+      p 為遵守個人資料保護法規定，並保障當事人之權利，謹此向您說明本院將如何處理所蒐集到的個人資料：
+      p 一、同意本院蒐集、處理及利用您個人資料，所蒐集個人資料之類別不限本院「109年度加速文化內容開發與科技創新應用補助作業要點」申請表內所列。
+      p 二、同意本院基於行政管理及業務之相關目的所需，以所提供之個人資料確認身分，與您聯絡，並於申請期間及執行結束後得繼續處理及利用您個人資料。
+      p 三、您得依個人資料保護法第三條之規定，就其個人資料向本院行使下列權利：
+      ol
+        li 查詢或請求閱覽。
+        li 請求製給複製本。
+        li 請求補充或更正。
+        li 請求停止蒐集、處理或利用。
+        li 請求刪除。但如係基於行政管理及業務等相關目的所必需，或其他法令有所規範者，本院得拒絕之。
+      p 四、您得自由選擇是否提供個人資料或行使個人資料保護法第三條所定之權利，但因提供資料不足或有其他冒用、盜用、不實之情形，可能不能獲得補助資格或影響您受領補助之權益。
+      p 五、您所提供之個人資料，本院將依據「個人資料保護法」相關規定進行保密。
+    .page
+      h3 109年度文化內容開發與產業策進方案
+      p 計畫書
+      p 計畫名稱： #[span(ld="fill",data-name="name")]
+      p 申請組別： #[span(ld="fill",data-name="group")]
+      p 申請單位： #[span(ld="fill",data-name="teamname")]
+      p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+    .d-flex.align-items-center
+      .btn.btn-primary.btn-lg.mr-4(ld="submit") 送出
+      .text-danger 您有未完成的欄位，請完成後再送出。
 
 
 
