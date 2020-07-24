@@ -10,6 +10,7 @@ users
 static/s/
 config/nginx/domains/
 config/nginx/servers/
+config/key/
 src/ls/work/
 static/js/work/
 static/s/
