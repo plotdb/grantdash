@@ -60,7 +60,7 @@
       var lc, slug;
       lc = {};
       if (!(slug = req.params.slug)) {
-        return aux.r404(res);
+        return aux.r400(res);
       }
       return cache.perm.check({
         io: io,

@@ -45,7 +45,7 @@ app.get \/org/:slug/admin, aux.signed, (req, res) ->
 
 app.get \/brd/:slug/admin, aux.signed, (req, res) ->
   lc = {}
-  if !(slug = req.params.slug) => return aux.r404 res
+  if !(slug = req.params.slug) => return aux.r400 res
   cache.perm.check {io, user: req.user, type: \brd, slug: slug, action: \owner}
     .then -> io.query "select * from brd where slug = $1 and deleted is not true", [slug]
     .then (r={}) ->
