@@ -66,7 +66,9 @@ ldc.register('adminMenu', ['sdbAdapter', 'loader'], function(arg$){
             root: node
           });
           if (!toc.brd.key && in$("brd-list", names)) {
-            return node.folder.toggle(true);
+            return debounce(0).then(function(){
+              return node.folder.toggle(true);
+            });
           }
         }
       },
