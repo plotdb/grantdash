@@ -38,11 +38,28 @@
           if (!(lc.org = (r.rows || (r.rows = []))[0])) {
             return aux.r404(res);
           }
-          return io.query("select name,description,slug,key from brd where brd.org = $1 and brd.deleted is not true\norder by createdtime desc", [slug]);
+          return io.query("select name,description,slug,key,detail->'stage' as stage\nfrom brd where brd.org = $1 and brd.deleted is not true\norder by createdtime desc", [slug]);
         }).then(function(r){
           var brds;
           r == null && (r = {});
-          brds = r.rows || (r.rows = []);
+          brds = (r.rows || (r.rows = [])).filter(function(it){
+            var stage, cfgs, ret;
+            stage = (it.stage || (it.stage = {})).list || [];
+            cfgs = stage.filter(function(s){
+              if (s.start && Date.now() < new Date(s.start).getTime()) {
+                return false;
+              }
+              if (s.end && Date.now() > new Date(s.end).getTime()) {
+                return false;
+              }
+              return true;
+            });
+            ret = cfgs[cfgs.length - 1] || {};
+            if (!ret.config) {
+              ret.config = {};
+            }
+            return ret.config["public"];
+          });
           return res.render('view/default/org.pug', {
             org: lc.org,
             brds: brds
