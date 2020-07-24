@@ -48,18 +48,18 @@ route = do
           .then (r={}) ~> @cache.prj[prj] = (r.[]rows.0 or {})
     else Promise.resolve(null)
     promise.then (path-cfg) ~>
-      # TODO deleted prj will lead to null org here, thus global api will return 400 error
-      if path-cfg and !path-cfg.org => return aux.reject 400
+      # TODO deleted prj will lead to null org here, thus global api will return 1019 error
+      if path-cfg and !path-cfg.org => return Promise.reject(new lderror(1019))
       p = if @cache.domain[domain] => Promise.resolve(that)
-      else aux.reject 400
+      else Promise.reject(new lderror(1019))
       p.then (domain-cfg) ->
-        if !domain-cfg => return aux.reject 400
+        if !domain-cfg => return Promise.reject(new lderror(1019))
         if !path-cfg => return domain-cfg <<< {domain}
         if (
         ((path-cfg.org != domain-cfg.org) or
         (domain-cfg.brd and domain-cfg.brd != path-cfg.brd)) and
         domain-cfg.org
-        ) => return aux.reject 400
+        ) => return Promise.reject(new lderror(1019))
         ret = path-cfg <<< domain-cfg{orgname} <<< {domain}
         return path-cfg <<< domain-cfg{orgname} <<< {domain}
 

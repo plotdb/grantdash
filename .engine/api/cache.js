@@ -80,21 +80,21 @@
         return promise.then(function(pathCfg){
           var p, that;
           if (pathCfg && !pathCfg.org) {
-            return aux.reject(400);
+            return Promise.reject(new lderror(1019));
           }
           p = (that = this$.cache.domain[domain])
             ? Promise.resolve(that)
-            : aux.reject(400);
+            : Promise.reject(new lderror(1019));
           return p.then(function(domainCfg){
             var ret, ref$;
             if (!domainCfg) {
-              return aux.reject(400);
+              return Promise.reject(new lderror(1019));
             }
             if (!pathCfg) {
               return domainCfg.domain = domain, domainCfg;
             }
             if ((pathCfg.org !== domainCfg.org || (domainCfg.brd && domainCfg.brd !== pathCfg.brd)) && domainCfg.org) {
-              return aux.reject(400);
+              return Promise.reject(new lderror(1019));
             }
             ret = (ref$ = (pathCfg.orgname = domainCfg.orgname, pathCfg), ref$.domain = domain, ref$);
             return ref$ = (pathCfg.orgname = domainCfg.orgname, pathCfg), ref$.domain = domain, ref$;
