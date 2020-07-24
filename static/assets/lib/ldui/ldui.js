@@ -2951,7 +2951,7 @@ ldForm.prototype = import$(Object.create(Object.prototype), {
       if (type === 'file') {} else if (type === 'radio') {
         return f.checked = f.value === v;
       } else if (type === 'checkbox') {
-        return f.checked = in$(v, f.value || []);
+        return f.checked = in$(f.value, v || []);
       } else {
         return this$.fields[k].value = v;
       }
@@ -2998,10 +2998,14 @@ ldForm.prototype = import$(Object.create(Object.prototype), {
     }
   },
   getFields: function(root){
-    var ret;
+    var ret, this$ = this;
     ret = {};
     ld$.find(this.root, '[name]').map(function(f){
-      var n;
+      var form, n;
+      form = ld$.parent(f, '[ldform]', this$.root);
+      if (form && this$.root !== form) {
+        return;
+      }
       n = f.getAttribute('name');
       if (ret[n]) {
         if (Array.isArray(ret[n])) {
@@ -3047,13 +3051,18 @@ ldForm.prototype = import$(Object.create(Object.prototype), {
       }
       ref$ = [this$.fields, this$.status], fs = ref$[0], s = ref$[1];
       if (fs[n]) {
-        v = !Array.isArray(fs[n])
-          ? fs[n].value
-          : (v = fs[n].filter(function(it){
+        if (!Array.isArray(fs[n])) {
+          v = fs[n].value;
+        } else {
+          v = fs[n].filter(function(it){
             return it.checked;
           }).map(function(it){
             return it.value;
-          }), fs[n][0].getAttribute('type') === 'radio' ? v = v[0] : void 8);
+          });
+          if (fs[n][0].getAttribute('type') === 'radio') {
+            v = v[0];
+          }
+        }
         s[n] = this$.verify(n, v, fs[n]);
       }
       if (this$.debounce(n, s) && !now) {
@@ -12376,19 +12385,26 @@ smoothScroll = function(opt){
 if (document.createEvent || n.fireEvent) {
   ld$.find(document, '.form-check-label').map(function(it){
     var n;
-    n = it.previousSibling;
-    if (!(n.classList && n.classList.contains('form-check-input'))) {
+    if (!((n = it.previousSibling) && n.classList && n.classList.contains('form-check-input'))) {
       return;
     }
     return it.addEventListener('click', function(){
       var evt;
       if (document.createEvent) {
-        n.checked = !n.checked;
+        if (n.getAttribute('type') === 'radio') {
+          n.checked = true;
+        } else {
+          n.checked = !n.checked;
+        }
         evt = document.createEvent('HTMLEvents');
         evt.initEvent('input', false, true);
         return n.dispatchEvent(evt);
       } else if (n.fireEvent) {
-        n.checked = !n.checked;
+        if (n.getAttribute('type') === 'radio') {
+          n.checked = true;
+        } else {
+          n.checked = !n.checked;
+        }
         return n.fireEvent('onchange');
       }
     });

@@ -95,19 +95,26 @@ smoothScroll = function(opt){
 if (document.createEvent || n.fireEvent) {
   ld$.find(document, '.form-check-label').map(function(it){
     var n;
-    n = it.previousSibling;
-    if (!(n.classList && n.classList.contains('form-check-input'))) {
+    if (!((n = it.previousSibling) && n.classList && n.classList.contains('form-check-input'))) {
       return;
     }
     return it.addEventListener('click', function(){
       var evt;
       if (document.createEvent) {
-        n.checked = !n.checked;
+        if (n.getAttribute('type') === 'radio') {
+          n.checked = true;
+        } else {
+          n.checked = !n.checked;
+        }
         evt = document.createEvent('HTMLEvents');
         evt.initEvent('input', false, true);
         return n.dispatchEvent(evt);
       } else if (n.fireEvent) {
-        n.checked = !n.checked;
+        if (n.getAttribute('type') === 'radio') {
+          n.checked = true;
+        } else {
+          n.checked = !n.checked;
+        }
         return n.fireEvent('onchange');
       }
     });
