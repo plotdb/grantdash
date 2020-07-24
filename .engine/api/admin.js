@@ -38,7 +38,7 @@
     });
     app.get('/org/:slug/admin', aux.signed, function(req, res){
       var slug;
-      if (!(slug = req.params.key)) {
+      if (!(slug = req.params.slug)) {
         return aux.r400(res);
       }
       return cache.perm.check({

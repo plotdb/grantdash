@@ -36,7 +36,7 @@ api.get \/admin/, aux.signed, (req, res) ->
 app.get \/admin/, aux.signed, (req, res) -> res.render \admin/index.pug
 
 app.get \/org/:slug/admin, aux.signed, (req, res) ->
-  if !(slug = req.params.key) => return aux.r400 res
+  if !(slug = req.params.slug) => return aux.r400 res
   cache.perm.check {io, user: req.user, type: \org, slug, action: \owner}
     .then ->
       res.render \admin/index.pug, {org: {slug}}
