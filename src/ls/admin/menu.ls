@@ -29,7 +29,9 @@ Ctrl = (opt) ->
     init: do
       "folder": ({node,names}) ->
         node.folder = new ldui.Folder root: node
-        if !toc.brd.key and ("brd-list" in names) => node.folder.toggle true
+        # debounce so folder expand to the full height after proper render.
+        # we can improve this by rearrange code order, or update folder code for supporting live size adjustment.
+        if !toc.brd.key and ("brd-list" in names) => debounce 0 .then -> node.folder.toggle true
     handler: do
       "brd-page": ({node}) ->
         name = node.getAttribute(\data-name)
