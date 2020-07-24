@@ -15,11 +15,22 @@ landing = do
       .then (r={}) ->
         if !(lc.org = r.[]rows.0) => return aux.r404 res
         io.query """
-        select name,description,slug,key from brd where brd.org = $1 and brd.deleted is not true
+        select name,description,slug,key,detail->'stage' as stage
+        from brd where brd.org = $1 and brd.deleted is not true
         order by createdtime desc
         """, [slug]
       .then (r={}) ->
         brds = r.[]rows
+          .filter ->
+            stage = it.{}stage.list or []
+            cfgs = stage
+              .filter (s) ->
+                if s.start and Date.now! < (new Date(s.start).getTime!) => return false
+                if s.end and Date.now! > (new Date(s.end).getTime!) => return false
+                return true
+            ret = (cfgs[* - 1] or {})
+            if !ret.config => ret.config = {}
+            ret.config["public"]
         res.render \view/default/org.pug, {org: lc.org, brds}
   brd: ({slug, req, res}) ->
     lc = {}
