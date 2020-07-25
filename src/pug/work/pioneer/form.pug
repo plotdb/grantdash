@@ -242,8 +242,12 @@ block body
           +radio("incorp-type", "4", false) 學術研究機構或團體
         label 上傳檔案
         p 上傳最新版登記證書 / 章程 / 核發函文 其中兩者
-        .btn.btn-upload.btn-primary.mr-4 上傳文件1 #[input(type="file",name="coop-memo-1")]
-        .btn.btn-upload.btn-primary 上傳文件2 #[input(type="file",name="coop-memo-2")]
+        .d-flex.align-items-center.mb-4
+          .btn.btn-upload.btn-primary 上傳文件1 #[input(ld="file-upload",type="file",data-name="corp-1")]
+          a.ml-4(ld="file-uploaded",data-name="corp-1",target="_blank",rel="noopener noreferrer")
+        .d-flex.align-items-center
+          .btn.btn-upload.btn-primary 上傳文件2 #[input(ld="file-upload",type="file",data-name="corp-2")] #[span]
+          a.ml-4(ld="file-uploaded",data-name="corp-2",target="_blank",rel="noopener noreferrer")
 
       h5 計畫摘要
 
@@ -266,6 +270,12 @@ block body
         label.mb-0 執行效益 ( 200 字以內 )
         textarea.form-control(rows="6",name="abs-outcome")
         .invalid-feedback 字數不符
+
+      .form-group
+        label 上傳計畫書 PDF ( 含目錄、原著授權、合作意向書 / 合約 )
+        .d-flex.align-items-center
+          .btn.btn-upload.btn-primary 上傳文件 #[input(ld="file-upload",type="file",data-name="plan")] #[span]
+          a.ml-4(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
 
 
     .page

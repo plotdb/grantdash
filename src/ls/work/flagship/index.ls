@@ -1,51 +1,75 @@
 ldc.register \flagship-form, <[auth]>, ({auth}) ->
+  payload = do
+    form: {}
+    file: {}
+    list: do
+      "past-sub": [{}]
+      "perform": [{}]
+
   save-locally = debounce ->
-    payload = do
-      form: ldform.values!
-      list: lists
+    payload.form = ldform.values!
     window.localStorage.setItem \taicca-flagship-form-snapshot, JSON.stringify(payload)
     return payload
 
   load-locally = ->
     Promise.resolve!
       .then ->
-        payload = JSON.parse(window.localStorage.getItem(\taicca-flagship-form-snapshot))
-        if !payload => return
+        data = JSON.parse(window.localStorage.getItem(\taicca-flagship-form-snapshot))
+        if !data => return
+        payload <<< data
         ldform.values payload.form
-        lists <<< payload.list
         view.render!
         ldform.check-all!
 
-  ld$.find document.body, 'input[type=file]' .map (f) ->
-    f.addEventListener \change, -> upload-file f.files.0
   get-signed-url = (opt={}) ->
     ld$.fetch "/dash/api/flagship/upload", {method: \POST}, {json: opt, type: \json}
   #file{name, size}
-  upload-file = (file) ->
+  upload-file = ({file, info-node}) ->
+    if file.type != 'application/pdf' => return Promise.reject new ldError(1020)
     get-signed-url {filename: file.name, size: file.size}
       .then ({signed-url, id}) ->
         ld$.xhr(
           signed-url,
           {method: \PUT, body: file, headers: {"Content-Type": file.type}},
-          {no-default-headers: true, progress: -> console.log it}
+          {
+            no-default-headers: true
+            progress: ->
+              if !info-node => return
+              info-node.innerText = "上傳中 / #{Math.floor(it.percent * 10000)/100}%"
+              info-node.removeAttribute \href
+          }
         )
+          .then ->
+            console.log \done
+            return {filename: file.name, size: file.size, id: id}
 
-      .then -> console.log \done
-
-  lists = do
-    "past-sub": [{}]
-    "perform": [{}]
 
   view = new ldView do
     root: document.body
-    action: click: do
-      "add-column": ({node}) ->
-        lists[][node.getAttribute(\data-name)].push {}
-        view.render \column
-      submit: ->
-        console.log ldform.ready!
-        save-locally!
-          .then -> console.log it
+    action:
+      change: do
+        "file-upload": ({node, evt}) ->
+          name = node.getAttribute(\data-name)
+          info-node = view.getAll("file-uploaded").filter(-> it.getAttribute(\data-name) == name).0
+          # TODO use lastModifiedDatd,name,size to identify auto reupload after history.go -1
+          p = if !(node.files and node.files.length) => Promise.resolve!then -> payload.file[name] = null
+          else upload-file {file: node.files.0, info-node} .then -> payload.file[name] = it
+          p
+            .then ->
+              save-locally!
+              view.render \file-uploaded
+            .catch (e) ->
+              if ldError.id(e) == 1020 => alert "不支援此種檔案類型，請用 PDF 檔."
+              else alert "上傳失敗。請晚點再試一次"
+
+      click: do
+        "add-column": ({node}) ->
+          payload.list[][node.getAttribute(\data-name)].push {}
+          view.render \column
+        submit: ->
+          console.log ldform.ready!
+          save-locally!
+            .then -> console.log it
     text: do
       fill: ({node}) ->
         n = node.getAttribute(\data-name)
@@ -58,13 +82,19 @@ ldc.register \flagship-form, <[auth]>, ({auth}) ->
         if n == \docid => return "109-#{{'內容開發組':1, '產業策進組':2}[values.group]}-000"
         return ""
     handler: do
+      "file-uploaded": ({node}) ->
+        name = node.getAttribute(\data-name)
+        node.removeAttribute \href
+        if !(data = payload.file[name]) => return node.innerText = "尚未上傳檔案"
+        node.innerText = "#{data.filename} / size: #{Math.round(data.size / 1024)}KB"
+        node.setAttribute \href, "/dash/flagship/upload/#{data.id}"
       toggler: ({node}) ->
         if !ldform => return
         v = ldform.values!
         name = node.getAttribute(\data-name)
         node.classList.toggle \d-none, (v[name] != "1")
       column: do
-        list: ({node}) -> return lists[][node.getAttribute(\data-name)]
+        list: ({node}) -> return payload.list[][node.getAttribute(\data-name)]
         init: ({node, data}) ->
           n = node.getAttribute(\data-name)
           get = ->
