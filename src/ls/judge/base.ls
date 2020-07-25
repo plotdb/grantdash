@@ -13,6 +13,7 @@ Ctrl = (opt) ->
 
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @prjs = []
+  @prjkeymap = {}
   @data = {}
   @view = {}
 
@@ -30,9 +31,11 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         "grp-name": ({node}) ~> "#{@brdinfo.name} / #{@grpinfo.info.name}"
 
   update: (opt={}) ->
-    if !@_update => @_update = debounce ~> @ops-out ~> @data
-    if !opt.debounced => @_update!now!
-    else @_update.delay(opt.debounced)!
+    if !@_update => @_update = debounce (opt) ~>
+      if opt.ops => @ops-out opt.ops
+      else @ops-out ~> @data
+    if !opt.debounced => @_update(opt)now!
+    else @_update.delay(opt.debounced)(opt)
   fetch-prjs: ->
     console.log "fetch prjs ... "
     # TODO unify prj list with general list api
@@ -40,7 +43,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge-list", {method: \GET}, { type: \json}
       .then ~>
         @prjs = it
-        @prjs.map -> if it.name.length > 25 => it.name = it.name.substring(0,25) + "..."
+        @prjs.map ~>
+          @prjkeymap[it.key] = it
+          if it.name.length > 25 => it.name = it.name.substring(0,25) + "..."
+        @prjs.sort (a,b) -> a.key - b.key
 
   fetch-info: ->
     console.log "fetch info ... "

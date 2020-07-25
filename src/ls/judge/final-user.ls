@@ -5,13 +5,12 @@ Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
   @data = {prj: {}}
   @active = null
+  @sort-dir = {}
 
   @view.local = view = new ldView do
     init-render: false
     root: @root
-    action: do
-      click: do
-        sort: ({node}) ~> @sort node.getAttribute(\data-name), node.getAttribute(\data-value)
+
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
     handler: do
@@ -82,7 +81,8 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     if source => return
     @data = JSON.parse(JSON.stringify(data))
     @data.{}prj
-    ret = for r of @data.{}value => for c of @data.value{}[r] => (@data.value[r][c] or 0)
+    ret = @prjs.map (p,i) ~> @grade.map (g,i) ~> @data.prj{}[p.key].{}v[g.key] or 0
+    if !ret.length => ret = [[]]
     @sheet.populateFromArray 1, 3, ret
     @render!
 
@@ -90,19 +90,56 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @get-progress!
     @view.base.render!
     @view.local.render!
+    @sheet
 
   init-sheet: ->
     console.log "init sheet ... "
     @sheet = init-hot {
       root: edit
       afterChange: (changes = []) ~>
-        # TODO make it more efficient
-        changes.map ([row, prop, old, cur]) ~> @data.value{}[row - 1][prop - 3] = cur
-        #console.log "after change total count: ", changes.length, "is dirty? ", dirty
-        @update!
+        ops = []
+        sums = []
+        data = if @sheet => @sheet.getSourceData! else [[]]
+        changes.map ([row, prop, old, cur]) ~>
+          if !(row > 0 and prop > 2 and prop < 3 + @grade.length) => return
+          pk = @prjkeymap[data[row][0]].key
+          gk = @grade[prop - 3].key
+          old = @data.prj{}[pk].{}v[gk]
+          @data.prj{}[pk].{}v[gk] = cur
+          sum = @grade
+            .map (g) ~> @data.prj{}[pk].{}v[g.key]
+            .reduce(((a,b) -> a + +b), 0)
+          sums.push [row, 3 + @grade.length, sum]
+          ops.push {p: ['prj', pk, 'v', gk], od: old}
+          ops.push {p: ['prj', pk, 'v', gk], oi: cur}
+        if @sheet and sums.length =>
+          @sheet.setDataAtCell sums
+          data = @sheet.getSourceData 1, 3 + @grade.length, @prjs.length, 3 + @grade.length
+          data = data.map (d, i) -> [d.0, i + 1]
+          data.sort (a,b) -> b.0 - a.0
+          rank = []
+          data.map (v,i) ~> rank.push [v.1, 3 + @grade.length + 1, i + 1]
+          @sheet.setDataAtCell rank
+
+        @update {ops}
     }
-    data = @prjs.map (d,i) -> [i, 0, d.name, 0, 0, 0, 0, 1, '']
-    data = [["編號", "評論", "名稱", "創意", "技術", "設計", "總分", "排名", "評論"]] ++ data
+
+    @sheet.addHook \beforeOnCellMouseDown, (e, coord) ~>
+      if !@sheet or coord.row >= 0 => return
+      col = coord.col
+      data = if @sheet => @sheet.getSourceData! else [[]]
+      head = data.splice(0, 1).0
+      @sort-dir[col] = dir = 1 - (@sort-dir[col] or 0)
+      data.sort (a,b) -> ( dir * 2 - 1 ) * (if b[col] > a[col] => 1 else if b[col] < a[col] => -1 else 0)
+      data.splice 0, 0, head
+      @sheet.load-data data
+
+
+    @prjs.sort (a,b) -> a.key - b.key
+    data = @prjs.map (d,i) ~> [d.key, '', d.name] ++ (@grade.map -> 0) ++ [0, 1, '']
+    data = [
+      ["編號", "評論", "名稱"] ++ (@grade.map -> it.name) ++ ["總分", "排名", "評論"]
+    ] ++ data
     @sheet.load-data data
     @sheet.render!
     @render!
@@ -113,15 +150,15 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @init-view!
       .then ~> @user = @global.user
       .then ~> @fetch-info!
+      .then ~>
+        if !@grpinfo.grade => ldcvmgr.get('judge-grade-missing')
+        else @grade = @grpinfo.grade.entries
       .then ~> @fetch-prjs!
       .then ~> @init-sheet!
       .then ~> @sharedb!
       .then ~> @getdoc!
-      .then ~> @sort \name, null, false
       .then ~> console.log "initied."
-      .catch (e) ->
-        console.log e, ldError.id(e)
-        error! e
+      .catch error!
 
   get-state: (context) ->
     context.state = @criteria.reduce(
