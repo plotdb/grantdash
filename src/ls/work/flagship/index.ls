@@ -68,6 +68,18 @@ ldc.register \flagship-form, <[auth]>, ({auth}) ->
           view.render \column
         submit: ->
           console.log ldform.ready!
+          ld$.find 'textarea,input' .map (f) ->
+            type = f.getAttribute(\type)
+            if !type =>
+              classes = Array.from(f.classList).filter(->!(it in <[is-valid is-invalid]>))
+              n = ld$.create name: \div, className: classes, style: f.style
+
+              n.innerText = f.value
+              f.parentNode.insertBefore n, f
+              f.parentNode.removeChild f
+            else
+              if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
+
           save-locally!
             .then -> console.log it
     text: do
