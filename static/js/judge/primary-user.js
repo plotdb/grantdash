@@ -295,7 +295,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
         return this$.sharedb();
       }).then(function(){
         return this$.reconnect();
-      })['catch'](error);
+      })['catch'](error());
     },
     getProgress: function(){
       var ret, this$ = this;

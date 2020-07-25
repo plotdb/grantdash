@@ -2,11 +2,11 @@ ldc.register \adminGuard,
 <[navtop ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
 adminPrjList prjForm adminEntry adminWelcome adminPage
-adminPrjDetail adminPostList adminJudgePerm adminJudgeCriteria adminJudgePrimary]>,
+adminPrjDetail adminPostList adminJudgePerm adminJudgeCriteria adminJudgePrimary adminJudgeFinal]>,
 ({navtop, ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
 admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail,
-admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary}) ->
+admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, admin-judge-final}) ->
 
   Ctrl = ->
     @loader = loader
@@ -163,6 +163,7 @@ admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary}) -
         ..judgePerm = new admin-judge-perm {root: '[ld-scope=judge-perm]', toc, brd: toc.brd}
         ..judgeCriteria = new admin-judge-criteria {root: '[ld-scope=judge-criteria]', toc, brd: toc.brd}
         ..judgePrimary = new admin-judge-primary {root: '[ld-scope=judge-primary]', toc, brd: toc.brd}
+        ..judgeFinal = new admin-judge-final {root: '[ld-scope=judge-final]', toc, brd: toc.brd}
 
       @ctrl.prj
         ..main = new admin-prj-detail {root: '[ld-scope=prj-detail]'}

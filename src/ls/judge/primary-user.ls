@@ -142,8 +142,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @fetch-prjs!
       .then ~> @sharedb!
       .then ~> @reconnect!
-
-      .catch error
+      .catch error!
 
   get-progress: ->
     @progress = ret = {done: 0, accept: 0, pending: 0, reject: 0, total: (@prjs.length or 1)}

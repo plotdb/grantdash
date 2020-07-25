@@ -94,7 +94,8 @@ api.get \/brd/:brd/grp/:grp/judge-list, (req, res) ->
   cache.stage.check {io, type: \brd, slug: brd}
     .then (c = {}) ->
       cfg = c.config
-      if !(cfg["judge-criteria"] or cfg["judge-primary"] or cfg["judge-final"]) => return aux.reject 403
+      if !(cfg["judge-criteria"] or cfg["judge-primary"] or cfg["judge-final"]) =>
+        return Promise.reject new lderror(1016)
       cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
     .then ->
       io.query """
