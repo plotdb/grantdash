@@ -9,18 +9,10 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
       prj: {}
     };
     this.active = null;
+    this.sortDir = {};
     this.view.local = view = new ldView({
       initRender: false,
       root: this.root,
-      action: {
-        click: {
-          sort: function(arg$){
-            var node;
-            node = arg$.node;
-            return this$.sort(node.getAttribute('data-name'), node.getAttribute('data-value'));
-          }
-        }
-      },
       text: {
         count: function(arg$){
           var node;
@@ -167,29 +159,30 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
   };
   Ctrl.prototype = import$(import$({}, judgeBase.prototype), {
     opsIn: function(arg$){
-      var data, ops, source, ref$, ret, res$, r, lresult$, c;
+      var data, ops, source, ref$, ret, this$ = this;
       data = arg$.data, ops = arg$.ops, source = arg$.source;
       if (source) {
         return;
       }
       this.data = JSON.parse(JSON.stringify(data));
       (ref$ = this.data).prj || (ref$.prj = {});
-      res$ = [];
-      for (r in (ref$ = this.data).value || (ref$.value = {})) {
-        lresult$ = [];
-        for (c in (ref$ = this.data.value)[r] || (ref$[r] = {})) {
-          lresult$.push(this.data.value[r][c] || 0);
-        }
-        res$.push(lresult$);
+      ret = this.prjs.map(function(p, i){
+        return this$.grade.map(function(g, i){
+          var ref$, ref1$, key$;
+          return ((ref$ = (ref1$ = this$.data.prj)[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key] || 0;
+        });
+      });
+      if (!ret.length) {
+        ret = [[]];
       }
-      ret = res$;
       this.sheet.populateFromArray(1, 3, ret);
       return this.render();
     },
     render: function(){
       this.getProgress();
       this.view.base.render();
-      return this.view.local.render();
+      this.view.local.render();
+      return this.sheet;
     },
     initSheet: function(){
       var data, this$ = this;
@@ -197,19 +190,89 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
       this.sheet = initHot({
         root: edit,
         afterChange: function(changes){
+          var ops, sums, data, rank;
           changes == null && (changes = []);
+          ops = [];
+          sums = [];
+          data = this$.sheet
+            ? this$.sheet.getSourceData()
+            : [[]];
           changes.map(function(arg$){
-            var row, prop, old, cur, ref$, key$;
+            var row, prop, old, cur, pk, gk, ref$, ref1$, sum;
             row = arg$[0], prop = arg$[1], old = arg$[2], cur = arg$[3];
-            return ((ref$ = this$.data.value)[key$ = row - 1] || (ref$[key$] = {}))[prop - 3] = cur;
+            if (!(row > 0 && prop > 2 && prop < 3 + this$.grade.length)) {
+              return;
+            }
+            pk = this$.prjkeymap[data[row][0]].key;
+            gk = this$.grade[prop - 3].key;
+            old = ((ref$ = (ref1$ = this$.data.prj)[pk] || (ref1$[pk] = {})).v || (ref$.v = {}))[gk];
+            ((ref$ = (ref1$ = this$.data.prj)[pk] || (ref1$[pk] = {})).v || (ref$.v = {}))[gk] = cur;
+            sum = this$.grade.map(function(g){
+              var ref$, ref1$;
+              return ((ref$ = (ref1$ = this$.data.prj)[pk] || (ref1$[pk] = {})).v || (ref$.v = {}))[g.key];
+            }).reduce(function(a, b){
+              return a + +b;
+            }, 0);
+            sums.push([row, 3 + this$.grade.length, sum]);
+            ops.push({
+              p: ['prj', pk, 'v', gk],
+              od: old
+            });
+            return ops.push({
+              p: ['prj', pk, 'v', gk],
+              oi: cur
+            });
           });
-          return this$.update();
+          if (this$.sheet && sums.length) {
+            this$.sheet.setDataAtCell(sums);
+            data = this$.sheet.getSourceData(1, 3 + this$.grade.length, this$.prjs.length, 3 + this$.grade.length);
+            data = data.map(function(d, i){
+              return [d[0], i + 1];
+            });
+            data.sort(function(a, b){
+              return b[0] - a[0];
+            });
+            rank = [];
+            data.map(function(v, i){
+              return rank.push([v[1], 3 + this$.grade.length + 1, i + 1]);
+            });
+            this$.sheet.setDataAtCell(rank);
+          }
+          return this$.update({
+            ops: ops
+          });
         }
       });
-      data = this.prjs.map(function(d, i){
-        return [i, 0, d.name, 0, 0, 0, 0, 1, ''];
+      this.sheet.addHook('beforeOnCellMouseDown', function(e, coord){
+        var col, data, head, dir;
+        if (!this$.sheet || coord.row >= 0) {
+          return;
+        }
+        col = coord.col;
+        data = this$.sheet
+          ? this$.sheet.getSourceData()
+          : [[]];
+        head = data.splice(0, 1)[0];
+        this$.sortDir[col] = dir = 1 - (this$.sortDir[col] || 0);
+        data.sort(function(a, b){
+          return (dir * 2 - 1) * (b[col] > a[col]
+            ? 1
+            : b[col] < a[col] ? -1 : 0);
+        });
+        data.splice(0, 0, head);
+        return this$.sheet.loadData(data);
       });
-      data = [["編號", "評論", "名稱", "創意", "技術", "設計", "總分", "排名", "評論"]].concat(data);
+      this.prjs.sort(function(a, b){
+        return a.key - b.key;
+      });
+      data = this.prjs.map(function(d, i){
+        return [d.key, '', d.name].concat(this$.grade.map(function(){
+          return 0;
+        }), [0, 1, '']);
+      });
+      data = [["編號", "評論", "名稱"].concat(this.grade.map(function(it){
+        return it.name;
+      }), ["總分", "排名", "評論"])].concat(data);
       this.sheet.loadData(data);
       this.sheet.render();
       return this.render();
@@ -225,6 +288,12 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
       }).then(function(){
         return this$.fetchInfo();
       }).then(function(){
+        if (!this$.grpinfo.grade) {
+          return ldcvmgr.get('judge-grade-missing');
+        } else {
+          return this$.grade = this$.grpinfo.grade.entries;
+        }
+      }).then(function(){
         return this$.fetchPrjs();
       }).then(function(){
         return this$.initSheet();
@@ -232,8 +301,6 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
         return this$.sharedb();
       }).then(function(){
         return this$.getdoc();
-      }).then(function(){
-        return this$.sort('name', null, false);
       }).then(function(){
         return console.log("initied.");
       })['catch'](error());

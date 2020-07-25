@@ -24,6 +24,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       ? document.querySelector(opt.root)
       : opt.root;
     this.prjs = [];
+    this.prjkeymap = {};
     this.data = {};
     this.view = {};
     return this;
@@ -56,16 +57,20 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       var this$ = this;
       opt == null && (opt = {});
       if (!this._update) {
-        this._update = debounce(function(){
-          return this$.opsOut(function(){
-            return this$.data;
-          });
+        this._update = debounce(function(opt){
+          if (opt.ops) {
+            return this$.opsOut(opt.ops);
+          } else {
+            return this$.opsOut(function(){
+              return this$.data;
+            });
+          }
         });
       }
       if (!opt.debounced) {
-        return this._update().now();
+        return this._update(opt).now();
       } else {
-        return this._update.delay(opt.debounced)();
+        return this._update.delay(opt.debounced)(opt);
       }
     },
     fetchPrjs: function(){
@@ -77,10 +82,14 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         type: 'json'
       }).then(function(it){
         this$.prjs = it;
-        return this$.prjs.map(function(it){
+        this$.prjs.map(function(it){
+          this$.prjkeymap[it.key] = it;
           if (it.name.length > 25) {
             return it.name = it.name.substring(0, 25) + "...";
           }
+        });
+        return this$.prjs.sort(function(a, b){
+          return a.key - b.key;
         });
       });
     },
