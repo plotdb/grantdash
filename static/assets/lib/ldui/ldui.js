@@ -2986,14 +2986,14 @@ ldForm.prototype = import$(Object.create(Object.prototype), {
         }
       } else if (Array.isArray(v)) {
         v.map(fn$);
+      } else {
+        fd.append(k, v.value);
       }
     }
     return fd;
     function fn$(f){
       if (f.checked) {
         return fd.append(k + "[]", f.value);
-      } else {
-        return fd.append(k, v.value);
       }
     }
   },
@@ -10378,7 +10378,7 @@ var slice$ = [].slice;
       o == null && (o = {});
       opt == null && (opt = {});
       return new Promise(function(res, rej){
-        var ref$, u, c, x, k, v;
+        var ref$, u, c, x, p, k, v;
         ref$ = xhrpar(url, o, opt), u = ref$.u, c = ref$.c;
         x = new XMLHttpRequest();
         x.onreadystatechange = function(){
@@ -10407,7 +10407,7 @@ var slice$ = [].slice;
           });
         };
         if (opt.progress) {
-          x.onprogress = function(evt){
+          p = function(evt){
             var ref$, val, len;
             ref$ = [evt.loaded, evt.total], val = ref$[0], len = ref$[1];
             return opt.progress({
@@ -10416,6 +10416,11 @@ var slice$ = [].slice;
               len: len
             });
           };
+          if (x.upload) {
+            x.upload.onprogress = p;
+          } else {
+            x.onprogress = p;
+          }
         }
         x.open(c.method || 'GET', u, true);
         for (k in ref$ = c.headers || {}) {
@@ -10861,7 +10866,9 @@ function import$(obj, src){
     1015: "bad parameter",
     1016: "feature not yet available",
     1017: "resource corrupted",
-    1018: "no consent"
+    1018: "no consent",
+    1019: "wrong domain",
+    1020: "not supported"
   };
   ldError = function(opt, id){
     opt == null && (opt = "");
