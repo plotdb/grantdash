@@ -188,7 +188,7 @@
         c == null && (c = {});
         cfg = c.config;
         if (!(cfg["judge-criteria"] || cfg["judge-primary"] || cfg["judge-final"])) {
-          return aux.reject(403);
+          return Promise.reject(new lderror(1016));
         }
         return cache.perm.check({
           io: io,
