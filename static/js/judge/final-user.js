@@ -236,10 +236,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
         return this$.sort('name', null, false);
       }).then(function(){
         return console.log("initied.");
-      })['catch'](function(e){
-        console.log(e, ldError.id(e));
-        return error()(e);
-      });
+      })['catch'](error());
     },
     getState: function(context){
       var this$ = this;

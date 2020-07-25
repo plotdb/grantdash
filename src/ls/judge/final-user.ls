@@ -119,9 +119,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @getdoc!
       .then ~> @sort \name, null, false
       .then ~> console.log "initied."
-      .catch (e) ->
-        console.log e, ldError.id(e)
-        error! e
+      .catch error!
 
   get-state: (context) ->
     context.state = @criteria.reduce(
