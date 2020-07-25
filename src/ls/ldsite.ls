@@ -1,4 +1,5 @@
 (->
+  # TODO refactor this to a better location
   ldc.register \ldsite, <[]>, ->
     return {
       api: \/dash/api
