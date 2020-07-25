@@ -1,16 +1,4 @@
 (->
-  # ldc.register \sample-site, <[auth ldcvmgr navtop]>, ({auth, ldcvmgr, navtop}) ->
-  # ldc.app \sample-site
-  ldc.register \ldsite, <[]>, ->
-    return {
-      api: \/dash/api
-      #consent: tos: do
-      #  type: \link
-      #  url: \/dash/assets/privacy.pdf
-      #  timing: <[prj-create]>
-      ldcvmgr-root: \/dash/modules/cover
-      avatar-url: -> "/dash/s/avatar/#it.png"
-    }
   ldc.register \general, <[auth navtop error ldcvmgr]>, ({auth, navtop, error, ldcvmgr}) ->
     console.log "site general ldc"
     smoothScroll!
