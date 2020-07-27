@@ -1,3 +1,4 @@
+//- view
 extends /base.pug
 block head
   style(type="text/css"): :stylus
@@ -6,6 +7,15 @@ block head
       padding:0 0 0 1em
       margin-bottom: 2em
     .typeset.heading-contrast
+      .table-tiny
+        td
+          padding: .75em 2px
+          font-size: .9em
+          input
+            font-size: .8em
+          input.is-valid
+            background-image: none
+
       .form-group { margin-bottom: 1.5rem }
       .form-control.preview
         border-radius: 0
@@ -308,7 +318,7 @@ block body
             div 是，本計畫已獲 #[+input-inline({len:10,name:"other-sub-name"})] 補助新臺幣 #[+input-inline({len:10,name:"other-sub-amount"})] 元整。 
 
       h4 預算明細表
-      table.table.table-bordered
+      table.table.table-bordered.table-tiny
         thead
           tr
             th(rowspan="2")
@@ -441,4 +451,7 @@ block body
 
 
 block script
-  +script("/dash/js/work/flagship/index.js")
+  +register-locals()
+  +script("/dash/js/view/taicca-flagship/form.js")
+
+

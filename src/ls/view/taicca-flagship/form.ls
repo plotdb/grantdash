@@ -1,14 +1,15 @@
-ldc.register \flagship-form, <[auth error]>, ({auth, error}) ->
+ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocals}) ->
+  console.log viewLocals
 
   init = ({global}) ->
 
     ldforms = {}
     payload = do
       form: {}
-      file: {}
+      file: {plan: {}}
       list: do
-        "past-sub": [{}]
-        "perform": [{}]
+        "past-sub": []
+        "perform": []
 
     save-locally = debounce ->
       payload.form = ldform.values!
@@ -21,7 +22,6 @@ ldc.register \flagship-form, <[auth error]>, ({auth, error}) ->
           data = JSON.parse(window.localStorage.getItem("taicca-flagship-form-snapshot-#{global.user.key}"))
           if !data => return
           payload <<< data
-          console.log data
           ldform.values payload.form
           view.render!
           ldform.check-all!
@@ -53,10 +53,13 @@ ldc.register \flagship-form, <[auth error]>, ({auth, error}) ->
       check: -> is-ready.get! 
       get: debounce ->
         _ = ->
+          #TODO fix ldforms 
           for k,v of ldforms => if !(v.ready!) => return false
           if !(ldform.ready!) => return false
           budget-calc!
           if !payload.budget.ready => return false
+          for n in <[plan]> =>
+            if !(payload.file[n] and payload.file[n].id) => return false
           return true
         is-ready.state = _!
         view.render "ready-state"
@@ -68,9 +71,9 @@ ldc.register \flagship-form, <[auth error]>, ({auth, error}) ->
       self = payload.list.[]budget.map(-> it.value.self).reduce(((a,b) -> a + +b),0)
       subsidy = total - self
       percent = do
-        self: self / total
-        subsidy: (total - self) / total
-      payload.budget = {total, subsidy, self, percent}
+        self: self / (total or 1)
+        subsidy: (total - self) / (total or 1)
+      payload.{}budget <<< {total, subsidy, self, percent}
       cur = !(payload.budget.total > 5000000 or payload.budget.percent.subsidy > 0.49 )
       old = payload.budget.ready
       payload.budget.ready = cur
@@ -89,6 +92,7 @@ ldc.register \flagship-form, <[auth error]>, ({auth, error}) ->
             p
               .then ->
                 save-locally!
+                is-ready.check!
                 view.render \file-uploaded
               .catch (e) ->
                 if ldError.id(e) == 1020 => alert "不支援此種檔案類型，請用 PDF 檔."
@@ -100,23 +104,36 @@ ldc.register \flagship-form, <[auth error]>, ({auth, error}) ->
             view.render \column
           submit: ->
             is-ready.get!
-            ldform.ready!
-            ld$.find 'select,textarea,input' .map (f) ->
-              type = f.getAttribute(\type)
-              node-name = f.nodeName.toLowerCase!
-              if !type =>
-                classes = Array.from(f.classList).filter(->!(it in <[is-valid is-invalid]>)) ++ ['preview']
-                n = ld$.create name: \div, className: classes, style: f.style
-                if node-name == \textarea => n.style.height = \auto
+              .then (v) ->
+                if !v => return
+                save-locally!
+                auth.recaptcha.get!
+                  .then (recaptcha) ->
+                    json = do
+                      recaptcha: recaptcha
+                      detail: payload
+                      name: payload.form.name
+                      description: (payload.form["abs-item"] or "").substring(0,200)
+                      brd: "flagship-2"
+                    ld$.fetch \/dash/api/flagship/prj, {method: \POST}, {json: json, type: \json}
+                      .then -> console.log "done."
+                    /*
+                    ld$.find 'select,textarea,input' .map (f) ->
+                      type = f.getAttribute(\type)
+                      node-name = f.nodeName.toLowerCase!
+                      if !type =>
+                        classes = Array.from(f.classList).filter(->!(it in <[is-valid is-invalid]>)) ++ ['preview']
+                        n = ld$.create name: \div, className: classes, style: f.style
+                        if node-name == \textarea => n.style.height = \auto
+                        n.innerText = f.value
+                        f.parentNode.insertBefore n, f
+                        f.parentNode.removeChild f
+                      else
+                        if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
+                    save-locally!
+                      .then -> console.log it
+                    */
 
-                n.innerText = f.value
-                f.parentNode.insertBefore n, f
-                f.parentNode.removeChild f
-              else
-                if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
-
-            save-locally!
-              .then -> console.log it
       text: do
         fill: ({node}) ->
           n = node.getAttribute(\data-name)
@@ -130,8 +147,8 @@ ldc.register \flagship-form, <[auth error]>, ({auth, error}) ->
             total = payload.list.[]budget.map(-> it.value.price * it.value.count).reduce(((a,b) -> a + +b),0)
             self = payload.list.[]budget.map(-> it.value.self).reduce(((a,b) -> a + +b),0)
             if ret.2 =>
-              if ret.1 == \self => return Math.floor(10000 * self / total)/100
-              else return Math.ceil(10000 * (total - self) / total)/100
+              if ret.1 == \self => return Math.floor(10000 * self / (total or 1))/100
+              else return Math.ceil(10000 * (total - self) / (total or 1))/100
             else
               if ret.1 == \self => return self
               else => return total - self
@@ -151,7 +168,10 @@ ldc.register \flagship-form, <[auth error]>, ({auth, error}) ->
         "file-uploaded": ({node}) ->
           name = node.getAttribute(\data-name)
           node.removeAttribute \href
-          if !(data = payload.file[name]) => return node.innerText = "尚未上傳檔案"
+          node.classList.remove \text-danger
+          if !(data = payload.file[name]) =>
+            node.classList.add \text-danger
+            return node.innerText = "尚未上傳檔案"
           node.innerText = "#{data.filename} / size: #{Math.round(data.size / 1024)}KB"
           node.setAttribute \href, "/dash/flagship/upload/#{data.id}"
         toggler: ({node}) ->
