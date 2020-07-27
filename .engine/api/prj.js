@@ -98,8 +98,14 @@
           form: grp.form,
           info: grp.info
         };
+        if (!(brd.detail.custom && brd.detail.custom.view)) {
+          view = (req.query || (req.query = {})).simple != null ? 'view/default/prj-view-simple.pug' : 'view/default/prj-view.pug';
+        } else {
+          view = (req.query || (req.query = {})).simple != null
+            ? "view/" + brd.detail.custom.view + "/prj/prj-view-simple.pug"
+            : "view/" + brd.detail.custom.view + "/prj/prj-view.pug";
+        }
         delete brd.detail;
-        view = (req.query || (req.query = {})).simple != null ? 'view/default/prj-view-simple.pug' : 'view/default/prj-view.pug';
         return res.render(view, (ref$ = (ref1$ = {
           prj: lc.prj,
           grp: lc.grp,

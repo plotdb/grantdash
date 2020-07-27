@@ -43,9 +43,13 @@ app.get \/prj/:slug, (req, res) ->
       lc.page-info = brd.{}detail.{}page.{}info.{}generic
       if !lc.grp => return aux.reject 400
       lc.grp = grp = grp{form,info}
+      if !(brd.detail.custom and brd.detail.custom.view) =>
+        view = if (req.{}query.simple)? => \view/default/prj-view-simple.pug
+        else \view/default/prj-view.pug
+      else
+        view = if (req.{}query.simple)? => "view/#{brd.detail.custom.view}/prj/prj-view-simple.pug"
+        else "view/#{brd.detail.custom.view}/prj/prj-view.pug"
       delete brd.detail
-      view = if (req.{}query.simple)? => \view/default/prj-view-simple.pug
-      else \view/default/prj-view.pug
       res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}} <<< req.scope{domain}
     .catch aux.error-handler res
 
