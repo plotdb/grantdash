@@ -10,12 +10,7 @@ Ctrl = (opt) ->
   @view.local = view = new ldView do
     init-render: false
     root: @root
-
-    text: do
-      count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
     handler: do
-      "comment-name": ({node}) ~>
-        if @active => node.innerText = @active.name or ''
       progress: ({node, names}) ~>
         p = @progress
         if \progress-bar in names =>
@@ -23,55 +18,6 @@ Ctrl = (opt) ->
           node.style.width = "#{100 * p[n] / p.total }%"
         else if \progress-percent in names =>
           node.innerText = Math.round(100 * p.done / p.total )
-      "header-criteria": do
-        list: ~> @criteria
-        action: click: ({node, data}) ~> @sort \criteria, data.key
-        handler: ({node, data}) ~> node.innerText = data.name
-      project: do
-        key: -> it.slug
-        list: ~> @prjs
-        init: ({node, local, data}) ~>
-          root = node
-          node.classList.remove \d-none
-          local.view = new ldView do
-            init-render: false
-            root: node
-            context: data
-            action: click: do
-              option: ({node, context}) ~>
-                name = node.getAttribute(\data-name)
-                @data.prj{}[context.slug].value = name
-                local.view.render!
-                @get-progress!
-                @view.local.render <[progress]>
-                @update debounced: 10
-
-              name: ({node, context}) ->
-                view.get("iframe").setAttribute \src, "/dash/prj/#{context.slug}?simple"
-                view.get("iframe-placeholder").classList.add \d-none
-                if @active-node => @active-node.classList.remove \active
-                @active-node = root
-                @active-node.classList.add \active
-            text: do
-              name: ({context}) -> context.name or ''
-              ownername: ({context}) -> context.info.teamname or context.ownername or ''
-              key: ({context}) -> context.key or ''
-              budget: ({context}) ->
-                if !context.info.budget => return ''
-                return "#{Math.round(context.info.budget / 10000)}萬"
-            handler: do
-              "has-comment": ({node, context}) ~>
-                node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
-              option: ({node, local, context}) ~>
-                name = node.getAttribute(\data-name)
-                cls = {accept: "bg-success", pending: "bg-warning", reject: "bg-danger"}[name]
-                act = if (@data.prj{}[context.slug].value == name) => \add else \remove
-                node.classList[act].apply node.classList, [cls, 'text-white']
-
-        handler: ({node, local, data}) ~>
-          local.view.setContext data
-          @get-state data
-          local.view.render!
 
   @
 
@@ -122,7 +68,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
           @sheet.setDataAtCell rank
 
         @update {ops}
-    }
+    }, {grade: @grade}
 
     @sheet.addHook \beforeOnCellMouseDown, (e, coord) ~>
       if !@sheet or coord.row >= 0 => return
@@ -176,7 +122,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
 ctrl = new Ctrl root: document.body
 ctrl.init!
 
-init-hot = (opt) ->
+init-hot = (opt, opt-judge) ->
   Handsontable.renderers.registerRenderer \myrenderer, (instance, td, row, col, prop, value, cellProperties) ->
     Handsontable.renderers.TextRenderer.apply @, arguments
   hot = new Handsontable opt.root, {
@@ -191,6 +137,8 @@ init-hot = (opt) ->
     stretchH: \all
     fixedRowsTop: 1
     fixedColumnsLeft: 3
-    cells: (row, col) -> return {renderer: \myrenderer}
+    cells: (row, col, prop) ->
+      readOnly = if row < 1 or col < 3 or col == opt-judge.grade.length + 4 => true else false
+      return {renderer: \myrenderer, readOnly}
   } <<< opt
   hot

@@ -13,21 +13,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
     this.view.local = view = new ldView({
       initRender: false,
       root: this.root,
-      text: {
-        count: function(arg$){
-          var node;
-          node = arg$.node;
-          return this$.progress[node.getAttribute('data-name')] || 0;
-        }
-      },
       handler: {
-        "comment-name": function(arg$){
-          var node;
-          node = arg$.node;
-          if (this$.active) {
-            return node.innerText = this$.active.name || '';
-          }
-        },
         progress: function(arg$){
           var node, names, p, n;
           node = arg$.node, names = arg$.names;
@@ -37,120 +23,6 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
             return node.style.width = 100 * p[n] / p.total + "%";
           } else if (in$('progress-percent', names)) {
             return node.innerText = Math.round(100 * p.done / p.total);
-          }
-        },
-        "header-criteria": {
-          list: function(){
-            return this$.criteria;
-          },
-          action: {
-            click: function(arg$){
-              var node, data;
-              node = arg$.node, data = arg$.data;
-              return this$.sort('criteria', data.key);
-            }
-          },
-          handler: function(arg$){
-            var node, data;
-            node = arg$.node, data = arg$.data;
-            return node.innerText = data.name;
-          }
-        },
-        project: {
-          key: function(it){
-            return it.slug;
-          },
-          list: function(){
-            return this$.prjs;
-          },
-          init: function(arg$){
-            var node, local, data, root;
-            node = arg$.node, local = arg$.local, data = arg$.data;
-            root = node;
-            node.classList.remove('d-none');
-            return local.view = new ldView({
-              initRender: false,
-              root: node,
-              context: data,
-              action: {
-                click: {
-                  option: function(arg$){
-                    var node, context, name, ref$, key$;
-                    node = arg$.node, context = arg$.context;
-                    name = node.getAttribute('data-name');
-                    ((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).value = name;
-                    local.view.render();
-                    this$.getProgress();
-                    this$.view.local.render(['progress']);
-                    return this$.update({
-                      debounced: 10
-                    });
-                  },
-                  name: function(arg$){
-                    var node, context;
-                    node = arg$.node, context = arg$.context;
-                    view.get("iframe").setAttribute('src', "/dash/prj/" + context.slug + "?simple");
-                    view.get("iframe-placeholder").classList.add('d-none');
-                    if (this.activeNode) {
-                      this.activeNode.classList.remove('active');
-                    }
-                    this.activeNode = root;
-                    return this.activeNode.classList.add('active');
-                  }
-                }
-              },
-              text: {
-                name: function(arg$){
-                  var context;
-                  context = arg$.context;
-                  return context.name || '';
-                },
-                ownername: function(arg$){
-                  var context;
-                  context = arg$.context;
-                  return context.info.teamname || context.ownername || '';
-                },
-                key: function(arg$){
-                  var context;
-                  context = arg$.context;
-                  return context.key || '';
-                },
-                budget: function(arg$){
-                  var context;
-                  context = arg$.context;
-                  if (!context.info.budget) {
-                    return '';
-                  }
-                  return Math.round(context.info.budget / 10000) + "萬";
-                }
-              },
-              handler: {
-                "has-comment": function(arg$){
-                  var node, context, ref$, key$;
-                  node = arg$.node, context = arg$.context;
-                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).comment);
-                },
-                option: function(arg$){
-                  var node, local, context, name, cls, act, ref$, key$;
-                  node = arg$.node, local = arg$.local, context = arg$.context;
-                  name = node.getAttribute('data-name');
-                  cls = {
-                    accept: "bg-success",
-                    pending: "bg-warning",
-                    reject: "bg-danger"
-                  }[name];
-                  act = ((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).value === name ? 'add' : 'remove';
-                  return node.classList[act].apply(node.classList, [cls, 'text-white']);
-                }
-              }
-            });
-          },
-          handler: function(arg$){
-            var node, local, data;
-            node = arg$.node, local = arg$.local, data = arg$.data;
-            local.view.setContext(data);
-            this$.getState(data);
-            return local.view.render();
           }
         }
       }
@@ -242,6 +114,8 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
             ops: ops
           });
         }
+      }, {
+        grade: this.grade
       });
       this.sheet.addHook('beforeOnCellMouseDown', function(e, coord){
         var col, data, head, dir;
@@ -335,7 +209,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
     root: document.body
   });
   ctrl.init();
-  return initHot = function(opt){
+  return initHot = function(opt, optJudge){
     var hot;
     Handsontable.renderers.registerRenderer('myrenderer', function(instance, td, row, col, prop, value, cellProperties){
       return Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -352,9 +226,12 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
       stretchH: 'all',
       fixedRowsTop: 1,
       fixedColumnsLeft: 3,
-      cells: function(row, col){
+      cells: function(row, col, prop){
+        var readOnly;
+        readOnly = row < 1 || col < 3 || col === optJudge.grade.length + 4 ? true : false;
         return {
-          renderer: 'myrenderer'
+          renderer: 'myrenderer',
+          readOnly: readOnly
         };
       }
     }, opt));
