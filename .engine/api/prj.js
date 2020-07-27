@@ -73,6 +73,17 @@
           slug: req.scope.brd,
           action: ['owner', 'judge']
         });
+      })['catch'](function(){
+        if (!(req.user && req.user.key)) {
+          return aux.reject(403);
+        }
+        return io.query("select key,grp from perm_judge where brd = $1 and owner = $2", [req.scope.brd, req.user.key]).then(function(r){
+          r == null && (r = {});
+          if (!(r.rows || (r.rows = [])).length) {
+            return aux.reject(403);
+          }
+          return lc.judges = r.rows;
+        });
       }).then(function(){
         return getPrj(req.params.slug);
       }).then(function(prj){
@@ -90,6 +101,11 @@
         lc.grp = grp = (((ref$ = brd.detail || (brd.detail = {})).group || (ref$.group = {})) || []).filter(function(it){
           return it.key === lc.prj.grp;
         })[0];
+        if (lc.judges && !lc.judges.filter(function(it){
+          return it.grp === lc.grp.key;
+        }).length) {
+          return aux.reject(403);
+        }
         lc.pageInfo = (ref$ = (ref1$ = (ref2$ = brd.detail || (brd.detail = {})).page || (ref2$.page = {})).info || (ref1$.info = {})).generic || (ref$.generic = {});
         if (!lc.grp) {
           return aux.reject(400);

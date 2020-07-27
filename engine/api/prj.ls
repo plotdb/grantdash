@@ -30,8 +30,13 @@ api.get "/prj/:slug/", aux.signed, (req, res) ->
 app.get \/prj/:slug, (req, res) ->
   lc = {}
   cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-view"}
-    # TODO check judge permission
     .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge]>}
+    .catch ->
+      if !(req.user and req.user.key) => return aux.reject 403
+      io.query "select key,grp from perm_judge where brd = $1 and owner = $2", [req.scope.brd, req.user.key]
+        .then (r={}) ->
+          if !r.[]rows.length => return aux.reject 403
+          lc.judges = r.rows
     .then -> get-prj req.params.slug
     .then (prj) ->
       lc.prj = prj
@@ -40,6 +45,7 @@ app.get \/prj/:slug, (req, res) ->
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
       lc.grp = grp = (brd.{}detail.{}group or []).filter(-> it.key == lc.prj.grp).0
+      if lc.judges and !lc.judges.filter(-> it.grp == lc.grp.key).length => return aux.reject 403
       lc.page-info = brd.{}detail.{}page.{}info.{}generic
       if !lc.grp => return aux.reject 400
       lc.grp = grp = grp{form,info}
