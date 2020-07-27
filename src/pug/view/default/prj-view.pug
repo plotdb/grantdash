@@ -3,7 +3,7 @@ extends /base.pug
 block vars
   - ctrl.navtop.placeholder = false;
   - var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
-  - var purpose = grp.form.purpose || {};
+  - var purpose = (grp.form || {}).purpose || {};
   -
     var meta = {};
     if(prj && prj.detail.info) {

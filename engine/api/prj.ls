@@ -30,8 +30,13 @@ api.get "/prj/:slug/", aux.signed, (req, res) ->
 app.get \/prj/:slug, (req, res) ->
   lc = {}
   cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-view"}
-    # TODO check judge permission
     .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge]>}
+    .catch ->
+      if !(req.user and req.user.key) => return aux.reject 403
+      io.query "select key,grp from perm_judge where brd = $1 and owner = $2", [req.scope.brd, req.user.key]
+        .then (r={}) ->
+          if !r.[]rows.length => return aux.reject 403
+          lc.judges = r.rows
     .then -> get-prj req.params.slug
     .then (prj) ->
       lc.prj = prj
@@ -40,12 +45,17 @@ app.get \/prj/:slug, (req, res) ->
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
       lc.grp = grp = (brd.{}detail.{}group or []).filter(-> it.key == lc.prj.grp).0
+      if lc.judges and !lc.judges.filter(-> it.grp == lc.grp.key).length => return aux.reject 403
       lc.page-info = brd.{}detail.{}page.{}info.{}generic
       if !lc.grp => return aux.reject 400
       lc.grp = grp = grp{form,info}
+      if !(brd.detail.custom and brd.detail.custom.view) =>
+        view = if (req.{}query.simple)? => \view/default/prj-view-simple.pug
+        else \view/default/prj-view.pug
+      else
+        view = if (req.{}query.simple)? => "view/#{brd.detail.custom.view}/prj/prj-view-simple.pug"
+        else "view/#{brd.detail.custom.view}/prj/prj-view.pug"
       delete brd.detail
-      view = if (req.{}query.simple)? => \view/default/prj-view-simple.pug
-      else \view/default/prj-view.pug
       res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}} <<< req.scope{domain}
     .catch aux.error-handler res
 

@@ -641,7 +641,7 @@ ctrl.navtop.placeholder = false;
 ;pug_debug_line = 5;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fprj-view.pug";
 var answer = ( ( prj.detail && prj.detail.answer ) ? prj.detail.answer : {} )
 ;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fprj-view.pug";
-var purpose = grp.form.purpose || {};
+var purpose = (grp.form || {}).purpose || {};
 ;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fprj-view.pug";
 var meta = {};
 if(prj && prj.detail.info) {
