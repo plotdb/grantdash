@@ -2,11 +2,11 @@ ldc.register \adminGuard,
 <[navtop ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
 adminPrjList prjForm adminEntry adminWelcome adminPage
-adminPrjDetail adminPostList adminJudgePerm adminJudgeCriteria adminJudgePrimary adminJudgeFinal]>,
+adminPrjDetail adminPostList adminJudgePerm adminJudgeCriteria adminJudgePrimary adminJudgeFinal adminDev]>,
 ({navtop, ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
 admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail,
-admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, admin-judge-final}) ->
+admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, admin-judge-final, adminDev}) ->
 
   Ctrl = ->
     @loader = loader
@@ -113,6 +113,7 @@ admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, ad
 
     adapt: ->
       {org,brd} = @hubs
+      @ctrl.dev.adapt {hub: brd, path: <[]>}
       @ctrl.org
         ..info.adapt {hub: org, path: <[info]> }
         ..navbar.adapt {hub: org, path: <[page navbar]>}
@@ -136,6 +137,7 @@ admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, ad
       clone-group = ~>
         @ctrl.brd.group.clone-group it
 
+      @ctrl.dev = new admin-dev {}
       @ctrl.welcome = new admin-welcome {root: '[ld-scope=admin-welcome]', toc}
       @ctrl.posts = new admin-post-list {root: '[ld-scope=admin-post-list]', brd: toc.brd}
 
