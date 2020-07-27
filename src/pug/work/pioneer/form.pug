@@ -3,17 +3,32 @@ block head
   style(type="text/css"): :stylus
     .blform
       border-left:.25em solid #eee
-      padding:1em 0 .1em 1em
+      padding:0 0 0 1em
+      margin-bottom: 2em
     .typeset.heading-contrast
-      input.form-control { border-radius: .25em; border: 1px solid #ccc; }
       .form-group { margin-bottom: 1.5rem }
-    .sect
-      margin-top: 5em
+      .form-control.preview
+        border-radius: 0
+        border: 0
+        border-bottom: 1px solid #ccc
+        background: #f2f3f4
     .form-check-input.is-valid ~ .form-check-label
       color: inherit
     .page
       page-break-after: always
       margin-bottom: 5em
+    .form-inner-box
+      padding: 1.5em
+      border-radius: .5em
+      border: 1px solid #ddd
+      box-shadow: 0 2px 4px rgba(0,0,0,.1)
+
+    @media print 
+      .no-print, .grecaptcha-badge
+        display: none
+      .form-inner-box
+        border: 0
+        box-shadow: none
 
 block body
 
@@ -33,13 +48,12 @@ block body
       +checkbox(name, "數位內容", false) 數位內容
       +checkbox(name, "流行音樂", false) 流行音樂
       +checkbox(name, "漫畫", false) 漫畫
-    .form-check.mr-4
+    .form-check.mr-4.d-flex.align-items-start
       input.form-check-input(type="checkbox",name=name,value="其它")
-      .d-flex.align-items-start
-        label.form-check-label 其它
-        .d-inline-block.ml-2
-          input.form-control.form-control-sm(name=name+"-other")
-          .invalid-feedback 不可留白
+      label.form-check-label 其它
+      .d-inline-block.ml-2
+        input.form-control.form-control-sm(name=name+"-other")
+        .invalid-feedback 不可留白
 
   mixin input-inline(opt)
     input.form-control.d-inline-block.form-control-sm(style=`width:${opt.len}em`,name=opt.name)&attributes(attributes)
@@ -56,29 +70,30 @@ block body
       label.form-check-label
         block
 
-  .w-1024.rwd.mx-auto.typeset.heading-contrast.position-relative: form#form
+  .w-1024.rwd.mx-auto.typeset.heading-contrast.position-relative: form#form: .form-inner-box: .p-4
     .page
-      h3 申請書
-      p 編號: #[span(ld="fill", data-name="docid")]
 
+      .text-center
+        h3 文化內容開發產業領航旗艦計畫申請書
+        br
+        .text-right 編號: #[span(ld="fill", data-name="docid") N/A]
       .form-group
         label 計畫名稱
         input.form-control(name="name")
         .invalid-feedback 不可留白
-
-      label 計畫類別（壹與貳為單選）：
-      +radio("group", "內容開發組", true) 壹、內容開發組
+      label 計畫類別（一與二為單選）：
+      +radio("group", "文化內容開發組", true) 一、文化內容開發組
+      .ml-4.mb-4
+        span ( 可複選 )
+        +category("group1-category")
+      +radio("group", "內容產業領航行動組", false) 二、內容產業領航行動組 
       .ml-4
-        span 一、單選
-        .ml-4
-          +radio("group1-type", "原生內容開發孵育", true) 原生內容開發孵育：以在地文化素材，開發、孵育具社會共感、國際市場潛力的各式原生內容IP或作品雛型
-          +radio("group1-type", "原生內容轉譯", false) 原生內容轉譯：將具有國際市場潛力之既有臺灣原生內容 IP，轉譯為具市場潛力的產品雛型
-        span 二、可複選
-        .ml-4: +category("group1-category")
-      +radio("group", "產業策進組", false) 貳、產業策進組 
-      .ml-4: +category("group2-category")
+        span ( 可複選 )
+        +category("group2-category")
 
-      h3 申請人基本資料
+      +nbr(2)
+
+      h4.mb-4 申請人基本資料
       .row
         .col-md
           .form-group
@@ -127,30 +142,31 @@ block body
         label 聯絡地址
         input.form-control(name="contact-addr")
 
-
-      .row
-        .col-md
-          .form-group
-            label 聯絡人姓名
-            input.form-control(name="contact-name")
-        .col-md
-          .form-group
-            label 聯絡人職稱
-            input.form-control(name="contact-title")
-      .row
-        .col-md
-          .form-group
-            label 聯絡人專線電話
-            input.form-control(name="contact-phone")
-        .col-md
-          .form-group
-            label 聯絡人手機
-            input.form-control(name="contact-mobile")
-      .row
-        .col-md
-          .form-group
-            label 聯絡人Email
-            input.form-control(name="contact-email")
+      h5 聯絡人
+      .blform
+        .row
+          .col-md
+            .form-group
+              label 姓名
+              input.form-control(name="contact-name")
+          .col-md
+            .form-group
+              label 職稱
+              input.form-control(name="contact-title")
+        .row
+          .col-md
+            .form-group
+              label 專線電話
+              input.form-control(name="contact-phone")
+          .col-md
+            .form-group
+              label 手機
+              input.form-control(name="contact-mobile")
+        .row
+          .col-md
+            .form-group
+              label Email
+              input.form-control(name="contact-email")
 
       .form-group
         label.mb-0 成立緣起 (100字)
@@ -159,81 +175,85 @@ block body
 
       label 印鑑 ( 列印後用印正本 )
       .row.text-muted.mb-4
-        .col-md: .aspect-ratio.ratio-2by1.text-center.border.border-secondary 公司章
-        .col-md: .aspect-ratio.ratio-2by1.text-center.border.border-secondary 負責人章
+        .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 公司章
+        .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 負責人章
 
       .form-group
         label.mb-0 備註
         textarea.form-control(rows="6",name="comment")
 
+      +nbr(2)
 
-      label 民國106年至109年接受補助情形
+      h4 民國106年至109年接受補助情形
       .ml-4.mb-4
         +radio("has-sub", "0", true) 無 ( 勾本項者以下免填 )
         +radio("has-sub", "1", false) 有
 
-      div(ldform,ld="toggler",data-name="has-sub")
+      .d-none(ldform,ld="toggler",data-name="has-sub")
         table.table.table-bordered
           thead
             tr
+              th
               th 民國年度
               th 受補助計畫名稱(政府補助案名)
               th 補助機關
               th 補助金額
           tbody
             tr(ld-each="column",data-name="past-sub")
+              td.clickable.text-center.pt-3: i.i-close.text-danger
               td: select.form-control(name="year")
-                option(value="106") 106
+                option(value="106",selected) 106
                 option(value="107") 107
                 option(value="108") 108
                 option(value="109") 109
-              td
+              td: .form-group.m-0
                 input.form-control(name="name")
                 .invalid-feedback 不可留白
-              td
+              td: .form-group.m-0
                 input.form-control(name="sponsor")
                 .invalid-feedback 不可留白
-              td
+              td: .form-group.m-0
                 input.form-control(name="amount")
                 .invalid-feedback 不可留白
-        .btn.btn-outline-secondary.btn-sm(ld="add-column",data-name="past-sub") 新增一項 #[i.i-plus]
+        .btn.btn-outline-secondary(ld="add-column",data-name="past-sub") 新增一項 #[i.i-plus]
 
-      +nbr(3)
-      .form-group
-        label 民國 106 年至 109 年實績
+      +nbr(2)
+      h4 民國 106 年至 109 年實績
       .ml-4.mb-4
         +radio("has-perform", "0", true) 無 ( 勾本項者以下免填 )
         +radio("has-perform", "1", false) 有
 
-      div(ldform,ld="toggler",data-name="has-perform")
-        table.table.table-bordered.mb-1
+      .d-none(ldform,ld="toggler",data-name="has-perform")
+        table.table.table-bordered
           thead
             tr
+              th
               th 民國年度
               th 計畫名稱
               th 計畫概述及執行情形 ( 200 字以內 )
               th 相關效益 ( 100 字以內 )
           tbody
             tr(ld-each="column",data-name="perform")
+              td.clickable.text-center.pt-3: i.i-close.text-danger
               td: select.form-control(name="year")
-                option(value="106") 106
+                option(value="106",selected) 106
                 option(value="107") 107
                 option(value="108") 108
                 option(value="109") 109
-              td
+              td: .form-group.m-0
                 input.form-control(name="name")
                 .invalid-feedback 不可留白
-              td
+              td: .form-group.m-0
                 textarea.form-control(rows="5",name="brief")
                 .invalid-feedback 字數不符
-              td
+              td: .form-group.m-0
                 textarea.form-control(rows="5",name="result")
                 .invalid-feedback 字數不符
-        .btn.btn-outline-secondary.btn-sm(ld="add-column",data-name="perform") 新增一項 #[i.i-plus]
+        .btn.btn-outline-secondary(ld="add-column",data-name="perform") 新增一項 #[i.i-plus]
 
       +nbr(2)
 
-      .form-group
+      //-.form-group
         label.mb-0 立案證明文件
         .mb-4.ml-4
           +radio("incorp-type", "1", true) 公司
@@ -263,13 +283,80 @@ block body
 
       .form-group
         label.mb-0 執行期程 ( 200 字以內 )
-        textarea.form-control(rows="6",name="abs-timeline")
-        .invalid-feedback 字數不符
+
+        .py-1 民國 109 年 #[+input-inline({len:5, name: "exe-start-month"})] 月 #[+input-inline({len:5, name: "exe-start-day"})] 日 ~ 民國 110 年 #[+input-inline({len:5, name: "exe-end-month"})] 月 #[+input-inline({len:5, name: "exe-end-day"})] 日
 
       .form-group
         label.mb-0 執行效益 ( 200 字以內 )
         textarea.form-control(rows="6",name="abs-outcome")
         .invalid-feedback 字數不符
+
+      .form-group
+        h4 預算概況
+        .row.mb-4
+          .col-md
+            b 自籌款 #[span.text-muted.text-sm ( 自動帶入 )]
+            div 新臺幣 #[span(ld="fill",data-name="budget-self") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-self-percent") 0] %
+          .col-md
+            b 申請經費 #[span.text-muted.text-sm ( 自動帶入 )]
+            div 新臺幣 #[span(ld="fill",data-name="budget-subsidy") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-subsidy-percent") 0] %
+            .text-danger.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
+        label 本計畫是否申請或已獲其他機關 ( 單位 ) 經費補助？
+        .ml-4.mb-4
+          +radio("has-other-sub", "0", true) 否
+          +radio("has-other-sub", "1", false)
+            div 是，本計畫已獲 #[+input-inline({len:10,name:"other-sub-name"})] 補助新臺幣 #[+input-inline({len:10,name:"other-sub-amount"})] 元整。 
+
+      h4 預算明細表
+      table.table.table-bordered
+        thead
+          tr
+            th(rowspan="2")
+            th(rowspan="2") 預算科目
+            th(rowspan="2") 預算明細
+            th(rowspan="2") 單價(元)
+            th(rowspan="2") 數量
+            th(rowspan="2") 單位
+            th(rowspan="2") 小計(元)
+            th(colspan="2") 分攤金額
+            th(rowspan="2") 備註
+          tr
+            th 自籌款
+            th 補助款
+        tbody
+          tr(ld-each="column",data-name="budget")
+            td.clickable.text-center.pt-3: i.i-close.text-danger
+            td: .form-group.m-0
+              input.form-control(name="cat")
+              .invalid-feedback 不可留白
+            td: .form-group.m-0
+              input.form-control(name="detail")
+              .invalid-feedback 不可留白
+            td: .form-group.m-0
+              input.form-control(name="price")
+              .invalid-feedback 不可留白
+            td: .form-group.m-0
+              input.form-control(name="count")
+              .invalid-feedback 不可留白
+            td: .form-group.m-0
+              input.form-control(name="unit")
+              .invalid-feedback 不可留白
+            td: .form-group.m-0
+              input.form-control(name="total",readonly)
+            td: .form-group.m-0
+              input.form-control(name="self")
+              .invalid-feedback 數字不合
+            td: .form-group.m-0
+              input.form-control(name="subsidy",readonly)
+            td: .form-group.m-0
+              input.form-control(name="comment")
+      .d-flex.align-items-start
+        .flex-grow-1.d-flex.align-items-center
+          .btn.btn-outline-secondary(ld="add-column",data-name="budget") 新增一項 #[i.i-plus]
+          .text-danger.ml-4.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
+        span 單位: 新台幣
+
+      +nbr(3)
 
       .form-group
         label 上傳計畫書 PDF ( 含目錄、原著授權、合作意向書 / 合約 )
@@ -278,12 +365,12 @@ block body
           a.ml-4(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
 
 
-    .page
-      h3 109年度文化內容開發與產業策進方案切結書
+    .page.px-4
+      h3 109年度文化內容開發與內容產業領航行動方案切結書
 
-      p 茲保證「」計畫案（以下簡稱本計畫案）及立切結書人（即申請人）符合下列事項：
+      p 茲保證「#[span(ld="fill",data-name="name")]」計畫案（以下簡稱本計畫案）及立切結書人（即申請人）符合下列事項：
       p 一、承諾申請補助計畫之文件、資料均無虛偽不實之情事，且符合「109年度加速文化內容開發與科技創新應用補助要點」規定。
-      p 二、承諾相同或類似之申請案計畫書無獲本院、文化部及其所屬機關(構)、政府捐助之財團法人及財團法人國家文化藝術基金會補助之情形。
+      p 二、承諾相同或類似之申請案計畫書無獲本院、文化部及其所屬機關(構)、政府捐助之財團法人及財團法人國家文化藝術基金會及國家表演藝術中心補助之情形。
       p 三、承諾計畫案如獲補助，以申請者名義執行獲補助之計畫。
       p 四、本計畫如獲補助，承諾依文化內容策進院核定之計畫書所載內容執行，且需符合「109年度加速文化內容開發與科技創新應用補助要點」規定；計畫書有變更者，亦同。
       p 五、本計畫案如獲補助，承諾不得將獲補助金資格或計畫書轉讓予他人。
@@ -291,8 +378,8 @@ block body
       p 七、本計畫案如獲補助，應擔保計畫書內容及依計畫書所辦理之各項工作，均無侵害他人權利或違反法律規定之情事。
       p 八、本計畫案如獲補助，文化內容策進院及文化部於獲補助案執行期間，得要求獲補助者提供書面資料或出席會議說明，並依本院之意見確實執行。另自簽約日起至本院核撥最後一期補助金次日止及其後一年期間內，應配合出席計畫相關宣傳活動。
       p 九、本計畫案如獲補助，應承諾依預算法第六十二條之一規定，不得以置入性行銷進行政策宣導。如有政策宣導，應標示為「廣告」，並揭示本院及文化部全銜。
-      p 十、本計畫之內部團隊成員與跨國合製案將依中國民國所得稅法及相關法令規定辦理所得申報扣繳及歸戶事宜，如有不實，願負一切法律責任。十
-      p 一、獲補助者應於簽約前配合提供本部核定之計畫書摘要，並無償授權文化部、本院及本院再授權之人，為不限目的、時間、地域及方式(包括但不限於紙本、簡報、網路傳輸)之利用。獲補助者並同意對文化部、本院及本院再授權之人不行使著作人格權。文化部及本院並得另以開放資料(Open Data)之方式對外開放。開放資料授權利用，依據行政院訂定之政府開放資料授權條款http://data.gov.tw/license辦理。
+      p 十、本計畫之內部團隊成員與跨國合製案將依中國民國所得稅法及相關法令規定辦理所得申報扣繳及歸戶事宜，如有不實，願負一切法律責任。
+      p 十一、獲補助者應於簽約前配合提供本部核定之計畫書摘要，並無償授權文化部、本院及本院再授權之人，為不限目的、時間、地域及方式(包括但不限於紙本、簡報、網路傳輸)之利用。獲補助者並同意對文化部、本院及本院再授權之人不行使著作人格權。文化部及本院並得另以開放資料(Open Data)之方式對外開放。開放資料授權利用，依據行政院訂定之政府開放資料授權條款http://data.gov.tw/license辦理。
       p 此致
       p 文化內容策進院
       p 立切結書人（即申請人）：#[span(ld="fill", data-name="contact-name")] （公司章，列印後用印正本）
@@ -302,21 +389,23 @@ block body
       p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
 
 
-    .page
-      h3 個人資料蒐集、處理、利用同意書
+    .page.px-4
+      .border.p-4.border-dark
 
-      p 茲授權文化內容策進院依「個人資料保護法」及其他相關法令之規定，蒐集、管理及處理本人之資料，文化內容策進院基於特定目的得儲存、建檔、轉介、運用及處理本人所提供之各項資料。特此同意如上。
-      p 此致
-      p 文化內容策進院
+        h3.text-center 個人資料蒐集、處理、利用同意書
 
-      .form-check
-        input#fi-consent.form-check-input(type="checkbox",name="consent",value="consent")
-        label.form-check-label(for="fi-consent") 我已閱讀並接受「授權文化內容策進院蒐集使用個人資料說明」。（記得勾選）
-      p 立切結書人(即申請人)： #[span(ld="fill", data-name="contact-name")] （公司章，列印後用印正本）
-      p 負責人：#[span(ld="fill", data-name="pic")] （簽章，列印後用印正本）
-      p 身分證字號： #[span(ld="fill", data-name="uid")]
+        p 茲授權文化內容策進院依「個人資料保護法」及其他相關法令之規定，蒐集、管理及處理本人之資料，文化內容策進院基於特定目的得儲存、建檔、轉介、運用及處理本人所提供之各項資料。特此同意如上。
+        p 此致
+        p 文化內容策進院
 
-      p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+        .form-check
+          input.form-check-input(type="checkbox",name="consent",value="consent")
+          label.form-check-label 我已閱讀並接受「授權文化內容策進院蒐集使用個人資料說明」。#[span.text-danger.ml-2 （記得勾選）]
+        p 立切結書人(即申請人)： #[span(ld="fill", data-name="contact-name")] （公司章，列印後用印正本）
+        p 負責人：#[span(ld="fill", data-name="pic")] （簽章，列印後用印正本）
+        p 身分證字號： #[span(ld="fill", data-name="uid")]
+
+        p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
 
       h3 授權文化內容策進院蒐集使用個人資料說明
       p 為遵守個人資料保護法規定，並保障當事人之權利，謹此向您說明本院將如何處理所蒐集到的個人資料：
@@ -332,16 +421,23 @@ block body
       p 四、您得自由選擇是否提供個人資料或行使個人資料保護法第三條所定之權利，但因提供資料不足或有其他冒用、盜用、不實之情形，可能不能獲得補助資格或影響您受領補助之權益。
       p 五、您所提供之個人資料，本院將依據「個人資料保護法」相關規定進行保密。
     .page
-      h3 109年度文化內容開發與產業策進方案
-      p 計畫書
-      p 計畫名稱： #[span(ld="fill",data-name="name")]
-      p 申請組別： #[span(ld="fill",data-name="group")]
-      p 申請單位： #[span(ld="fill",data-name="teamname")]
-      p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+      .text-center
+        h2 109年度文化內容開發與產業策進方案
+        br
+        h2 計畫書
+        +nbr(2)
+      .text-lg.my-4
+        p 計畫名稱： #[span(ld="fill",data-name="name")]
+        p 申請組別： #[span(ld="fill",data-name="group")]
+        p 申請單位： #[span(ld="fill",data-name="teamname")]
+      +nbr(4)
+      .text-center
+        p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+  .w-1024.mx-auto.rwd.no-print
     .d-flex.align-items-center
       .btn.btn-primary.btn-lg.mr-4(ld="submit") 送出
-      .text-danger 您有未完成的欄位，請完成後再送出。
-
+      .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
+    +nbr(4)
 
 
 block script
