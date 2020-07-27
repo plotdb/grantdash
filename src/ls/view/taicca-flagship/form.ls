@@ -1,5 +1,6 @@
 ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocals}) ->
-  console.log viewLocals
+  vlc = viewLocals or {} 
+  console.log vlc
 
   init = ({global}) ->
 
@@ -19,7 +20,8 @@ ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocal
     load-locally = ->
       Promise.resolve!
         .then ->
-          data = JSON.parse(window.localStorage.getItem("taicca-flagship-form-snapshot-#{global.user.key}"))
+          if vlc.{}prj.{}detail and vlc.prj.detail.custom => data = vlc.prj.detail.custom
+          else data = JSON.parse(window.localStorage.getItem("taicca-flagship-form-snapshot-#{global.user.key}"))
           if !data => return
           payload <<< data
           ldform.values payload.form
@@ -110,6 +112,7 @@ ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocal
                 auth.recaptcha.get!
                   .then (recaptcha) ->
                     json = do
+                      key: (vlc or {}).{}prj.key
                       recaptcha: recaptcha
                       detail: payload
                       name: payload.form.name
@@ -153,7 +156,9 @@ ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocal
               if ret.1 == \self => return self
               else => return total - self
           gid = {"文化內容開發組": "01", "內容產業領航行動組": "02"}[values.group]
-          if n == \docid => return "109-#{gid}-XXX"
+          if n == \docid =>
+            id = vlc.prj.slug.split('-')[* - 1]
+            return "109-#{gid}-#{('0' * (3 - "#id".length) + id)}"
           return ""
 
       handler: do

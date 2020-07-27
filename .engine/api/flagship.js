@@ -79,17 +79,16 @@
       })['catch'](aux.errorHandler(res));
     });
     return api.post('/flagship/prj/', throttle.count.userMd, grecaptcha, function(req, res){
-      var lc, ref$, name, description, brd, detail, key, grp, slug;
+      var lc, ref$, name, description, brd, detail, key, slug;
       if (!(req.user && req.user.key)) {
         return aux.r403(res);
       }
       lc = {};
       ref$ = req.body, name = ref$.name, description = ref$.description, brd = ref$.brd, detail = ref$.detail, key = ref$.key;
-      grp = '...' != null;
       detail = {
         custom: detail
       };
-      if (!(brd && grp)) {
+      if (!brd) {
         return aux.r400(res);
       }
       slug = null;
@@ -101,13 +100,14 @@
       }).then(function(){
         return io.query("select org, slug, key, detail->'group' as group from brd where slug = $1", [brd]);
       }).then(function(r){
-        var grpinfo, ref$;
+        var ref$;
         r == null && (r = {});
         if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
-        if (!(grpinfo = ((ref$ = lc.brd).group || (ref$.group = [])).filter(function(it){
-          return it.key === grp;
+        if (!(lc.grp = ((ref$ = lc.brd).group || (ref$.group = [])).filter(function(it){
+          var ref$;
+          return (it.info || (it.info = {})).name === ((ref$ = detail.custom).form || (ref$.form = {})).group;
         })[0])) {
           return aux.reject(404);
         }
@@ -120,17 +120,17 @@
             if (!(r.rows || (r.rows = [])).length) {
               return aux.reject(404);
             }
-            return io.query("update prj (name,description,detail) values ($1,$2,$3) where key = $4 returning key", [name, description, JSON.stringify(detail), key]);
+            return io.query("update prj set (name,description,detail,modifiedtime) = ($1,$2,$3,now()) where key = $4 returning key", [name, description, JSON.stringify(detail), key]);
           }).then(function(){
             return res.send({});
           });
         } else {
-          return io.query("select count(key) as count from prj\nwhere brd = $1 and grp = $2 and deleted is not true", [brd, grp]).then(function(r){
+          return io.query("select count(key) as count from prj\nwhere brd = $1 and grp = $2 and deleted is not true", [brd, lc.grp.key]).then(function(r){
             var id;
             r == null && (r = {});
             id = +(r.rows || (r.rows = []))[0].count + 1;
             slug = suuid() + ("-" + id);
-            return io.query("insert into prj (name,description,brd,grp,slug,detail,owner)\nvalues ($1,$2,$3,$4,$5,$6,$7) returning key", [name, description, brd, grp, slug, JSON.stringify(detail), req.user.key]);
+            return io.query("insert into prj (name,description,brd,grp,slug,detail,owner)\nvalues ($1,$2,$3,$4,$5,$6,$7) returning key", [name, description, brd, lc.grp.key, slug, JSON.stringify(detail), req.user.key]);
           }).then(function(r){
             r == null && (r = {});
             return lc.ret = ((r.rows || (r.rows = [])) || [])[0];

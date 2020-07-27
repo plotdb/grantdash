@@ -49,37 +49,36 @@ api.post \/flagship/prj/, throttle.count.user-md, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
   {name,description,brd,detail,key} = req.body
-  grp = '...'?
   detail = {custom: detail}
-  if !(brd and grp) => return aux.r400 res
+  if !brd => return aux.r400 res
   slug = null
 
   cache.stage.check {io, type: \brd, slug: brd, name: "prj-new"}
     .then -> io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
-      if !(grpinfo = lc.brd.[]group.filter(->it.key == grp).0) => return aux.reject 404
+      if !(lc.grp = lc.brd.[]group.filter(->it.{}info.name == detail.custom.{}form.group).0) => return aux.reject 404
       if !(lc.brd.org) => return aux.reject 404
       if key =>
         io.query "select owner from prj where key = $1 and owner = $2", [key, req.user.key]
           .then (r={}) ->
             if !(r.[]rows.length) => return aux.reject 404
             io.query """
-            update prj (name,description,detail) values ($1,$2,$3) where key = $4 returning key
+            update prj set (name,description,detail,modifiedtime) = ($1,$2,$3,now()) where key = $4 returning key
             """, [name, description, JSON.stringify(detail), key]
           .then -> res.send {}
       else
         io.query """
         select count(key) as count from prj
         where brd = $1 and grp = $2 and deleted is not true
-        """, [brd, grp]
+        """, [brd, lc.grp.key]
           .then (r={}) ->
             id = +(r.[]rows.0.count) + 1
             slug := suuid! + "-#id"
             io.query """
             insert into prj (name,description,brd,grp,slug,detail,owner)
             values ($1,$2,$3,$4,$5,$6,$7) returning key
-            """, [name, description, brd, grp, slug, JSON.stringify(detail), req.user.key]
+            """, [name, description, brd, lc.grp.key, slug, JSON.stringify(detail), req.user.key]
           .then (r = {}) ->
             lc.ret = (r.[]rows or []).0
           .then -> res.send (lc.ret or {}) <<< {slug}
