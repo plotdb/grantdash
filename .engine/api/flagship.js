@@ -23,7 +23,7 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var api, app, printer;
+    var api, app, Printer, printer;
     api = engine.router.api;
     app = engine.app;
     app.get('/flagship/', function(req, res){
@@ -49,7 +49,9 @@
         });
       }).then(function(){
         return res.render('view/taicca-flagship/prj-view.pug', {
-          exports: lc.prj
+          exports: {
+            prj: lc.prj
+          }
         });
       })['catch'](aux.errorHandler(res));
     });
@@ -142,33 +144,111 @@
         }
       })['catch'](aux.errorHandler(res));
     });
-    printer = {};
-    return api.post('/flagship/download', throttle.count.userMd, grecaptcha, function(req, res){
-      var lc, url, p;
+    api.post('/flagship/download', throttle.count.user, grecaptcha, function(req, res){
+      var lc;
       lc = {};
-      url = "data:text/html;charset=utf-8," + encodeURIComponent(req.body.html);
-      p = printer.browser
-        ? Promise.resolve(printer.browser)
-        : puppeteer.launch({
-          headless: true
-        });
-      return p.then(function(browser){
-        printer.browser = browser;
-        lc.browser = browser;
-        return browser.newPage();
-      }).then(function(page){
-        lc.page = page;
-        return page.goto(url, {
-          waitUntil: 'networkidle0'
-        });
-      }).then(function(){
-        return lc.page.pdf({
-          format: 'A4'
-        });
-      }).then(function(pdf){
-        lc.browser.close();
-        return res.send(pdf);
+      return printer.print({
+        html: req.body.html
+      }).then(function(it){
+        return res.send(it);
       })['catch'](aux.errorHandler(res));
     });
+    Printer = function(opt){
+      var ref$;
+      opt == null && (opt = {});
+      this.opt = opt;
+      this.count = (ref$ = opt.count || 4) < 20 ? ref$ : 20;
+      this.queue = [];
+      return this;
+    };
+    Printer.prototype = import$(Object.create(Object.prototype), {
+      print: function(payload){
+        var lc, this$ = this;
+        payload == null && (payload = {});
+        lc = {};
+        return this.get().then(function(obj){
+          lc.obj = obj;
+          if (payload.html) {
+            return obj.page.setContent(payload.html, {
+              waitUntil: "networkidle0"
+            });
+          } else if (payload.url) {
+            return obj.page.goto(payload.url);
+          } else {
+            return Promise.reject(new ldError(1015));
+          }
+        }).then(function(){
+          return lc.obj.page.pdf({
+            format: 'A4'
+          });
+        }).then(function(it){
+          return lc.pdf = it;
+        }).then(function(){
+          return this$.free(lc.obj);
+        }).then(function(){
+          return lc.pdf;
+        });
+      },
+      get: function(){
+        var this$ = this;
+        return new Promise(function(res, rej){
+          var i$, to$, i;
+          for (i$ = 0, to$ = this$.count; i$ < to$; ++i$) {
+            i = i$;
+            if (!this$.pages[i].busy) {
+              this$.pages[i].busy = true;
+              return res(this$.pages[i]);
+            }
+          }
+          return this$.queue.push({
+            res: res,
+            rej: rej
+          });
+        });
+      },
+      free: function(obj){
+        var ret;
+        if (this.queue.length) {
+          ret = this.queue.splice(0, 1)[0];
+          return ret.res(obj);
+        } else {
+          return obj.busy = false;
+        }
+      },
+      init: function(){
+        var that, this$ = this;
+        return ((that = Printer.browser)
+          ? Promise.resolve(that)
+          : puppeteer.launch()).then(function(browser){
+          var i;
+          Printer.browser = browser;
+          return Promise.all((function(){
+            var i$, to$, results$ = [];
+            for (i$ = 0, to$ = this.count; i$ < to$; ++i$) {
+              i = i$;
+              results$.push(browser.newPage().then(fn$));
+            }
+            return results$;
+            function fn$(it){
+              return {
+                busy: false,
+                page: it
+              };
+            }
+          }.call(this$)));
+        }).then(function(it){
+          return this$.pages = it;
+        });
+      }
+    });
+    printer = new Printer({
+      count: 20
+    });
+    return printer.init();
   });
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
 }).call(this);

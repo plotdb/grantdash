@@ -21,7 +21,7 @@ app.get \/flagship/:slug, (req, res) ->
     .then (r={}) ->
       if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
       cache.stage.check {io, type: \brd, slug: prj.brd, name: "prj-edit"}
-    .then -> res.render \view/taicca-flagship/prj-view.pug, {exports: lc.prj}
+    .then -> res.render \view/taicca-flagship/prj-view.pug, {exports: {prj: lc.prj}}
     .catch aux.error-handler res
 
 # TODO keep record of ownership
@@ -84,24 +84,52 @@ api.post \/flagship/prj/, throttle.count.user-md, grecaptcha, (req, res) ->
           .then -> res.send (lc.ret or {}) <<< {slug}
     .catch aux.error-handler res
 
-printer = {}
-api.post \/flagship/download, throttle.count.user-md, grecaptcha, (req, res) ->
+api.post \/flagship/download, throttle.count.user, grecaptcha, (req, res) ->
   lc = {}
-  url = "data:text/html;charset=utf-8,#{encodeURIComponent(req.body.html)}"
-  p = if printer.browser => Promise.resolve printer.browser
-  else puppeteer.launch(headless: true)
-  p
-    .then (browser) ->
-      printer.browser = browser
-      lc.browser = browser
-      browser.newPage!
-    .then (page) ->
-      lc.page = page
-      page.goto url, {waitUntil: \networkidle0}
-    .then ->
-      lc.page.pdf format: \A4
-    .then (pdf) ->
-      lc.browser.close!
-      res.send pdf
+  printer.print {html: req.body.html}
+    .then -> res.send it
     .catch aux.error-handler res
 
+Printer = (opt = {}) ->
+  @opt = opt
+  @count = ((opt.count or 4) <? 20)
+  @queue = []
+  @
+
+Printer.prototype = Object.create(Object.prototype) <<< do
+  print: (payload = {}) ->
+    lc = {}
+    @get!
+      .then (obj) ->
+        lc.obj = obj
+        if payload.html => obj.page.setContent payload.html, {waitUntil: "networkidle0"}
+        else if payload.url => obj.page.goto payload.url
+        else return Promise.reject(new ldError(1015))
+      .then -> lc.obj.page.pdf format: \A4
+      .then -> lc.pdf = it
+      .then ~> @free lc.obj
+      .then -> return lc.pdf
+
+  get: -> new Promise (res, rej) ~>
+    for i from 0 til @count =>
+      if !@pages[i].busy =>
+        @pages[i].busy = true
+        return res @pages[i]
+    @queue.push {res, rej}
+
+  free: (obj) ->
+    if @queue.length =>
+      ret = @queue.splice(0, 1).0
+      ret.res obj
+    else
+      obj.busy = false
+
+  init: ->
+    (if Printer.browser => Promise.resolve(that) else puppeteer.launch!)
+      .then (browser) ~>
+        Printer.browser = browser
+        Promise.all (for i from 0 til @count => browser.newPage!then(-> {busy: false, page: it}))
+      .then ~> @pages = it
+
+printer = new Printer {count: 20}
+printer.init!

@@ -27,6 +27,7 @@ block head
         &.form-control.is-valid
           border-color: #ccc
           background-image: none
+          padding-right: .75rem!important
     .form-check-input.is-valid ~ .form-check-label
       color: inherit
     .page
@@ -110,7 +111,9 @@ block body
         .text-center
           h3 文化內容開發產業領航旗艦計畫申請書
           br
-          .text-right 編號: #[span(ld="fill", data-name="docid") N/A]
+          .text-right
+            span 編號: #[span(ld="fill", data-name="docid") N/A]
+            .text-sm.text-muted 若您需要更新先前送件過的申請書，請至 #[a(href="/dash/me/") 個人頁面]
         .form-group
           label 計畫名稱
           input.form-control(name="name")

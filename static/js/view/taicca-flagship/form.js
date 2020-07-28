@@ -6,7 +6,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
   vlc = viewLocals || {};
   console.log(vlc);
   init = function(arg$){
-    var global, ldforms, payload, saveLocally, loadLocally, getSignedUrl, uploadFile, isReady, budgetCalc, view, ldform;
+    var global, ldforms, payload, localkey, saveLocally, clearLocaldata, loadLocally, getSignedUrl, uploadFile, isReady, budgetCalc, view, ldform;
     global = arg$.global;
     ldforms = {};
     payload = {
@@ -19,18 +19,27 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
         "perform": []
       }
     };
+    localkey = function(){
+      var slug, id;
+      slug = (vlc.prj || (vlc.prj = {})).slug;
+      id = "/" + global.user.key + "/" + (slug || '(n-a)');
+      return "taicca-flagship-form-snapshot-" + id;
+    };
     saveLocally = debounce(function(){
       payload.form = ldform.values();
-      window.localStorage.setItem("taicca-flagship-form-snapshot-" + global.user.key, JSON.stringify(payload));
+      window.localStorage.setItem(localkey(), JSON.stringify(payload));
       return payload;
     });
+    clearLocaldata = function(){
+      return window.localStorage.setItem(localkey(), null);
+    };
     loadLocally = function(){
       return Promise.resolve().then(function(){
         var ref$, data;
         if (((ref$ = vlc.prj || (vlc.prj = {})).detail || (ref$.detail = {})) && vlc.prj.detail.custom) {
           data = vlc.prj.detail.custom;
         } else {
-          data = JSON.parse(window.localStorage.getItem("taicca-flagship-form-snapshot-" + global.user.key));
+          data = JSON.parse(window.localStorage.getItem(localkey()));
         }
         if (!data) {
           return;
@@ -118,8 +127,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
           return true;
         };
         isReady.state = _();
-        view.render("ready-state");
-        view.render("submit");
+        view.render(['ready-state', 'submit', 'download']);
         return isReady.state;
       })
     };
@@ -153,6 +161,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
       }
     };
     view = new ldView({
+      initRender: false,
       root: document.body,
       action: {
         change: {
@@ -243,7 +252,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                   recaptcha: recaptcha
                 },
                 type: 'blob',
-                timeout: 5 * 1000
+                timeout: 60 * 1000
               });
             }).then(function(blob){
               var url, a;
@@ -262,7 +271,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
               view.getAll("download").map(function(it){
                 return it.classList.remove('running');
               });
-              ldcvmgr.set('flagship-submitted');
+              ldcvmgr.toggle('flagship-submitted', false);
               return lc.downloading = false;
             })['catch'](function(it){
               if (ldError.id(it) === 1006) {
@@ -278,6 +287,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 return;
               }
               saveLocally();
+              ldcvmgr.toggle('flagship-submitting', true);
               return auth.recaptcha.get().then(function(recaptcha){
                 var json, ref$;
                 json = {
@@ -293,9 +303,16 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 }, {
                   json: json,
                   type: 'json'
-                }).then(function(){
-                  return console.log("done.");
-                });
+                }).then(function(it){
+                  clearLocaldata();
+                  if (it && it.slug) {
+                    (vlc.prj || (vlc.prj = {})).slug = it.slug;
+                    view.render('fill');
+                  }
+                  return ldcvmgr.toggle('flagship-submitted', true);
+                })['finally'](function(){
+                  return ldcvmgr.toggle('flagship-submitting', false);
+                })['catch'](error());
               });
             });
           }
@@ -303,7 +320,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
       },
       text: {
         fill: function(arg$){
-          var node, n, values, that, ret, total, ref$, self, gid, id;
+          var node, n, values, that, ret, total, ref$, self, gid, slug, id;
           node = arg$.node;
           n = node.getAttribute('data-name');
           if (!ldform) {
@@ -347,13 +364,18 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
               }
             }
           }
-          gid = {
-            "文化內容開發組": "01",
-            "內容產業領航行動組": "02"
-          }[values.group];
           if (n === 'docid') {
-            id = (ref$ = vlc.slug.split('-'))[ref$.length - 1];
-            return "109-" + gid + "-" + (repeatString$('0', 3 - (id + "").length) + id);
+            gid = {
+              "文化內容開發組": "01",
+              "內容產業領航行動組": "02"
+            }[values.group];
+            slug = (vlc.prj || (vlc.prj = {})).slug;
+            if (slug) {
+              id = (ref$ = slug.split('-'))[ref$.length - 1];
+              return "109-" + gid + "-" + (repeatString$('0', 3 - (id + "").length) + id);
+            } else {
+              return "尚未送件";
+            }
           }
           return "";
         }
@@ -364,6 +386,11 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
           node = arg$.node;
           budgetCalc();
           return node.classList.toggle('d-none', payload.budget.ready);
+        },
+        download: function(arg$){
+          var node;
+          node = arg$.node;
+          return node.classList.toggle('disabled', !isReady.state);
         },
         submit: function(arg$){
           var node;
@@ -381,7 +408,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
           name = node.getAttribute('data-name');
           node.removeAttribute('href');
           node.classList.remove('text-danger');
-          if (!(data = payload.file[name])) {
+          if (!((data = payload.file[name]) && payload.file[name].id)) {
             node.classList.add('text-danger');
             return node.innerText = "尚未上傳檔案";
           }
@@ -573,6 +600,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
     ldform.on('readystatechange', function(){
       return isReady.check();
     });
+    view.render();
     return loadLocally();
   };
   return auth.ensure().then(function(it){

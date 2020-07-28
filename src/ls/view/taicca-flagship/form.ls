@@ -13,16 +13,21 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
         "past-sub": []
         "perform": []
 
+    localkey = -> 
+      slug = vlc.{}prj.slug
+      id = "/#{global.user.key}/#{slug or '(n-a)'}"
+      "taicca-flagship-form-snapshot-#id"
     save-locally = debounce ->
       payload.form = ldform.values!
-      window.localStorage.setItem "taicca-flagship-form-snapshot-#{global.user.key}", JSON.stringify(payload)
+      window.localStorage.setItem localkey!, JSON.stringify(payload)
       return payload
 
+    clear-localdata = -> window.localStorage.setItem localkey!, null
     load-locally = ->
       Promise.resolve!
         .then ->
           if vlc.{}prj.{}detail and vlc.prj.detail.custom => data = vlc.prj.detail.custom
-          else data = JSON.parse(window.localStorage.getItem("taicca-flagship-form-snapshot-#{global.user.key}"))
+          else data = JSON.parse(window.localStorage.getItem(localkey!))
           if !data => return
           payload <<< data
           ldform.values payload.form
@@ -65,8 +70,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             if !(payload.file[n] and payload.file[n].id) => return false
           return true
         is-ready.state = _!
-        view.render "ready-state"
-        view.render "submit"
+        view.render <[ready-state submit download]>
         return is-ready.state
 
     budget-calc = ->
@@ -83,6 +87,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
       if old != cur => is-ready.check!
 
     view = new ldView do
+      init-render: false
       root: document.body
       action:
         change: do
@@ -143,7 +148,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                 ld$.fetch(
                   \/dash/api/flagship/download
                   {method: \POST}
-                  {json: {html, recaptcha}, type: \blob, timeout: 5 * 1000}
+                  {json: {html, recaptcha}, type: \blob, timeout: 60 * 1000}
                 )
               .then (blob) ->
                 url = URL.createObjectURL blob
@@ -153,7 +158,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                 document.body.removeChild a
               .finally ->
                 view.getAll("download").map -> it.classList.remove \running
-                ldcvmgr.set \flagship-submitted
+                ldcvmgr.toggle \flagship-submitted, false
                 lc.downloading = false
               .catch ->
                 if ldError.id(it) == 1006 => ldcvmgr.toggle \flagship-print-timeout
@@ -164,6 +169,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
               .then (v) ->
                 if !v => return
                 save-locally!
+                ldcvmgr.toggle('flagship-submitting',true)
                 auth.recaptcha.get!
                   .then (recaptcha) ->
                     json = do
@@ -174,11 +180,20 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                       description: (payload.form["abs-item"] or "").substring(0,200)
                       brd: "flagship-2"
                     ld$.fetch \/dash/api/flagship/prj, {method: \POST}, {json: json, type: \json}
-                      .then -> console.log "done."
+                      .then ->
+                        clear-localdata!
+                        if it and it.slug =>
+                          vlc.{}prj.slug = it.slug
+                          view.render \fill
+                        ldcvmgr.toggle('flagship-submitted', true)
+                      .finally ->
+                        ldcvmgr.toggle('flagship-submitting',false)
+                      .catch error!
 
       text: do
         fill: ({node}) ->
           n = node.getAttribute(\data-name)
+
           if !ldform => return
           values = ldform.values!
           if values[n] => return that
@@ -194,16 +209,22 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             else
               if ret.1 == \self => return self
               else => return total - self
-          gid = {"文化內容開發組": "01", "內容產業領航行動組": "02"}[values.group]
           if n == \docid =>
-            id = vlc.slug.split('-')[* - 1]
-            return "109-#{gid}-#{('0' * (3 - "#id".length) + id)}"
+            gid = {"文化內容開發組": "01", "內容產業領航行動組": "02"}[values.group]
+            slug = vlc.{}prj.slug
+            if slug =>
+              id = slug.split('-')[* - 1]
+              return "109-#{gid}-#{('0' * (3 - "#id".length) + id)}"
+            else return "尚未送件"
+
           return ""
 
       handler: do
         "budget-limit": ({node}) ->
           budget-calc!
           node.classList.toggle \d-none, payload.budget.ready
+        download: ({node}) ->
+          node.classList.toggle \disabled, !is-ready.state
         submit: ({node}) ->
           node.classList.toggle \disabled, !is-ready.state
         "ready-state": ({node}) ->
@@ -213,7 +234,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
           name = node.getAttribute(\data-name)
           node.removeAttribute \href
           node.classList.remove \text-danger
-          if !(data = payload.file[name]) =>
+          if !((data = payload.file[name]) and payload.file[name].id) =>
             node.classList.add \text-danger
             return node.innerText = "尚未上傳檔案"
           node.innerText = "#{data.filename} / size: #{Math.round(data.size / 1024)}KB"
@@ -301,7 +322,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
         else if !v or (Array.isArray(v) and !v.length) => return 2
         return 0
     ldform.on \readystatechange, -> is-ready.check!
-
+    view.render!
     load-locally!
 
   auth.ensure!
