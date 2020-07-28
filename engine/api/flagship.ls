@@ -1,4 +1,4 @@
-require! <[fs fs-extra path crypto lderror suuid mime-types suuid]>
+require! <[fs fs-extra path crypto lderror suuid mime-types suuid puppeteer]>
 require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 require! <[@google-cloud/storage]>
 
@@ -83,3 +83,25 @@ api.post \/flagship/prj/, throttle.count.user-md, grecaptcha, (req, res) ->
             lc.ret = (r.[]rows or []).0
           .then -> res.send (lc.ret or {}) <<< {slug}
     .catch aux.error-handler res
+
+printer = {}
+api.post \/flagship/download, throttle.count.user-md, grecaptcha, (req, res) ->
+  lc = {}
+  url = "data:text/html;charset=utf-8,#{encodeURIComponent(req.body.html)}"
+  p = if printer.browser => Promise.resolve printer.browser
+  else puppeteer.launch(headless: true)
+  p
+    .then (browser) ->
+      printer.browser = browser
+      lc.browser = browser
+      browser.newPage!
+    .then (page) ->
+      lc.page = page
+      page.goto url, {waitUntil: \networkidle0}
+    .then ->
+      lc.page.pdf format: \A4
+    .then (pdf) ->
+      lc.browser.close!
+      res.send pdf
+    .catch aux.error-handler res
+

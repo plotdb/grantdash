@@ -11,34 +11,56 @@ block head
         td
           padding: .75em 2px
           font-size: .9em
-          input
+          input, .form-control
             font-size: .8em
           input.is-valid
             background-image: none
 
       .form-group { margin-bottom: 1.5rem }
-      .form-control.preview
+      .form-control._preview
         border-radius: 0
         border: 0
         border-bottom: 1px solid #ccc
         background: #f2f3f4
+        display: none
+      select, textarea, input
+        &.form-control.is-valid
+          border-color: #ccc
+          background-image: none
     .form-check-input.is-valid ~ .form-check-label
       color: inherit
     .page
       page-break-after: always
-      margin-bottom: 5em
+      marin: 2em 2em
+    .page.page-cover
+      margin: 0
+      height: 29.7cm
     .form-inner-box
       padding: 1.5em
       border-radius: .5em
       border: 1px solid #ddd
       box-shadow: 0 2px 4px rgba(0,0,0,.1)
 
+    .no-break
+      page-break-inside: avoid
+    @page
+      margin: 20mm 10mm
     @media print 
+      body
+        margin: 0
+      .page
+        margin: 0
       .no-print, .grecaptcha-badge
         display: none
       .form-inner-box
         border: 0
         box-shadow: none
+      .typeset.heading-contrast
+        input,textarea,select
+          &.form-control
+            display: none
+        .form-control._preview
+          display: block
 
 block body
 
@@ -61,12 +83,13 @@ block body
     .form-check.mr-4.d-flex.align-items-start
       input.form-check-input(type="checkbox",name=name,value="其它")
       label.form-check-label 其它
-      .d-inline-block.ml-2
+      .form-group.d-inline-block.ml-2.mb-0
         input.form-control.form-control-sm(name=name+"-other")
         .invalid-feedback 不可留白
 
   mixin input-inline(opt)
-    input.form-control.d-inline-block.form-control-sm(style=`width:${opt.len}em`,name=opt.name)&attributes(attributes)
+    .d-inline-block.align-bottom
+      input.form-control.form-control-sm(style=`width:${opt.len}em`,name=opt.name)&attributes(attributes)
 
   mixin checkbox(name,value,checked)
     .form-check.mr-4
@@ -82,101 +105,103 @@ block body
 
   .w-1024.rwd.mx-auto.typeset.heading-contrast.position-relative: form#form: .form-inner-box: .p-4
     .page
-
-      .text-center
-        h3 文化內容開發產業領航旗艦計畫申請書
-        br
-        .text-right 編號: #[span(ld="fill", data-name="docid") N/A]
-      .form-group
-        label 計畫名稱
-        input.form-control(name="name")
-        .invalid-feedback 不可留白
-      label 計畫類別（一與二為單選）：
-      +radio("group", "文化內容開發組", true) 一、文化內容開發組
-      .ml-4.mb-4
-        span ( 可複選 )
-        +category("group1-category")
-      +radio("group", "內容產業領航行動組", false) 二、內容產業領航行動組 
-      .ml-4
-        span ( 可複選 )
-        +category("group2-category")
+      .no-break
+        .text-center
+          h3 文化內容開發產業領航旗艦計畫申請書
+          br
+          .text-right 編號: #[span(ld="fill", data-name="docid") N/A]
+        .form-group
+          label 計畫名稱
+          input.form-control(name="name")
+          .invalid-feedback 不可留白
+        label 計畫類別（一與二為單選）：
+        +radio("group", "文化內容開發組", true) 一、文化內容開發組
+        .ml-4.mb-4
+          span ( 可複選 )
+          +category("group1-category")
+        +radio("group", "內容產業領航行動組", false) 二、內容產業領航行動組 
+        .ml-4
+          span ( 可複選 )
+          +category("group2-category")
 
       +nbr(2)
-
-      h4.mb-4 申請人基本資料
-      .row
-        .col-md
-          .form-group
-            label 申請單位
-            input.form-control(name="teamname")
-            .invalid-feedback 不可留白
-
-        .col-md
-          .form-group
-            label 統一編號
-            input.form-control(name="vatid")
-            .invalid-feedback 格式不符
-
-      .row
-        .col-md
-          .form-group
-            label 負責人
-            input.form-control(name="pic")
-            .invalid-feedback 不可留白
-
-        .col-md
-          .form-group
-            label 身分證字號
-            input.form-control(name="uid")
-            .invalid-feedback 格式不符
-
-      .row
-        .col-md
-
-          .form-group
-            label 成立時間
-            .py-1 民國 #[+input-inline({len:5, name: "incorp-year"})] 年 #[+input-inline({len:5, name: "incorp-month"})] 月
-        .col-md
-          .form-group
-            label 資本額
-            .py-1 新臺幣 #[+input-inline({len:8, name: "capital"})] 元整
-
-        .col-md
-          .form-group
-            label 員工人數
-            input.form-control(name="employee-count")
-      .form-group
-        label 登記地址
-        input.form-control(name="business-addr")
-      .form-group
-        label 聯絡地址
-        input.form-control(name="contact-addr")
-
-      h5 聯絡人
-      .blform
+      .no-break
+        h4.mb-4 申請人基本資料
         .row
           .col-md
             .form-group
-              label 姓名
-              input.form-control(name="contact-name")
+              label 申請單位
+              input.form-control(name="teamname")
+              .invalid-feedback 不可留白
+
           .col-md
             .form-group
-              label 職稱
-              input.form-control(name="contact-title")
+              label 統一編號
+              input.form-control(name="vatid")
+              .invalid-feedback 格式不符
+
         .row
           .col-md
             .form-group
-              label 專線電話
-              input.form-control(name="contact-phone")
+              label 負責人
+              input.form-control(name="pic")
+              .invalid-feedback 不可留白
+
           .col-md
             .form-group
-              label 手機
-              input.form-control(name="contact-mobile")
+              label 身分證字號
+              input.form-control(name="uid")
+              .invalid-feedback 格式不符
+
         .row
           .col-md
+
             .form-group
-              label Email
-              input.form-control(name="contact-email")
+              label 成立時間
+              .py-1 民國 #[+input-inline({len:5, name: "incorp-year"})] 年 #[+input-inline({len:5, name: "incorp-month"})] 月
+          .col-md
+            .form-group
+              label 資本額
+              .py-1 新臺幣 #[+input-inline({len:8, name: "capital"})] 元整
+
+          .col-md
+            .form-group
+              label 員工人數
+              input.form-control(name="employee-count")
+        .form-group
+          label 登記地址
+          input.form-control(name="business-addr")
+        .form-group
+          label 聯絡地址
+          input.form-control(name="contact-addr")
+
+      .no-break
+
+        h5 聯絡人
+        .blform
+          .row
+            .col-md
+              .form-group
+                label 姓名
+                input.form-control(name="contact-name")
+            .col-md
+              .form-group
+                label 職稱
+                input.form-control(name="contact-title")
+          .row
+            .col-md
+              .form-group
+                label 專線電話
+                input.form-control(name="contact-phone")
+            .col-md
+              .form-group
+                label 手機
+                input.form-control(name="contact-mobile")
+          .row
+            .col-md
+              .form-group
+                label Email
+                input.form-control(name="contact-email")
 
       .form-group
         label.mb-0 成立緣起 (100字)
@@ -194,72 +219,74 @@ block body
 
       +nbr(2)
 
-      h4 民國106年至109年接受補助情形
-      .ml-4.mb-4
-        +radio("has-sub", "0", true) 無 ( 勾本項者以下免填 )
-        +radio("has-sub", "1", false) 有
-
-      .d-none(ldform,ld="toggler",data-name="has-sub")
-        table.table.table-bordered
-          thead
-            tr
-              th
-              th 民國年度
-              th 受補助計畫名稱(政府補助案名)
-              th 補助機關
-              th 補助金額
-          tbody
-            tr(ld-each="column",data-name="past-sub")
-              td.clickable.text-center.pt-3: i.i-close.text-danger
-              td: select.form-control(name="year")
-                option(value="106",selected) 106
-                option(value="107") 107
-                option(value="108") 108
-                option(value="109") 109
-              td: .form-group.m-0
-                input.form-control(name="name")
-                .invalid-feedback 不可留白
-              td: .form-group.m-0
-                input.form-control(name="sponsor")
-                .invalid-feedback 不可留白
-              td: .form-group.m-0
-                input.form-control(name="amount")
-                .invalid-feedback 不可留白
-        .btn.btn-outline-secondary(ld="add-column",data-name="past-sub") 新增一項 #[i.i-plus]
+      .no-break
+        h4 民國106年至109年接受補助情形
+        .ml-4.mb-4
+          +radio("has-sub", "0", true) 無 ( 勾本項者以下免填 )
+          +radio("has-sub", "1", false) 有
+        .d-none(ldform,ld="toggler",data-name="has-sub")
+          table.table.table-bordered
+            thead
+              tr
+                th.no-print
+                th 民國年度
+                th 受補助計畫名稱(政府補助案名)
+                th 補助機關
+                th 補助金額
+            tbody
+              tr(ld-each="column",data-name="past-sub")
+                td.clickable.text-center.pt-3.no-print: i.i-close
+                td: select.form-control(name="year")
+                  option(value="106",selected) 106
+                  option(value="107") 107
+                  option(value="108") 108
+                  option(value="109") 109
+                td: .form-group.m-0
+                  input.form-control(name="name")
+                  .invalid-feedback 不可留白
+                td: .form-group.m-0
+                  input.form-control(name="sponsor")
+                  .invalid-feedback 不可留白
+                td: .form-group.m-0
+                  input.form-control(name="amount")
+                  .invalid-feedback 不可留白
+          .btn.btn-outline-secondary.no-print(ld="add-column",data-name="past-sub") 新增一項 #[i.i-plus]
 
       +nbr(2)
-      h4 民國 106 年至 109 年實績
-      .ml-4.mb-4
-        +radio("has-perform", "0", true) 無 ( 勾本項者以下免填 )
-        +radio("has-perform", "1", false) 有
+      .no-break
 
-      .d-none(ldform,ld="toggler",data-name="has-perform")
-        table.table.table-bordered
-          thead
-            tr
-              th
-              th 民國年度
-              th 計畫名稱
-              th 計畫概述及執行情形 ( 200 字以內 )
-              th 相關效益 ( 100 字以內 )
-          tbody
-            tr(ld-each="column",data-name="perform")
-              td.clickable.text-center.pt-3: i.i-close.text-danger
-              td: select.form-control(name="year")
-                option(value="106",selected) 106
-                option(value="107") 107
-                option(value="108") 108
-                option(value="109") 109
-              td: .form-group.m-0
-                input.form-control(name="name")
-                .invalid-feedback 不可留白
-              td: .form-group.m-0
-                textarea.form-control(rows="5",name="brief")
-                .invalid-feedback 字數不符
-              td: .form-group.m-0
-                textarea.form-control(rows="5",name="result")
-                .invalid-feedback 字數不符
-        .btn.btn-outline-secondary(ld="add-column",data-name="perform") 新增一項 #[i.i-plus]
+        h4 民國 106 年至 109 年實績
+        .ml-4.mb-4
+          +radio("has-perform", "0", true) 無 ( 勾本項者以下免填 )
+          +radio("has-perform", "1", false) 有
+
+        .d-none(ldform,ld="toggler",data-name="has-perform")
+          table.table.table-bordered
+            thead
+              tr
+                th.no-print
+                th 民國年度
+                th 計畫名稱
+                th 計畫概述及執行情形 ( 200 字以內 )
+                th 相關效益 ( 100 字以內 )
+            tbody
+              tr(ld-each="column",data-name="perform")
+                td.clickable.text-center.pt-3.no-print: i.i-close
+                td: select.form-control(name="year")
+                  option(value="106",selected) 106
+                  option(value="107") 107
+                  option(value="108") 108
+                  option(value="109") 109
+                td: .form-group.m-0
+                  input.form-control(name="name")
+                  .invalid-feedback 不可留白
+                td: .form-group.m-0
+                  textarea.form-control(rows="5",name="brief")
+                  .invalid-feedback 字數不符
+                td: .form-group.m-0
+                  textarea.form-control(rows="5",name="result")
+                  .invalid-feedback 字數不符
+          .btn.btn-outline-secondary.no-print(ld="add-column",data-name="perform") 新增一項 #[i.i-plus]
 
       +nbr(2)
 
@@ -301,77 +328,79 @@ block body
         textarea.form-control(rows="6",name="abs-outcome")
         .invalid-feedback 字數不符
 
-      .form-group
-        h4 預算概況
-        .row.mb-4
-          .col-md
-            b 自籌款 #[span.text-muted.text-sm ( 自動帶入 )]
-            div 新臺幣 #[span(ld="fill",data-name="budget-self") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-self-percent") 0] %
-          .col-md
-            b 申請經費 #[span.text-muted.text-sm ( 自動帶入 )]
-            div 新臺幣 #[span(ld="fill",data-name="budget-subsidy") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-subsidy-percent") 0] %
-            .text-danger.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
-        label 本計畫是否申請或已獲其他機關 ( 單位 ) 經費補助？
-        .ml-4.mb-4
-          +radio("has-other-sub", "0", true) 否
-          +radio("has-other-sub", "1", false)
-            div 是，本計畫已獲 #[+input-inline({len:10,name:"other-sub-name"})] 補助新臺幣 #[+input-inline({len:10,name:"other-sub-amount"})] 元整。 
+      .no-break
+        .form-group
+          h4 預算概況
+          .row.mb-4
+            .col-md
+              b 自籌款 #[span.text-muted.text-sm ( 自動帶入 )]
+              div 新臺幣 #[span(ld="fill",data-name="budget-self") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-self-percent") 0] %
+            .col-md
+              b 申請經費 #[span.text-muted.text-sm ( 自動帶入 )]
+              div 新臺幣 #[span(ld="fill",data-name="budget-subsidy") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-subsidy-percent") 0] %
+              .text-danger.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
+          label 本計畫是否申請或已獲其他機關 ( 單位 ) 經費補助？
+          .ml-4.mb-4
+            +radio("has-other-sub", "0", true) 否
+            +radio("has-other-sub", "1", false)
+              div 是，本計畫已獲 #[+input-inline({len:10,name:"other-sub-name"})] 補助新臺幣 #[+input-inline({len:10,name:"other-sub-amount"})] 元整。 
 
-      h4 預算明細表
-      table.table.table-bordered.table-tiny
-        thead
-          tr
-            th(rowspan="2")
-            th(rowspan="2") 預算科目
-            th(rowspan="2") 預算明細
-            th(rowspan="2") 單價(元)
-            th(rowspan="2") 數量
-            th(rowspan="2") 單位
-            th(rowspan="2") 小計(元)
-            th(colspan="2") 分攤金額
-            th(rowspan="2") 備註
-          tr
-            th 自籌款
-            th 補助款
-        tbody
-          tr(ld-each="column",data-name="budget")
-            td.clickable.text-center.pt-3: i.i-close.text-danger
-            td: .form-group.m-0
-              input.form-control(name="cat")
-              .invalid-feedback 不可留白
-            td: .form-group.m-0
-              input.form-control(name="detail")
-              .invalid-feedback 不可留白
-            td: .form-group.m-0
-              input.form-control(name="price")
-              .invalid-feedback 不可留白
-            td: .form-group.m-0
-              input.form-control(name="count")
-              .invalid-feedback 不可留白
-            td: .form-group.m-0
-              input.form-control(name="unit")
-              .invalid-feedback 不可留白
-            td: .form-group.m-0
-              input.form-control(name="total",readonly)
-            td: .form-group.m-0
-              input.form-control(name="self")
-              .invalid-feedback 數字不合
-            td: .form-group.m-0
-              input.form-control(name="subsidy",readonly)
-            td: .form-group.m-0
-              input.form-control(name="comment")
-      .d-flex.align-items-start
-        .flex-grow-1.d-flex.align-items-center
-          .btn.btn-outline-secondary(ld="add-column",data-name="budget") 新增一項 #[i.i-plus]
-          .text-danger.ml-4.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
-        span 單位: 新台幣
+      .no-break
+        h4 預算明細表
+        table.table.table-bordered.table-tiny
+          thead
+            tr
+              th.no-print(rowspan="2")
+              th(rowspan="2") 預算科目
+              th(rowspan="2") 預算明細
+              th(rowspan="2") 單價(元)
+              th(rowspan="2") 數量
+              th(rowspan="2") 單位
+              th(rowspan="2") 小計(元)
+              th(colspan="2") 分攤金額
+              th(rowspan="2") 備註
+            tr
+              th 自籌款
+              th 補助款
+          tbody
+            tr(ld-each="column",data-name="budget")
+              td.clickable.text-center.pt-3.no-print: i.i-close
+              td: .form-group.m-0
+                input.form-control(name="cat")
+                .invalid-feedback 不可留白
+              td: .form-group.m-0
+                input.form-control(name="detail")
+                .invalid-feedback 不可留白
+              td: .form-group.m-0
+                input.form-control(name="price")
+                .invalid-feedback 不可留白
+              td: .form-group.m-0
+                input.form-control(name="count")
+                .invalid-feedback 不可留白
+              td: .form-group.m-0
+                input.form-control(name="unit")
+                .invalid-feedback 不可留白
+              td: .form-group.m-0
+                input.form-control(name="total",readonly)
+              td: .form-group.m-0
+                input.form-control(name="self")
+                .invalid-feedback 數字不合
+              td: .form-group.m-0
+                input.form-control(name="subsidy",readonly)
+              td: .form-group.m-0
+                input.form-control(name="comment")
+        .d-flex.align-items-start
+          .flex-grow-1.d-flex.align-items-center
+            .btn.btn-outline-secondary.no-print(ld="add-column",data-name="budget") 新增一項 #[i.i-plus]
+            .text-danger.ml-4.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
+          span 單位: 新台幣
 
       +nbr(3)
 
       .form-group
         label 上傳計畫書 PDF ( 含目錄、原著授權、合作意向書 / 合約 )
         .d-flex.align-items-center
-          .btn.btn-upload.btn-primary 上傳文件 #[input(ld="file-upload",type="file",data-name="plan")] #[span]
+          .btn.btn-upload.btn-primary.no-print 上傳文件 #[input(ld="file-upload",type="file",data-name="plan")] #[span]
           a.ml-4(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
 
 
@@ -430,7 +459,7 @@ block body
         li 請求刪除。但如係基於行政管理及業務等相關目的所必需，或其他法令有所規範者，本院得拒絕之。
       p 四、您得自由選擇是否提供個人資料或行使個人資料保護法第三條所定之權利，但因提供資料不足或有其他冒用、盜用、不實之情形，可能不能獲得補助資格或影響您受領補助之權益。
       p 五、您所提供之個人資料，本院將依據「個人資料保護法」相關規定進行保密。
-    .page
+    .page.page-cover.vertical-center: .w-100
       .text-center
         h2 109年度文化內容開發與產業策進方案
         br
@@ -446,6 +475,7 @@ block body
   .w-1024.mx-auto.rwd.no-print
     .d-flex.align-items-center
       .btn.btn-primary.btn-lg.mr-4(ld="submit") 送出
+      .btn.btn-primary.btn-lg.mr-4(ld="download") 下載
       .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
     +nbr(4)
 

@@ -192,6 +192,65 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals'], function(arg$){
             ((ref$ = payload.list)[key$ = node.getAttribute('data-name')] || (ref$[key$] = [])).push({});
             return view.render('column');
           },
+          download: function(){
+            var style, html;
+            ld$.find('select,textarea,input').map(function(f){
+              var type, nodeName, classes, n;
+              type = f.getAttribute('type');
+              nodeName = f.nodeName.toLowerCase();
+              if (!type) {
+                classes = Array.from(f.classList).filter(function(it){
+                  return !(it === 'is-valid' || it === 'is-invalid');
+                }).concat(['_preview']);
+                f.setAttribute('value', f.value);
+                n = ld$.create({
+                  name: 'div',
+                  className: classes,
+                  style: f.style
+                });
+                if (nodeName === 'textarea') {
+                  n.style.height = 'auto';
+                }
+                n.innerText = f.value;
+                return f.parentNode.insertBefore(n, f);
+              } else {
+                if (f.checked) {
+                  return f.setAttribute('checked', '');
+                } else {
+                  return f.removeAttribute('checked');
+                }
+              }
+            });
+            style = "<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/css/index.css\">\n<style type=\"text/css\"> " + ld$.find('style', 0).innerText + " </style>";
+            html = "<html>\n<head><meta charset=\"utf-8\">" + style + "</head>\n<body><div class=\"typeset heading-contrast\">\n" + ld$.find('#form', 0).innerHTML + "\n</div></body>\n</html>";
+            ld$.find(document.body, '_preview').map(function(it){
+              return it.parentNode.removeChild(it);
+            });
+            return auth.recaptcha.get().then(function(recaptcha){
+              return ld$.fetch('/dash/api/flagship/download', {
+                method: 'POST'
+              }, {
+                json: {
+                  html: html,
+                  recaptcha: recaptcha
+                },
+                type: 'blob'
+              });
+            }).then(function(blob){
+              var url, a;
+              url = URL.createObjectURL(blob);
+              a = ld$.create({
+                name: 'a',
+                attr: {
+                  href: url,
+                  download: 'form.pdf'
+                }
+              });
+              document.body.appendChild(a);
+              a.click();
+              return document.body.removeChild(a);
+            });
+          },
           submit: function(){
             return isReady.get().then(function(v){
               if (!v) {
@@ -272,7 +331,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals'], function(arg$){
             "內容產業領航行動組": "02"
           }[values.group];
           if (n === 'docid') {
-            id = (ref$ = vlc.prj.slug.split('-'))[ref$.length - 1];
+            id = (ref$ = vlc.slug.split('-'))[ref$.length - 1];
             return "109-" + gid + "-" + (repeatString$('0', 3 - (id + "").length) + id);
           }
           return "";

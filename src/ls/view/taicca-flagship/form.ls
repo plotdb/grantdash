@@ -104,6 +104,46 @@ ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocal
           "add-column": ({node}) ->
             payload.list[][node.getAttribute(\data-name)].push {}
             view.render \column
+
+          download: ->
+            ld$.find 'select,textarea,input' .map (f) ->
+              type = f.getAttribute(\type)
+              node-name = f.nodeName.toLowerCase!
+              if !type =>
+                classes = Array.from(f.classList).filter(->!(it in <[is-valid is-invalid]>)) ++ ['_preview']
+                f.setAttribute \value, f.value
+                n = ld$.create name: \div, className: classes, style: f.style
+                if node-name == \textarea => n.style.height = \auto
+                n.innerText = f.value
+                f.parentNode.insertBefore n, f
+              else
+                if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
+            style = """
+            <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css">
+            <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css">
+            <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/css/index.css">
+            <style type="text/css"> #{ld$.find(\style, 0).innerText} </style>
+            """
+            html = """
+            <html>
+            <head><meta charset="utf-8">#style</head>
+            <body><div class="typeset heading-contrast">
+            #{ld$.find(\#form, 0).innerHTML}
+            </div></body>
+            </html>
+            """
+            ld$.find document.body, '_preview' .map -> it.parentNode.removeChild it
+            auth.recaptcha.get!
+              .then (recaptcha) ->
+                ld$.fetch(\/dash/api/flagship/download, {method: \POST}, {json: {html, recaptcha}, type: \blob})
+              .then (blob) ->
+                url = URL.createObjectURL blob
+                a = ld$.create name: \a, attr: {href: url, download: \form.pdf}
+                document.body.appendChild a
+                a.click!
+                document.body.removeChild a
+
+
           submit: ->
             is-ready.get!
               .then (v) ->
@@ -120,22 +160,6 @@ ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocal
                       brd: "flagship-2"
                     ld$.fetch \/dash/api/flagship/prj, {method: \POST}, {json: json, type: \json}
                       .then -> console.log "done."
-                    /*
-                    ld$.find 'select,textarea,input' .map (f) ->
-                      type = f.getAttribute(\type)
-                      node-name = f.nodeName.toLowerCase!
-                      if !type =>
-                        classes = Array.from(f.classList).filter(->!(it in <[is-valid is-invalid]>)) ++ ['preview']
-                        n = ld$.create name: \div, className: classes, style: f.style
-                        if node-name == \textarea => n.style.height = \auto
-                        n.innerText = f.value
-                        f.parentNode.insertBefore n, f
-                        f.parentNode.removeChild f
-                      else
-                        if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
-                    save-locally!
-                      .then -> console.log it
-                    */
 
       text: do
         fill: ({node}) ->
@@ -157,7 +181,7 @@ ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocal
               else => return total - self
           gid = {"文化內容開發組": "01", "內容產業領航行動組": "02"}[values.group]
           if n == \docid =>
-            id = vlc.prj.slug.split('-')[* - 1]
+            id = vlc.slug.split('-')[* - 1]
             return "109-#{gid}-#{('0' * (3 - "#id".length) + id)}"
           return ""
 
