@@ -42,6 +42,14 @@
       clearUserCookie(req, res);
       return res.send();
     });
+    app.get('/authcheck/', function(req, res){
+      var that;
+      if (!(req.user && req.user.key)) {
+        return res.redirect("/dash/auth/" + ((that = req.query.nexturl) ? "?nexturl=" + that : ''));
+      } else {
+        return res.redirect(req.query.nexturl || "/");
+      }
+    });
     app.get('/me/reauth/', function(req, res){
       var that;
       clearUserCookie(req, res);

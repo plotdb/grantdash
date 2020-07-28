@@ -22,6 +22,11 @@ api.get \/me/reauth/, (req, res) ->
   clear-user-cookie req, res
   res.send!
 
+app.get \/authcheck/, (req, res) ->
+  if !(req.user and req.user.key) =>
+    return res.redirect """/dash/auth/#{if req.query.nexturl => ("?nexturl=" + that) else ''}"""
+  else res.redirect(req.query.nexturl or "/")
+
 app.get \/me/reauth/, (req, res) ->
   clear-user-cookie req, res
   res.redirect """/dash/auth/#{if req.query.nexturl => ("?nexturl=" + that) else ''}"""
