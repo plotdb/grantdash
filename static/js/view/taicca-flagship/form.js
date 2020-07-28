@@ -104,11 +104,18 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
       get: debounce(function(){
         var _;
         _ = function(){
-          var k, ref$, v, i$, len$, n;
+          var k, ref$, vs, i$, len$, v, n;
           for (k in ref$ = ldforms) {
-            v = ref$[k];
-            if (!v.ready()) {
-              return false;
+            vs = ref$[k];
+            ldforms[k] = vs.filter(fn$);
+          }
+          for (k in ref$ = ldforms) {
+            vs = ref$[k];
+            for (i$ = 0, len$ = vs.length; i$ < len$; ++i$) {
+              v = vs[i$];
+              if (!v.ready()) {
+                return false;
+              }
             }
           }
           if (!ldform.ready()) {
@@ -125,6 +132,9 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
             }
           }
           return true;
+          function fn$(it){
+            return it.root.parentNode;
+          }
         };
         isReady.state = _();
         view.render(['ready-state', 'submit', 'download']);
@@ -200,7 +210,9 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
             var node, ref$, key$;
             node = arg$.node;
             ((ref$ = payload.list)[key$ = node.getAttribute('data-name')] || (ref$[key$] = [])).push({});
-            return view.render('column');
+            view.render('column');
+            isReady.check();
+            return saveLocally();
           },
           download: function(){
             var style, html;
@@ -341,12 +353,12 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
           }
           if (ret = /^budget-(self|subsidy)(-percent)?$/.exec(n)) {
             total = ((ref$ = payload.list).budget || (ref$.budget = [])).map(function(it){
-              return it.value.price * it.value.count;
+              return (it.value || (it.value = {})).price * (it.value || (it.value = {})).count;
             }).reduce(function(a, b){
               return a + +b;
             }, 0);
             self = ((ref$ = payload.list).budget || (ref$.budget = [])).map(function(it){
-              return it.value.self;
+              return (it.value || (it.value = {})).self;
             }).reduce(function(a, b){
               return a + +b;
             }, 0);
@@ -443,7 +455,9 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 return;
               }
               list.splice(idx, 1);
-              return view.render('column');
+              view.render('column');
+              isReady.check();
+              return saveLocally();
             }
           },
           init: function(arg$){
@@ -465,7 +479,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 return get();
               });
             });
-            local.ldform = ldforms[n] = ldform = new ldForm({
+            local.ldform = ldform = new ldForm({
               root: node,
               verify: function(name, value){
                 var values, total, subsidy;
@@ -495,6 +509,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 return value ? 0 : 2;
               }
             });
+            (ldforms[n] || (ldforms[n] = [])).push(ldform);
             return ldform.on('readystatechange', function(){
               return isReady.check();
             });

@@ -61,8 +61,8 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
       check: -> is-ready.get! 
       get: debounce ->
         _ = ->
-          #TODO fix ldforms 
-          for k,v of ldforms => if !(v.ready!) => return false
+          for k,vs of ldforms => ldforms[k] = vs.filter -> it.root.parentNode
+          for k,vs of ldforms => for v in vs => if !(v.ready!) => return false
           if !(ldform.ready!) => return false
           budget-calc!
           if !payload.budget.ready => return false
@@ -114,6 +114,8 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
           "add-column": ({node}) ->
             payload.list[][node.getAttribute(\data-name)].push {}
             view.render \column
+            is-ready.check!
+            save-locally!
 
           download: ->
             if lc.downloading => return
@@ -205,8 +207,8 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
           if n == \doc-month => return (new Date!).getMonth! + 1
           if n == \doc-day => return (new Date!).getDate!
           if ret = (/^budget-(self|subsidy)(-percent)?$/.exec(n)) =>
-            total = payload.list.[]budget.map(-> it.value.price * it.value.count).reduce(((a,b) -> a + +b),0)
-            self = payload.list.[]budget.map(-> it.value.self).reduce(((a,b) -> a + +b),0)
+            total = payload.list.[]budget.map(-> it.{}value.price * it.{}value.count).reduce(((a,b) -> a + +b),0)
+            self = payload.list.[]budget.map(-> it.{}value.self).reduce(((a,b) -> a + +b),0)
             if ret.2 =>
               if ret.1 == \self => return Math.floor(10000 * self / (total or 1))/100
               else return Math.ceil(10000 * (total - self) / (total or 1))/100
@@ -256,6 +258,8 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             if !(~(idx = list.indexOf(data))) => return
             list.splice idx,1
             view.render \column
+            is-ready.check!
+            save-locally!
 
           init: ({node, data, local}) ->
             n = node.getAttribute(\data-name)
@@ -266,7 +270,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             ld$.find node, "input,textarea,select" .map (n) ->
               n.addEventListener \input, -> get!
               n.addEventListener \change, -> get!
-            local.ldform = ldforms[n] = ldform = new ldForm do
+            local.ldform = ldform = new ldForm do
               root: node
               verify: (name, value) ->
                 if n == \perform =>
@@ -283,6 +287,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                   view.render \fill
                   view.render \budget-limit
                 return if value => 0 else 2
+            ldforms[][n].push ldform
             ldform.on \readystatechange, -> is-ready.check!
 
           handler: ({node, data, local}) ->
