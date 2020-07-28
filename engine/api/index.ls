@@ -16,5 +16,6 @@ module.exports = (engine, io) ->
   form engine, io
   try
     require! <[./flagship]>
-    flagship engine, io
   catch e
+    console.log e
+  if flagship? => flagship engine, io

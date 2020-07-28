@@ -31,9 +31,12 @@
     form(engine, io);
     try {
       flagship = require('./flagship');
-      return flagship(engine, io);
     } catch (e$) {
-      return e = e$;
+      e = e$;
+      console.log(e);
+    }
+    if (flagship != null) {
+      return flagship(engine, io);
     }
   };
 }).call(this);
