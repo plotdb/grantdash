@@ -45,8 +45,10 @@ Ctrl = (opt) ->
             context: data
             text: do
               name: ({context}) -> context.name
-              comment: ({context}) -> context.comment or '( 沒有評論 )'
             handler: do
+              comment: ({node, context}) ->
+                node.innerText = (context.comment or '( 沒有評論 )')
+                node.classList.toggle \text-muted, !context.comment
               avatar: ({node, context}) -> node.style.backgroundImage = "url(/dash/s/avatar/#{context.user}.png)"
               criteria: do
                 list: ({context}) -> context.criteria

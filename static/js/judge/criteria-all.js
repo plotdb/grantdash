@@ -98,14 +98,15 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                   var context;
                   context = arg$.context;
                   return context.name;
-                },
-                comment: function(arg$){
-                  var context;
-                  context = arg$.context;
-                  return context.comment || '( 沒有評論 )';
                 }
               },
               handler: {
+                comment: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  node.innerText = context.comment || '( 沒有評論 )';
+                  return node.classList.toggle('text-muted', !context.comment);
+                },
                 avatar: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;

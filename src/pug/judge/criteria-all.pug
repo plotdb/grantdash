@@ -18,7 +18,7 @@ block body
 
         .judge-table.flex-grow-1.bg-white.border-top.border-bottom.mt-3.w-100(style="overflow:scroll")
 
-          .sticky(style="top:0")
+          .sticky.z-float(style="top:0")
             .p-2.bg-white.d-flex.text-muted.text-sm.justify-content-end
               .flex-grow-1.d-flex
                 .mx-3 總計 #[span.text-danger(ld="count",data-name="total") 0]
@@ -93,7 +93,7 @@ block body
 
   div
 
-    .ldcv(ld="detail-ldcv"): .base.w-640: .inner.card.shadow-sm
+    .ldcv.scroll(ld="detail-ldcv"): .base.w-640: .inner.card.shadow-sm
       .card-header.shadow-sm.position-relative.z-float
         p.mb-0 資格審核附註
         h4.mb-0(ld="comment-name")
