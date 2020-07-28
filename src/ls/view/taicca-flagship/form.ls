@@ -1,4 +1,5 @@
-ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocals}) ->
+ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, viewLocals, ldcvmgr}) ->
+  lc = {}
   vlc = viewLocals or {} 
   console.log vlc
 
@@ -106,6 +107,10 @@ ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocal
             view.render \column
 
           download: ->
+            if lc.downloading => return
+            lc.downloading = true
+            view.getAll("download").map -> it.classList.add \running
+            ld$.find(document.body, '._preview').map -> it.parentNode.removeChild it
             ld$.find 'select,textarea,input' .map (f) ->
               type = f.getAttribute(\type)
               node-name = f.nodeName.toLowerCase!
@@ -119,7 +124,8 @@ ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocal
               else
                 if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
             style = """
-            <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css">
+            <link rel="stylesheet" type="text/css"
+            href="https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css">
             <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css">
             <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/css/index.css">
             <style type="text/css"> #{ld$.find(\style, 0).innerText} </style>
@@ -132,17 +138,26 @@ ldc.register \flagship-form, <[auth error viewLocals]>, ({auth, error, viewLocal
             </div></body>
             </html>
             """
-            ld$.find document.body, '_preview' .map -> it.parentNode.removeChild it
             auth.recaptcha.get!
               .then (recaptcha) ->
-                ld$.fetch(\/dash/api/flagship/download, {method: \POST}, {json: {html, recaptcha}, type: \blob})
+                ld$.fetch(
+                  \/dash/api/flagship/download
+                  {method: \POST}
+                  {json: {html, recaptcha}, type: \blob, timeout: 5 * 1000}
+                )
               .then (blob) ->
                 url = URL.createObjectURL blob
                 a = ld$.create name: \a, attr: {href: url, download: \form.pdf}
                 document.body.appendChild a
                 a.click!
                 document.body.removeChild a
-
+              .finally ->
+                view.getAll("download").map -> it.classList.remove \running
+                ldcvmgr.set \flagship-submitted
+                lc.downloading = false
+              .catch ->
+                if ldError.id(it) == 1006 => ldcvmgr.toggle \flagship-print-timeout
+                else error! it
 
           submit: ->
             is-ready.get!

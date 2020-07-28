@@ -31,12 +31,12 @@ block head
       color: inherit
     .page
       page-break-after: always
-      marin: 2em 2em
+      margin: 2em 2em
     .page.page-cover
       margin: 0
       height: 29.7cm
     .form-inner-box
-      padding: 1.5em
+      padding: 3em
       border-radius: .5em
       border: 1px solid #ddd
       box-shadow: 0 2px 4px rgba(0,0,0,.1)
@@ -47,18 +47,19 @@ block head
       margin: 20mm 10mm
     @media print 
       body
-        margin: 0
+        margin: 0!important
       .page
-        margin: 0
+        margin: 0!important
       .no-print, .grecaptcha-badge
-        display: none
+        display: none!important
       .form-inner-box
         border: 0
         box-shadow: none
+        padding: 0
       .typeset.heading-contrast
         input,textarea,select
           &.form-control
-            display: none
+            display: none !important
         .form-control._preview
           display: block
 
@@ -103,7 +104,7 @@ block body
       label.form-check-label
         block
 
-  .w-1024.rwd.mx-auto.typeset.heading-contrast.position-relative: form#form: .form-inner-box: .p-4
+  .w-1024.rwd.mx-auto.typeset.heading-contrast.position-relative: form#form: .form-inner-box
     .page
       .no-break
         .text-center
@@ -208,10 +209,11 @@ block body
         textarea.form-control(rows="6",name="found-reason")
         .invalid-feedback 字數不符
 
-      label 印鑑 ( 列印後用印正本 )
-      .row.text-muted.mb-4
-        .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 公司章
-        .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 負責人章
+      .no-break
+        label 印鑑 ( 列印後用印正本 )
+        .row.text-muted.mb-4
+          .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 公司章
+          .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 負責人章
 
       .form-group
         label.mb-0 備註
@@ -474,14 +476,41 @@ block body
         p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
   .w-1024.mx-auto.rwd.no-print
     .d-flex.align-items-center
-      .btn.btn-primary.btn-lg.mr-4(ld="submit") 送出
-      .btn.btn-primary.btn-lg.mr-4(ld="download") 下載
+      .btn.btn-primary.btn-lg.mr-4(ld="submit") 線上送件
+      .btn.btn-primary.btn-lg.mr-4.ld-ext-right(ld="download") 下載申請書 PDF #[.ld.ld-spin.ld-spinner.ldld]
       .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
     +nbr(4)
+
+  .ldcv.ldcvmgr(data-name="flagship-print-timeout",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+    .text-center
+      h2 連線逾時
+
+    .py-4: p 主機沒有在一定的時間內產生 PDF 檔，可能是因為服務忙碌中。您可以稍候再重試一次，或者直接將此頁面列印成 PDF 檔做為您的申請書。
+    .row
+      .col-md
+        .btn.btn-lg.btn-block.btn-outline-primary.btn-block(
+        onclick="lda.ldcvmgr.toggle('flagship-print-timeout',false).then(function(){print()})") 列印此頁面
+      .col-md
+        .btn.btn-lg.btn-block.btn-primary(data-ldcv-set="") 稍候再試
+
+  .ldcv.ldcvmgr(data-name="flagship-submitting",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+    .text-center
+      div 送件中 ...
+      .ld.ld-spin.ld-spinner.text-lg.mt-4
+  .ldcv.ldcvmgr(data-name="flagship-submitted",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+    .text-center
+      h2 您的案件已送出
+      div 案件編號: #[span(ld="fill",data-name="docid")]
+    .py-4
+      p 請下載申請書 PDF 檔，印出紙本後用印寄回，以利後續作業。
+      p 您隨時可以回到這個頁面重新下載 PDF 檔。若需要回到此頁，請由網頁右上角的下拉選單中點選「個人頁面」，即可找到您建立的案件。
+    .btn.btn-lg.btn-primary.btn-block.ld-ext-right(ld="download") 下載申請書 PDF  #[.ld.ld-spin.ld-spinner.ldld]
 
 
 block script
   +register-locals()
   +script("/dash/js/view/taicca-flagship/form.js")
-
+  //-script: :lsc
+    ldc.register <[ldcvmgr]>, ({ldcvmgr}) ->
+      ldcvmgr.toggle \flagship-submitted
 
