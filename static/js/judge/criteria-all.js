@@ -60,22 +60,32 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
             return node.innerText = Math.round(100 * p.done / p.total);
           }
         },
-        comment: {
+        detail: {
           list: function(){
-            var k, v;
+            var k, v, p, obj;
+            if (!this$.prj) {
+              return [];
+            }
             return (function(){
-              var ref$, ref1$, results$ = [];
-              for (k in ref$ = (ref1$ = this.prj || {}).comments || (ref1$.comments = {})) {
+              var ref$, ref1$, key$, results$ = [];
+              for (k in ref$ = this.data.user) {
                 v = ref$[k];
-                results$.push({
+                p = (ref1$ = v.prj)[key$ = this.prj.key] || (ref1$[key$] = {});
+                results$.push(obj = {
                   user: k,
-                  comment: v
+                  name: this.usermap[k].displayname,
+                  comment: p.comment || '',
+                  criteria: this.criteria.map(fn$)
                 });
               }
               return results$;
-            }.call(this$)).filter(function(it){
-              return it.comment;
-            });
+              function fn$(c){
+                return {
+                  name: c.name,
+                  value: (p.v || (p.v = {}))[c.key] != null ? p.v[c.key] : 1
+                };
+              }
+            }.call(this$));
           },
           init: function(arg$){
             var node, local, data;
@@ -87,21 +97,40 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                 name: function(arg$){
                   var context;
                   context = arg$.context;
-                  return this$.usermap[context.user].displayname;
+                  return context.name;
                 },
                 comment: function(arg$){
                   var context;
                   context = arg$.context;
-                  return context.comment;
+                  return context.comment || '( 沒有評論 )';
+                }
+              },
+              handler: {
+                avatar: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.style.backgroundImage = "url(/dash/s/avatar/" + context.user + ".png)";
+                },
+                criteria: {
+                  list: function(arg$){
+                    var context;
+                    context = arg$.context;
+                    return context.criteria;
+                  },
+                  handler: function(arg$){
+                    var node, data, label, icon;
+                    node = arg$.node, data = arg$.data;
+                    ld$.find(node, '[ld=name]', 0).innerText = data.name;
+                    label = ld$.find(node, '[ld=value]', 0);
+                    icon = ld$.find(label, 'i', 0);
+                    label.classList.remove('text-success', 'text-secondary', 'text-danger');
+                    label.classList.add(['text-success', 'text-secondary', 'text-danger'][data.value]);
+                    icon.classList.remove('i-close', 'i-circle', 'i-check');
+                    return icon.classList.add(['i-check', 'i-circle', 'i-close'][data.value]);
+                  }
                 }
               }
             });
-          },
-          render: function(arg$){
-            var local, data;
-            local = arg$.local, data = arg$.data;
-            local.view.setContext(data);
-            return local.view.render();
           }
         },
         project: {
@@ -127,6 +156,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                     node = arg$.node, context = arg$.context;
                     this$.prj = context;
                     this$.view.local.render('comment');
+                    this$.view.local.render('detail');
                     return this$.ldcv.detail.toggle();
                   },
                   name: function(arg$){
@@ -171,7 +201,8 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
                   if (!(icon = ld$.find(node, 'i', 0))) {
                     return;
                   }
-                  return icon.classList.toggle('d-none', !hasComment);
+                  icon.classList.toggle('text-primary', hasComment);
+                  return icon.classList.toggle('text-secondary', !hasComment);
                 },
                 state: function(arg$){
                   var node, context, span, icon, state, cls;
@@ -293,7 +324,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
       if (this.usermap && !list.filter(function(it){
         return !this$.usermap[it];
       }).length) {
-        Promise.resolve();
+        return Promise.resolve();
       }
       payload = {
         userkeys: list

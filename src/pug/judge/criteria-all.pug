@@ -93,26 +93,20 @@ block body
 
   div
 
-    //-.ldcv(ld="criteria-ldcv"): .base.w-480: .inner.card.shadow-sm
-      .card-body
-        h3 審核資格
-        hr
-        h5 開源
-        p 開源（開放原始碼）是指將成果用開放授權的方式公開出來，讓其他人可以直接使用、改作、加入協作或發展出更新的版本。好處是過程透明、更容易協作，成果共享。從這個影片可以看到更多關於開源運動的介紹。
-        h5 協作
-        p 公民科技（Civic Tech）是以打造新的科技工具來促進公民參與的新實踐，以增進溝通、群眾共識與公民參與，同時也有運用開放資料增強政府的透明度、國會監督與政府課責等面向。公民科技的表現形多元，多以網路平台、線上服務、手機或桌面 APP，瀏覽器外掛、實體裝置等，首要對象即是公民社會，並為了提升公共利益而產生。
-        hr
-        .text-right
-          .btn.btn-primary(data-ldcv-set="") 關閉
-
-    .ldcv(ld="detail-ldcv"): .base.w-480: .inner.card.shadow-sm
+    .ldcv(ld="detail-ldcv"): .base.w-640: .inner.card.shadow-sm
       .card-header.shadow-sm.position-relative.z-float
         p.mb-0 資格審核附註
         h4.mb-0(ld="comment-name")
       .card-body
-        .mb-4(ld-each="comment")
-          div: b(ld="name")
-          div(ld="comment")
+        .pb-4.mb-4.border-light(ld-each="detail")
+          .d-flex.align-items-stretch.mb-2
+            .flex-grow-1.mr-2.d-flex.align-items-center: .text-center.w-100
+              .mx-auto(style="width:3em"): .aspect-ratio.ratio-1by1.rounded-circle.bg-dark.bg-cover(ld="avatar")
+              div(ld="name")
+            .text-left.py-2.px-1.rounded.mx-1.d-flex.flex-column(ld-each="criteria",style="width:6em")
+              .flex-grow-1.d-flex.flex-column.justify-content-center.text-center(ld="name")
+              .text-lg.text-center(ld="value"): i
+          .bg-light.p-4(ld="comment")
 
       .card-footer
         .d-flex.justify-content-between
