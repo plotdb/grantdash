@@ -79,7 +79,7 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
             }
             ret = res$;
             return ret.sort(function(a, b){
-              return (a.comment != null ? a.comment.length : 0) - (b.comment != null ? b.comment.length : 0);
+              return (b.comment != null ? b.comment.length : 0) - (a.comment != null ? a.comment.length : 0);
             });
             function fn$(c){
               return {

@@ -39,7 +39,7 @@ Ctrl = (opt) ->
               name: @usermap[k].displayname
               comment: p.comment or ''
               criteria: @criteria.map (c) ~> {name: c.name, value: if p.{}v[c.key]? => p.v[c.key] else 1}
-          ret.sort (a,b) -> (if a.comment? => a.comment.length else 0) - (if b.comment? => b.comment.length else 0)
+          ret.sort (a,b) -> (if b.comment? => b.comment.length else 0) - (if a.comment? => a.comment.length else 0)
         init: ({node, local, data}) ->
           local.view = new ldView do
             root: node
