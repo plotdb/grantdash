@@ -27,7 +27,7 @@
     api = engine.router.api;
     app = engine.app;
     app.get('/flagship/', function(req, res){
-      return res.render('view/taicca-flagship/form.pug');
+      return res.render('view/taicca-flagship/prj-view.pug');
     });
     app.get('/flagship/:slug', function(req, res){
       var lc, slug;
@@ -48,7 +48,7 @@
           name: "prj-edit"
         });
       }).then(function(){
-        return res.render('view/taicca-flagship/form.pug', {
+        return res.render('view/taicca-flagship/prj-view.pug', {
           exports: lc.prj
         });
       })['catch'](aux.errorHandler(res));

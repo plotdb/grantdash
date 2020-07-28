@@ -12,7 +12,7 @@ api = engine.router.api
 app = engine.app
 
 app.get \/flagship/, (req, res) ->
-  res.render \view/taicca-flagship/form.pug
+  res.render \view/taicca-flagship/prj-view.pug
 
 app.get \/flagship/:slug, (req, res) ->
   lc = {}
@@ -21,7 +21,7 @@ app.get \/flagship/:slug, (req, res) ->
     .then (r={}) ->
       if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
       cache.stage.check {io, type: \brd, slug: prj.brd, name: "prj-edit"}
-    .then -> res.render \view/taicca-flagship/form.pug, {exports: lc.prj}
+    .then -> res.render \view/taicca-flagship/prj-view.pug, {exports: lc.prj}
     .catch aux.error-handler res
 
 # TODO keep record of ownership
