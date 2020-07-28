@@ -153,7 +153,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
       ref$.subsidy = subsidy;
       ref$.self = self;
       ref$.percent = percent;
-      cur = !(payload.budget.total > 5000000 || payload.budget.percent.subsidy > 0.49);
+      cur = payload.budget.total && payload.budget.total > 0 && payload.budget.total <= 5000000 && payload.budget.percent.subsidy <= 0.49;
       old = payload.budget.ready;
       payload.budget.ready = cur;
       if (old !== cur) {

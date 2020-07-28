@@ -81,7 +81,11 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
         self: self / (total or 1)
         subsidy: (total - self) / (total or 1)
       payload.{}budget <<< {total, subsidy, self, percent}
-      cur = !(payload.budget.total > 5000000 or payload.budget.percent.subsidy > 0.49 )
+      cur = (payload.budget.total
+        and payload.budget.total > 0
+        and payload.budget.total <= 5000000
+        and payload.budget.percent.subsidy <= 0.49
+      )
       old = payload.budget.ready
       payload.budget.ready = cur
       if old != cur => is-ready.check!
