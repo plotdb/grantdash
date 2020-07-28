@@ -29,18 +29,39 @@ Ctrl = (opt) ->
           node.style.width = "#{100 * p[n] / p.total }%"
         else if \progress-percent in names =>
           node.innerText = Math.round(100 * p.done / p.total )
-      comment: do
-        list: ~> [{user: k, comment: v} for k,v of (@prj or {}).{}comments].filter -> it.comment
-        init: ({node, local, data}) ~>
+      detail: do
+        list: ~>
+          if !@prj => return []
+          ret = for k,v of @data.user =>
+            p = v.prj{}[@prj.key]
+            obj = do
+              user: k
+              name: @usermap[k].displayname
+              comment: p.comment or ''
+              criteria: @criteria.map (c) ~> {name: c.name, value: if p.{}v[c.key]? => p.v[c.key] else 1}
+          ret.sort (a,b) -> (if b.comment? => b.comment.length else 0) - (if a.comment? => a.comment.length else 0)
+        init: ({node, local, data}) ->
           local.view = new ldView do
             root: node
             context: data
             text: do
-              name: ({context}) ~> @usermap[context.user].displayname
-              comment: ({context}) -> context.comment
-        render: ({local, data}) ->
-          local.view.setContext data
-          local.view.render!
+              name: ({context}) -> context.name
+            handler: do
+              comment: ({node, context}) ->
+                node.innerText = (context.comment or '( 沒有評論 )')
+                node.classList.toggle \text-muted, !context.comment
+              avatar: ({node, context}) -> node.style.backgroundImage = "url(/dash/s/avatar/#{context.user}.png)"
+              criteria: do
+                list: ({context}) -> context.criteria
+                handler: ({node,data}) ->
+                  ld$.find(node, '[ld=name]', 0).innerText = data.name
+                  label = ld$.find(node, '[ld=value]', 0)
+                  icon = ld$.find(label, 'i', 0)
+                  label.classList.remove \text-success, \text-secondary, \text-danger
+                  label.classList.add <[text-success text-secondary text-danger]>[data.value]
+                  icon.classList.remove \i-close, \i-circle, \i-check
+                  icon.classList.add <[i-check i-circle i-close]>[data.value]
+
       project: do
         key: -> it.slug
         list: ~> @prjs
@@ -55,6 +76,7 @@ Ctrl = (opt) ->
               detail: ({node, context}) ~>
                 @prj = context
                 @view.local.render \comment
+                @view.local.render \detail
                 @ldcv.detail.toggle!
 
               name: ({node, context}) ->
@@ -80,7 +102,8 @@ Ctrl = (opt) ->
               detail: ({node, context}) ~>
                 has-comment = ([v for k,v of context.comments].filter -> it).length
                 if !(icon = ld$.find(node, 'i', 0)) => return
-                icon.classList.toggle \d-none, !has-comment
+                icon.classList.toggle \text-primary, has-comment
+                icon.classList.toggle \text-secondary, !has-comment
               state: ({node, context}) ~>
                 span = ld$.find(node, 'span',0)
                 icon = ld$.find(node, 'i',0)
@@ -149,7 +172,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       context.state = if count.reject.length => 2 else if count.accept.length => 0 else 1
 
   get-displayname: (list) ->
-    if @usermap and !(list.filter(~>!@usermap[it]).length) => Promise.resolve!
+    if @usermap and !(list.filter(~>!@usermap[it]).length) => return Promise.resolve!
     payload = userkeys: list
     ld$.fetch "/dash/api/usermap/", {method: \PUT}, {json: payload, type: \json}
       .then (ret = []) ~>
