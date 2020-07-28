@@ -32,13 +32,14 @@ Ctrl = (opt) ->
       detail: do
         list: ~>
           if !@prj => return []
-          return for k,v of @data.user =>
+          ret = for k,v of @data.user =>
             p = v.prj{}[@prj.key]
             obj = do
               user: k
               name: @usermap[k].displayname
               comment: p.comment or ''
               criteria: @criteria.map (c) ~> {name: c.name, value: if p.{}v[c.key]? => p.v[c.key] else 1}
+          ret.sort (a,b) -> (if a.comment? => a.comment.length else 0) - (if b.comment? => b.comment.length else 0)
         init: ({node, local, data}) ->
           local.view = new ldView do
             root: node

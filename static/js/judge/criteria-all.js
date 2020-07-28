@@ -62,30 +62,31 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
         },
         detail: {
           list: function(){
-            var k, v, p, obj;
+            var ret, res$, k, ref$, v, p, ref1$, key$, obj;
             if (!this$.prj) {
               return [];
             }
-            return (function(){
-              var ref$, ref1$, key$, results$ = [];
-              for (k in ref$ = this.data.user) {
-                v = ref$[k];
-                p = (ref1$ = v.prj)[key$ = this.prj.key] || (ref1$[key$] = {});
-                results$.push(obj = {
-                  user: k,
-                  name: this.usermap[k].displayname,
-                  comment: p.comment || '',
-                  criteria: this.criteria.map(fn$)
-                });
-              }
-              return results$;
-              function fn$(c){
-                return {
-                  name: c.name,
-                  value: (p.v || (p.v = {}))[c.key] != null ? p.v[c.key] : 1
-                };
-              }
-            }.call(this$));
+            res$ = [];
+            for (k in ref$ = this$.data.user) {
+              v = ref$[k];
+              p = (ref1$ = v.prj)[key$ = this$.prj.key] || (ref1$[key$] = {});
+              res$.push(obj = {
+                user: k,
+                name: this$.usermap[k].displayname,
+                comment: p.comment || '',
+                criteria: this$.criteria.map(fn$)
+              });
+            }
+            ret = res$;
+            return ret.sort(function(a, b){
+              return (a.comment != null ? a.comment.length : 0) - (b.comment != null ? b.comment.length : 0);
+            });
+            function fn$(c){
+              return {
+                name: c.name,
+                value: (p.v || (p.v = {}))[c.key] != null ? p.v[c.key] : 1
+              };
+            }
           },
           init: function(arg$){
             var node, local, data;
