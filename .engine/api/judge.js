@@ -21,10 +21,48 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var deploy, slugs, saveSnapshot, api, app;
+    var deploy, slugs, saveSnapshot, api, app, permissionCheck;
     deploy = common.deploy, slugs = common.slugs, saveSnapshot = common.saveSnapshot;
     api = engine.router.api;
     app = engine.app;
+    permissionCheck = function(arg$){
+      var req, res, brd, grp;
+      req = arg$.req, res = arg$.res, brd = arg$.brd, grp = arg$.grp;
+      return Promise.resolve().then(function(){
+        if (!(req.user && req.user.key)) {
+          return aux.reject(403);
+        }
+        if (!(brd && grp)) {
+          return aux.reject(400);
+        }
+        return cache.stage.check({
+          io: io,
+          type: 'brd',
+          slug: brd
+        });
+      }).then(function(c){
+        var cfg;
+        c == null && (c = {});
+        cfg = c.config;
+        if (!(cfg["judge-criteria"] || cfg["judge-primary"] || cfg["judge-final"])) {
+          return Promise.reject(new lderror(1016));
+        }
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: brd,
+          action: ['judge', 'owner']
+        })['catch'](function(){
+          return io.query("select owner from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, req.user.key]).then(function(r){
+            r == null && (r = {});
+            if (!(r.rows || (r.rows = [])).length) {
+              return Promise.reject(403);
+            }
+          });
+        });
+      });
+    };
     api.put('/usermap/', function(req, res){
       var keys;
       if (!((keys = req.body.userkeys) && Array.isArray(keys))) {
@@ -33,6 +71,31 @@
       return io.query("select key,displayname from users where key = ANY($1::int[])", [keys]).then(function(r){
         r == null && (r = {});
         return res.send(r.rows || (r.rows = []));
+      })['catch'](aux.errorHandler(res));
+    });
+    api.get('/brd/:brd/grp/:grp/judge/:type/result', function(req, res){
+      var ref$, brd, grp, type;
+      ref$ = {
+        brd: (ref$ = req.params).brd,
+        grp: ref$.grp,
+        type: ref$.type
+      }, brd = ref$.brd, grp = ref$.grp, type = ref$.type;
+      return permissionCheck({
+        req: req,
+        res: res,
+        brd: brd,
+        grp: grp
+      }).then(function(){
+        return io.query("select data from snapshots where doc_id = $1", ["brd/" + brd + "/grp/" + grp + "/judge/" + type + "/"]);
+      }).then(function(r){
+        var ret;
+        r == null && (r = {});
+        if (!(ret = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        return res.send({
+          data: ret
+        });
       })['catch'](aux.errorHandler(res));
     });
     api.get('/brd/:brd/grp/:grp/judge/criteria/:scope', function(req, res){
@@ -116,7 +179,7 @@
         user: req.user,
         type: 'brd',
         slug: brd,
-        action: ['judge', 'owner']
+        action: ['owner']
       }).then(function(){
         return io.query("select detail from brd where slug = $1", [brd]);
       }).then(function(r){
@@ -169,41 +232,15 @@
     });
     return api.get('/brd/:brd/grp/:grp/judge-list', function(req, res){
       var ref$, brd, grp;
-      if (!(req.user && req.user.key)) {
-        return aux.r403(res);
-      }
       ref$ = {
         brd: (ref$ = req.params).brd,
         grp: ref$.grp
       }, brd = ref$.brd, grp = ref$.grp;
-      if (!(brd && grp)) {
-        return aux.r400(res);
-      }
-      return cache.stage.check({
-        io: io,
-        type: 'brd',
-        slug: brd
-      }).then(function(c){
-        var cfg;
-        c == null && (c = {});
-        cfg = c.config;
-        if (!(cfg["judge-criteria"] || cfg["judge-primary"] || cfg["judge-final"])) {
-          return Promise.reject(new lderror(1016));
-        }
-        return cache.perm.check({
-          io: io,
-          user: req.user,
-          type: 'brd',
-          slug: brd,
-          action: ['judge', 'owner']
-        });
-      })['catch'](function(){
-        return io.query("select owner from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, req.user.key]).then(function(r){
-          r == null && (r = {});
-          if (!(r.rows || (r.rows = [])).length) {
-            return Promise.reject(403);
-          }
-        });
+      return permissionCheck({
+        req: req,
+        res: res,
+        brd: brd,
+        grp: grp
       }).then(function(){
         return io.query("select p.key, p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p\nleft join users as u on u.key = p.owner\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
       }).then(function(r){
