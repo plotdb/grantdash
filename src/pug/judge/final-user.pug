@@ -1,7 +1,12 @@
 extends /base.pug
 block vars
- - ctrl.navtop.placeholder = false;
- - ctrl.navtop.shown = false;
+ - ctrl.navtop.shown = true
+ - ctrl.navtop.placeholder = false
+ - ctrl.navtop.className="bg-none"
+ - ctrl.foot.shown = false
+block navtop-item
+  ul.navbar-nav.mr-auto
+    li.nav-item: a.nav-link(href="#") #[i.i-radio.text-success] 決選表 - #[span(ld="reviewer")]
 block head
   +css("/dash/assets/lib/handsontable/handsontable.min.css")
   style(type="text/css"): :stylus
@@ -16,12 +21,7 @@ block head
 block body
   include cover.pug
   .h-100.w-100.d-flex.flex-column.judge
-    .p-2.d-flex
-      .flex-grow-1.p-2
-        span.mr-4(ld="grp-name")
-        span #[i.i-radio.text-success(ld="sort")] 決選表 - #[span(ld="reviewer")]
-      div
-        .p-2 Kirby #[i.i-dart-down]
+    div(style="padding-top:60px")
 
     .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
       .d-flex.flex-column(style="flex:3 2 60%")
@@ -61,7 +61,14 @@ block body
 
       div(style="flex:2 3 40%")
         .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0
-          iframe.border-0.w-100.h-100(src="about:blank")
+          iframe.border-0.w-100.h-100(ld="iframe",src="about:blank")
+          .w-100.h-100.vertical-center.position-absolute.z-float.bg-light(
+          ld="iframe-placeholder",style="top:0;left:0")
+            .w-100.text-center.text-muted
+              .text-lg 提案瀏覽區
+              div 您可以點擊左方的提案名稱以在此瀏覽該提案內容
+          //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
+            embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
 
 
 block script

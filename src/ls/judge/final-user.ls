@@ -77,14 +77,20 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     }, {grade: @grade}
 
     @sheet.addHook \beforeOnCellMouseDown, (e, coord) ~>
-      if !@sheet or coord.row >= 0 => return
-      col = coord.col
-      data = if @sheet => @sheet.getSourceData! else [[]]
-      head = data.splice(0, 1).0
-      @sort-dir[col] = dir = 1 - (@sort-dir[col] or 0)
-      data.sort (a,b) -> ( dir * 2 - 1 ) * (if b[col] > a[col] => 1 else if b[col] < a[col] => -1 else 0)
-      data.splice 0, 0, head
-      @sheet.load-data data
+      if coord.row < 0 =>
+        col = coord.col
+        data = @sheet.getSourceData! or [[]]
+        head = data.splice(0, 1).0
+        @sort-dir[col] = dir = 1 - (@sort-dir[col] or 0)
+        data.sort (a,b) -> ( dir * 2 - 1 ) * (if b[col] > a[col] => 1 else if b[col] < a[col] => -1 else 0)
+        data.splice 0, 0, head
+        @sheet.load-data data
+      else if coord.col == 2 =>
+        data = @sheet.getSourceData! or [[]]
+        if !(prj = @prjs.filter(-> it.key == data[coord.row][0]).0) => return
+        @view.local.get("iframe").setAttribute \src, "/dash/prj/#{prj.slug}?simple"
+        @view.local.get("iframe-placeholder").classList.add \d-none
+        if @active-node => @active-node.classList.remove \active
 
 
     @prjs.sort (a,b) -> a.key - b.key

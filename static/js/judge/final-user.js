@@ -141,23 +141,32 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
         grade: this.grade
       });
       this.sheet.addHook('beforeOnCellMouseDown', function(e, coord){
-        var col, data, head, dir;
-        if (!this$.sheet || coord.row >= 0) {
-          return;
+        var col, data, head, dir, prj;
+        if (coord.row < 0) {
+          col = coord.col;
+          data = this$.sheet.getSourceData() || [[]];
+          head = data.splice(0, 1)[0];
+          this$.sortDir[col] = dir = 1 - (this$.sortDir[col] || 0);
+          data.sort(function(a, b){
+            return (dir * 2 - 1) * (b[col] > a[col]
+              ? 1
+              : b[col] < a[col] ? -1 : 0);
+          });
+          data.splice(0, 0, head);
+          return this$.sheet.loadData(data);
+        } else if (coord.col === 2) {
+          data = this$.sheet.getSourceData() || [[]];
+          if (!(prj = this$.prjs.filter(function(it){
+            return it.key === data[coord.row][0];
+          })[0])) {
+            return;
+          }
+          this$.view.local.get("iframe").setAttribute('src', "/dash/prj/" + prj.slug + "?simple");
+          this$.view.local.get("iframe-placeholder").classList.add('d-none');
+          if (this$.activeNode) {
+            return this$.activeNode.classList.remove('active');
+          }
         }
-        col = coord.col;
-        data = this$.sheet
-          ? this$.sheet.getSourceData()
-          : [[]];
-        head = data.splice(0, 1)[0];
-        this$.sortDir[col] = dir = 1 - (this$.sortDir[col] || 0);
-        data.sort(function(a, b){
-          return (dir * 2 - 1) * (b[col] > a[col]
-            ? 1
-            : b[col] < a[col] ? -1 : 0);
-        });
-        data.splice(0, 0, head);
-        return this$.sheet.loadData(data);
       });
       this.prjs.sort(function(a, b){
         return a.key - b.key;
