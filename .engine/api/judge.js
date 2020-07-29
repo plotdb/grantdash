@@ -197,6 +197,13 @@
           slug: brd,
           action: ['judge', 'owner']
         });
+      })['catch'](function(){
+        return io.query("select owner from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, req.user.key]).then(function(r){
+          r == null && (r = {});
+          if (!(r.rows || (r.rows = [])).length) {
+            return Promise.reject(403);
+          }
+        });
       }).then(function(){
         return io.query("select p.key, p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p\nleft join users as u on u.key = p.owner\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
       }).then(function(r){

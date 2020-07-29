@@ -94,7 +94,7 @@ app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
   lc = {}
   cache.perm.check {io, user: req.user, type: \prj, slug: prj, action: \owner}
     .catch ->
-      cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
+      cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge]>}
     .catch ->
       io.query "select grp,detail from prj where slug = $1 and deleted is not true", [prj]
         .then (r={}) ->
@@ -104,11 +104,18 @@ app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
           if !(lc.brd = r.[]rows.0) => return aux.reject 404
           grps = lc.brd.{}detail.[]group
           if !(grp = grps.filter(-> lc.prj.grp == it.key).0) => return aux.reject 404
+
           is-public = grp.{}form.[]list.filter(-> it.name in <[form-thumbnail form-file]>)
             .filter -> lc.prj.detail.answer[it.key].[]list.filter(-> it.fn == file).length
             .filter -> it.{}config.public
             .length
-          if !is-public => return Promise.reject 403
+          if is-public => return
+          if !(req.user and req.user.key) => return Promise.reject 403
+          io.query """
+          select owner from perm_judge where brd = $1 and grp = $2 and owner = $3
+          """, [req.scope.brd, grp.key, req.user.key]
+            .then (r={}) ->
+              if !(r.[]rows.length) => return Promise.reject 403
     .then ->
       res.set {"X-Accel-Redirect": "/dash/private/org/#org/prj/#prj/upload/#file"}
       res.send!

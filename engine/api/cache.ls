@@ -65,11 +65,15 @@ route = do
 
 perm = do
   cache: {}
+  cache-judge: {brd: {}}
   perm: {}
   supported-types: <[org brd prj post form]>
+  invalidate-judge: ({type, slug}) ->
+    @cache-judge{}[type][slug] = {}
   invalidate: ({type, slug}) ->
     @cache{}[type][slug] = {}
     @perm{}[type][slug] = null
+    @cache-judge{}[type][slug] = {}
   check: ({io, user, type, slug, action}) ->
     action = if Array.isArray(action) => action else [action]
     payload = {role: {}, perm: {}}
@@ -107,10 +111,24 @@ perm = do
       if e and e.id != 1012 => console.log "[sharedb access error]", e
       return Promise.reject(e or (new lderror 1012))
 
+  check-judge: ({io, brd, grp, user}) ->
+    v = @cache-judge.brd{}[brd].{}[grp][user.key]
+    if v? => return (if v => Promise.resolve(true) else Promise.reject(new lderror(1012)))
+    io.query "select key from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, user.key]
+      .then (r={}) ~>
+        if !(r.[]rows.length) =>
+          @cache-judge.brd{}[brd].{}[grp][user.key] = false
+          return Promise.reject(new lderror(1012))
+        @cache-judge.brd{}[brd].{}[grp][user.key] = true
+
   sharedb: ({io, user, id, data, type, action}) ->
     if !id => return Promise.resolve!
     [type,slug] = id.split('/')
+    [type,slug] = ids = id.split('/')
     @check({io, user, type, slug, action})
+      .catch ~>
+        if !(type == \brd and ids.2 == \grp) => return Promise.reject it
+        @check-judge {io, brd: ids.1, grp: ids.3, user}
 
 stage = do
   cache: {}
