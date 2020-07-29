@@ -472,8 +472,8 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
         total: this.prjs.length || 1,
         done: this.prjs.filter(function(p){
           return !this$.grade.filter(function(g){
-            var ref$, key$;
-            return ((ref$ = this$.data.prj)[key$ = p.key] || (ref$[key$] = {})).v[g.key] == null;
+            var ref$, key$, ref1$, key1$;
+            return ((ref$ = ((ref1$ = this$.data.prj)[key1$ = p.key] || (ref1$[key1$] = {})).v)[key$ = g.key] || (ref$[key$] = {})) == null;
           }).length;
         }).length
       };
