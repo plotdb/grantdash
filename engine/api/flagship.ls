@@ -1,12 +1,13 @@
 require! <[fs fs-extra path crypto lderror suuid mime-types suuid puppeteer]>
 require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 require! <[@google-cloud/storage]>
-
-storage = new storage.Storage do
- projectId: \taicca
- keyFilename: \config/key/taicca.json
+require! <[../../secret]>
 
 (engine,io) <- (->module.exports = it)  _
+
+if !secret.gcs => return
+
+gcs = new storage.Storage secret.gcs
 
 api = engine.router.api
 app = engine.app
@@ -24,22 +25,27 @@ app.get \/flagship/:slug, (req, res) ->
     .then -> res.render \view/taicca-flagship/prj-view.pug, {exports: {prj: lc.prj}}
     .catch aux.error-handler res
 
-# TODO keep record of ownership
 api.post \/flagship/upload, (req, res) ->
+  lc = {}
+  if !(req.user and req.user.key) => return
   filename = req.body.filename
   id = suuid!
-  storage
-   .bucket \taicca-test
+  gcs
+   .bucket secret.gcs.bucket
    .file id
    .getSignedUrl {action: \write, version: \v4, expires: (Date.now! + 60000)}
-   .then -> res.send {signed-url: it.0, id}
+   .then ->
+     lc.url = it.0
+     io.query "insert into perm_gcs (id, owner) values ($1, $2)", [id, req.user.key]
+   .then ->
+     res.send {signed-url: lc.url, id}
    .catch aux.error-handler res
 
 # TODO ownership verify
 app.get \/flagship/upload/:id, (req, res) ->
   id = req.params.id
-  storage
-   .bucket \taicca-test
+  gcs
+   .bucket secret.gcs.bucket
    .file id
    .getSignedUrl {action: \read, version: \v4, expires: (Date.now! + 60000)}
    .then -> return res.status(302).redirect(it.0)
