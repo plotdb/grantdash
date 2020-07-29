@@ -221,6 +221,10 @@
           return io.query("delete from permtoken_judge where token = $1", [token]);
         }
       }).then(function(){
+        cache.invalidateJudge({
+          type: 'brd',
+          slug: lc.ret.brd
+        });
         return res.send({});
       })['catch'](aux.errorHandler(res));
     });

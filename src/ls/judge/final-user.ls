@@ -22,12 +22,18 @@ Ctrl = (opt) ->
   @
 
 Ctrl.prototype = {} <<< judge-base.prototype <<< do
-
   ops-in: ({data,ops,source}) ->
     if source => return
     @data = JSON.parse(JSON.stringify(data))
     @data.{}prj
-    ret = @prjs.map (p,i) ~> @grade.map (g,i) ~> @data.prj{}[p.key].{}v[g.key] or 0
+    ops = []
+    ret = @prjs.map (p,i) ~>
+      if !@data.prj[p.key] =>
+        value = {}
+        @grade.map (g) -> value[g.key] = 0
+        ops.push {p: ['prj', p.key], oi: {v: value}}
+      @grade.map (g,i) ~> @data.prj{}[p.key].{}v[g.key] or 0
+    if ops.length => @update {ops}
     if !ret.length => ret = [[]]
     @sheet.populateFromArray 1, 3, ret
     @render!
@@ -56,8 +62,9 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
             .map (g) ~> @data.prj{}[pk].{}v[g.key]
             .reduce(((a,b) -> a + +b), 0)
           sums.push [row, 3 + @grade.length, sum]
-          ops.push {p: ['prj', pk, 'v', gk], od: old}
-          ops.push {p: ['prj', pk, 'v', gk], oi: cur}
+          if old != cur =>
+            if old? => ops.push {p: ['prj', pk, 'v', gk], od: old}
+            ops.push {p: ['prj', pk, 'v', gk], oi: cur}
         if @sheet and sums.length =>
           @sheet.setDataAtCell sums
           data = @sheet.getSourceData 1, 3 + @grade.length, @prjs.length, 3 + @grade.length
@@ -66,7 +73,6 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
           rank = []
           data.map (v,i) ~> rank.push [v.1, 3 + @grade.length + 1, i + 1]
           @sheet.setDataAtCell rank
-
         @update {ops}
     }, {grade: @grade}
 

@@ -97,6 +97,13 @@ api.get \/brd/:brd/grp/:grp/judge-list, (req, res) ->
       if !(cfg["judge-criteria"] or cfg["judge-primary"] or cfg["judge-final"]) =>
         return Promise.reject new lderror(1016)
       cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
+    .catch ->
+      io.query """
+      select owner from perm_judge where brd = $1 and grp = $2 and owner = $3
+      """, [brd, grp, req.user.key]
+        .then (r={}) ->
+          if !(r.[]rows.length) => return Promise.reject 403
+
     .then ->
       io.query """
       select p.key, p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p

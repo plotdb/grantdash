@@ -105,13 +105,22 @@
   };
   perm = {
     cache: {},
+    cacheJudge: {
+      brd: {}
+    },
     perm: {},
     supportedTypes: ['org', 'brd', 'prj', 'post', 'form'],
+    invalidateJudge: function(arg$){
+      var type, slug, ref$;
+      type = arg$.type, slug = arg$.slug;
+      return ((ref$ = this.cacheJudge)[type] || (ref$[type] = {}))[slug] = {};
+    },
     invalidate: function(arg$){
       var type, slug, ref$;
       type = arg$.type, slug = arg$.slug;
       ((ref$ = this.cache)[type] || (ref$[type] = {}))[slug] = {};
-      return ((ref$ = this.perm)[type] || (ref$[type] = {}))[slug] = null;
+      ((ref$ = this.perm)[type] || (ref$[type] = {}))[slug] = null;
+      return ((ref$ = this.cacheJudge)[type] || (ref$[type] = {}))[slug] = {};
     },
     check: function(arg$){
       var io, user, type, slug, action, payload, this$ = this;
@@ -181,19 +190,49 @@
         return Promise.reject(e || new lderror(1012));
       });
     },
+    checkJudge: function(arg$){
+      var io, brd, grp, user, v, ref$, ref1$, this$ = this;
+      io = arg$.io, brd = arg$.brd, grp = arg$.grp, user = arg$.user;
+      v = ((ref$ = (ref1$ = this.cacheJudge.brd)[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key];
+      if (v != null) {
+        return v
+          ? Promise.resolve(true)
+          : Promise.reject(new lderror(1012));
+      }
+      return io.query("select key from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, user.key]).then(function(r){
+        var ref$, ref1$;
+        r == null && (r = {});
+        if (!(r.rows || (r.rows = [])).length) {
+          ((ref$ = (ref1$ = this$.cacheJudge.brd)[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key] = false;
+          return Promise.reject(new lderror(1012));
+        }
+        return ((ref$ = (ref1$ = this$.cacheJudge.brd)[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key] = true;
+      });
+    },
     sharedb: function(arg$){
-      var io, user, id, data, type, action, ref$, slug;
+      var io, user, id, data, type, action, ref$, slug, ids, this$ = this;
       io = arg$.io, user = arg$.user, id = arg$.id, data = arg$.data, type = arg$.type, action = arg$.action;
       if (!id) {
         return Promise.resolve();
       }
       ref$ = id.split('/'), type = ref$[0], slug = ref$[1];
+      ref$ = ids = id.split('/'), type = ref$[0], slug = ref$[1];
       return this.check({
         io: io,
         user: user,
         type: type,
         slug: slug,
         action: action
+      })['catch'](function(it){
+        if (!(type === 'brd' && ids[2] === 'grp')) {
+          return Promise.reject(it);
+        }
+        return this$.checkJudge({
+          io: io,
+          brd: ids[1],
+          grp: ids[3],
+          user: user
+        });
       });
     }
   };

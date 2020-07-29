@@ -172,7 +172,7 @@
           user: req.user,
           type: 'brd',
           slug: req.scope.brd,
-          action: 'owner'
+          action: ['owner', 'judge']
         });
       })['catch'](function(){
         return io.query("select grp,detail from prj where slug = $1 and deleted is not true", [prj]).then(function(r){
@@ -204,9 +204,18 @@
           }).filter(function(it){
             return (it.config || (it.config = {}))['public'];
           }).length;
-          if (!isPublic) {
+          if (isPublic) {
+            return;
+          }
+          if (!(req.user && req.user.key)) {
             return Promise.reject(403);
           }
+          return io.query("select owner from perm_judge where brd = $1 and grp = $2 and owner = $3", [req.scope.brd, grp.key, req.user.key]).then(function(r){
+            r == null && (r = {});
+            if (!(r.rows || (r.rows = [])).length) {
+              return Promise.reject(403);
+            }
+          });
         });
       }).then(function(){
         res.set({

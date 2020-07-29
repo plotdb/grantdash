@@ -127,5 +127,7 @@ api.put \/judgetoken, aux.signed, grecaptcha, (req, res) ->
       if ret.count > 1 =>
         io.query "update permtoken_judge set count = $1 where token = $2", [ret.count - 1, token]
       else io.query "delete from permtoken_judge where token = $1", [token]
-    .then -> res.send {}
+    .then ->
+      cache.invalidate-judge {type: \brd, slug: lc.ret.brd}
+      res.send {}
     .catch aux.error-handler res

@@ -38,12 +38,31 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
       }
       this.data = JSON.parse(JSON.stringify(data));
       (ref$ = this.data).prj || (ref$.prj = {});
+      ops = [];
       ret = this.prjs.map(function(p, i){
+        var value;
+        if (!this$.data.prj[p.key]) {
+          value = {};
+          this$.grade.map(function(g){
+            return value[g.key] = 0;
+          });
+          ops.push({
+            p: ['prj', p.key],
+            oi: {
+              v: value
+            }
+          });
+        }
         return this$.grade.map(function(g, i){
           var ref$, ref1$, key$;
           return ((ref$ = (ref1$ = this$.data.prj)[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key] || 0;
         });
       });
+      if (ops.length) {
+        this.update({
+          ops: ops
+        });
+      }
       if (!ret.length) {
         ret = [[]];
       }
@@ -86,14 +105,18 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
               return a + +b;
             }, 0);
             sums.push([row, 3 + this$.grade.length, sum]);
-            ops.push({
-              p: ['prj', pk, 'v', gk],
-              od: old
-            });
-            return ops.push({
-              p: ['prj', pk, 'v', gk],
-              oi: cur
-            });
+            if (old !== cur) {
+              if (old != null) {
+                ops.push({
+                  p: ['prj', pk, 'v', gk],
+                  od: old
+                });
+              }
+              return ops.push({
+                p: ['prj', pk, 'v', gk],
+                oi: cur
+              });
+            }
           });
           if (this$.sheet && sums.length) {
             this$.sheet.setDataAtCell(sums);
