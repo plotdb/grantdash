@@ -3590,15 +3590,15 @@ pug_html = pug_html + "\u003Cdiv class=\"typeset heading-contast vertical-center
 ;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
 pug_html = pug_html + "\u003Cdiv class=\"w-100 text-center\"\u003E";
 ;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "\u003Cdiv class=\"p-4\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"p-4 m-4\"\u003E";
 ;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "\u003Cdiv class=\"my-4\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"mb-4\"\u003E";
 ;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
 pug_html = pug_html + "您的權限已設定完成。\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "\u003Ca class=\"btn btn-outline-primary\" href=\"\u002F\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-outline-primary\" onclick=\"window.location.reload()\"\u003E";
 ;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "回首頁\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "載入評選表\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 },
 attributes: {"class": "ldcv"}
 }, "claimed");
