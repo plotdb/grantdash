@@ -23,11 +23,25 @@ Ctrl = (opt) ->
           @view.local.render {name: 'project', key: @active.slug}
       click: do
         sort: ({node}) ~> @sort node.getAttribute \data-name
+        "toggle-total": ~>
+          @total-editable = !@total-editable
+          @view.local.render \toggle-total
 
     handler: do
+      "toggle-total": ({node}) ~>
+        ld$.find(node, '.switch', 0).classList.toggle \on, @total-editable
+        ld$.find(@root, 'input[ld=total]').map (n) ~>
+          if @total-editable => n.removeAttribute \readonly
+          else n.setAttribute \readonly, null
+          n.classList.toggle \bg-light, !@total-editable
+
       "comment-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
       "progress-percent": ({node}) ~> node.innerText = Math.floor(100 * @progress.done / @progress.total)
       "progress-bar": ({node}) ~> node.style.width = "#{(100 * @progress.done / @progress.total)}%"
+      count: ({node}) ~>
+        n = node.getAttribute(\data-name)
+        if n == \total => node.innerText = @progress.total or 0
+        else if n == \pending => node.innerText = (@progress.total - @progress.done) or 0
 
       detail: do
         list: ~>
@@ -99,9 +113,11 @@ Ctrl = (opt) ->
             init: do
               total: ({node, context}) ~>
                 handle = ~>
-                  context.total = v = + node.value
+                  if context.total == (v = +node.value) => return
+                  context.total = v
                   @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / 100
-                  @view.local.render {name: \project, key: context.slug}
+                  #@view.local.render {name: \project, key: context.slug}
+                  @view.local.render \project
 
                 node.addEventListener \input, handle
                 node.addEventListener \change, handle
@@ -125,7 +141,8 @@ Ctrl = (opt) ->
                   handle = (e) ~>
                     @data.prj[context.key].v[data.key] = +input.value
                     local.render data
-                    @view.local.render {name: \project, key: context.slug}
+                    #@view.local.render {name: \project, key: context.slug}
+                    @view.local.render \project
                     @ops-out ~> @data
                   local.render = (data) ~>
                     local.input.value = v = @data.prj{}[context.key].{}v[data.key] or ''

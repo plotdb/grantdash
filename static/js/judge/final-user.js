@@ -48,10 +48,27 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
             var node;
             node = arg$.node;
             return this$.sort(node.getAttribute('data-name'));
+          },
+          "toggle-total": function(){
+            this$.totalEditable = !this$.totalEditable;
+            return this$.view.local.render('toggle-total');
           }
         }
       },
       handler: {
+        "toggle-total": function(arg$){
+          var node;
+          node = arg$.node;
+          ld$.find(node, '.switch', 0).classList.toggle('on', this$.totalEditable);
+          return ld$.find(this$.root, 'input[ld=total]').map(function(n){
+            if (this$.totalEditable) {
+              n.removeAttribute('readonly');
+            } else {
+              n.setAttribute('readonly', null);
+            }
+            return n.classList.toggle('bg-light', !this$.totalEditable);
+          });
+        },
         "comment-name": function(arg$){
           var node;
           node = arg$.node;
@@ -66,6 +83,16 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
           var node;
           node = arg$.node;
           return node.style.width = 100 * this$.progress.done / this$.progress.total + "%";
+        },
+        count: function(arg$){
+          var node, n;
+          node = arg$.node;
+          n = node.getAttribute('data-name');
+          if (n === 'total') {
+            return node.innerText = this$.progress.total || 0;
+          } else if (n === 'pending') {
+            return node.innerText = this$.progress.total - this$.progress.done || 0;
+          }
         },
         detail: {
           list: function(){
@@ -214,15 +241,15 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                   node = arg$.node, context = arg$.context;
                   handle = function(){
                     var v;
-                    context.total = v = +node.value;
+                    if (context.total === (v = +node.value)) {
+                      return;
+                    }
+                    context.total = v;
                     this$.grade.map(function(it){
                       var ref$, ref1$, key$;
                       return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = it.percent * v / 100;
                     });
-                    return this$.view.local.render({
-                      name: 'project',
-                      key: context.slug
-                    });
+                    return this$.view.local.render('project');
                   };
                   node.addEventListener('input', handle);
                   node.addEventListener('change', handle);
@@ -281,10 +308,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                     handle = function(e){
                       this$.data.prj[context.key].v[data.key] = +input.value;
                       local.render(data);
-                      this$.view.local.render({
-                        name: 'project',
-                        key: context.slug
-                      });
+                      this$.view.local.render('project');
                       return this$.opsOut(function(){
                         return this$.data;
                       });
