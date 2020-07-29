@@ -202,7 +202,11 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
         users = @criteria-result.data.user
         @prjs.map (p) ~>
           p.criteria = {0: 0, 1: 0, 2: 0}
-          for k,v of users => @criteria.map (c) ~> p.criteria[v.{}prj{}[p.key].v[c.key] or 1]++
+          for k,v of users =>
+            @criteria.map (c) ~>
+              idx = v.{}prj{}[p.key].v[c.key]
+              if !(idx?) => idx = 1
+              p.criteria[idx]++
 
   rerank: ->
     ranks = for k,v of @data.{}prj =>

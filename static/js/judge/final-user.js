@@ -427,8 +427,12 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
           }
           return results$;
           function fn$(c){
-            var ref$, key$;
-            return p.criteria[((ref$ = v.prj || (v.prj = {}))[key$ = p.key] || (ref$[key$] = {})).v[c.key] || 1]++;
+            var idx, ref$, key$;
+            idx = ((ref$ = v.prj || (v.prj = {}))[key$ = p.key] || (ref$[key$] = {})).v[c.key];
+            if (!(idx != null)) {
+              idx = 1;
+            }
+            return p.criteria[idx]++;
           }
         });
       });
