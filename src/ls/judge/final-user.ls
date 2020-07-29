@@ -32,7 +32,7 @@ Ctrl = (opt) ->
       detail: do
         list: ~>
           if !@active => return []
-          ret = for k,v of (@review or {}) =>
+          ret = for k,v of (@criteria-result.{}data.user or {}) =>
             p = v.prj{}[@active.key]
             obj = do
               user: k
@@ -81,7 +81,7 @@ Ctrl = (opt) ->
             context: data
             action: click: do
               detail: ({node, context}) ~>
-                @prj = context
+                @active = context
                 @view.local.render \detail
                 @ldcv.detail.toggle!
 
@@ -112,6 +112,10 @@ Ctrl = (opt) ->
               key: ({node, context}) -> node.innerText = context.key or ''
               total: ({node, context}) -> node.value = if context.total? => context.total else '-'
               rank: ({node, context}) -> node.value = if context.rank? => context.rank else '-'
+
+              criteria: ({node, context}) ->
+                n = node.getAttribute(\data-name)
+                node.innerText = ({0:"+",2:"-"}[n] or '') + context.{}criteria[n]
               grade: do
                 key: -> it.key
                 list: ({context}) ~> @grade
@@ -168,10 +172,20 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
         if !@grpinfo.grade => ldcvmgr.get('judge-grade-missing')
         else @grade = @grpinfo.grade.entries
       .then ~> @fetch-prjs!
+      .then ~> @fetch-criteria-result!
       .then ~> @sharedb!
       .then ~> @reconnect!
       .catch error!
 
+  fetch-criteria-result: ->
+    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge/criteria/result", {method: \GET}, {type: \json}
+      .then (ret = {}) ~>
+        @criteria-result = ret.data
+        @get-displayname [k for k of @criteria-result.data.user]
+        users = @criteria-result.data.user
+        @prjs.map (p) ~>
+          p.criteria = {0: 0, 1: 0, 2: 0}
+          for k,v of users => @criteria.map (c) ~> p.criteria[v.{}prj{}[p.key].v[c.key] or 1]++
 
   rerank: ->
     ranks = for k,v of @data.{}prj =>

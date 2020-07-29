@@ -171,15 +171,6 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       count[<[accept pending reject]>[val]].push k
       context.state = if count.reject.length => 2 else if count.accept.length => 0 else 1
 
-  get-displayname: (list) ->
-    if @usermap and !(list.filter(~>!@usermap[it]).length) => return Promise.resolve!
-    payload = userkeys: list
-    ld$.fetch "/dash/api/usermap/", {method: \PUT}, {json: payload, type: \json}
-      .then (ret = []) ~>
-        @usermap = {}
-        ret.map ~> @usermap[it.key] = it
-      .catch error!
-
   get-progress: ->
     val = {0: 0, 1: 0, 2: 0}
     @prjs.map (p) ~>

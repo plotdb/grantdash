@@ -69,12 +69,12 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
         },
         detail: {
           list: function(){
-            var ret, res$, k, ref$, v, p, ref1$, key$, obj;
+            var ret, res$, k, ref$, ref1$, v, p, key$, obj;
             if (!this$.active) {
               return [];
             }
             res$ = [];
-            for (k in ref$ = this$.review || {}) {
+            for (k in ref$ = ((ref1$ = this$.criteriaResult).data || (ref1$.data = {})).user || {}) {
               v = ref$[k];
               p = (ref1$ = v.prj)[key$ = this$.active.key] || (ref1$[key$] = {});
               res$.push(obj = {
@@ -183,7 +183,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                   detail: function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;
-                    this$.prj = context;
+                    this$.active = context;
                     this$.view.local.render('detail');
                     return this$.ldcv.detail.toggle();
                   },
@@ -254,6 +254,15 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                   var node, context;
                   node = arg$.node, context = arg$.context;
                   return node.value = context.rank != null ? context.rank : '-';
+                },
+                criteria: function(arg$){
+                  var node, context, n;
+                  node = arg$.node, context = arg$.context;
+                  n = node.getAttribute('data-name');
+                  return node.innerText = ({
+                    0: "+",
+                    2: "-"
+                  }[n] || '') + (context.criteria || (context.criteria = {}))[n];
                 },
                 grade: {
                   key: function(it){
@@ -356,10 +365,49 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
       }).then(function(){
         return this$.fetchPrjs();
       }).then(function(){
+        return this$.fetchCriteriaResult();
+      }).then(function(){
         return this$.sharedb();
       }).then(function(){
         return this$.reconnect();
       })['catch'](error());
+    },
+    fetchCriteriaResult: function(){
+      var this$ = this;
+      return ld$.fetch("/dash/api/brd/" + this.brd + "/grp/" + this.grp + "/judge/criteria/result", {
+        method: 'GET'
+      }, {
+        type: 'json'
+      }).then(function(ret){
+        var k, users;
+        ret == null && (ret = {});
+        this$.criteriaResult = ret.data;
+        this$.getDisplayname((function(){
+          var results$ = [];
+          for (k in this.criteriaResult.data.user) {
+            results$.push(k);
+          }
+          return results$;
+        }.call(this$)));
+        users = this$.criteriaResult.data.user;
+        return this$.prjs.map(function(p){
+          var k, ref$, v, results$ = [];
+          p.criteria = {
+            0: 0,
+            1: 0,
+            2: 0
+          };
+          for (k in ref$ = users) {
+            v = ref$[k];
+            results$.push(this$.criteria.map(fn$));
+          }
+          return results$;
+          function fn$(c){
+            var ref$, key$;
+            return p.criteria[((ref$ = v.prj || (v.prj = {}))[key$ = p.key] || (ref$[key$] = {})).v[c.key] || 1]++;
+          }
+        });
+      });
     },
     rerank: function(){
       var ranks, res$, k, ref$, ref1$, v, prj, sum, i$, len$, g, lc;

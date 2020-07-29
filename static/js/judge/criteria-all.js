@@ -321,29 +321,6 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
         return Math.max(a, v != null ? v : 1);
       }
     },
-    getDisplayname: function(list){
-      var payload, this$ = this;
-      if (this.usermap && !list.filter(function(it){
-        return !this$.usermap[it];
-      }).length) {
-        return Promise.resolve();
-      }
-      payload = {
-        userkeys: list
-      };
-      return ld$.fetch("/dash/api/usermap/", {
-        method: 'PUT'
-      }, {
-        json: payload,
-        type: 'json'
-      }).then(function(ret){
-        ret == null && (ret = []);
-        this$.usermap = {};
-        return ret.map(function(it){
-          return this$.usermap[it.key] = it;
-        });
-      })['catch'](error());
-    },
     getProgress: function(){
       var val, this$ = this;
       val = {

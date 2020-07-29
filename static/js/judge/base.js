@@ -175,6 +175,29 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         return this$.global = g;
       });
     },
+    getDisplayname: function(list){
+      var payload, this$ = this;
+      if (this.usermap && !list.filter(function(it){
+        return !this$.usermap[it];
+      }).length) {
+        return Promise.resolve();
+      }
+      payload = {
+        userkeys: list
+      };
+      return ld$.fetch("/dash/api/usermap/", {
+        method: 'PUT'
+      }, {
+        json: payload,
+        type: 'json'
+      }).then(function(ret){
+        ret == null && (ret = []);
+        this$.usermap = {};
+        return ret.map(function(it){
+          return this$.usermap[it.key] = it;
+        });
+      })['catch'](error());
+    },
     sort: function(name, value, hint){
       var n, dir, namemap, verbose, this$ = this;
       hint == null && (hint = true);
@@ -200,7 +223,8 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         shortlist: "入選標記",
         budget: "預算",
         total: "總分",
-        rank: "排名"
+        rank: "排名",
+        "criteria-result": "審查結果"
       };
       verbose = {
         name: namemap[name] || value,
@@ -253,6 +277,10 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
           this$.prjs.sort(function(a, b){
             var ref$, key$;
             return dir * ((((ref$ = this$.data.prj)[key$ = a.key] || (ref$[key$] = {})).comment || '').length - (((ref$ = this$.data.prj)[key$ = b.key] || (ref$[key$] = {})).comment || '').length);
+          });
+        } else if (name === 'criteria-result') {
+          this$.prjs.sort(function(a, b){
+            return dir * ((b.criteria[0] - b.criteria[2]) - (a.criteria[0] - a.criteria[2]));
           });
         } else if (name === 'criteria') {
           this$.prjs.sort(function(a, b){

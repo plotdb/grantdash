@@ -40,7 +40,7 @@ block body
                 .mx-3 待審 #[span.text-danger(ld="count",data-name="pending") 0]
 
             .d-flex.py-2.bg-light.border-bottom.shadow-sm.text-center
-              div(style="width:5em") 註記
+              div(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
               .flex-grow-1(ld="sort",data-name="name") 提案名稱
               .clickable(ld-each="grade",style="width:5em") #[span]#[.text-sm.text-muted]
               .clickable(ld="sort",data-name="total",style="width:4em") 總分
@@ -48,7 +48,10 @@ block body
               .clickable(ld="sort",data-name="comment",style="width:5em") 評論
 
           .d-flex.text-center.score-row.d-none(ld-each="project")
-            .clickable(ld="detail",style="width:5em"): .vertical-center: .w-100: i.i-doc
+            .clickable(ld="detail",style="width:5em"): .vertical-center: .w-100
+              span.text-success(ld="criteria",data-name="0")
+              span.mx-2 /
+              span.text-danger(ld="criteria",data-name="2")
             .text-left.p-2(style="flex:1 0 0")
               span.clickable.text-underline(ld="name")
             div(ld-each="grade",style="width:5em"): input
