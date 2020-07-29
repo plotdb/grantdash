@@ -85,16 +85,17 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
       }, {
         type: 'json'
       }).then(function(it){
-        var data, prjs;
-        this$.data = data = it;
+        var data, ref$, ref1$, prjs;
+        this$.data = data = it || {};
+        (ref$ = (ref1$ = this$.data).data || (ref1$.data = {})).user || (ref$.user = {});
         prjs = data.prjs;
         console.log(it);
         return data.users.map(function(u){
           return prjs.filter(function(p){
             var k, v;
             return (function(){
-              var ref$, results$ = [];
-              for (k in ref$ = data.data.user[u.key].prj[p.key].v) {
+              var ref$, ref1$, key$, ref2$, ref3$, key1$, results$ = [];
+              for (k in ref$ = ((ref1$ = (ref2$ = (ref3$ = data.data.user)[key1$ = u.key] || (ref3$[key1$] = {})).prj || (ref2$.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v) {
                 v = ref$[k];
                 results$.push(v);
               }

@@ -46,11 +46,13 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
   prepare: ->
     ld$.fetch "/dash/api/brd/#{@brd.slug}/grp/#{@grp.key}/judge/final/all", {method: \GET}, {type: \json}
       .then ~>
-        @data = data = it
+        @data = data = it or {}
+        @data.{}data.{}user
         prjs = data.prjs
         console.log it
         data.users.map (u) ->
-          prjs.filter (p) -> [v for k,v of data.data.user[u.key].prj[p.key].v].reduce(((a,b)->a + (b or 0)),0) > 0
+          prjs.filter (p) ->
+            [v for k,v of data.data.user{}[u.key].{}prj{}[p.key].v].reduce(((a,b)->a + (b or 0)),0) > 0
 
       .catch error!
 
