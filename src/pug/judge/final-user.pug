@@ -1,43 +1,60 @@
 extends /base.pug
 block vars
- - ctrl.navtop.shown = true
- - ctrl.navtop.placeholder = false
- - ctrl.navtop.className="bg-none"
- - ctrl.foot.shown = false
+  - ctrl.navtop.shown = true
+  - ctrl.navtop.placeholder = false
+  - ctrl.navtop.className="bg-none"
+  - ctrl.foot.shown = false
+block head
+  style(type="text/css"): :stylus
+    .judge-table { font-size: 15px }
+    .judge-table input
+      width: 100%
+      height: 100%; 
+      display: block
+      border: none
+      background: none
+      padding: 2px
+      font-weight: 300
+      text-align: center
+    .judge-table .score-row
+      border-bottom: 1px solid #ccc
+      & > div
+        &:not(:last-of-type)
+          border-right: 1px solid #ccc
 block navtop-item
   ul.navbar-nav.mr-auto
     li.nav-item: a.nav-link(href="#") #[i.i-radio.text-success] 決選表 - #[span(ld="reviewer")]
-block head
-  +css("/dash/assets/lib/handsontable/handsontable.min.css")
-  style(type="text/css"): :stylus
-    tr td:nth-child(4)
-      border-right: 2px solid #000
-      text-align: left!important
-    tr:nth-child(1) td
-      border-bottom: 2px solid #000
-    td.active
-      background: #09f
-      color: #fff
 block body
   include cover.pug
-  .h-100.w-100.d-flex.flex-column.judge
+  .h-100.w-100.d-flex.flex-column
     div(style="padding-top:60px")
-
     .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
-      .d-flex.flex-column(style="flex:3 2 60%")
-        .flex-grow-1.bg-white.border-top.border-bottom.mt-3
-          #edit.w-100.h-100(style="overflow:hidden")
+      .d-flex.flex-column(style="flex:1 1 55%")
 
-        //-.px-4.py-2.w-100
-          .d-flex.align-items-center
-            .mr-4
-              .text-muted.text-sm 距決選截止還有
-              .text-danger 2 天 15 小時 20 分
-            .mr-4.flex-grow-1
-              .text-muted.text-sm 完成度 / #[span.text-danger 70%]
-              .progress.my-1(style="width:100%")
-                .progress-bar.progress-bar-striped.progress-bar-animated(style="width:60%")
-            div: .btn.btn-outline-dark 提交評選結果
+        .judge-table.flex-grow-1.bg-white.border-top.border-bottom.mt-3.w-100(style="overflow:scroll")
+
+          .sticky(style="top:0")
+            .p-2.bg-white.d-flex.text-muted.text-sm.justify-content-end
+              .flex-grow-1.d-flex
+                .mx-3 總計 #[span.text-danger(ld="count",data-name="total") 0]
+                .mx-3 待審 #[span.text-danger(ld="count",data-name="pending") 0]
+
+            .d-flex.py-2.bg-light.border-bottom.shadow-sm.text-center
+              div(style="width:5em") 註記
+              .flex-grow-1 提案名稱
+              .clickable(ld-each="grade",style="width:5em") #[span]#[.text-sm.text-muted]
+              .clickable(style="width:4em") 總分
+              .clickable(style="width:4em") 排名
+              .clickable(style="width:5em") 評論
+
+            .d-flex.text-center.score-row.d-none(ld-each="project")
+              .clickable(ld="detail",style="width:5em"): .vertical-center: .w-100: i.i-doc
+              .text-left.p-2(style="flex:1 0 0")
+                span.clickable.text-underline(ld="name")
+              div(ld-each="grade",style="width:5em"): input
+              div(style="width:4em"): input(ld="total")
+              .bg-light(style="width:4em"): input(ld="rank",readonly)
+              .clickable(ld="comment",style="width:5em"): .vertical-center: .w-100: i.i-pen
 
 
         .px-4.py-2.w-100
@@ -46,39 +63,72 @@ block body
               .text-muted.text-sm 距資格審查截止還有
               .text-danger 2 天 15 小時 20 分
             .mr-4.text-sm
-              .text-muted 決選進度
+              .text-muted 決選評分進度
+              .d-flex.align-items-center.my-1(style="line-height:1rem")
+                .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                span.mr-2 已評分
+                .bg-light.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                span 未評分
             .mr-4.flex-grow-1
               .text-muted.text-sm 完成度 / #[span.text-danger(ld="progress progress-percent") 0]%
               .progress.my-1(style="width:100%")
                 .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(
-                ld="progress progress-bar",data-name="accept")
-                .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(
-                ld="progress progress-bar",data-name="pending")
-                .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
-                ld="progress progress-bar",data-name="reject")
+                ld="progress progress-bar")
             //-div: .btn.btn-outline-dark 提交審查結果
 
 
-      div(style="flex:2 3 40%")
-        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0
-          iframe.border-0.w-100.h-100(ld="iframe",src="about:blank")
-          .w-100.h-100.vertical-center.position-absolute.z-float.bg-light(
-          ld="iframe-placeholder",style="top:0;left:0")
-            .w-100.text-center.text-muted
-              .text-lg 提案瀏覽區
-              div 您可以點擊左方的提案名稱以在此瀏覽該提案內容
-          //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
-            embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
+
+      div(style="flex:1 1 45%")
+        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em")
+          .card-body.p-0.position-relative
+            iframe.border-0.w-100.h-100(ld="iframe")
+            .w-100.h-100.vertical-center.position-absolute.z-float.bg-light(
+            ld="iframe-placeholder",style="top:0;left:0")
+              .w-100.text-center.text-muted
+                .text-lg 提案瀏覽區
+                div 您可以點擊左方的提案名稱以在此瀏覽該提案內容
+            //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
+              embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
+
+
+
+
+  div
+
+    .ldcv(ld="comment-ldcv"): .base.w-480: .inner.card.shadow-sm
+      .card-header.shadow-sm.position-relative.z-float
+        p.mb-0 決選附註
+        h4.mb-0(ld="comment-name")
+      textarea.form-control.border-0.rounded-0(ld="comment",
+      rows="5",placeholder="在這裡輸入您的附註 ... ")
+      .card-footer.text-right: .btn.btn-primary(data-ldcv-set="") 完成
+
+    .ldcv.scroll(ld="detail-ldcv"): .base.w-640: .inner.card.shadow-sm
+      .card-header.shadow-sm.position-relative.z-float
+        p.mb-0 資格審核附註
+        h4.mb-0(ld="comment-name")
+      .card-body
+        .pb-4.mb-4.border-light(ld-each="detail")
+          .d-flex.align-items-stretch.mb-2
+            .flex-grow-1.mr-2.d-flex.align-items-center: .text-center.w-100
+              .mx-auto(style="width:3em"): .aspect-ratio.ratio-1by1.rounded-circle.bg-dark.bg-cover(ld="avatar")
+              div(ld="name")
+            .text-left.py-2.px-1.rounded.mx-1.d-flex.flex-column(ld-each="criteria",style="width:6em")
+              .flex-grow-1.d-flex.flex-column.justify-content-center.text-center(ld="name")
+              .text-lg.text-center(ld="value"): i
+          .bg-light.p-4(ld="comment")
+      .card-footer
+        .d-flex.justify-content-between
+          .btn.btn-primary(data-ldcv-set="") 關閉
 
 
 block script
-
-  +script("/dash/assets/lib/handsontable/handsontable.min.js")
   +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
   +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
+  +script("/dash/js/judge/base.js")
+  +script("/dash/js/judge/criteria-user.js")
   +script("/dash/js/util/sdb-adapter.js")
   +script("/dash/js/util/hub.js")
-  +script("/dash/js/judge/base.js")
   +script("/dash/js/judge/final-user.js")
   script: :lsc
-    ldc.app \judgeFinalUser
+    ldc.register <[judgeFinalUser]>, ->
