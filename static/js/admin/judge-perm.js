@@ -86,7 +86,7 @@ ldc.register('adminJudgePerm', ['ldcvmgr', 'auth', 'sdbAdapter', 'error'], funct
             return (ref$ = this$.data).list || (ref$.list = []);
           },
           init: function(arg$){
-            var node, data, local, this$ = this;
+            var node, data, local;
             node = arg$.node, data = arg$.data, local = arg$.local;
             node.classList.remove('d-none');
             return local.view = new ldView({

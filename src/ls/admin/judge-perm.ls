@@ -36,7 +36,7 @@ Ctrl = (opt = {})->
       empty: ({node}) ~> node.classList.toggle \d-none, @data.[]list.length
       judges: do
         list: ~> @data.[]list
-        init: ({node, data, local}) ->
+        init: ({node, data, local}) ~>
           node.classList.remove \d-none
           local.view = new ldView do
             root: node
