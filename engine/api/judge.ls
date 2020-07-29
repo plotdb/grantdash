@@ -84,7 +84,6 @@ api.get \/brd/:brd/grp/:grp/judge/:type/:scope, (req, res) ->
         .then (r={}) ->
           prjs = r.[]rows
           res.send {data: lc.data, users: lc.users, prjs}
-
     .catch aux.error-handler res
 
 api.get \/brd/:brd/grp/:grp/judge-list, (req, res) ->
@@ -103,7 +102,6 @@ api.get \/brd/:brd/grp/:grp/judge-list, (req, res) ->
       """, [brd, grp, req.user.key]
         .then (r={}) ->
           if !(r.[]rows.length) => return Promise.reject 403
-
     .then ->
       io.query """
       select p.key, p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p
