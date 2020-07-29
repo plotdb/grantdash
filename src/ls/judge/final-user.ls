@@ -222,7 +222,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @progress = do
       total: (@prjs.length or 1)
       #done: @prjs.filter(->it.total).length
-      done: @prjs.filter((p) ~> !(@grade.filter((g) ~>!@data.prj{}[p.key].v{}[g.key]?).length)).length
+      done: @prjs.filter((p) ~> !(@grade.filter((g) ~>!@data.prj{}[p.key].{}v[g.key]?).length)).length
 
 
 ctrl = new Ctrl root: document.body
