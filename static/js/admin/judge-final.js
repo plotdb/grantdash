@@ -15,7 +15,6 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
     adminPanel.on('active', function(arg$){
       var nav, name, panel;
       nav = arg$.nav, name = arg$.name, panel = arg$.panel;
-      console.log(nav, name, panel);
       if (!(nav === 'grp-judge' && name === 'final')) {
         return;
       }
@@ -61,10 +60,8 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
                   return node.innerText = context.name;
                 },
                 "progress-bar": function(arg$){
-                  var node, context, v;
-                  node = arg$.node, context = arg$.context;
-                  v = +node.getAttribute('data-name');
-                  return node.style.width = 100 * context.count[v] / context.count.total + "%";
+                  var node;
+                  node = arg$.node;
                 }
               }
             });
@@ -88,8 +85,25 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
       }, {
         type: 'json'
       }).then(function(it){
-        var data;
-        return this$.data = data = it;
+        var data, prjs;
+        this$.data = data = it;
+        prjs = data.prjs;
+        console.log(it);
+        return data.users.map(function(u){
+          return prjs.filter(function(p){
+            var k, v;
+            return (function(){
+              var ref$, results$ = [];
+              for (k in ref$ = data.data.user[u.key].prj[p.key].v) {
+                v = ref$[k];
+                results$.push(v);
+              }
+              return results$;
+            }()).reduce(function(a, b){
+              return a + (b || 0);
+            }, 0) > 0;
+          });
+        });
       })['catch'](error());
     },
     setData: function(grp){
