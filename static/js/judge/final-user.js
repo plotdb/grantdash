@@ -42,6 +42,13 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
               key: this$.active.slug
             });
           }
+        },
+        click: {
+          sort: function(arg$){
+            var node;
+            node = arg$.node;
+            return this$.sort(node.getAttribute('data-name'));
+          }
         }
       },
       handler: {
@@ -146,6 +153,13 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
             node = arg$.node, data = arg$.data;
             ld$.find(node, 'span', 0).innerText = data.name;
             return ld$.find(node, 'div', 0).innerText = data.percent + "%";
+          },
+          action: {
+            click: function(arg$){
+              var node, data;
+              node = arg$.node, data = arg$.data;
+              return this$.sort('grade', data);
+            }
           }
         },
         project: {
@@ -194,6 +208,27 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                   }
                 }
               },
+              init: {
+                total: function(arg$){
+                  var node, context, handle;
+                  node = arg$.node, context = arg$.context;
+                  handle = function(){
+                    var v;
+                    context.total = v = +node.value;
+                    this$.grade.map(function(it){
+                      var ref$, ref1$, key$;
+                      return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = it.percent * v / 100;
+                    });
+                    return this$.view.local.render({
+                      name: 'project',
+                      key: context.slug
+                    });
+                  };
+                  node.addEventListener('input', handle);
+                  node.addEventListener('change', handle);
+                  return node.addEventListener('keyup', handle);
+                }
+              },
               handler: {
                 comment: function(arg$){
                   var node, context, ref$, key$;
@@ -221,6 +256,9 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                   return node.value = context.rank != null ? context.rank : '-';
                 },
                 grade: {
+                  key: function(it){
+                    return it.key;
+                  },
                   list: function(arg$){
                     var context;
                     context = arg$.context;
@@ -233,15 +271,32 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                     input.value = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[data.key] || '';
                     handle = function(e){
                       this$.data.prj[context.key].v[data.key] = +input.value;
-                      this$.opsOut(function(){
+                      local.render(data);
+                      this$.view.local.render({
+                        name: 'project',
+                        key: context.slug
+                      });
+                      return this$.opsOut(function(){
                         return this$.data;
                       });
-                      this$.rerank();
-                      return this$.view.local.render(['project', 'progress-bar', 'progress-percent']);
+                    };
+                    local.render = function(data){
+                      var v, ref$, ref1$, key$;
+                      local.input.value = v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[data.key] || '';
+                      ['bg-danger', 'text-white'].map(function(it){
+                        return input.classList.toggle(it, v > data.percent);
+                      });
+                      this$.view.local.render(['progress-bar', 'progress-percent']);
+                      return this$.rerank();
                     };
                     input.addEventListener('input', handle);
                     input.addEventListener('keyup', handle);
                     return input.addEventListener('change', handle);
+                  },
+                  handler: function(arg$){
+                    var local, context, data;
+                    local = arg$.local, context = arg$.context, data = arg$.data;
+                    return local.render(data);
                   }
                 }
               }

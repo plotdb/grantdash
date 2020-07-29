@@ -31,7 +31,7 @@ block body
     .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
       .d-flex.flex-column(style="flex:1 1 55%")
 
-        .judge-table.flex-grow-1.bg-white.border-top.border-bottom.mt-3.w-100(style="overflow:scroll")
+        .judge-table.flex-grow-1.bg-white.border-top.border-bottom.mt-3.w-100(style="overflow-y:scroll")
 
           .sticky(style="top:0")
             .p-2.bg-white.d-flex.text-muted.text-sm.justify-content-end
@@ -41,20 +41,20 @@ block body
 
             .d-flex.py-2.bg-light.border-bottom.shadow-sm.text-center
               div(style="width:5em") 註記
-              .flex-grow-1 提案名稱
+              .flex-grow-1(ld="sort",data-name="name") 提案名稱
               .clickable(ld-each="grade",style="width:5em") #[span]#[.text-sm.text-muted]
-              .clickable(style="width:4em") 總分
-              .clickable(style="width:4em") 排名
-              .clickable(style="width:5em") 評論
+              .clickable(ld="sort",data-name="total",style="width:4em") 總分
+              .clickable(ld="sort",data-name="rank",style="width:4em") 排名
+              .clickable(ld="sort",data-name="comment",style="width:5em") 評論
 
-            .d-flex.text-center.score-row.d-none(ld-each="project")
-              .clickable(ld="detail",style="width:5em"): .vertical-center: .w-100: i.i-doc
-              .text-left.p-2(style="flex:1 0 0")
-                span.clickable.text-underline(ld="name")
-              div(ld-each="grade",style="width:5em"): input
-              div(style="width:4em"): input(ld="total")
-              .bg-light(style="width:4em"): input(ld="rank",readonly)
-              .clickable(ld="comment",style="width:5em"): .vertical-center: .w-100: i.i-pen
+          .d-flex.text-center.score-row.d-none(ld-each="project")
+            .clickable(ld="detail",style="width:5em"): .vertical-center: .w-100: i.i-doc
+            .text-left.p-2(style="flex:1 0 0")
+              span.clickable.text-underline(ld="name")
+            div(ld-each="grade",style="width:5em"): input
+            div(style="width:4em"): input(ld="total")
+            .bg-light(style="width:4em"): input(ld="rank",readonly)
+            .clickable(ld="comment",style="width:5em"): .vertical-center: .w-100: i.i-pen
 
 
         .px-4.py-2.w-100

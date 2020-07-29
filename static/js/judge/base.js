@@ -176,7 +176,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       });
     },
     sort: function(name, value, hint){
-      var n, dir, verbose, this$ = this;
+      var n, dir, namemap, verbose, this$ = this;
       hint == null && (hint = true);
       if (hint) {
         loader.on();
@@ -192,15 +192,18 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       dir = this.sort.inversed[n]
         ? 1
         : -1;
+      namemap = {
+        name: "名稱",
+        state: "狀態",
+        comment: "評論長度",
+        comments: "評論長度",
+        shortlist: "入選標記",
+        budget: "預算",
+        total: "總分",
+        rank: "排名"
+      };
       verbose = {
-        name: {
-          name: "名稱",
-          state: "狀態",
-          comment: "評論長度",
-          comments: "評論長度",
-          shortlist: "入選標記",
-          budget: "預算"
-        }[name] || value,
+        name: namemap[name] || value,
         dir: dir > 0 ? "順向" : "逆向"
       };
       if (name === 'count') {
@@ -217,6 +220,8 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
           2: "汰除"
         }[+value] + " 的結果";
       } else if (name === 'criteria') {
+        verbose.name = value.name;
+      } else if (name === 'grade') {
         verbose.name = value.name;
       }
       if (hint) {
@@ -258,6 +263,15 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
             b = b != null ? b : 1;
             return dir * (statemap[a] - statemap[b]);
           });
+        } else if (name === 'grade') {
+          this$.prjs.sort(function(a, b){
+            var ref$, ref1$, key$;
+            a = ((ref$ = (ref1$ = this$.data.prj)[key$ = a.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[value.key];
+            b = ((ref$ = (ref1$ = this$.data.prj)[key$ = b.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[value.key];
+            a = a != null ? a : 0;
+            b = b != null ? b : 0;
+            return dir * (b - a);
+          });
         } else if (name === 'primary-all') {
           this$.prjs.sort(function(a, b){
             return dir * (a.count[value] || 0) - (b.count[value] || 0);
@@ -280,6 +294,14 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
             a = ((ref$ = this$.data.prj)[key$ = a.key] || (ref$[key$] = {})).picked ? 1 : 0;
             b = ((ref$ = this$.data.prj)[key$ = b.key] || (ref$[key$] = {})).picked ? 1 : 0;
             return dir * (a - b);
+          });
+        } else if (name === 'total') {
+          this$.prjs.sort(function(a, b){
+            return dir * (a.total - b.total);
+          });
+        } else if (name === 'rank') {
+          this$.prjs.sort(function(a, b){
+            return dir * (a.rank - b.rank);
           });
         }
         if (hint) {

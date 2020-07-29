@@ -101,8 +101,11 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     else n = "#name#{if value? => ('-' + value) else ''}"
     if !@sort.inversed => @sort.inversed = {}
     dir = if @sort.inversed[n] => 1 else -1
+    namemap = do
+      name: "名稱", state: "狀態", comment: "評論長度", comments: "評論長度"
+      shortlist: "入選標記", budget: "預算", total: "總分", rank: "排名"
     verbose = do
-      name: {name: "名稱", state: "狀態", comment: "評論長度", comments: "評論長度", shortlist: "入選標記", budget: "預算"}[name] or value
+      name: namemap[name] or value
       dir: if dir > 0 => "順向" else "逆向"
     if name == \count =>
       verbose.name = "#{{"accept": "通過", "pending": "待審", "reject": "不符"}[value]}的數量"
@@ -110,6 +113,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       value = +value
       verbose.name = "#{{0: "推薦", 1: "待審", 2: "汰除"}[+value]} 的結果"
     else if name == \criteria =>
+      verbose.name = value.name
+    else if name == \grade =>
       verbose.name = value.name
     if hint => notify.send \success, "重新將表格依 #{verbose.name} 做 #{verbose.dir} 排序"
     debounce 100 .then ~>
@@ -134,6 +139,13 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
           a = if a? => a else 1
           b = if b? => b else 1
           return dir * ( statemap[a] - statemap[b] )
+      else if name == \grade =>
+        @prjs.sort (a, b) ~>
+          a = @data.prj{}[a.key].{}v[value.key]
+          b = @data.prj{}[b.key].{}v[value.key]
+          a = if a? => a else 0
+          b = if b? => b else 0
+          return dir * ( b - a )
       else if name == \primary-all =>
         @prjs.sort (a, b) ~> return dir * (a.count[value] or 0) - (b.count[value] or 0)
       else if name == \primary =>
@@ -148,6 +160,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
           a = if @data.prj{}[a.key].picked => 1 else 0
           b = if @data.prj{}[b.key].picked => 1 else 0
           return dir * (a - b)
+      else if name == \total =>
+        @prjs.sort (a, b) ~> dir * (a.total - b.total)
+      else if name == \rank =>
+        @prjs.sort (a, b) ~> dir * (a.rank - b.rank)
       if hint => loader.off!
       @render!
 

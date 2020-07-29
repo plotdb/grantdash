@@ -21,6 +21,8 @@ Ctrl = (opt) ->
           @data.prj{}[@active.key].comment = node.value
           @update debounced: 300
           @view.local.render {name: 'project', key: @active.slug}
+      click: do
+        sort: ({node}) ~> @sort node.getAttribute \data-name
 
     handler: do
       "comment-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
@@ -66,6 +68,7 @@ Ctrl = (opt) ->
         handler: ({node, data}) ->
           ld$.find(node, 'span', 0).innerText = data.name
           ld$.find(node, 'div', 0).innerText = "#{data.percent}%"
+        action: click: ({node, data}) ~> @sort \grade, data
       project: do
         key: -> it.slug
         list: ~> @prjs
@@ -93,6 +96,16 @@ Ctrl = (opt) ->
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
                 @active-node.classList.add \active
+            init: do
+              total: ({node, context}) ~>
+                handle = ~>
+                  context.total = v = + node.value
+                  @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / 100
+                  @view.local.render {name: \project, key: context.slug}
+
+                node.addEventListener \input, handle
+                node.addEventListener \change, handle
+                node.addEventListener \keyup, handle
             handler: do
               comment: ({node, context}) ~> node.classList.toggle \text-primary, !!@data.prj{}[context.key].comment
               name: ({node, context}) -> node.innerText = context.name
@@ -100,18 +113,26 @@ Ctrl = (opt) ->
               total: ({node, context}) -> node.value = if context.total? => context.total else '-'
               rank: ({node, context}) -> node.value = if context.rank? => context.rank else '-'
               grade: do
+                key: -> it.key
                 list: ({context}) ~> @grade
                 init: ({local, node, context, data}) ~>
                   local.input = input = ld$.find(node, 'input', 0)
                   input.value = @data.prj{}[context.key].{}v[data.key] or ''
                   handle = (e) ~>
                     @data.prj[context.key].v[data.key] = +input.value
+                    local.render data
+                    @view.local.render {name: \project, key: context.slug}
                     @ops-out ~> @data
+                  local.render = (data) ~>
+                    local.input.value = v = @data.prj{}[context.key].{}v[data.key] or ''
+                    <[bg-danger text-white]>.map -> input.classList.toggle it, (v > data.percent)
+                    @view.local.render <[progress-bar progress-percent]>
                     @rerank!
-                    @view.local.render <[project progress-bar progress-percent]>
                   input.addEventListener \input, handle
                   input.addEventListener \keyup, handle
                   input.addEventListener \change, handle
+                handler: ({local, context, data}) ~>
+                  local.render data
 
         handler: ({node, local, data}) ~>
           local.view.setContext data
