@@ -95,6 +95,16 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     console.log "get user auth info ..."
     auth.get!then (g) ~> @global = g
 
+  get-displayname: (list) ->
+    if @usermap and !(list.filter(~>!@usermap[it]).length) => return Promise.resolve!
+    payload = userkeys: list
+    ld$.fetch "/dash/api/usermap/", {method: \PUT}, {json: payload, type: \json}
+      .then (ret = []) ~>
+        @usermap = {}
+        ret.map ~> @usermap[it.key] = it
+      .catch error!
+
+
   sort: (name, value, hint = true) ->
     if hint => loader.on!
     if name == \criteria => n = "#{name}-#{value.key}"
@@ -104,6 +114,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     namemap = do
       name: "名稱", state: "狀態", comment: "評論長度", comments: "評論長度"
       shortlist: "入選標記", budget: "預算", total: "總分", rank: "排名"
+      "criteria-result": "審查結果"
     verbose = do
       name: namemap[name] or value
       dir: if dir > 0 => "順向" else "逆向"
@@ -132,6 +143,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       else if name == \comment =>
         @prjs.sort (a,b) ~>
           dir * ((@data.prj{}[a.key].comment or '').length - (@data.prj{}[b.key].comment or '').length)
+      else if name == \criteria-result =>
+        @prjs.sort (a, b) ~> dir * ((b.criteria.0 - b.criteria.2) - (a.criteria.0 - a.criteria.2))
       else if name == \criteria =>
         @prjs.sort (a, b) ~>
           a = @data.prj{}[a.key].{}value[value.key]

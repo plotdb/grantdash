@@ -7,11 +7,39 @@ require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 api = engine.router.api
 app = engine.app
 
+permission-check = ({req, res, brd, grp}) ->
+  Promise.resolve!
+    .then ->
+      if !(req.user and req.user.key) => return aux.reject 403
+      if !(brd and grp) => return aux.reject 400
+      cache.stage.check {io, type: \brd, slug: brd}
+    .then (c = {}) ->
+      cfg = c.config
+      if !(cfg["judge-criteria"] or cfg["judge-primary"] or cfg["judge-final"]) =>
+        return Promise.reject new lderror(1016)
+      cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
+        .catch ->
+          io.query """
+          select owner from perm_judge where brd = $1 and grp = $2 and owner = $3
+          """, [brd, grp, req.user.key]
+            .then (r={}) ->
+              if !(r.[]rows.length) => return Promise.reject 403
+
 # judge doc use username to keep track of result. we use this to get user displayname
 api.put \/usermap/, (req, res) ->
   if !((keys = req.body.userkeys) and Array.isArray(keys)) => return aux.r400 res
   io.query "select key,displayname from users where key = ANY($1::int[])", [keys]
     .then (r={}) -> res.send r.[]rows
+    .catch aux.error-handler res
+
+api.get \/brd/:brd/grp/:grp/judge/:type/result, (req, res) ->
+  {brd,grp,type} = req.params{brd,grp,type}
+  permission-check {req, res, brd, grp}
+    .then ->
+      io.query "select data from snapshots where doc_id = $1", ["brd/#{brd}/grp/#{grp}/judge/#{type}/"]
+    .then (r={}) ->
+      if !(ret = r.[]rows.0) => return aux.reject 404
+      res.send {data: ret}
     .catch aux.error-handler res
 
 api.get \/brd/:brd/grp/:grp/judge/criteria/:scope, (req, res) ->
@@ -49,7 +77,7 @@ api.get \/brd/:brd/grp/:grp/judge/:type/:scope, (req, res) ->
   lc = {}
   {brd,grp,type,scope} = req.params{brd,grp,type,scope}
   if !(type in <[primary final]>) => return aux.r400 res
-  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
+  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[owner]>}
     .then ->
       io.query "select detail from brd where slug = $1", [brd]
     .then (r={}) ->
@@ -87,21 +115,8 @@ api.get \/brd/:brd/grp/:grp/judge/:type/:scope, (req, res) ->
     .catch aux.error-handler res
 
 api.get \/brd/:brd/grp/:grp/judge-list, (req, res) ->
-  if !(req.user and req.user.key) => return aux.r403 res
   {brd, grp} = req.params{brd, grp}
-  if !(brd and grp) => return aux.r400 res
-  cache.stage.check {io, type: \brd, slug: brd}
-    .then (c = {}) ->
-      cfg = c.config
-      if !(cfg["judge-criteria"] or cfg["judge-primary"] or cfg["judge-final"]) =>
-        return Promise.reject new lderror(1016)
-      cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
-    .catch ->
-      io.query """
-      select owner from perm_judge where brd = $1 and grp = $2 and owner = $3
-      """, [brd, grp, req.user.key]
-        .then (r={}) ->
-          if !(r.[]rows.length) => return Promise.reject 403
+  permission-check {req, res, brd, grp}
     .then ->
       io.query """
       select p.key, p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p

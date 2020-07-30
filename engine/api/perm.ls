@@ -100,8 +100,16 @@ app.get \/judgetoken/:token, (req, res) ->
   if !(token = req.params.token) => return aux.r400 res
   io.query "select email from permtoken_judge where token = $1", [token]
     .then (r={}) ->
-      if !(ret = r.[]rows.0) => return aux.reject 400
-      res.render "auth/perm/judge-claim.pug", {exports: {token, email: ret.email}}
+      if (ret = r.[]rows.0) =>
+        return res.render "auth/perm/judge-claim.pug", {exports: {token, email: ret.email}}
+      if !(req.user and req.user.key) => return res.render "auth/perm/judge-fail.pug"
+      io.query """
+      select b.name,p.brd,p.grp from perm_judge as p
+      left join brd as b on b.slug = p.brd
+      where p.owner = $1""", [req.user.key]
+        .then (r={}) ->
+          if !(r.[]rows.length) => return res.render "auth/perm/judge-fail.pug"
+          return res.render "auth/perm/judge-list.pug", {exports: r.[]rows}
     .catch aux.error-handler res
 
 api.put \/judgetoken, aux.signed, grecaptcha, (req, res) ->

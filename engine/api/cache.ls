@@ -142,7 +142,7 @@ stage = do
         if @cache{}[type][slug] => return that
         io.query "select detail->'stage' as stage from brd where slug = $1 and deleted is not true", [slug]
           .then (r={}) ~>
-            ret = r.[]rows.0
+            if !(ret = r.[]rows.0) => return aux.reject 404
             stage = ret.{}stage.list or []
             cfgs = stage
               .filter (s) ->

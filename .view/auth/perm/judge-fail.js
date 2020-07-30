@@ -636,7 +636,7 @@ var ctrl = {
 ;pug_debug_line = 11;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 var vars = {root: ""}
 ;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
-;pug_debug_line = 4;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
+;pug_debug_line = 4;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
 ctrl.navtop.placeholder = false
 ;pug_debug_line = 13;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003Chtml\u003E";
@@ -1276,28 +1276,28 @@ prefix.currentName = parentName;
 
 
 ;pug_debug_line = 4;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_mixins["register-locals"] = pug_interp = function(name = "exports"){
-var block = (this && this.block), attributes = (this && this.attributes) || {};
-;pug_debug_line = 5;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-if (locals) {
-;pug_debug_line = 6;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "\u003Cscript\u003E";
-;pug_debug_line = 7;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "ldc.register(\"viewLocals\", [], function() {";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "\n";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "  return ";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + (null == (pug_interp = escjson(locals[name] || null)) ? "" : pug_interp);
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + ";";
-;pug_debug_line = 9;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "\n";
-;pug_debug_line = 9;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "});\u003C\u002Fscript\u003E";
-}
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 ;pug_debug_line = 3;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fmixins\u002Fbrd.pug";
 
@@ -2841,28 +2841,28 @@ prefix.currentName = parentName;
 
 
 ;pug_debug_line = 4;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_mixins["register-locals"] = pug_interp = function(name = "exports"){
-var block = (this && this.block), attributes = (this && this.attributes) || {};
-;pug_debug_line = 5;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-if (locals) {
-;pug_debug_line = 6;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "\u003Cscript\u003E";
-;pug_debug_line = 7;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "ldc.register(\"viewLocals\", [], function() {";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "\n";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "  return ";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + (null == (pug_interp = escjson(locals[name] || null)) ? "" : pug_interp);
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + ";";
-;pug_debug_line = 9;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "\n";
-;pug_debug_line = 9;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "});\u003C\u002Fscript\u003E";
-}
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcover\u002Fnot-sync.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ldcv ldcvmgr\" data-name=\"not-sync\"\u003E";
@@ -3534,28 +3534,28 @@ prefix.currentName = parentName;
 
 
 ;pug_debug_line = 4;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_mixins["register-locals"] = pug_interp = function(name = "exports"){
-var block = (this && this.block), attributes = (this && this.attributes) || {};
-;pug_debug_line = 5;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-if (locals) {
-;pug_debug_line = 6;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "\u003Cscript\u003E";
-;pug_debug_line = 7;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "ldc.register(\"viewLocals\", [], function() {";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "\n";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "  return ";
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + (null == (pug_interp = escjson(locals[name] || null)) ? "" : pug_interp);
-;pug_debug_line = 8;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + ";";
-;pug_debug_line = 9;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "\n";
-;pug_debug_line = 9;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
-pug_html = pug_html + "});\u003C\u002Fscript\u003E";
-}
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcover\u002Foffline-retry.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ldcv ldcvmgr\" data-name=\"offline-retry\" data-lock=\"true\"\u003E";
@@ -3578,30 +3578,44 @@ pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner text-lg mt-4\"\u0
 ;pug_debug_line = 29;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ldNotify\"\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
-;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_mixins["scope"].call({
-block: function(){
-;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "\u003Cdiv class=\"base w-640\"\u003E";
-;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
+;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cdiv class=\"ldcvmgr ldcv\" data-name=\"judge-fail\" data-lock=\"true\"\u003E";
+;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cdiv class=\"base w-480\"\u003E";
+;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
 pug_html = pug_html + "\u003Cdiv class=\"inner\"\u003E";
-;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
+;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
 pug_html = pug_html + "\u003Cdiv class=\"typeset heading-contast vertical-center my-0\"\u003E";
-;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "\u003Cdiv class=\"w-100 text-center\"\u003E";
-;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "\u003Cdiv class=\"p-4 m-4\"\u003E";
-;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "\u003Cdiv class=\"mb-4\"\u003E";
-;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "您的權限已設定完成。\u003C\u002Fdiv\u003E";
-;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "\u003Cdiv class=\"btn btn-outline-primary\" onclick=\"window.location.reload()\"\u003E";
-;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "載入評選表\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-},
-attributes: {"class": "ldcv"}
-}, "claimed");
+;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cdiv class=\"w-100 p-4\"\u003E";
+;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cdiv class=\"p-4\"\u003E";
+;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Ch3 class=\"text-center\"\u003E";
+;pug_debug_line = 8;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "無法設定權限。\u003C\u002Fh3\u003E";
+;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cdiv class=\"py-4\"\u003E";
+;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cp\u003E";
+;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "您所使用的這個連結已經過期或者失效，所以您無法再透過這個連結設定權限了。若您先前有成功設定過，您可以試著登入後嘗試重新載入頁面。\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 11;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cbr\u003E";
+;pug_debug_line = 12;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cdiv class=\"row\"\u003E";
+;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
+;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Ca class=\"btn btn-lg btn-block btn-outline-primary\" href=\"\u002F\"\u003E";
+;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "回首頁\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
+;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-lg btn-block btn-primary\" onclick=\"lda.auth.show().then(function(){window.location.reload();})\"\u003E";
+;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "登入\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 31;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 if (ctrl.cover.authpanel) {
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -3874,12 +3888,10 @@ pug_mixins["script"]("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js");
 ;pug_debug_line = 48;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_mixins["script"]("/dash/js/util/stage.js");
 ;pug_debug_line = 49;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
-;pug_debug_line = 11;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
+;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
 pug_html = pug_html + "\u003Cscript\u003E";
-;pug_debug_line = 11;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_html = pug_html + "\u002F\u002F Generated by LiveScript 1.3.0\nldc.register(['loader', 'error', 'auth', 'viewLocals'], function(arg$){\n  var loader, error, auth, viewLocals;\n  loader = arg$.loader, error = arg$.error, auth = arg$.auth, viewLocals = arg$.viewLocals;\n  return auth.ensure({\n    info: 'token',\n    forceEmail: viewLocals.email\n  }).then(function(g){\n    return auth.recaptcha.get();\n  }).then(function(recaptcha){\n    var payload;\n    payload = {\n      token: viewLocals.token,\n      recaptcha: recaptcha\n    };\n    loader.on();\n    return ld$.fetch('\u002Fdash\u002Fapi\u002Fjudgetoken', {\n      method: 'PUT'\n    }, {\n      json: payload\n    })['finally'](function(){\n      return loader.off();\n    }).then(function(){\n      var ldcv;\n      ldcv = new ldCover({\n        root: '[ld-scope=claimed]'\n      });\n      return ldcv.toggle();\n    });\n  })['catch'](error());\n});\u003C\u002Fscript\u003E";
-;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-claim.pug";
-pug_mixins["register-locals"]();
+;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Fauth\u002Fperm\u002Fjudge-fail.pug";
+pug_html = pug_html + "\u002F\u002F Generated by LiveScript 1.3.0\nldc.register(['ldcvmgr'], function(arg$){\n  var ldcvmgr;\n  ldcvmgr = arg$.ldcvmgr;\n  return ldcvmgr.toggle('judge-fail');\n});\u003C\u002Fscript\u003E";
 ;pug_debug_line = 50;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_mixins["script"]("/dash/js/ldsite.js");
 ;pug_debug_line = 51;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";

@@ -23,16 +23,30 @@ Ctrl = (opt) ->
           @view.local.render {name: 'project', key: @active.slug}
       click: do
         sort: ({node}) ~> @sort node.getAttribute \data-name
+        "toggle-total": ~>
+          @total-editable = !@total-editable
+          @view.local.render \toggle-total
 
     handler: do
+      "toggle-total": ({node}) ~>
+        ld$.find(node, '.switch', 0).classList.toggle \on, @total-editable
+        ld$.find(@root, 'input[ld=total]').map (n) ~>
+          if @total-editable => n.removeAttribute \readonly
+          else n.setAttribute \readonly, null
+          n.classList.toggle \bg-light, !@total-editable
+
       "comment-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
       "progress-percent": ({node}) ~> node.innerText = Math.floor(100 * @progress.done / @progress.total)
       "progress-bar": ({node}) ~> node.style.width = "#{(100 * @progress.done / @progress.total)}%"
+      count: ({node}) ~>
+        n = node.getAttribute(\data-name)
+        if n == \total => node.innerText = @progress.total or 0
+        else if n == \pending => node.innerText = (@progress.total - @progress.done) or 0
 
       detail: do
         list: ~>
           if !@active => return []
-          ret = for k,v of (@review or {}) =>
+          ret = for k,v of (@criteria-result.{}data.user or {}) =>
             p = v.prj{}[@active.key]
             obj = do
               user: k
@@ -81,7 +95,7 @@ Ctrl = (opt) ->
             context: data
             action: click: do
               detail: ({node, context}) ~>
-                @prj = context
+                @active = context
                 @view.local.render \detail
                 @ldcv.detail.toggle!
 
@@ -99,9 +113,11 @@ Ctrl = (opt) ->
             init: do
               total: ({node, context}) ~>
                 handle = ~>
-                  context.total = v = + node.value
+                  if context.total == (v = +node.value) => return
+                  context.total = v
                   @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / 100
-                  @view.local.render {name: \project, key: context.slug}
+                  #@view.local.render {name: \project, key: context.slug}
+                  @view.local.render \project
 
                 node.addEventListener \input, handle
                 node.addEventListener \change, handle
@@ -112,6 +128,10 @@ Ctrl = (opt) ->
               key: ({node, context}) -> node.innerText = context.key or ''
               total: ({node, context}) -> node.value = if context.total? => context.total else '-'
               rank: ({node, context}) -> node.value = if context.rank? => context.rank else '-'
+
+              criteria: ({node, context}) ->
+                n = node.getAttribute(\data-name)
+                node.innerText = ({0:"+",2:"-"}[n] or '') + context.{}criteria[n]
               grade: do
                 key: -> it.key
                 list: ({context}) ~> @grade
@@ -121,12 +141,13 @@ Ctrl = (opt) ->
                   handle = (e) ~>
                     @data.prj[context.key].v[data.key] = +input.value
                     local.render data
-                    @view.local.render {name: \project, key: context.slug}
+                    #@view.local.render {name: \project, key: context.slug}
+                    @view.local.render \project
                     @ops-out ~> @data
                   local.render = (data) ~>
                     local.input.value = v = @data.prj{}[context.key].{}v[data.key] or ''
                     <[bg-danger text-white]>.map -> input.classList.toggle it, (v > data.percent)
-                    @view.local.render <[progress-bar progress-percent]>
+                    @view.local.render <[progress-bar progress-percent count]>
                     @rerank!
                   input.addEventListener \input, handle
                   input.addEventListener \keyup, handle
@@ -168,10 +189,24 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
         if !@grpinfo.grade => ldcvmgr.get('judge-grade-missing')
         else @grade = @grpinfo.grade.entries
       .then ~> @fetch-prjs!
+      .then ~> @fetch-criteria-result!
       .then ~> @sharedb!
       .then ~> @reconnect!
       .catch error!
 
+  fetch-criteria-result: ->
+    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge/criteria/result", {method: \GET}, {type: \json}
+      .then (ret = {}) ~>
+        @criteria-result = ret.data
+        @get-displayname [k for k of @criteria-result.data.user]
+        users = @criteria-result.data.user
+        @prjs.map (p) ~>
+          p.criteria = {0: 0, 1: 0, 2: 0}
+          for k,v of users =>
+            @criteria.map (c) ~>
+              idx = v.{}prj{}[p.key].v[c.key]
+              if !(idx?) => idx = 1
+              p.criteria[idx]++
 
   rerank: ->
     ranks = for k,v of @data.{}prj =>
@@ -188,7 +223,10 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @get-progress!
 
   get-progress: ->
-    @progress = {total: (@prjs.length or 1), done: @prjs.filter(->it.total).length}
+    @progress = do
+      total: (@prjs.length or 1)
+      #done: @prjs.filter(->it.total).length
+      done: @prjs.filter((p) ~> !(@grade.filter((g) ~>!@data.prj{}[p.key].{}v[g.key]?).length)).length
 
 
 ctrl = new Ctrl root: document.body

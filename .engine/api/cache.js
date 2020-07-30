@@ -261,7 +261,9 @@
         return io.query("select detail->'stage' as stage from brd where slug = $1 and deleted is not true", [slug]).then(function(r){
           var ret, stage, cfgs;
           r == null && (r = {});
-          ret = (r.rows || (r.rows = []))[0];
+          if (!(ret = (r.rows || (r.rows = []))[0])) {
+            return aux.reject(404);
+          }
           stage = (ret.stage || (ret.stage = {})).list || [];
           cfgs = stage.filter(function(s){
             if (s.start && Date.now() < new Date(s.start).getTime()) {

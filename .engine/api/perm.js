@@ -180,14 +180,25 @@
       return io.query("select email from permtoken_judge where token = $1", [token]).then(function(r){
         var ret;
         r == null && (r = {});
-        if (!(ret = (r.rows || (r.rows = []))[0])) {
-          return aux.reject(400);
+        if (ret = (r.rows || (r.rows = []))[0]) {
+          return res.render("auth/perm/judge-claim.pug", {
+            exports: {
+              token: token,
+              email: ret.email
+            }
+          });
         }
-        return res.render("auth/perm/judge-claim.pug", {
-          exports: {
-            token: token,
-            email: ret.email
+        if (!(req.user && req.user.key)) {
+          return res.render("auth/perm/judge-fail.pug");
+        }
+        return io.query("select b.name,p.brd,p.grp from perm_judge as p\nleft join brd as b on b.slug = p.brd\nwhere p.owner = $1", [req.user.key]).then(function(r){
+          r == null && (r = {});
+          if (!(r.rows || (r.rows = [])).length) {
+            return res.render("auth/perm/judge-fail.pug");
           }
+          return res.render("auth/perm/judge-list.pug", {
+            exports: r.rows || (r.rows = [])
+          });
         });
       })['catch'](aux.errorHandler(res));
     });

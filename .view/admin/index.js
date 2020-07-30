@@ -5151,11 +5151,7 @@ pug_html = pug_html + "\u003Cdiv class=\"flex-grow-1\" ld=\"progress\"\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Ffinal.pug";
 pug_html = pug_html + "\u003Cdiv class=\"progress\"\u003E";
 ;pug_debug_line = 15;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Ffinal.pug";
-pug_html = pug_html + "\u003Cdiv class=\"progress-bar bg-success\" ld=\"progress-bar\" data-name=\"0\" style=\"width:50%\"\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Ffinal.pug";
-pug_html = pug_html + "\u003Cdiv class=\"progress-bar bg-warning\" ld=\"progress-bar\" data-name=\"1\" style=\"width:20%\"\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 17;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Ffinal.pug";
-pug_html = pug_html + "\u003Cdiv class=\"progress-bar bg-danger\" ld=\"progress-bar\" data-name=\"2\" style=\"width:10%\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"progress-bar bg-success\" ld=\"progress-bar\" style=\"width:0%\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 }
 }, "judge-final");
 pug_html = pug_html + "\u003C\u002Fdiv\u003E";

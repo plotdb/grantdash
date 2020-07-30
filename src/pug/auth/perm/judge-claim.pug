@@ -4,9 +4,9 @@ block vars
  - ctrl.navtop.placeholder = false
 block body
   +scope("claimed").ldcv: .base.w-640: .inner
-    .typeset.heading-contast.vertical-center.my-0: .w-100.text-center: .p-4
-      .my-4 您的權限已設定完成。
-      a.btn.btn-outline-primary(href="/") 回首頁
+    .typeset.heading-contast.vertical-center.my-0: .w-100.text-center: .p-4.m-4
+      .mb-4 您的權限已設定完成。
+      .btn.btn-outline-primary(onclick="window.location.reload()") 載入評選表
 block script
   script: :lsc
     ldc.register <[loader error auth viewLocals]>, ({loader, error, auth, viewLocals}) ->

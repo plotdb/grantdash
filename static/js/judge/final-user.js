@@ -48,10 +48,27 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
             var node;
             node = arg$.node;
             return this$.sort(node.getAttribute('data-name'));
+          },
+          "toggle-total": function(){
+            this$.totalEditable = !this$.totalEditable;
+            return this$.view.local.render('toggle-total');
           }
         }
       },
       handler: {
+        "toggle-total": function(arg$){
+          var node;
+          node = arg$.node;
+          ld$.find(node, '.switch', 0).classList.toggle('on', this$.totalEditable);
+          return ld$.find(this$.root, 'input[ld=total]').map(function(n){
+            if (this$.totalEditable) {
+              n.removeAttribute('readonly');
+            } else {
+              n.setAttribute('readonly', null);
+            }
+            return n.classList.toggle('bg-light', !this$.totalEditable);
+          });
+        },
         "comment-name": function(arg$){
           var node;
           node = arg$.node;
@@ -67,14 +84,24 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
           node = arg$.node;
           return node.style.width = 100 * this$.progress.done / this$.progress.total + "%";
         },
+        count: function(arg$){
+          var node, n;
+          node = arg$.node;
+          n = node.getAttribute('data-name');
+          if (n === 'total') {
+            return node.innerText = this$.progress.total || 0;
+          } else if (n === 'pending') {
+            return node.innerText = this$.progress.total - this$.progress.done || 0;
+          }
+        },
         detail: {
           list: function(){
-            var ret, res$, k, ref$, v, p, ref1$, key$, obj;
+            var ret, res$, k, ref$, ref1$, v, p, key$, obj;
             if (!this$.active) {
               return [];
             }
             res$ = [];
-            for (k in ref$ = this$.review || {}) {
+            for (k in ref$ = ((ref1$ = this$.criteriaResult).data || (ref1$.data = {})).user || {}) {
               v = ref$[k];
               p = (ref1$ = v.prj)[key$ = this$.active.key] || (ref1$[key$] = {});
               res$.push(obj = {
@@ -183,7 +210,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                   detail: function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;
-                    this$.prj = context;
+                    this$.active = context;
                     this$.view.local.render('detail');
                     return this$.ldcv.detail.toggle();
                   },
@@ -214,15 +241,15 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                   node = arg$.node, context = arg$.context;
                   handle = function(){
                     var v;
-                    context.total = v = +node.value;
+                    if (context.total === (v = +node.value)) {
+                      return;
+                    }
+                    context.total = v;
                     this$.grade.map(function(it){
                       var ref$, ref1$, key$;
                       return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = it.percent * v / 100;
                     });
-                    return this$.view.local.render({
-                      name: 'project',
-                      key: context.slug
-                    });
+                    return this$.view.local.render('project');
                   };
                   node.addEventListener('input', handle);
                   node.addEventListener('change', handle);
@@ -255,6 +282,15 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                   node = arg$.node, context = arg$.context;
                   return node.value = context.rank != null ? context.rank : '-';
                 },
+                criteria: function(arg$){
+                  var node, context, n;
+                  node = arg$.node, context = arg$.context;
+                  n = node.getAttribute('data-name');
+                  return node.innerText = ({
+                    0: "+",
+                    2: "-"
+                  }[n] || '') + (context.criteria || (context.criteria = {}))[n];
+                },
                 grade: {
                   key: function(it){
                     return it.key;
@@ -272,10 +308,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                     handle = function(e){
                       this$.data.prj[context.key].v[data.key] = +input.value;
                       local.render(data);
-                      this$.view.local.render({
-                        name: 'project',
-                        key: context.slug
-                      });
+                      this$.view.local.render('project');
                       return this$.opsOut(function(){
                         return this$.data;
                       });
@@ -286,7 +319,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                       ['bg-danger', 'text-white'].map(function(it){
                         return input.classList.toggle(it, v > data.percent);
                       });
-                      this$.view.local.render(['progress-bar', 'progress-percent']);
+                      this$.view.local.render(['progress-bar', 'progress-percent', 'count']);
                       return this$.rerank();
                     };
                     input.addEventListener('input', handle);
@@ -356,10 +389,53 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
       }).then(function(){
         return this$.fetchPrjs();
       }).then(function(){
+        return this$.fetchCriteriaResult();
+      }).then(function(){
         return this$.sharedb();
       }).then(function(){
         return this$.reconnect();
       })['catch'](error());
+    },
+    fetchCriteriaResult: function(){
+      var this$ = this;
+      return ld$.fetch("/dash/api/brd/" + this.brd + "/grp/" + this.grp + "/judge/criteria/result", {
+        method: 'GET'
+      }, {
+        type: 'json'
+      }).then(function(ret){
+        var k, users;
+        ret == null && (ret = {});
+        this$.criteriaResult = ret.data;
+        this$.getDisplayname((function(){
+          var results$ = [];
+          for (k in this.criteriaResult.data.user) {
+            results$.push(k);
+          }
+          return results$;
+        }.call(this$)));
+        users = this$.criteriaResult.data.user;
+        return this$.prjs.map(function(p){
+          var k, ref$, v, results$ = [];
+          p.criteria = {
+            0: 0,
+            1: 0,
+            2: 0
+          };
+          for (k in ref$ = users) {
+            v = ref$[k];
+            results$.push(this$.criteria.map(fn$));
+          }
+          return results$;
+          function fn$(c){
+            var idx, ref$, key$;
+            idx = ((ref$ = v.prj || (v.prj = {}))[key$ = p.key] || (ref$[key$] = {})).v[c.key];
+            if (!(idx != null)) {
+              idx = 1;
+            }
+            return p.criteria[idx]++;
+          }
+        });
+      });
     },
     rerank: function(){
       var ranks, res$, k, ref$, ref1$, v, prj, sum, i$, len$, g, lc;
@@ -395,10 +471,14 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
       return this.getProgress();
     },
     getProgress: function(){
+      var this$ = this;
       return this.progress = {
         total: this.prjs.length || 1,
-        done: this.prjs.filter(function(it){
-          return it.total;
+        done: this.prjs.filter(function(p){
+          return !this$.grade.filter(function(g){
+            var ref$, ref1$, key$;
+            return ((ref$ = (ref1$ = this$.data.prj)[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key] == null;
+          }).length;
         }).length
       };
     }
