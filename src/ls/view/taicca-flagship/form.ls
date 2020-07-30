@@ -118,9 +118,11 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             save-locally!
 
           download: ->
+            (v) <~ is-ready.get!then _
+            if !v => return
             if lc.downloading => return
             lc.downloading = true
-            view.getAll("download").map -> it.classList.add \running
+            view.getAll("download").map -> ld$.find(it.parent, '.ld-ext-right',0).classList.add \running
             ld$.find(document.body, '._preview').map -> it.parentNode.removeChild it
             ld$.find 'select,textarea,input' .map (f) ->
               type = f.getAttribute(\type)
@@ -170,31 +172,35 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                 if ldError.id(it) == 1006 => ldcvmgr.toggle \flagship-print-timeout
                 else error! it
 
-          submit: ->
-            is-ready.get!
+          submit: ({node}) ->
+            is-submit = (node.getAttribute(\data-type) == \submit)
+            cover-name = if is-submit => <[submitting submitted]> else <[saving saved]>
+            p = if is-submit => is-ready.get! else Promise.resolve true
+            p
               .then (v) ->
                 if !v => return
                 save-locally!
-                ldcvmgr.toggle('flagship-submitting',true)
+                ldcvmgr.toggle("flagship-#{cover-name.0}",true)
                 auth.recaptcha.get!
-                  .then (recaptcha) ->
-                    json = do
-                      key: (vlc or {}).{}prj.key
-                      recaptcha: recaptcha
-                      detail: payload
-                      name: payload.form.name
-                      description: (payload.form["abs-item"] or "").substring(0,200)
-                      brd: "flagship-2"
-                    ld$.fetch \/dash/api/flagship/prj, {method: \POST}, {json: json, type: \json}
-                      .then ->
-                        clear-localdata!
-                        if it and it.slug =>
-                          vlc.{}prj.slug = it.slug
-                          view.render \fill
-                        ldcvmgr.toggle('flagship-submitted', true)
-                      .finally ->
-                        ldcvmgr.toggle('flagship-submitting',false)
-                      .catch error!
+              .then (recaptcha) ->
+                json = do
+                  key: (vlc or {}).{}prj.key
+                  recaptcha: recaptcha
+                  detail: payload
+                  name: payload.form.name
+                  description: (payload.form["abs-item"] or "").substring(0,200)
+                  brd: "flagship-2"
+                  submit: false
+                ld$.fetch \/dash/api/flagship/prj, {method: \POST}, {json: json, type: \json}
+              .then ->
+                clear-localdata!
+                if it and it.slug =>
+                  vlc.{}prj.slug = it.slug
+                  view.render \fill
+                ldcvmgr.toggle("flagship-#{cover-name.1}", true)
+              .finally ->
+                ldcvmgr.toggle("flagship-#{cover-name.0}",false)
+              .catch error!
 
       text: do
         fill: ({node}) ->
@@ -206,6 +212,9 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
           if n == \doc-year => return (new Date!).getYear! - 11
           if n == \doc-month => return (new Date!).getMonth! + 1
           if n == \doc-day => return (new Date!).getDate!
+          if n == \budget =>
+            total = payload.list.[]budget.map(-> it.{}value.price * it.{}value.count).reduce(((a,b) -> a + +b),0)
+            return total
           if ret = (/^budget-(self|subsidy)(-percent)?$/.exec(n)) =>
             total = payload.list.[]budget.map(-> it.{}value.price * it.{}value.count).reduce(((a,b) -> a + +b),0)
             self = payload.list.[]budget.map(-> it.{}value.self).reduce(((a,b) -> a + +b),0)

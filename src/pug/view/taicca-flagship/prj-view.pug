@@ -46,7 +46,7 @@ block head
       page-break-inside: avoid
     @page
       margin: 20mm 10mm
-    @media print 
+    @media print
       body
         margin: 0!important
       .page
@@ -123,7 +123,7 @@ block body
         .ml-4.mb-4
           span ( 可複選 )
           +category("group1-category")
-        +radio("group", "內容產業領航行動組", false) 二、內容產業領航行動組 
+        +radio("group", "內容產業領航行動組", false) 二、內容產業領航行動組
         .ml-4
           span ( 可複選 )
           +category("group2-category")
@@ -213,13 +213,13 @@ block body
         .invalid-feedback 字數不符
 
       .no-break
-        label 印鑑 ( 列印後用印正本 )
+        label 印鑑 ( 列印後用印一份 )
         .row.text-muted.mb-4
           .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 公司章
           .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 負責人章
 
       .form-group
-        label.mb-0 備註
+        label.mb-0 備註 ( 立案證明文件詳見計畫書附件一 )
         textarea.form-control(rows="6",name="comment")
 
       +nbr(2)
@@ -335,20 +335,25 @@ block body
 
       .no-break
         .form-group
-          h4 預算概況
-          .row.mb-4
-            .col-md
-              b 自籌款 #[span.text-muted.text-sm ( 自動帶入 )]
-              div 新臺幣 #[span(ld="fill",data-name="budget-self") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-self-percent") 0] %
-            .col-md
-              b 申請經費 #[span.text-muted.text-sm ( 自動帶入 )]
-              div 新臺幣 #[span(ld="fill",data-name="budget-subsidy") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-subsidy-percent") 0] %
-              .text-danger.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
+          h4 預算概況 #[span.text-muted.text-sm ( 自動帶入 )]
+          .blform
+            .mb-2
+              b 計畫總經費
+              div 新臺幣 #[span(ld="fill",data-name="budget") 0] 元整 ( 含稅 )
+            .row.mb-4
+              .col-md
+                b 自籌款
+                div 新臺幣 #[span(ld="fill",data-name="budget-self") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-self-percent") 0] %
+              .col-md
+                b 申請經費
+                div 新臺幣 #[span(ld="fill",data-name="budget-subsidy") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-subsidy-percent") 0] %
+                .text-danger.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
+
           label 本計畫是否申請或已獲其他機關 ( 單位 ) 經費補助？
           .ml-4.mb-4
             +radio("has-other-sub", "0", true) 否
             +radio("has-other-sub", "1", false)
-              div 是，本計畫已獲 #[+input-inline({len:10,name:"other-sub-name"})] 補助新臺幣 #[+input-inline({len:10,name:"other-sub-amount"})] 元整。 
+              div 是，本計畫已獲 #[+input-inline({len:10,name:"other-sub-name"})] 補助新臺幣 #[+input-inline({len:10,name:"other-sub-amount"})] 元整。
 
       .no-break
         h4 預算明細表
@@ -394,6 +399,21 @@ block body
                 input.form-control(name="subsidy",readonly)
               td: .form-group.m-0
                 input.form-control(name="comment")
+            tr
+              td.text-center.align-middle(colspan="7") 小計
+              td.text-right.px-2 #[span(ld="fill",data-name="budget-self")]元
+              td.text-right.px-2 #[span(ld="fill",data-name="budget-subsidy")]元
+              td
+            tr
+              td.text-center.align-middle(colspan="7") 補助比例 #[.text-sm.text-muted ( 補助款不得逾本案計畫書總經費之49.00% )]
+              td.text-right.px-2.align-middle #[span(ld="fill",data-name="budget-self-percent")]%
+              td.text-right.px-2.align-middle #[span(ld="fill",data-name="budget-subsidy-percent")]%
+              td
+            tr
+              td.text-center.align-middle(colspan="7") 總計
+              td.text-right.px-2(colspan="2") #[span(ld="fill",data-name="budget")]元
+              td
+
         .d-flex.align-items-start
           .flex-grow-1.d-flex.align-items-center
             .btn.btn-outline-secondary.no-print(ld="add-column",data-name="budget") 新增一項 #[i.i-plus]
@@ -403,7 +423,7 @@ block body
       +nbr(3)
 
       .form-group
-        label 上傳計畫書 PDF ( 含目錄、原著授權、合作意向書 / 合約 )
+        label 上傳計畫書 PDF ( 計畫書內容含目錄、原著授權、立案證明文件、合作意向書 / 合約 )
         .d-flex.align-items-center
           .btn.btn-upload.btn-primary.no-print 上傳文件 #[input(ld="file-upload",type="file",data-name="plan")] #[span]
           a.ml-4(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
@@ -424,11 +444,19 @@ block body
       p 九、本計畫案如獲補助，應承諾依預算法第六十二條之一規定，不得以置入性行銷進行政策宣導。如有政策宣導，應標示為「廣告」，並揭示本院及文化部全銜。
       p 十、本計畫之內部團隊成員與跨國合製案將依中國民國所得稅法及相關法令規定辦理所得申報扣繳及歸戶事宜，如有不實，願負一切法律責任。
       p 十一、獲補助者應於簽約前配合提供本部核定之計畫書摘要，並無償授權文化部、本院及本院再授權之人，為不限目的、時間、地域及方式(包括但不限於紙本、簡報、網路傳輸)之利用。獲補助者並同意對文化部、本院及本院再授權之人不行使著作人格權。文化部及本院並得另以開放資料(Open Data)之方式對外開放。開放資料授權利用，依據行政院訂定之政府開放資料授權條款http://data.gov.tw/license辦理。
-      p 此致
-      p 文化內容策進院
-      p 立切結書人（即申請人）：#[span(ld="fill", data-name="contact-name")] （公司章，列印後用印正本）
-      p 負  責  人：#[span(ld="fill",data-name="pic")] （簽章，列印後用印正本）
-      p 身分證字號： #[span(ld="fill", data-name="uid")]
+      .row
+        .col-md
+          p 此致
+          p 文化內容策進院
+          p 立切結書人（即申請人）：#[span(ld="fill", data-name="contact-name")]
+          p 負  責  人：#[span(ld="fill",data-name="pic")]
+          p 身分證字號： #[span(ld="fill", data-name="uid")]
+        .col-md
+          .no-break.text-center
+            label 印鑑 ( 列印後用印正本 )
+            .row.text-muted.mb-4.no-gutters
+              .col-md: .aspect-ratio.ratio-4by3.text-center.rounded.text-sm(style="border:1px solid #eee") 公司章#[br](列印後用印一份)
+              .col-md: .aspect-ratio.ratio-4by3.text-center.rounded.text-sm(style="border:1px solid #eee") 負責人章#[br](列印後用印一份)
 
       p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
 
@@ -442,14 +470,23 @@ block body
         p 此致
         p 文化內容策進院
 
-        .form-check
+        .form-check.mb-4
           input.form-check-input(type="checkbox",name="consent",value="consent")
           label.form-check-label 我已閱讀並接受「授權文化內容策進院蒐集使用個人資料說明」。#[span.text-danger.ml-2 （記得勾選）]
-        p 立切結書人(即申請人)： #[span(ld="fill", data-name="contact-name")] （公司章，列印後用印正本）
-        p 負責人：#[span(ld="fill", data-name="pic")] （簽章，列印後用印正本）
-        p 身分證字號： #[span(ld="fill", data-name="uid")]
+        .row
+          .col-md: .vertical-center: .w-100
+            p 立切結書人(即申請人)： #[span(ld="fill", data-name="contact-name")]
+            p 負責人：#[span(ld="fill", data-name="pic")]
+            p 身分證字號： #[span(ld="fill", data-name="uid")]
+            p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+          .col-md
+            .no-break.text-center
+              label 印鑑 ( 列印後用印正本 )
+              .row.text-muted.mb-4.no-gutters
+                .col-md: .aspect-ratio.ratio-4by3.text-center.rounded.text-sm(style="border:1px solid #eee") 公司章#[br](列印後用印一份)
+                .col-md: .aspect-ratio.ratio-4by3.text-center.rounded.text-sm(style="border:1px solid #eee") 負責人章#[br](列印後用印一份)
 
-        p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+
 
       h3 授權文化內容策進院蒐集使用個人資料說明
       p 為遵守個人資料保護法規定，並保障當事人之權利，謹此向您說明本院將如何處理所蒐集到的個人資料：
@@ -465,8 +502,12 @@ block body
       p 四、您得自由選擇是否提供個人資料或行使個人資料保護法第三條所定之權利，但因提供資料不足或有其他冒用、盜用、不實之情形，可能不能獲得補助資格或影響您受領補助之權益。
       p 五、您所提供之個人資料，本院將依據「個人資料保護法」相關規定進行保密。
     .page.page-cover.vertical-center: .w-100
+      .text-lg.my-4.text-right
+        div 封面
+        div 編號: #[span(ld="fill",data-name="docid")]
+      br
       .text-center
-        h2 109年度文化內容開發與產業策進方案
+        h2 109年度文化內容開發與內容產業領航行動方案
         br
         h2 計畫書
         +nbr(2)
@@ -478,16 +519,19 @@ block body
       .text-center
         p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
   .w-1024.mx-auto.rwd.no-print
-    .d-flex.align-items-center
-      .btn.btn-primary.btn-lg.mr-4(ld="submit") 線上送件
-      .btn.btn-primary.btn-lg.mr-4.ld-ext-right(ld="download") 下載申請書 PDF #[.ld.ld-spin.ld-spinner.ldld]
-      .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
+    .d-flex.align-items-stretch
+      .btn.btn-primary.btn-lg.mr-4(ld="submit",data-type="save"): .vertical-center: div 暫存進度
+      .btn.btn-primary.btn-lg.mr-4(ld="submit",data-type="submit")
+        span 線上送件
+        .text-sm 點選後將不能再修改檔案
+      .btn.btn-primary.btn-lg.mr-4(ld="download")
+        .vertical-center: .ld-ext-right 線上文件 PDF 檔下載 #[.ld.ld-spin.ld-spinner.ldld]
+      div: .vertical-center: .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
     +nbr(4)
 
   .ldcv.ldcvmgr(data-name="flagship-print-timeout",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
     .text-center
       h2 連線逾時
-
     .py-4: p 主機沒有在一定的時間內產生 PDF 檔，可能是因為服務忙碌中。您可以稍候再重試一次，或者直接將此頁面列印成 PDF 檔做為您的申請書。
     .row
       .col-md
@@ -508,6 +552,18 @@ block body
       p 請下載申請書 PDF 檔，印出紙本後用印寄回，以利後續作業。
       p 您隨時可以回到這個頁面重新下載 PDF 檔。若需要回到此頁，請由網頁右上角的下拉選單中點選「個人頁面」，即可找到您建立的案件。
     .btn.btn-lg.btn-primary.btn-block.ld-ext-right(ld="download") 下載申請書 PDF  #[.ld.ld-spin.ld-spinner.ldld]
+
+  .ldcv.ldcvmgr(data-name="flagship-saving",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+    .text-center
+      div 暫存進度中 ...
+      .ld.ld-spin.ld-spinner.text-lg.mt-4
+  .ldcv.ldcvmgr(data-name="flagship-saved",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+    .text-center
+      h2 您的編輯進度已儲存。
+      div 案件編號: #[span(ld="fill",data-name="docid")]
+    .py-4
+      p 您隨時可以回到這個頁面繼續編輯。若需要回到此頁，請由網頁右上角的下拉選單中點選「個人頁面」，即可找到您建立的案件。
+    .btn.btn-lg.btn-primary.btn-block.ld-ext-right(data-ldcv-set="") 關閉
 
 
 block script

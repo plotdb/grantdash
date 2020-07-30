@@ -215,124 +215,140 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
             return saveLocally();
           },
           download: function(){
-            var style, html;
-            if (lc.downloading) {
-              return;
-            }
-            lc.downloading = true;
-            view.getAll("download").map(function(it){
-              return it.classList.add('running');
-            });
-            ld$.find(document.body, '._preview').map(function(it){
-              return it.parentNode.removeChild(it);
-            });
-            ld$.find('select,textarea,input').map(function(f){
-              var type, nodeName, classes, n;
-              type = f.getAttribute('type');
-              nodeName = f.nodeName.toLowerCase();
-              if (!type) {
-                classes = Array.from(f.classList).filter(function(it){
-                  return !(it === 'is-valid' || it === 'is-invalid');
-                }).concat(['_preview']);
-                f.setAttribute('value', f.value);
-                n = ld$.create({
-                  name: 'div',
-                  className: classes,
-                  style: f.style
-                });
-                if (nodeName === 'textarea') {
-                  n.style.height = 'auto';
-                }
-                n.innerText = f.value;
-                return f.parentNode.insertBefore(n, f);
-              } else {
-                if (f.checked) {
-                  return f.setAttribute('checked', '');
-                } else {
-                  return f.removeAttribute('checked');
-                }
+            var this$ = this;
+            return isReady.get().then(function(v){
+              var style, html;
+              if (!v) {
+                return;
               }
-            });
-            style = "<link rel=\"stylesheet\" type=\"text/css\"\nhref=\"https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/css/index.css\">\n<style type=\"text/css\"> " + ld$.find('style', 0).innerText + " </style>";
-            html = "<html>\n<head><meta charset=\"utf-8\">" + style + "</head>\n<body><div class=\"typeset heading-contrast\">\n" + ld$.find('#form', 0).innerHTML + "\n</div></body>\n</html>";
-            return auth.recaptcha.get().then(function(recaptcha){
-              return ld$.fetch('/dash/api/flagship/download', {
-                method: 'POST'
-              }, {
-                json: {
-                  html: html,
-                  recaptcha: recaptcha
-                },
-                type: 'blob',
-                timeout: 60 * 1000
-              });
-            }).then(function(blob){
-              var url, a;
-              url = URL.createObjectURL(blob);
-              a = ld$.create({
-                name: 'a',
-                attr: {
-                  href: url,
-                  download: 'form.pdf'
-                }
-              });
-              document.body.appendChild(a);
-              a.click();
-              return document.body.removeChild(a);
-            })['finally'](function(){
+              if (lc.downloading) {
+                return;
+              }
+              lc.downloading = true;
               view.getAll("download").map(function(it){
-                return it.classList.remove('running');
+                return ld$.find(it.parent, '.ld-ext-right', 0).classList.add('running');
               });
-              ldcvmgr.toggle('flagship-submitted', false);
-              return lc.downloading = false;
-            })['catch'](function(it){
-              if (ldError.id(it) === 1006) {
-                return ldcvmgr.toggle('flagship-print-timeout');
-              } else {
-                return error()(it);
-              }
+              ld$.find(document.body, '._preview').map(function(it){
+                return it.parentNode.removeChild(it);
+              });
+              ld$.find('select,textarea,input').map(function(f){
+                var type, nodeName, classes, n;
+                type = f.getAttribute('type');
+                nodeName = f.nodeName.toLowerCase();
+                if (!type) {
+                  classes = Array.from(f.classList).filter(function(it){
+                    return !(it === 'is-valid' || it === 'is-invalid');
+                  }).concat(['_preview']);
+                  f.setAttribute('value', f.value);
+                  n = ld$.create({
+                    name: 'div',
+                    className: classes,
+                    style: f.style
+                  });
+                  if (nodeName === 'textarea') {
+                    n.style.height = 'auto';
+                  }
+                  n.innerText = f.value;
+                  return f.parentNode.insertBefore(n, f);
+                } else {
+                  if (f.checked) {
+                    return f.setAttribute('checked', '');
+                  } else {
+                    return f.removeAttribute('checked');
+                  }
+                }
+              });
+              style = "<link rel=\"stylesheet\" type=\"text/css\"\nhref=\"https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/css/index.css\">\n<style type=\"text/css\"> " + ld$.find('style', 0).innerText + " </style>";
+              html = "<html>\n<head><meta charset=\"utf-8\">" + style + "</head>\n<body><div class=\"typeset heading-contrast\">\n" + ld$.find('#form', 0).innerHTML + "\n</div></body>\n</html>";
+              return auth.recaptcha.get().then(function(recaptcha){
+                return ld$.fetch('/dash/api/flagship/download', {
+                  method: 'POST'
+                }, {
+                  json: {
+                    html: html,
+                    recaptcha: recaptcha
+                  },
+                  type: 'blob',
+                  timeout: 60 * 1000
+                });
+              }).then(function(blob){
+                var url, a;
+                url = URL.createObjectURL(blob);
+                a = ld$.create({
+                  name: 'a',
+                  attr: {
+                    href: url,
+                    download: 'form.pdf'
+                  }
+                });
+                document.body.appendChild(a);
+                a.click();
+                return document.body.removeChild(a);
+              })['finally'](function(){
+                view.getAll("download").map(function(it){
+                  return it.classList.remove('running');
+                });
+                ldcvmgr.toggle('flagship-submitted', false);
+                return lc.downloading = false;
+              })['catch'](function(it){
+                if (ldError.id(it) === 1006) {
+                  return ldcvmgr.toggle('flagship-print-timeout');
+                } else {
+                  return error()(it);
+                }
+              });
             });
           },
-          submit: function(){
-            return isReady.get().then(function(v){
+          submit: function(arg$){
+            var node, isSubmit, coverName, p;
+            node = arg$.node;
+            isSubmit = node.getAttribute('data-type') === 'submit';
+            coverName = isSubmit
+              ? ['submitting', 'submitted']
+              : ['saving', 'saved'];
+            p = isSubmit
+              ? isReady.get()
+              : Promise.resolve(true);
+            return p.then(function(v){
               if (!v) {
                 return;
               }
               saveLocally();
-              ldcvmgr.toggle('flagship-submitting', true);
-              return auth.recaptcha.get().then(function(recaptcha){
-                var json, ref$;
-                json = {
-                  key: ((ref$ = vlc || {}).prj || (ref$.prj = {})).key,
-                  recaptcha: recaptcha,
-                  detail: payload,
-                  name: payload.form.name,
-                  description: (payload.form["abs-item"] || "").substring(0, 200),
-                  brd: "flagship-2"
-                };
-                return ld$.fetch('/dash/api/flagship/prj', {
-                  method: 'POST'
-                }, {
-                  json: json,
-                  type: 'json'
-                }).then(function(it){
-                  clearLocaldata();
-                  if (it && it.slug) {
-                    (vlc.prj || (vlc.prj = {})).slug = it.slug;
-                    view.render('fill');
-                  }
-                  return ldcvmgr.toggle('flagship-submitted', true);
-                })['finally'](function(){
-                  return ldcvmgr.toggle('flagship-submitting', false);
-                })['catch'](error());
+              ldcvmgr.toggle("flagship-" + coverName[0], true);
+              return auth.recaptcha.get();
+            }).then(function(recaptcha){
+              var json, ref$;
+              json = {
+                key: ((ref$ = vlc || {}).prj || (ref$.prj = {})).key,
+                recaptcha: recaptcha,
+                detail: payload,
+                name: payload.form.name,
+                description: (payload.form["abs-item"] || "").substring(0, 200),
+                brd: "flagship-2",
+                submit: false
+              };
+              return ld$.fetch('/dash/api/flagship/prj', {
+                method: 'POST'
+              }, {
+                json: json,
+                type: 'json'
               });
-            });
+            }).then(function(it){
+              clearLocaldata();
+              if (it && it.slug) {
+                (vlc.prj || (vlc.prj = {})).slug = it.slug;
+                view.render('fill');
+              }
+              return ldcvmgr.toggle("flagship-" + coverName[1], true);
+            })['finally'](function(){
+              return ldcvmgr.toggle("flagship-" + coverName[0], false);
+            })['catch'](error());
           }
         }
       },
       text: {
         fill: function(arg$){
-          var node, n, values, that, ret, total, ref$, self, gid, slug, id;
+          var node, n, values, that, total, ref$, ret, self, gid, slug, id;
           node = arg$.node;
           n = node.getAttribute('data-name');
           if (!ldform) {
@@ -350,6 +366,14 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
           }
           if (n === 'doc-day') {
             return new Date().getDate();
+          }
+          if (n === 'budget') {
+            total = ((ref$ = payload.list).budget || (ref$.budget = [])).map(function(it){
+              return (it.value || (it.value = {})).price * (it.value || (it.value = {})).count;
+            }).reduce(function(a, b){
+              return a + +b;
+            }, 0);
+            return total;
           }
           if (ret = /^budget-(self|subsidy)(-percent)?$/.exec(n)) {
             total = ((ref$ = payload.list).budget || (ref$.budget = [])).map(function(it){
