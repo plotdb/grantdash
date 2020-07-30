@@ -169,6 +169,13 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
             });
           }
         },
+        "total-max": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.innerText = "0 ~ " + this$.grade.reduce(function(a, b){
+            return a + +b.percent;
+          }, 0);
+        },
         grade: {
           list: function(arg$){
             var context;
@@ -179,7 +186,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
             var node, data;
             node = arg$.node, data = arg$.data;
             ld$.find(node, 'span', 0).innerText = data.name;
-            return ld$.find(node, 'div', 0).innerText = data.percent + "%";
+            return ld$.find(node, 'div', 0).innerText = "0 ~ " + data.percent;
           },
           action: {
             click: function(arg$){
@@ -240,14 +247,20 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                   var node, context, handle;
                   node = arg$.node, context = arg$.context;
                   handle = function(){
-                    var v;
+                    var v, sum;
                     if (context.total === (v = +node.value)) {
                       return;
                     }
+                    if (isNaN(v)) {
+                      return node.value = context.total;
+                    }
                     context.total = v;
+                    sum = this$.grade.reduce(function(a, b){
+                      return a + +b.percent;
+                    }, 0);
                     this$.grade.map(function(it){
                       var ref$, ref1$, key$;
-                      return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = it.percent * v / 100;
+                      return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = it.percent * v / sum;
                     });
                     return this$.view.local.render('project');
                   };
@@ -314,8 +327,9 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                       });
                     };
                     local.render = function(data){
-                      var v, ref$, ref1$, key$;
-                      local.input.value = v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[data.key] || '';
+                      var ref$, ref1$, key$, v;
+                      local.input.value = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[data.key] || '';
+                      v = +local.input.value;
                       ['bg-danger', 'text-white'].map(function(it){
                         return input.classList.toggle(it, v > data.percent);
                       });

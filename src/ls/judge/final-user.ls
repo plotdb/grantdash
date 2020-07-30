@@ -76,12 +76,12 @@ Ctrl = (opt) ->
                   icon.classList.remove \i-close, \i-circle, \i-check
                   icon.classList.add <[i-check i-circle i-close]>[data.value]
 
-
+      "total-max": ({node}) ~> node.innerText = "0 ~ #{@grade.reduce(((a,b) -> a + +b.percent),0)}"
       grade: do
         list: ({context}) ~> @grade
         handler: ({node, data}) ->
           ld$.find(node, 'span', 0).innerText = data.name
-          ld$.find(node, 'div', 0).innerText = "#{data.percent}%"
+          ld$.find(node, 'div', 0).innerText = "0 ~ #{data.percent}"
         action: click: ({node, data}) ~> @sort \grade, data
       project: do
         key: -> it.slug
@@ -114,8 +114,10 @@ Ctrl = (opt) ->
               total: ({node, context}) ~>
                 handle = ~>
                   if context.total == (v = +node.value) => return
+                  if isNaN(v) => return node.value = context.total
                   context.total = v
-                  @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / 100
+                  sum = @grade.reduce(((a,b) -> a + +b.percent),0)
+                  @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / sum
                   #@view.local.render {name: \project, key: context.slug}
                   @view.local.render \project
 
@@ -145,7 +147,8 @@ Ctrl = (opt) ->
                     @view.local.render \project
                     @ops-out ~> @data
                   local.render = (data) ~>
-                    local.input.value = v = @data.prj{}[context.key].{}v[data.key] or ''
+                    local.input.value = @data.prj{}[context.key].{}v[data.key] or ''
+                    v = +local.input.value
                     <[bg-danger text-white]>.map -> input.classList.toggle it, (v > data.percent)
                     @view.local.render <[progress-bar progress-percent count]>
                     @rerank!
