@@ -90,12 +90,12 @@
       })['catch'](aux.errorHandler(res));
     });
     api.post('/flagship/prj/', throttle.count.userMd, grecaptcha, function(req, res){
-      var lc, ref$, name, description, brd, detail, key, slug;
+      var lc, ref$, name, description, brd, detail, key, submit, slug, state;
       if (!(req.user && req.user.key)) {
         return aux.r403(res);
       }
       lc = {};
-      ref$ = req.body, name = ref$.name, description = ref$.description, brd = ref$.brd, detail = ref$.detail, key = ref$.key;
+      ref$ = req.body, name = ref$.name, description = ref$.description, brd = ref$.brd, detail = ref$.detail, key = ref$.key, submit = ref$.submit;
       detail = {
         custom: detail
       };
@@ -103,6 +103,7 @@
         return aux.r400(res);
       }
       slug = null;
+      state = submit ? "active" : "pending";
       return cache.stage.check({
         io: io,
         type: 'brd',
@@ -126,12 +127,16 @@
           return aux.reject(404);
         }
         if (key) {
-          return io.query("select owner from prj where key = $1 and owner = $2", [key, req.user.key]).then(function(r){
+          return io.query("select owner,state from prj where key = $1 and owner = $2", [key, req.user.key]).then(function(r){
+            var ret;
             r == null && (r = {});
-            if (!(r.rows || (r.rows = [])).length) {
+            if (!(ret = (r.rows || (r.rows = [])).length)) {
               return aux.reject(404);
             }
-            return io.query("update prj set (name,description,detail,modifiedtime) = ($1,$2,$3,now()) where key = $4 returning key", [name, description, JSON.stringify(detail), key]);
+            if (ret.state === 'active') {
+              return aux.reject(403);
+            }
+            return io.query("update prj set (name,description,detail,modifiedtime,state) = ($1,$2,$3,now(),$5)\nwhere key = $4 returning key", [name, description, JSON.stringify(detail), key, state]);
           }).then(function(){
             return res.send({});
           });
@@ -141,7 +146,7 @@
             r == null && (r = {});
             id = +(r.rows || (r.rows = []))[0].count + 1;
             slug = suuid() + ("-" + id);
-            return io.query("insert into prj (name,description,brd,grp,slug,detail,owner)\nvalues ($1,$2,$3,$4,$5,$6,$7) returning key", [name, description, brd, lc.grp.key, slug, JSON.stringify(detail), req.user.key]);
+            return io.query("insert into prj (name,description,brd,grp,slug,detail,owner,state)\nvalues ($1,$2,$3,$4,$5,$6,$7,$8) returning key", [name, description, brd, lc.grp.key, slug, JSON.stringify(detail), req.user.key, state]);
           }).then(function(r){
             r == null && (r = {});
             return lc.ret = ((r.rows || (r.rows = [])) || [])[0];

@@ -54,11 +54,11 @@ app.get \/flagship/upload/:id, (req, res) ->
 api.post \/flagship/prj/, throttle.count.user-md, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
-  {name,description,brd,detail,key} = req.body
+  {name,description,brd,detail,key,submit} = req.body
   detail = {custom: detail}
   if !brd => return aux.r400 res
   slug = null
-
+  state = if submit => "active" else "pending"
   cache.stage.check {io, type: \brd, slug: brd, name: "prj-new"}
     .then -> io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
@@ -66,12 +66,14 @@ api.post \/flagship/prj/, throttle.count.user-md, grecaptcha, (req, res) ->
       if !(lc.grp = lc.brd.[]group.filter(->it.{}info.name == detail.custom.{}form.group).0) => return aux.reject 404
       if !(lc.brd.org) => return aux.reject 404
       if key =>
-        io.query "select owner from prj where key = $1 and owner = $2", [key, req.user.key]
+        io.query "select owner,state from prj where key = $1 and owner = $2", [key, req.user.key]
           .then (r={}) ->
-            if !(r.[]rows.length) => return aux.reject 404
+            if !(ret = r.[]rows.length) => return aux.reject 404
+            if ret.state == \active => return aux.reject 403
             io.query """
-            update prj set (name,description,detail,modifiedtime) = ($1,$2,$3,now()) where key = $4 returning key
-            """, [name, description, JSON.stringify(detail), key]
+            update prj set (name,description,detail,modifiedtime,state) = ($1,$2,$3,now(),$5)
+            where key = $4 returning key
+            """, [name, description, JSON.stringify(detail), key, state]
           .then -> res.send {}
       else
         io.query """
@@ -82,9 +84,9 @@ api.post \/flagship/prj/, throttle.count.user-md, grecaptcha, (req, res) ->
             id = +(r.[]rows.0.count) + 1
             slug := suuid! + "-#id"
             io.query """
-            insert into prj (name,description,brd,grp,slug,detail,owner)
-            values ($1,$2,$3,$4,$5,$6,$7) returning key
-            """, [name, description, brd, lc.grp.key, slug, JSON.stringify(detail), req.user.key]
+            insert into prj (name,description,brd,grp,slug,detail,owner,state)
+            values ($1,$2,$3,$4,$5,$6,$7,$8) returning key
+            """, [name, description, brd, lc.grp.key, slug, JSON.stringify(detail), req.user.key, state]
           .then (r = {}) ->
             lc.ret = (r.[]rows or []).0
           .then -> res.send (lc.ret or {}) <<< {slug}
