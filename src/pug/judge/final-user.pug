@@ -23,7 +23,7 @@ block head
           border-right: 1px solid #ccc
 block navtop-item
   ul.navbar-nav.mr-auto
-    li.nav-item: a.nav-link(href="#") #[i.i-radio.text-success] 決選表 - #[span(ld="reviewer")]
+    li.nav-item: a.nav-link(href="#") #[i.i-radio.text-success] 評分表 - #[span(ld="reviewer")]
 block body
   include cover.pug
   .h-100.w-100.d-flex.flex-column
@@ -51,9 +51,9 @@ block body
               .clickable(ld="sort",data-name="comment",style="width:5em") 評論
 
           .d-flex.text-center.score-row.d-none(ld-each="project")
-            .clickable(ld="detail",style="width:5em"): .vertical-center: .w-100
+            .clickable.px-1(ld="detail",style="width:5em"): .vertical-center: .w-100.btn.btn-outline-secondary.btn-sm
               span.text-success(ld="criteria",data-name="0")
-              span.mx-2 /
+              span.mx-1 /
               span.text-danger(ld="criteria",data-name="2")
             .text-left.p-2(style="flex:1 0 0")
               span.clickable.text-underline(ld="name")
@@ -69,7 +69,7 @@ block body
               .text-muted.text-sm 距資格審查截止還有
               .text-danger 2 天 15 小時 20 分
             .mr-4.text-sm
-              .text-muted 決選評分進度
+              .text-muted 評分進度
               .d-flex.align-items-center.my-1(style="line-height:1rem")
                 .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                 span.mr-2 已評分

@@ -662,7 +662,7 @@
         });
       })['catch'](aux.errorHandler(res));
     });
-    return api.get('/brd/:slug/form/', function(req, res){
+    api.get('/brd/:slug/form/', function(req, res){
       var slug;
       if (!(slug = req.params.slug)) {
         return aux.r400(res);
@@ -690,6 +690,28 @@
           slug: ret.slug,
           detail: ret.detail
         });
+      })['catch'](aux.errorHandler(res));
+    });
+    return api.get('/brd/:brd/grp/:grp/prjs', function(req, res){
+      var ref$, brd, grp;
+      if (!(req.user && req.user.key)) {
+        return aux.r403(res);
+      }
+      ref$ = {
+        brd: (ref$ = req.params).brd,
+        grp: ref$.grp
+      }, brd = ref$.brd, grp = ref$.grp;
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: brd,
+        action: ['owner']
+      }).then(function(){
+        return io.query("select p.*, u.username from prj as p\nleft join users as u on u.key = p.owner\nwhere\n  p.detail is not null\n  and p.deleted is not true\n  and p.brd = $1\n  and p.grp = $2", [brd, grp]);
+      }).then(function(r){
+        r == null && (r = {});
+        return res.send(r.rows || (r.rows = []));
       })['catch'](aux.errorHandler(res));
     });
   });

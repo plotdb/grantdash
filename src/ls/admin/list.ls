@@ -24,7 +24,23 @@ Ctrl = (opt) ->
           lc.keyword = node.value
       keypress: do
         "search-input": ({node, evt}) ~> if evt.keyCode == 13 => @view.render!
-      click: search: ~> @view.render!
+      click: do
+        search: ~> @view.render!
+        download: ({node}) ~>
+          n = node.getAttribute(\data-name)
+          ld$.fetch "/dash/api/brd/#{@toc.brd.slug}/grp/#{@grp.key}/prjs", {method: \GET}, {type: \json}
+            .then (ret = {}) ->
+              if n == \mail => ret = ret.map -> it{username, name}
+              blob = new Blob([JSON.stringify(ret)], {type: "application/json"})
+              url = URL.createObjectURL(blob)
+              a = ld$.create name: \a, attr: {href: url, download: "projects-#{n}.json"}
+              document.body.appendChild a
+              a.click!
+              document.body.removeChild a
+              a.remove!
+              console.log url
+
+            .catch error!
     handler: do
       empty: ({node}) ~> node.classList.toggle \d-none, @data.filter(->it.slug).length
       prj: do
@@ -65,6 +81,7 @@ Ctrl = (opt) ->
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< do
+  set-data: (grp) -> @grp = grp
   set-prj: (prj) -> @fire \set-prj, prj
   on: (n, cb) -> @evt-handler.[][n].push cb
   fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v

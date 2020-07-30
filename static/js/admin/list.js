@@ -51,6 +51,43 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
         click: {
           search: function(){
             return this$.view.render();
+          },
+          download: function(arg$){
+            var node, n;
+            node = arg$.node;
+            n = node.getAttribute('data-name');
+            return ld$.fetch("/dash/api/brd/" + this$.toc.brd.slug + "/grp/" + this$.grp.key + "/prjs", {
+              method: 'GET'
+            }, {
+              type: 'json'
+            }).then(function(ret){
+              var blob, url, a;
+              ret == null && (ret = {});
+              if (n === 'mail') {
+                ret = ret.map(function(it){
+                  return {
+                    username: it.username,
+                    name: it.name
+                  };
+                });
+              }
+              blob = new Blob([JSON.stringify(ret)], {
+                type: "application/json"
+              });
+              url = URL.createObjectURL(blob);
+              a = ld$.create({
+                name: 'a',
+                attr: {
+                  href: url,
+                  download: "projects-" + n + ".json"
+                }
+              });
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              a.remove();
+              return console.log(url);
+            })['catch'](error());
           }
         }
       },
@@ -157,6 +194,9 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
     return this;
   };
   Ctrl.prototype = import$(Object.create(Object.prototype), {
+    setData: function(grp){
+      return this.grp = grp;
+    },
     setPrj: function(prj){
       return this.fire('set-prj', prj);
     },

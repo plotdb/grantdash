@@ -386,3 +386,20 @@ api.get \/brd/:slug/form/, (req, res) ->
       ret.detail.group = ret.detail.group.map -> it{form, info, key}
       res.send ret{key,name,description,slug,detail}
     .catch aux.error-handler res
+
+api.get \/brd/:brd/grp/:grp/prjs, (req, res) ->
+  if !(req.user and req.user.key) => return aux.r403 res
+  {brd, grp} = req.params{brd, grp}
+  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[owner]>}
+    .then ->
+      io.query """
+      select p.*, u.username from prj as p
+      left join users as u on u.key = p.owner
+      where
+        p.detail is not null
+        and p.deleted is not true
+        and p.brd = $1
+        and p.grp = $2
+      """, [brd, grp]
+    .then (r={}) -> res.send(r.[]rows)
+    .catch aux.error-handler res
