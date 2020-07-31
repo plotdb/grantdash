@@ -324,7 +324,6 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 detail: payload,
                 name: payload.form.name,
                 description: (payload.form["abs-item"] || "").substring(0, 200),
-                brd: "flagship-2",
                 submit: false
               };
               return ld$.fetch('/dash/api/flagship/prj', {

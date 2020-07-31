@@ -189,7 +189,6 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                   detail: payload
                   name: payload.form.name
                   description: (payload.form["abs-item"] or "").substring(0,200)
-                  brd: "flagship-2"
                   submit: false
                 ld$.fetch \/dash/api/flagship/prj, {method: \POST}, {json: json, type: \json}
               .then ->

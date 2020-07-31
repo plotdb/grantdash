@@ -57,20 +57,23 @@
       })['catch'](aux.errorHandler(res));
     });
     api.post('/flagship/upload', function(req, res){
-      var lc, filename, id;
+      var lc, filename, brd, id;
       lc = {};
       if (!(req.user && req.user.key)) {
         return;
       }
       filename = req.body.filename;
+      brd = 'flagship-2';
       id = suuid();
-      return gcs.bucket(secret.gcs.bucket).file(id).getSignedUrl({
-        action: 'write',
-        version: 'v4',
-        expires: Date.now() + 60000
+      return Promise.resolve().then(function(){
+        return gcs.bucket(secret.gcs.bucket).file(id).getSignedUrl({
+          action: 'write',
+          version: 'v4',
+          expires: Date.now() + 60000
+        });
       }).then(function(it){
         lc.url = it[0];
-        return io.query("insert into perm_gcs (id, owner) values ($1, $2)", [id, req.user.key]);
+        return io.query("insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)", [id, req.user.key, brd || null, null]);
       }).then(function(){
         return res.send({
           signedUrl: lc.url,
@@ -78,30 +81,54 @@
         });
       })['catch'](aux.errorHandler(res));
     });
-    app.get('/flagship/upload/:id', function(req, res){
-      var id;
+    app.get('/flagship/upload/:id', aux.signed, function(req, res){
+      var lc, id;
+      lc = {};
       id = req.params.id;
-      return gcs.bucket(secret.gcs.bucket).file(id).getSignedUrl({
-        action: 'read',
-        version: 'v4',
-        expires: Date.now() + 60000
+      return io.query("select brd,grp,owner from perm_gcs where id = $1", [id]).then(function(r){
+        var ret;
+        r == null && (r = {});
+        if (!(lc.ret = ret = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        if (ret.owner === req.user.key) {
+          return true;
+        }
+        return cache.perm.check({
+          io: io,
+          type: 'brd',
+          slug: ret.brd,
+          user: req.user,
+          action: ['judge', 'owner']
+        });
+      })['catch'](function(){
+        return io.query("select owner from perm_judge where brd = $1 and owner = $2", [lc.ret.brd, req.user.key]).then(function(r){
+          r == null && (r = {});
+          if (!(r.rows || (r.rows = [])).length) {
+            return Promise.reject(403);
+          }
+        });
+      }).then(function(){
+        return gcs.bucket(secret.gcs.bucket).file(id).getSignedUrl({
+          action: 'read',
+          version: 'v4',
+          expires: Date.now() + 60000
+        });
       }).then(function(it){
         return res.status(302).redirect(it[0]);
       })['catch'](aux.errorHandler(res));
     });
     api.post('/flagship/prj/', throttle.count.userMd, grecaptcha, function(req, res){
-      var lc, ref$, name, description, brd, detail, key, submit, slug, state;
+      var lc, ref$, name, description, detail, key, submit, brd, slug, state;
       if (!(req.user && req.user.key)) {
         return aux.r403(res);
       }
       lc = {};
-      ref$ = req.body, name = ref$.name, description = ref$.description, brd = ref$.brd, detail = ref$.detail, key = ref$.key, submit = ref$.submit;
+      ref$ = req.body, name = ref$.name, description = ref$.description, detail = ref$.detail, key = ref$.key, submit = ref$.submit;
       detail = {
         custom: detail
       };
-      if (!brd) {
-        return aux.r400(res);
-      }
+      brd = 'flagship-2';
       slug = null;
       state = submit ? "active" : "pending";
       return cache.stage.check({

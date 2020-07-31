@@ -29,34 +29,51 @@ api.post \/flagship/upload, (req, res) ->
   lc = {}
   if !(req.user and req.user.key) => return
   filename = req.body.filename
+  brd = \flagship-2
   id = suuid!
-  gcs
-   .bucket secret.gcs.bucket
-   .file id
-   .getSignedUrl {action: \write, version: \v4, expires: (Date.now! + 60000)}
-   .then ->
-     lc.url = it.0
-     io.query "insert into perm_gcs (id, owner) values ($1, $2)", [id, req.user.key]
-   .then ->
-     res.send {signed-url: lc.url, id}
-   .catch aux.error-handler res
+  Promise.resolve!
+    .then ->
+      gcs
+       .bucket secret.gcs.bucket
+       .file id
+       .getSignedUrl {action: \write, version: \v4, expires: (Date.now! + 60000)}
+    .then ->
+      lc.url = it.0
+      io.query """
+      insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)
+      """, [id, req.user.key, (brd or null), null]
+    .then ->
+      res.send {signed-url: lc.url, id}
+    .catch aux.error-handler res
 
-# TODO ownership verify
-app.get \/flagship/upload/:id, (req, res) ->
+app.get \/flagship/upload/:id, aux.signed, (req, res) ->
+  lc = {}
   id = req.params.id
-  gcs
-   .bucket secret.gcs.bucket
-   .file id
-   .getSignedUrl {action: \read, version: \v4, expires: (Date.now! + 60000)}
-   .then -> return res.status(302).redirect(it.0)
-   .catch aux.error-handler res
+  io.query "select brd,grp,owner from perm_gcs where id = $1", [id]
+    .then (r={}) ->
+      if !(lc.ret = ret = r.[]rows.0) => return aux.reject 404
+      if ret.owner == req.user.key => return true
+      cache.perm.check {io, type: \brd, slug: ret.brd, user: req.user, action: <[judge owner]>}
+    .catch ->
+      io.query """
+      select owner from perm_judge where brd = $1 and owner = $2
+      """, [lc.ret.brd, req.user.key]
+        .then (r={}) ->
+          if !(r.[]rows.length) => return Promise.reject 403
+    .then ->
+      gcs
+       .bucket secret.gcs.bucket
+       .file id
+       .getSignedUrl {action: \read, version: \v4, expires: (Date.now! + 60000)}
+    .then -> return res.status(302).redirect(it.0)
+    .catch aux.error-handler res
 
 api.post \/flagship/prj/, throttle.count.user-md, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
-  {name,description,brd,detail,key,submit} = req.body
+  {name,description,detail,key,submit} = req.body
   detail = {custom: detail}
-  if !brd => return aux.r400 res
+  brd = \flagship-2
   slug = null
   state = if submit => "active" else "pending"
   cache.stage.check {io, type: \brd, slug: brd, name: "prj-new"}
