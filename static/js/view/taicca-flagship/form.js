@@ -264,7 +264,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 }
               });
               style = "<link rel=\"stylesheet\" type=\"text/css\"\nhref=\"https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/css/index.css\">\n<style type=\"text/css\"> " + ld$.find('style', 0).innerText + " </style>";
-              html = "<html>\n<head><meta charset=\"utf-8\">" + style + "</head>\n<body><div class=\"typeset heading-contrast\">\n" + ld$.find('#form', 0).innerHTML + "\n</div></body>\n</html>";
+              html = "<html>\n<head><meta charset=\"utf-8\">" + style + "</head>\n<body><div class=\"typeset heading-contrast\">\n" + ld$.find('#flagship-form', 0).innerHTML + "\n</div></body>\n</html>";
               return auth.recaptcha.get().then(function(recaptcha){
                 return ld$.fetch('/dash/api/flagship/download', {
                   method: 'POST'
@@ -466,7 +466,11 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
             node.classList.add('text-danger');
             return node.innerText = "尚未上傳檔案";
           }
-          node.innerText = data.filename + " / size: " + Math.round(data.size / 1024) + "KB";
+          if (node.classList.contains('no-print')) {
+            node.innerText = data.filename + " / size: " + Math.round(data.size / 1024) + "KB ( 點擊下載文件 )";
+          } else {
+            node.innerText = "計畫書已上傳";
+          }
           return node.setAttribute('href', "/dash/flagship/upload/" + data.id);
         },
         toggler: function(arg$){

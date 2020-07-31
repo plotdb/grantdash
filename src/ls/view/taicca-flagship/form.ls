@@ -148,7 +148,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             <html>
             <head><meta charset="utf-8">#style</head>
             <body><div class="typeset heading-contrast">
-            #{ld$.find(\#form, 0).innerHTML}
+            #{ld$.find(\#flagship-form, 0).innerHTML}
             </div></body>
             </html>
             """
@@ -258,7 +258,10 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
           if !((data = payload.file[name]) and payload.file[name].id) =>
             node.classList.add \text-danger
             return node.innerText = "尚未上傳檔案"
-          node.innerText = "#{data.filename} / size: #{Math.round(data.size / 1024)}KB"
+          if node.classList.contains \no-print =>
+            node.innerText = "#{data.filename} / size: #{Math.round(data.size / 1024)}KB ( 點擊下載文件 )"
+          else
+            node.innerText = "計畫書已上傳"
           node.setAttribute \href, "/dash/flagship/upload/#{data.id}"
         toggler: ({node}) ->
           if !ldform => return

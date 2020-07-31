@@ -44,6 +44,8 @@ block head
 
     .no-break
       page-break-inside: avoid
+    .only-print
+      display: none
     @page
       margin: 20mm 10mm
     @media print
@@ -53,6 +55,8 @@ block head
         margin: 0!important
       .no-print, .grecaptcha-badge
         display: none!important
+      .only-print
+        display: block!important
       .form-inner-box
         border: 0
         box-shadow: none
@@ -214,8 +218,8 @@ block body
       .no-break
         label 印鑑 ( 列印後用印一份 )
         .row.text-muted.mb-4
-          .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 公司章
-          .col-md: .aspect-ratio.ratio-2by1.text-center.rounded(style="border:1px solid #eee") 負責人章
+          .col-md: .aspect-ratio.ratio-2by1.text-center(style="border:1px solid #eee") 公司章
+          .col-md: .aspect-ratio.ratio-2by1.text-center(style="border:1px solid #eee") 負責人章
 
       .form-group
         label.mb-0 備註 ( 立案證明文件詳見計畫書附件一 )
@@ -293,22 +297,6 @@ block body
           .btn.btn-outline-secondary.no-print(ld="add-column",data-name="perform") 新增一項 #[i.i-plus]
 
       +nbr(2)
-
-      //-.form-group
-        label.mb-0 立案證明文件
-        .mb-4.ml-4
-          +radio("incorp-type", "1", true) 公司
-          +radio("incorp-type", "2", false) 財團(社團)法人
-          +radio("incorp-type", "3", false) 大專院校
-          +radio("incorp-type", "4", false) 學術研究機構或團體
-        label 上傳檔案
-        p 上傳最新版登記證書 / 章程 / 核發函文 其中兩者
-        .d-flex.align-items-center.mb-4
-          .btn.btn-upload.btn-primary 上傳文件1 #[input(ld="file-upload",type="file",data-name="corp-1")]
-          a.ml-4(ld="file-uploaded",data-name="corp-1",target="_blank",rel="noopener noreferrer")
-        .d-flex.align-items-center
-          .btn.btn-upload.btn-primary 上傳文件2 #[input(ld="file-upload",type="file",data-name="corp-2")] #[span]
-          a.ml-4(ld="file-uploaded",data-name="corp-2",target="_blank",rel="noopener noreferrer")
 
       h5 計畫摘要
 
@@ -425,7 +413,8 @@ block body
         label 上傳計畫書 PDF ( 計畫書內容含目錄、原著授權、立案證明文件、合作意向書 / 合約 )
         .d-flex.align-items-center
           .btn.btn-upload.btn-primary.no-print 上傳文件 #[input(ld="file-upload",type="file",data-name="plan")] #[span]
-          a.ml-4(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
+          a.ml-4.no-print(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
+          a.ml-4.only-print(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
 
 
     .page.px-4
@@ -454,8 +443,8 @@ block body
           .no-break.text-center
             label 印鑑 ( 列印後用印正本 )
             .row.text-muted.mb-4.no-gutters
-              .col-md: .aspect-ratio.ratio-4by3.text-center.rounded.text-sm(style="border:1px solid #eee") 公司章#[br](列印後用印一份)
-              .col-md: .aspect-ratio.ratio-4by3.text-center.rounded.text-sm(style="border:1px solid #eee") 負責人章#[br](列印後用印一份)
+              .col-md: .aspect-ratio.ratio-4by3.text-center.text-sm(style="border:1px solid #eee") 公司章#[br](列印後用印一份)
+              .col-md: .aspect-ratio.ratio-4by3.text-center.text-sm(style="border:1px solid #eee") 負責人章#[br](列印後用印一份)
 
       p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
 
@@ -482,8 +471,8 @@ block body
             .no-break.text-center
               label 印鑑 ( 列印後用印正本 )
               .row.text-muted.mb-4.no-gutters
-                .col-md: .aspect-ratio.ratio-4by3.text-center.rounded.text-sm(style="border:1px solid #eee") 公司章#[br](列印後用印一份)
-                .col-md: .aspect-ratio.ratio-4by3.text-center.rounded.text-sm(style="border:1px solid #eee") 負責人章#[br](列印後用印一份)
+                .col-md: .aspect-ratio.ratio-4by3.text-center.text-sm(style="border:1px solid #eee") 公司章#[br](列印後用印一份)
+                .col-md: .aspect-ratio.ratio-4by3.text-center.text-sm(style="border:1px solid #eee") 負責人章#[br](列印後用印一份)
 
 
 
