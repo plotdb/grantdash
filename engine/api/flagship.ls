@@ -38,7 +38,7 @@ api.post \/flagship/upload, (req, res) ->
   io.query "select id from perm_gcs where owner = $1", [req.user.key]
     .then (r={}) ->
       if (lc.perm = r.[]rows.0) => lc.id = lc.perm.id
-      else id = suuid!
+      else lc.id = suuid!
     .then ->
       gcs
        .bucket secret.gcs.bucket

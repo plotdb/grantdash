@@ -75,12 +75,11 @@
       }
       brd = 'flagship-2';
       return io.query("select id from perm_gcs where owner = $1", [req.user.key]).then(function(r){
-        var id;
         r == null && (r = {});
         if (lc.perm = (r.rows || (r.rows = []))[0]) {
           return lc.id = lc.perm.id;
         } else {
-          return id = suuid();
+          return lc.id = suuid();
         }
       }).then(function(){
         return gcs.bucket(secret.gcs.bucket).file(lc.id).getSignedUrl({
