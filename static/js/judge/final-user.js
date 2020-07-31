@@ -314,17 +314,21 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                     return this$.grade;
                   },
                   init: function(arg$){
-                    var local, node, context, data, input, ref$, ref1$, key$, handle;
+                    var local, node, context, data, input, ref$, ref1$, key$, _update, handle;
                     local = arg$.local, node = arg$.node, context = arg$.context, data = arg$.data;
                     local.input = input = ld$.find(node, 'input', 0);
                     input.value = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[data.key] || '';
-                    handle = function(e){
-                      this$.data.prj[context.key].v[data.key] = +input.value;
-                      local.render(data);
+                    _update = debounce(300, function(){
+                      this$.rerank();
                       this$.view.local.render('project');
                       return this$.opsOut(function(){
                         return this$.data;
                       });
+                    });
+                    handle = function(){
+                      this$.data.prj[context.key].v[data.key] = +input.value;
+                      local.render(data);
+                      return _update();
                     };
                     local.render = function(data){
                       var ref$, ref1$, key$, v;
@@ -333,8 +337,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                       ['bg-danger', 'text-white'].map(function(it){
                         return input.classList.toggle(it, v > data.percent);
                       });
-                      this$.view.local.render(['progress-bar', 'progress-percent', 'count']);
-                      return this$.rerank();
+                      return this$.view.local.render(['progress-bar', 'progress-percent', 'count']);
                     };
                     input.addEventListener('input', handle);
                     input.addEventListener('keyup', handle);

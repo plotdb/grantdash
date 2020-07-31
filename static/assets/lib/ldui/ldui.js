@@ -10919,6 +10919,9 @@ function import$(obj, src){
     }
     return 0;
   };
+  ldError.reject = function(opt, id){
+    return Promise.reject(new ldError(opt, id));
+  };
   if (typeof module != 'undefined' && module !== null) {
     module.exports = ldError;
   }
@@ -11171,10 +11174,9 @@ var slice$ = [].slice;
           if (!node._obj) {
             node._obj = {
               node: node,
-              name: {
-                idx: i,
-                local: {}
-              }
+              name: name,
+              idx: i,
+              local: {}
             };
           }
           node._obj.data = n;

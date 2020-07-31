@@ -140,18 +140,20 @@ Ctrl = (opt) ->
                 init: ({local, node, context, data}) ~>
                   local.input = input = ld$.find(node, 'input', 0)
                   input.value = @data.prj{}[context.key].{}v[data.key] or ''
-                  handle = (e) ~>
-                    @data.prj[context.key].v[data.key] = +input.value
-                    local.render data
-                    #@view.local.render {name: \project, key: context.slug}
+                  _update = debounce 300, ~>
+                    @rerank!
                     @view.local.render \project
                     @ops-out ~> @data
+                  handle = ~>
+                    @data.prj[context.key].v[data.key] = +input.value
+                    local.render data
+                    _update!
+
                   local.render = (data) ~>
                     local.input.value = @data.prj{}[context.key].{}v[data.key] or ''
                     v = +local.input.value
                     <[bg-danger text-white]>.map -> input.classList.toggle it, (v > data.percent)
                     @view.local.render <[progress-bar progress-percent count]>
-                    @rerank!
                   input.addEventListener \input, handle
                   input.addEventListener \keyup, handle
                   input.addEventListener \change, handle
