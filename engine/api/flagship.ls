@@ -12,38 +12,46 @@ gcs = new storage.Storage secret.gcs
 api = engine.router.api
 app = engine.app
 
-app.get \/flagship/, (req, res) ->
-  res.render \view/taicca-flagship/prj-view.pug
+render-form = (req, res) ->
 
-app.get \/flagship/:slug, (req, res) ->
-  lc = {}
-  if !(slug = req.params.slug) => return aux.r400 res
-  io.query "select brd,detail,slug,key from prj where deleted is not true and slug = $1", [slug]
+app.get \/flagship/, aux.signed, (req, res) ->
+  brd = \flagship-2
+  io.query """
+  select brd,detail,system,slug,key,state from prj
+  where brd = $1 and owner = $2 and deleted is not true
+  """, [brd, req.user.key]
     .then (r={}) ->
-      if !(lc.prj = prj = r.[]rows.0) => return aux.reject 404
-      cache.stage.check {io, type: \brd, slug: prj.brd, name: "prj-edit"}
-    .then -> res.render \view/taicca-flagship/prj-view.pug, {exports: {prj: lc.prj}}
+      if !(ret = r.[]rows.0) =>
+        cache.stage.check {io, type: \brd, slug: brd, name: \prj-new}
+          .then -> return res.render \view/taicca-flagship/prj-view.pug
+      else
+        cache.stage.check {io, type: \brd, slug: brd, name: \prj-edit}
+          .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \prj-edit-own}
+          .then -> return res.render \view/taicca-flagship/prj-view.pug, {exports: {prj: ret}}
     .catch aux.error-handler res
 
+# TODO should accept only one file for each prj, and only if prj is pending
 api.post \/flagship/upload, (req, res) ->
   lc = {}
   if !(req.user and req.user.key) => return
-  filename = req.body.filename
   brd = \flagship-2
-  id = suuid!
-  Promise.resolve!
+  io.query "select id from perm_gcs where owner = $1", [req.user.key]
+    .then (r={}) ->
+      if (lc.perm = r.[]rows.0) => lc.id = lc.perm.id
+      else id = suuid!
     .then ->
       gcs
        .bucket secret.gcs.bucket
-       .file id
-       .getSignedUrl {action: \write, version: \v4, expires: (Date.now! + 60000)}
+       .file lc.id
+       .getSignedUrl {action: \write, version: \v4, expires: (Date.now! + 2 * 60 * 1000)}
     .then ->
       lc.url = it.0
-      io.query """
-      insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)
-      """, [id, req.user.key, (brd or null), null]
+      if !lc.perm =>
+        io.query """
+        insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)
+        """, [lc.id, req.user.key, (brd or null), null]
     .then ->
-      res.send {signed-url: lc.url, id}
+      res.send {signed-url: lc.url, id: lc.id}
     .catch aux.error-handler res
 
 app.get \/flagship/upload/:id, aux.signed, (req, res) ->
@@ -68,45 +76,51 @@ app.get \/flagship/upload/:id, aux.signed, (req, res) ->
     .then -> return res.status(302).redirect(it.0)
     .catch aux.error-handler res
 
-api.post \/flagship/prj/, throttle.count.user-md, grecaptcha, (req, res) ->
+api.post \/flagship/prj/, throttle.count.user, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
   {name,description,detail,key,submit} = req.body
   detail = {custom: detail}
   brd = \flagship-2
-  slug = null
-  state = if submit => "active" else "pending"
-  cache.stage.check {io, type: \brd, slug: brd, name: "prj-new"}
+  lc.state = if submit => "active" else "pending"
+
+  io.query """
+  select * from prj
+  where deleted is not true and brd = $1 and owner = $2
+  """, [brd, req.user.key]
+    .then (r={}) ->
+      lc.prj = r.[]rows.0
+      if lc.prj and lc.prj.state == \active => return aux.reject 403
+      cache.stage.check {io, type: \brd, slug: brd, name: (if !lc.prj => \prj-new else \prj-edit)}
+        .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \prj-edit-own}
     .then -> io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
       if !(lc.grp = lc.brd.[]group.filter(->it.{}info.name == detail.custom.{}form.group).0) => return aux.reject 404
-      if !(lc.brd.org) => return aux.reject 404
-      if key =>
-        io.query "select owner,state from prj where key = $1 and owner = $2", [key, req.user.key]
-          .then (r={}) ->
-            if !(ret = r.[]rows.length) => return aux.reject 404
-            if ret.state == \active => return aux.reject 403
-            io.query """
-            update prj set (name,description,detail,modifiedtime,state) = ($1,$2,$3,now(),$5)
-            where key = $4 returning key
-            """, [name, description, JSON.stringify(detail), key, state]
-          .then -> res.send {}
+    .then ->
+      if lc.prj =>
+        io.query """
+        update prj set (name,description,detail,grp,state) = ($2,$3,$4,$5,$6)
+        where key = $1
+        """, [lc.prj.key, name, description, JSON.stringify(detail), lc.grp.key, lc.state]
+          .then -> res.send lc{state}
       else
         io.query """
-        select count(key) as count from prj
-        where brd = $1 and grp = $2 and deleted is not true
-        """, [brd, lc.grp.key]
+        select count(key) as count from prj where
+        deleted is not true and brd = $1
+        """, [brd]
           .then (r={}) ->
-            id = +(r.[]rows.0.count) + 1
-            slug := suuid! + "-#id"
+            lc.system = {idx: +((r.[]rows.0 or {}).count or 0) + 1}
+            lc.slug = suuid!
             io.query """
-            insert into prj (name,description,brd,grp,slug,detail,owner,state)
-            values ($1,$2,$3,$4,$5,$6,$7,$8) returning key
-            """, [name, description, brd, lc.grp.key, slug, JSON.stringify(detail), req.user.key, state]
-          .then (r = {}) ->
-            lc.ret = (r.[]rows or []).0
-          .then -> res.send (lc.ret or {}) <<< {slug}
+            insert into prj (name,description,brd,grp,slug,detail,owner,state,system)
+            values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning key
+            """, [
+              name, description, brd, lc.grp.key, lc.slug,
+              JSON.stringify(detail), req.user.key, lc.state, JSON.stringify(lc.system)
+            ]
+          .then (r={}) ->
+            res.send (r.[]rows.0 or {}) <<< lc{slug, system, state}
     .catch aux.error-handler res
 
 api.post \/flagship/download, throttle.count.user, grecaptcha, (req, res) ->

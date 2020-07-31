@@ -113,7 +113,6 @@ block body
           br
           .text-right
             span 編號: #[span(ld="fill", data-name="docid") N/A]
-            .text-sm.text-muted 若您需要更新先前送件過的申請書，請至 #[a(href="/dash/me/") 個人頁面]
         .form-group
           label 計畫名稱
           input.form-control(name="name")
@@ -391,12 +390,12 @@ block body
                 input.form-control(name="unit")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="total",readonly)
+                input.form-control(name="total",readonly,tabindex="-1")
               td: .form-group.m-0
                 input.form-control(name="self")
                 .invalid-feedback 數字不合
               td: .form-group.m-0
-                input.form-control(name="subsidy",readonly)
+                input.form-control(name="subsidy",readonly,tabindex="-1")
               td: .form-group.m-0
                 input.form-control(name="comment")
             tr
@@ -520,10 +519,15 @@ block body
         p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
   .w-1024.mx-auto.rwd.no-print
     .d-flex.align-items-stretch
-      .btn.btn-primary.btn-lg.mr-4(ld="submit",data-type="save"): .vertical-center: div 暫存進度
-      .btn.btn-primary.btn-lg.mr-4(ld="submit",data-type="submit")
-        span 線上送件
-        .text-sm 點選後將不能再修改檔案
+      div(ld="not submitted"): .d-flex.align-items-stretch
+        .btn.btn-primary.btn-lg.mr-2(ld="save submit"): .vertical-center: div 暫存進度
+        .btn.btn-primary.btn-lg.mr-2(ld="submit")
+          span 線上送件
+          .text-sm 點選後將不能再修改檔案
+      .d-none(ld="submitted")
+        .btn.btn-primary.btn-lg.disabled.mr-2
+          span 案件已送出
+          .text-sm 無法再進行修改
       .btn.btn-primary.btn-lg.mr-4(ld="download")
         .vertical-center: .ld-ext-right 線上文件 PDF 檔下載 #[.ld.ld-spin.ld-spinner.ldld]
       div: .vertical-center: .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
@@ -551,7 +555,7 @@ block body
     .py-4
       p 請下載申請書 PDF 檔，印出紙本後用印寄回，以利後續作業。
       p 您隨時可以回到這個頁面重新下載 PDF 檔。若需要回到此頁，請由網頁右上角的下拉選單中點選「個人頁面」，即可找到您建立的案件。
-    .btn.btn-lg.btn-primary.btn-block.ld-ext-right(ld="download") 下載申請書 PDF  #[.ld.ld-spin.ld-spinner.ldld]
+    .btn.btn-lg.btn-primary.btn-block.ld-ext-right(ld="download") 線上文件 PDF 下載  #[.ld.ld-spin.ld-spinner.ldld]
 
   .ldcv.ldcvmgr(data-name="flagship-saving",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
     .text-center
@@ -560,7 +564,6 @@ block body
   .ldcv.ldcvmgr(data-name="flagship-saved",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
     .text-center
       h2 您的編輯進度已儲存。
-      div 案件編號: #[span(ld="fill",data-name="docid")]
     .py-4
       p 您隨時可以回到這個頁面繼續編輯。若需要回到此頁，請由網頁右上角的下拉選單中點選「個人頁面」，即可找到您建立的案件。
     .btn.btn-lg.btn-primary.btn-block.ld-ext-right(data-ldcv-set="") 關閉
@@ -569,7 +572,3 @@ block body
 block script
   +register-locals()
   +script("/dash/js/view/taicca-flagship/form.js")
-  //-script: :lsc
-    ldc.register <[ldcvmgr]>, ({ldcvmgr}) ->
-      ldcvmgr.toggle \flagship-submitted
-

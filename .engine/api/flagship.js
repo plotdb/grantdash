@@ -20,64 +20,83 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var gcs, api, app, Printer, printer;
+    var gcs, api, app, renderForm, Printer, printer;
     if (!secret.gcs) {
       return;
     }
     gcs = new storage.Storage(secret.gcs);
     api = engine.router.api;
     app = engine.app;
-    app.get('/flagship/', function(req, res){
-      return res.render('view/taicca-flagship/prj-view.pug');
-    });
-    app.get('/flagship/:slug', function(req, res){
-      var lc, slug;
-      lc = {};
-      if (!(slug = req.params.slug)) {
-        return aux.r400(res);
-      }
-      return io.query("select brd,detail,slug,key from prj where deleted is not true and slug = $1", [slug]).then(function(r){
-        var prj;
+    renderForm = function(req, res){};
+    app.get('/flagship/', aux.signed, function(req, res){
+      var brd;
+      brd = 'flagship-2';
+      return io.query("select brd,detail,system,slug,key,state from prj\nwhere brd = $1 and owner = $2 and deleted is not true", [brd, req.user.key]).then(function(r){
+        var ret;
         r == null && (r = {});
-        if (!(lc.prj = prj = (r.rows || (r.rows = []))[0])) {
-          return aux.reject(404);
+        if (!(ret = (r.rows || (r.rows = []))[0])) {
+          return cache.stage.check({
+            io: io,
+            type: 'brd',
+            slug: brd,
+            name: 'prj-new'
+          }).then(function(){
+            return res.render('view/taicca-flagship/prj-view.pug');
+          });
+        } else {
+          return cache.stage.check({
+            io: io,
+            type: 'brd',
+            slug: brd,
+            name: 'prj-edit'
+          })['catch'](function(){
+            return cache.perm.check({
+              io: io,
+              user: req.user,
+              type: 'brd',
+              slug: brd,
+              action: 'prj-edit-own'
+            });
+          }).then(function(){
+            return res.render('view/taicca-flagship/prj-view.pug', {
+              exports: {
+                prj: ret
+              }
+            });
+          });
         }
-        return cache.stage.check({
-          io: io,
-          type: 'brd',
-          slug: prj.brd,
-          name: "prj-edit"
-        });
-      }).then(function(){
-        return res.render('view/taicca-flagship/prj-view.pug', {
-          exports: {
-            prj: lc.prj
-          }
-        });
       })['catch'](aux.errorHandler(res));
     });
     api.post('/flagship/upload', function(req, res){
-      var lc, filename, brd, id;
+      var lc, brd;
       lc = {};
       if (!(req.user && req.user.key)) {
         return;
       }
-      filename = req.body.filename;
       brd = 'flagship-2';
-      id = suuid();
-      return Promise.resolve().then(function(){
-        return gcs.bucket(secret.gcs.bucket).file(id).getSignedUrl({
+      return io.query("select id from perm_gcs where owner = $1", [req.user.key]).then(function(r){
+        var id;
+        r == null && (r = {});
+        if (lc.perm = (r.rows || (r.rows = []))[0]) {
+          return lc.id = lc.perm.id;
+        } else {
+          return id = suuid();
+        }
+      }).then(function(){
+        return gcs.bucket(secret.gcs.bucket).file(lc.id).getSignedUrl({
           action: 'write',
           version: 'v4',
-          expires: Date.now() + 60000
+          expires: Date.now() + 2 * 60 * 1000
         });
       }).then(function(it){
         lc.url = it[0];
-        return io.query("insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)", [id, req.user.key, brd || null, null]);
+        if (!lc.perm) {
+          return io.query("insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)", [lc.id, req.user.key, brd || null, null]);
+        }
       }).then(function(){
         return res.send({
           signedUrl: lc.url,
-          id: id
+          id: lc.id
         });
       })['catch'](aux.errorHandler(res));
     });
@@ -118,8 +137,8 @@
         return res.status(302).redirect(it[0]);
       })['catch'](aux.errorHandler(res));
     });
-    api.post('/flagship/prj/', throttle.count.userMd, grecaptcha, function(req, res){
-      var lc, ref$, name, description, detail, key, submit, brd, slug, state;
+    api.post('/flagship/prj/', throttle.count.user, grecaptcha, function(req, res){
+      var lc, ref$, name, description, detail, key, submit, brd;
       if (!(req.user && req.user.key)) {
         return aux.r403(res);
       }
@@ -129,13 +148,27 @@
         custom: detail
       };
       brd = 'flagship-2';
-      slug = null;
-      state = submit ? "active" : "pending";
-      return cache.stage.check({
-        io: io,
-        type: 'brd',
-        slug: brd,
-        name: "prj-new"
+      lc.state = submit ? "active" : "pending";
+      return io.query("select * from prj\nwhere deleted is not true and brd = $1 and owner = $2", [brd, req.user.key]).then(function(r){
+        r == null && (r = {});
+        lc.prj = (r.rows || (r.rows = []))[0];
+        if (lc.prj && lc.prj.state === 'active') {
+          return aux.reject(403);
+        }
+        return cache.stage.check({
+          io: io,
+          type: 'brd',
+          slug: brd,
+          name: !lc.prj ? 'prj-new' : 'prj-edit'
+        })['catch'](function(){
+          return cache.perm.check({
+            io: io,
+            user: req.user,
+            type: 'brd',
+            slug: brd,
+            action: 'prj-edit-own'
+          });
+        });
       }).then(function(){
         return io.query("select org, slug, key, detail->'group' as group from brd where slug = $1", [brd]);
       }).then(function(r){
@@ -150,36 +183,25 @@
         })[0])) {
           return aux.reject(404);
         }
-        if (!lc.brd.org) {
-          return aux.reject(404);
-        }
-        if (key) {
-          return io.query("select owner,state from prj where key = $1 and owner = $2", [key, req.user.key]).then(function(r){
-            var ret;
-            r == null && (r = {});
-            if (!(ret = (r.rows || (r.rows = [])).length)) {
-              return aux.reject(404);
-            }
-            if (ret.state === 'active') {
-              return aux.reject(403);
-            }
-            return io.query("update prj set (name,description,detail,modifiedtime,state) = ($1,$2,$3,now(),$5)\nwhere key = $4 returning key", [name, description, JSON.stringify(detail), key, state]);
-          }).then(function(){
-            return res.send({});
+      }).then(function(){
+        if (lc.prj) {
+          return io.query("update prj set (name,description,detail,grp,state) = ($2,$3,$4,$5,$6)\nwhere key = $1", [lc.prj.key, name, description, JSON.stringify(detail), lc.grp.key, lc.state]).then(function(){
+            return res.send({
+              state: lc.state
+            });
           });
         } else {
-          return io.query("select count(key) as count from prj\nwhere brd = $1 and grp = $2 and deleted is not true", [brd, lc.grp.key]).then(function(r){
-            var id;
+          return io.query("select count(key) as count from prj where\ndeleted is not true and brd = $1", [brd]).then(function(r){
             r == null && (r = {});
-            id = +(r.rows || (r.rows = []))[0].count + 1;
-            slug = suuid() + ("-" + id);
-            return io.query("insert into prj (name,description,brd,grp,slug,detail,owner,state)\nvalues ($1,$2,$3,$4,$5,$6,$7,$8) returning key", [name, description, brd, lc.grp.key, slug, JSON.stringify(detail), req.user.key, state]);
+            lc.system = {
+              idx: +(((r.rows || (r.rows = []))[0] || {}).count || 0) + 1
+            };
+            lc.slug = suuid();
+            return io.query("insert into prj (name,description,brd,grp,slug,detail,owner,state,system)\nvalues ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning key", [name, description, brd, lc.grp.key, lc.slug, JSON.stringify(detail), req.user.key, lc.state, JSON.stringify(lc.system)]);
           }).then(function(r){
-            r == null && (r = {});
-            return lc.ret = ((r.rows || (r.rows = [])) || [])[0];
-          }).then(function(){
             var ref$;
-            return res.send((ref$ = lc.ret || {}, ref$.slug = slug, ref$));
+            r == null && (r = {});
+            return res.send((ref$ = (r.rows || (r.rows = []))[0] || {}, ref$.slug = lc.slug, ref$.system = lc.system, ref$.state = lc.state, ref$));
           });
         }
       })['catch'](aux.errorHandler(res));

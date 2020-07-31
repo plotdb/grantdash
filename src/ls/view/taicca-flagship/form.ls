@@ -18,6 +18,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
       id = "/#{global.user.key}/#{slug or '(n-a)'}"
       "taicca-flagship-form-snapshot-#id"
     save-locally = debounce ->
+      if vlc.{}prj.state == \active => return payload
       payload.form = ldform.values!
       window.localStorage.setItem localkey!, JSON.stringify(payload)
       return payload
@@ -38,6 +39,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
       ld$.fetch "/dash/api/flagship/upload", {method: \POST}, {json: opt, type: \json}
     #file{name, size}
     upload-file = ({file, info-node}) ->
+      if vlc.{}prj.state == \active => return Promise.reject new ldError(1012)
       if file.type != 'application/pdf' => return Promise.reject new ldError(1020)
       get-signed-url {filename: file.name, size: file.size}
         .then ({signed-url, id}) ->
@@ -122,7 +124,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             if !v => return
             if lc.downloading => return
             lc.downloading = true
-            view.getAll("download").map -> ld$.find(it.parent, '.ld-ext-right',0).classList.add \running
+            view.getAll("download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.add \running
             ld$.find(document.body, '._preview').map -> it.parentNode.removeChild it
             ld$.find 'select,textarea,input' .map (f) ->
               type = f.getAttribute(\type)
@@ -165,23 +167,24 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                 a.click!
                 document.body.removeChild a
               .finally ->
-                view.getAll("download").map -> it.classList.remove \running
+                view.getAll("download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.remove \running
                 ldcvmgr.toggle \flagship-submitted, false
                 lc.downloading = false
               .catch ->
                 if ldError.id(it) == 1006 => ldcvmgr.toggle \flagship-print-timeout
                 else error! it
 
-          submit: ({node}) ->
-            is-submit = (node.getAttribute(\data-type) == \submit)
+          submit: ({node,names}) ->
+            is-submit = !(\save in names)
             cover-name = if is-submit => <[submitting submitted]> else <[saving saved]>
             p = if is-submit => is-ready.get! else Promise.resolve true
             p
               .then (v) ->
-                if !v => return
-                save-locally!
+                if !v => return Promise.reject new ldError(999)
+                if vlc.{}prj.state == \active => return Promise.reject new ldError(999)
                 ldcvmgr.toggle("flagship-#{cover-name.0}",true)
-                auth.recaptcha.get!
+                save-locally!
+              .then -> auth.recaptcha.get!
               .then (recaptcha) ->
                 json = do
                   key: (vlc or {}).{}prj.key
@@ -189,13 +192,14 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                   detail: payload
                   name: payload.form.name
                   description: (payload.form["abs-item"] or "").substring(0,200)
-                  submit: false
+                  submit: is-submit
                 ld$.fetch \/dash/api/flagship/prj, {method: \POST}, {json: json, type: \json}
               .then ->
                 clear-localdata!
-                if it and it.slug =>
-                  vlc.{}prj.slug = it.slug
-                  view.render \fill
+                console.log "1", vlc.prj{state,system,slug}
+                vlc.{}prj <<< it
+                console.log "2", vlc.prj{state,system,slug}
+                view.render!
                 ldcvmgr.toggle("flagship-#{cover-name.1}", true)
               .finally ->
                 ldcvmgr.toggle("flagship-#{cover-name.0}",false)
@@ -225,10 +229,9 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
               else => return total - self
           if n == \docid =>
             gid = {"文化內容開發組": "01", "內容產業領航行動組": "02"}[values.group]
-            slug = vlc.{}prj.slug
-            if slug =>
-              id = slug.split('-')[* - 1]
-              return "109-#{gid}-#{('0' * (3 - "#id".length) + id)}"
+            idx = +vlc.{}prj.{}system.idx
+            if idx =>
+              return "109-#{gid}-#{('0' * (3 - "#idx".length) + idx)}"
             else return "尚未送件"
 
           return ""
@@ -238,9 +241,16 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
           budget-calc!
           node.classList.toggle \d-none, payload.budget.ready
         download: ({node}) ->
-          node.classList.toggle \disabled, !is-ready.state
-        submit: ({node}) ->
-          node.classList.toggle \disabled, !is-ready.state
+          node.classList.toggle \disabled, (!is-ready.state)
+        submitted: ({node, names}) ->
+          val = if vlc.{}prj.state == \active => true else false
+          if \not in names => val = !val
+          node.classList.toggle \d-none, !val
+        submit: ({node,names}) ->
+          if \save in names =>
+            node.classList.toggle \disabled, (vlc.{}prj.state == \active)
+          else
+            node.classList.toggle \disabled, (!is-ready.state or (vlc.{}prj.state == \active))
         "ready-state": ({node}) ->
           node.classList.toggle \d-none, is-ready.state
 

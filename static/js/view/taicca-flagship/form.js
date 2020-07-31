@@ -26,6 +26,9 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
       return "taicca-flagship-form-snapshot-" + id;
     };
     saveLocally = debounce(function(){
+      if ((vlc.prj || (vlc.prj = {})).state === 'active') {
+        return payload;
+      }
       payload.form = ldform.values();
       window.localStorage.setItem(localkey(), JSON.stringify(payload));
       return payload;
@@ -62,6 +65,9 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
     uploadFile = function(arg$){
       var file, infoNode;
       file = arg$.file, infoNode = arg$.infoNode;
+      if ((vlc.prj || (vlc.prj = {})).state === 'active') {
+        return Promise.reject(new ldError(1012));
+      }
       if (file.type !== 'application/pdf') {
         return Promise.reject(new ldError(1020));
       }
@@ -226,7 +232,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
               }
               lc.downloading = true;
               view.getAll("download").map(function(it){
-                return ld$.find(it.parent, '.ld-ext-right', 0).classList.add('running');
+                return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.add('running');
               });
               ld$.find(document.body, '._preview').map(function(it){
                 return it.parentNode.removeChild(it);
@@ -286,7 +292,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 return document.body.removeChild(a);
               })['finally'](function(){
                 view.getAll("download").map(function(it){
-                  return it.classList.remove('running');
+                  return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.remove('running');
                 });
                 ldcvmgr.toggle('flagship-submitted', false);
                 return lc.downloading = false;
@@ -300,9 +306,9 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
             });
           },
           submit: function(arg$){
-            var node, isSubmit, coverName, p;
-            node = arg$.node;
-            isSubmit = node.getAttribute('data-type') === 'submit';
+            var node, names, isSubmit, coverName, p;
+            node = arg$.node, names = arg$.names;
+            isSubmit = !in$('save', names);
             coverName = isSubmit
               ? ['submitting', 'submitted']
               : ['saving', 'saved'];
@@ -311,10 +317,14 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
               : Promise.resolve(true);
             return p.then(function(v){
               if (!v) {
-                return;
+                return Promise.reject(new ldError(999));
               }
-              saveLocally();
+              if ((vlc.prj || (vlc.prj = {})).state === 'active') {
+                return Promise.reject(new ldError(999));
+              }
               ldcvmgr.toggle("flagship-" + coverName[0], true);
+              return saveLocally();
+            }).then(function(){
               return auth.recaptcha.get();
             }).then(function(recaptcha){
               var json, ref$;
@@ -324,7 +334,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 detail: payload,
                 name: payload.form.name,
                 description: (payload.form["abs-item"] || "").substring(0, 200),
-                submit: false
+                submit: isSubmit
               };
               return ld$.fetch('/dash/api/flagship/prj', {
                 method: 'POST'
@@ -333,11 +343,20 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 type: 'json'
               });
             }).then(function(it){
+              var ref$;
               clearLocaldata();
-              if (it && it.slug) {
-                (vlc.prj || (vlc.prj = {})).slug = it.slug;
-                view.render('fill');
-              }
+              console.log("1", {
+                state: (ref$ = vlc.prj).state,
+                system: ref$.system,
+                slug: ref$.slug
+              });
+              import$(vlc.prj || (vlc.prj = {}), it);
+              console.log("2", {
+                state: (ref$ = vlc.prj).state,
+                system: ref$.system,
+                slug: ref$.slug
+              });
+              view.render();
               return ldcvmgr.toggle("flagship-" + coverName[1], true);
             })['finally'](function(){
               return ldcvmgr.toggle("flagship-" + coverName[0], false);
@@ -347,7 +366,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
       },
       text: {
         fill: function(arg$){
-          var node, n, values, that, total, ref$, ret, self, gid, slug, id;
+          var node, n, values, that, total, ref$, ret, self, gid, idx;
           node = arg$.node;
           n = node.getAttribute('data-name');
           if (!ldform) {
@@ -404,10 +423,9 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
               "文化內容開發組": "01",
               "內容產業領航行動組": "02"
             }[values.group];
-            slug = (vlc.prj || (vlc.prj = {})).slug;
-            if (slug) {
-              id = (ref$ = slug.split('-'))[ref$.length - 1];
-              return "109-" + gid + "-" + (repeatString$('0', 3 - (id + "").length) + id);
+            idx = +((ref$ = vlc.prj || (vlc.prj = {})).system || (ref$.system = {})).idx;
+            if (idx) {
+              return "109-" + gid + "-" + (repeatString$('0', 3 - (idx + "").length) + idx);
             } else {
               return "尚未送件";
             }
@@ -427,10 +445,23 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
           node = arg$.node;
           return node.classList.toggle('disabled', !isReady.state);
         },
+        submitted: function(arg$){
+          var node, names, val;
+          node = arg$.node, names = arg$.names;
+          val = (vlc.prj || (vlc.prj = {})).state === 'active' ? true : false;
+          if (in$('not', names)) {
+            val = !val;
+          }
+          return node.classList.toggle('d-none', !val);
+        },
         submit: function(arg$){
-          var node;
-          node = arg$.node;
-          return node.classList.toggle('disabled', !isReady.state);
+          var node, names;
+          node = arg$.node, names = arg$.names;
+          if (in$('save', names)) {
+            return node.classList.toggle('disabled', (vlc.prj || (vlc.prj = {})).state === 'active');
+          } else {
+            return node.classList.toggle('disabled', !isReady.state || (vlc.prj || (vlc.prj = {})).state === 'active');
+          }
         },
         "ready-state": function(arg$){
           var node;
@@ -653,12 +684,12 @@ function import$(obj, src){
   for (var key in src) if (own.call(src, key)) obj[key] = src[key];
   return obj;
 }
-function repeatString$(str, n){
-  for (var r = ''; n > 0; (n >>= 1) && (str += str)) if (n & 1) r += str;
-  return r;
-}
 function in$(x, xs){
   var i = -1, l = xs.length >>> 0;
   while (++i < l) if (x === xs[i]) return true;
   return false;
+}
+function repeatString$(str, n){
+  for (var r = ''; n > 0; (n >>= 1) && (str += str)) if (n & 1) r += str;
+  return r;
 }
