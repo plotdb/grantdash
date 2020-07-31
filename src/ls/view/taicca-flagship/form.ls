@@ -125,7 +125,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             lc.downloading = true
             view.getAll("download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.add \running
             ld$.find(document.body, '._preview').map -> it.parentNode.removeChild it
-            ld$.find 'select,textarea,input' .map (f) ->
+            ld$.find ld$.find('#flagship-form',0), 'select,textarea,input' .map (f) ->
               type = f.getAttribute(\type)
               node-name = f.nodeName.toLowerCase!
               if !type =>
@@ -147,9 +147,9 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             html = """
             <html>
             <head><meta charset="utf-8">#style</head>
-            <body><div class="typeset heading-contrast">
+            <body><div class="typeset heading-contrast"><form id="flagship-form">
             #{ld$.find(\#flagship-form, 0).innerHTML}
-            </div></body>
+            </form></div></body>
             </html>
             """
             auth.recaptcha.get!

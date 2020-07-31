@@ -41,7 +41,6 @@ block head
       border-radius: .5em
       border: 1px solid #ddd
       box-shadow: 0 2px 4px rgba(0,0,0,.1)
-
     .no-break
       page-break-inside: avoid
     .only-print
@@ -61,7 +60,7 @@ block head
         border: 0
         box-shadow: none
         padding: 0
-      #flagship-form
+      .typeset.heading-contrast
         input,textarea,select
           &.form-control
             display: none !important
@@ -110,6 +109,25 @@ block body
         block
 
   .w-1024.rwd.mx-auto.typeset.heading-contrast.position-relative: form#flagship-form: .form-inner-box
+
+    .page.page-cover.vertical-center.only-print: .w-100
+      .text-lg.my-4.text-right
+        div 封面
+        div 編號: #[span(ld="fill",data-name="docid")]
+      br
+      .text-center
+        h2 109年度文化內容開發與內容產業領航行動方案
+        br
+        h2 計畫書
+        +nbr(2)
+      .text-lg.my-4
+        p 計畫名稱： #[span(ld="fill",data-name="name")]
+        p 申請組別： #[span(ld="fill",data-name="group")]
+        p 申請單位： #[span(ld="fill",data-name="teamname")]
+      +nbr(4)
+      .text-center
+        p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+
     .page
       .no-break
         .text-center
@@ -320,6 +338,11 @@ block body
         textarea.form-control(rows="6",name="abs-outcome")
         .invalid-feedback 字數不符
 
+      .form-group.only-print
+        label 上傳計畫書 PDF ( 計畫書內容含目錄、原著授權、立案證明文件、合作意向書 / 合約 )
+        br
+        a(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
+
       .no-break
         .form-group
           h4 預算概況 #[span.text-muted.text-sm ( 自動帶入 )]
@@ -347,7 +370,7 @@ block body
         table.table.table-bordered.table-tiny
           thead
             tr
-              th.no-print(rowspan="2")
+              th(rowspan="2")
               th(rowspan="2") 預算科目
               th(rowspan="2") 預算明細
               th(rowspan="2") 單價(元)
@@ -361,7 +384,7 @@ block body
               th 補助款
           tbody
             tr(ld-each="column",data-name="budget")
-              td.clickable.text-center.pt-3.no-print: i.i-close
+              td.clickable.text-center.pt-3: i.i-close.no-print
               td: .form-group.m-0
                 input.form-control(name="cat")
                 .invalid-feedback 不可留白
@@ -409,7 +432,7 @@ block body
 
       +nbr(3)
 
-      .form-group
+      .form-group.no-print
         label 上傳計畫書 PDF ( 計畫書內容含目錄、原著授權、立案證明文件、合作意向書 / 合約 )
         .d-flex.align-items-center
           .btn.btn-upload.btn-primary.no-print 上傳文件 #[input(ld="file-upload",type="file",data-name="plan")] #[span]
@@ -489,23 +512,7 @@ block body
         li 請求刪除。但如係基於行政管理及業務等相關目的所必需，或其他法令有所規範者，本院得拒絕之。
       p 四、您得自由選擇是否提供個人資料或行使個人資料保護法第三條所定之權利，但因提供資料不足或有其他冒用、盜用、不實之情形，可能不能獲得補助資格或影響您受領補助之權益。
       p 五、您所提供之個人資料，本院將依據「個人資料保護法」相關規定進行保密。
-    .page.page-cover.vertical-center: .w-100
-      .text-lg.my-4.text-right
-        div 封面
-        div 編號: #[span(ld="fill",data-name="docid")]
-      br
-      .text-center
-        h2 109年度文化內容開發與內容產業領航行動方案
-        br
-        h2 計畫書
-        +nbr(2)
-      .text-lg.my-4
-        p 計畫名稱： #[span(ld="fill",data-name="name")]
-        p 申請組別： #[span(ld="fill",data-name="group")]
-        p 申請單位： #[span(ld="fill",data-name="teamname")]
-      +nbr(4)
-      .text-center
-        p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
+
   .w-1024.mx-auto.rwd.no-print
     .d-flex.align-items-stretch
       div(ld="not submitted"): .d-flex.align-items-stretch

@@ -236,7 +236,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
               ld$.find(document.body, '._preview').map(function(it){
                 return it.parentNode.removeChild(it);
               });
-              ld$.find('select,textarea,input').map(function(f){
+              ld$.find(ld$.find('#flagship-form', 0), 'select,textarea,input').map(function(f){
                 var type, nodeName, classes, n;
                 type = f.getAttribute('type');
                 nodeName = f.nodeName.toLowerCase();
@@ -264,7 +264,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 }
               });
               style = "<link rel=\"stylesheet\" type=\"text/css\"\nhref=\"https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/css/index.css\">\n<style type=\"text/css\"> " + ld$.find('style', 0).innerText + " </style>";
-              html = "<html>\n<head><meta charset=\"utf-8\">" + style + "</head>\n<body><div class=\"typeset heading-contrast\">\n" + ld$.find('#flagship-form', 0).innerHTML + "\n</div></body>\n</html>";
+              html = "<html>\n<head><meta charset=\"utf-8\">" + style + "</head>\n<body><div class=\"typeset heading-contrast\"><form id=\"flagship-form\">\n" + ld$.find('#flagship-form', 0).innerHTML + "\n</form></div></body>\n</html>";
               return auth.recaptcha.get().then(function(recaptcha){
                 return ld$.fetch('/dash/api/flagship/download', {
                   method: 'POST'
