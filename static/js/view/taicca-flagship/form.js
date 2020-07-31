@@ -93,7 +93,6 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
             return infoNode.removeAttribute('href');
           }
         }).then(function(){
-          console.log('done');
           return {
             filename: file.name,
             size: file.size,
@@ -104,9 +103,6 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
     };
     isReady = {
       state: false,
-      check: function(){
-        return isReady.get();
-      },
       get: debounce(function(){
         var _;
         _ = function(){
@@ -173,7 +169,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
       old = payload.budget.ready;
       payload.budget.ready = cur;
       if (old !== cur) {
-        return isReady.check();
+        return isReady.get();
       }
     };
     view = new ldView({
@@ -200,7 +196,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
               });
             return p.then(function(){
               saveLocally();
-              isReady.check();
+              isReady.get();
               return view.render('file-uploaded');
             })['catch'](function(e){
               if (ldError.id(e) === 1020) {
@@ -215,9 +211,12 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
           "add-column": function(arg$){
             var node, ref$, key$;
             node = arg$.node;
+            if ((vlc.prj || (vlc.prj = {})).state === 'active') {
+              return;
+            }
             ((ref$ = payload.list)[key$ = node.getAttribute('data-name')] || (ref$[key$] = [])).push({});
             view.render('column');
-            isReady.check();
+            isReady.get();
             return saveLocally();
           },
           download: function(){
@@ -343,19 +342,8 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                 type: 'json'
               });
             }).then(function(it){
-              var ref$;
               clearLocaldata();
-              console.log("1", {
-                state: (ref$ = vlc.prj).state,
-                system: ref$.system,
-                slug: ref$.slug
-              });
               import$(vlc.prj || (vlc.prj = {}), it);
-              console.log("2", {
-                state: (ref$ = vlc.prj).state,
-                system: ref$.system,
-                slug: ref$.slug
-              });
               view.render();
               return ldcvmgr.toggle("flagship-" + coverName[1], true);
             })['finally'](function(){
@@ -510,7 +498,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
               }
               list.splice(idx, 1);
               view.render('column');
-              isReady.check();
+              isReady.get();
               return saveLocally();
             }
           },
@@ -565,7 +553,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
             });
             (ldforms[n] || (ldforms[n] = [])).push(ldform);
             return ldform.on('readystatechange', function(){
-              return isReady.check();
+              return isReady.get();
             });
           },
           handler: function(arg$){
@@ -580,15 +568,24 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
       }
     });
     ldform = new ldForm({
-      root: ld$.find('form', 0),
-      afterCheck: function(){
+      root: ld$.find('#flagship-form', 0),
+      afterCheck: function(s, fs){
+        var values;
         saveLocally();
         if (view) {
-          view.render('toggler');
+          view.render();
         }
-        if (view) {
-          return view.render();
-        }
+        values = ldform.values();
+        ['has-perform', 'has-other-sub', 'has-sub', 'group'].map(function(n){
+          return s[n] = values[n] != null ? 0 : 2;
+        });
+        return ['other-sub-amount', 'other-sub-name'].map(function(n){
+          if (values.hasOtherSub && !values[n]) {
+            return s[n] = 2;
+          } else {
+            return s[n] = 0;
+          }
+        });
       },
       verify: function(name, value, element){
         var v, ret, groupFor, groupName, enabled;
@@ -666,8 +663,14 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
         return 0;
       }
     });
+    ['group1-category', 'group2-category', 'group1-category-other', 'group2-category-other'].map(function(n){
+      return ldform.check({
+        n: n,
+        now: true
+      });
+    });
     ldform.on('readystatechange', function(){
-      return isReady.check();
+      return isReady.get();
     });
     view.render();
     return loadLocally();

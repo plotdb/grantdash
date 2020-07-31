@@ -55,12 +55,10 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             }
           )
             .then ->
-              console.log \done
               return {filename: file.name, size: file.size, id: id}
 
     is-ready = do
       state: false
-      check: -> is-ready.get! 
       get: debounce ->
         _ = ->
           for k,vs of ldforms => ldforms[k] = vs.filter -> it.root.parentNode
@@ -90,7 +88,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
       )
       old = payload.budget.ready
       payload.budget.ready = cur
-      if old != cur => is-ready.check!
+      if old != cur => is-ready.get!
 
     view = new ldView do
       init-render: false
@@ -106,7 +104,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             p
               .then ->
                 save-locally!
-                is-ready.check!
+                is-ready.get!
                 view.render \file-uploaded
               .catch (e) ->
                 if ldError.id(e) == 1020 => alert "不支援此種檔案類型，請用 PDF 檔."
@@ -114,9 +112,10 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
 
         click: do
           "add-column": ({node}) ->
+            if vlc.{}prj.state == \active => return
             payload.list[][node.getAttribute(\data-name)].push {}
             view.render \column
-            is-ready.check!
+            is-ready.get!
             save-locally!
 
           download: ->
@@ -196,9 +195,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                 ld$.fetch \/dash/api/flagship/prj, {method: \POST}, {json: json, type: \json}
               .then ->
                 clear-localdata!
-                console.log "1", vlc.prj{state,system,slug}
                 vlc.{}prj <<< it
-                console.log "2", vlc.prj{state,system,slug}
                 view.render!
                 ldcvmgr.toggle("flagship-#{cover-name.1}", true)
               .finally ->
@@ -276,7 +273,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             if !(~(idx = list.indexOf(data))) => return
             list.splice idx,1
             view.render \column
-            is-ready.check!
+            is-ready.get!
             save-locally!
 
           init: ({node, data, local}) ->
@@ -306,7 +303,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
                   view.render \budget-limit
                 return if value => 0 else 2
             ldforms[][n].push ldform
-            ldform.on \readystatechange, -> is-ready.check!
+            ldform.on \readystatechange, -> is-ready.get!
 
           handler: ({node, data, local}) ->
             ld$.find(node, "input,textarea,select").map (f) ->
@@ -314,11 +311,15 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             local.ldform.check-all!
 
     ldform = new ldForm do
-      root: ld$.find \form, 0
-      afterCheck: ->
+      root: ld$.find \#flagship-form, 0
+      afterCheck: (s, fs) ->
         save-locally!
-        if view => view.render \toggler
         if view => view.render!
+        values = ldform.values!
+        <[has-perform has-other-sub has-sub group]>.map (n) -> s[n] = if values[n]? => 0 else 2
+        <[other-sub-amount other-sub-name]>.map (n) ->
+          if values.has-other-sub and !values[n] => s[n] = 2
+          else s[n] = 0
       verify: (name, value, element) ->
         v = value or ''
         if name == \group1-category => ldform.check n: \group1-category-other
@@ -339,7 +340,6 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
           group-for = {"1": "文化內容開發組", "2": "內容產業領航行動組"}[ret.1]
           group-name = ldform.values!["group"]
           enabled = ("其它" in (ldform.values![name.replace('-other','')] or [])) and group-for == group-name
-
           return (if enabled and !v => 2 else if enabled => 0 else 0)
         else if /^other-sub-/.exec(name) =>
           if ldform.values!["has-other-sub"] == "0" => return 0
@@ -348,7 +348,9 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
           if !(v and v.length < 200) => return 2
         else if !v or (Array.isArray(v) and !v.length) => return 2
         return 0
-    ldform.on \readystatechange, -> is-ready.check!
+    <[ group1-category group2-category group1-category-other group2-category-other ]>.map (n) ->
+      ldform.check {n, now: true}
+    ldform.on \readystatechange, -> is-ready.get!
     view.render!
     load-locally!
 
