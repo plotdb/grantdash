@@ -132,6 +132,7 @@ create table if not exists prj (
   category text,
   tag jsonb,
   detail jsonb,
+  system jsonb,
   createdtime timestamp not null default now(),
   state state not null default 'active',
   deleted bool default false
