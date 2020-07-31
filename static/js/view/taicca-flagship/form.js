@@ -30,7 +30,6 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
         return payload;
       }
       payload.form = ldform.values();
-      window.localStorage.setItem(localkey(), JSON.stringify(payload));
       return payload;
     });
     clearLocaldata = function(){
@@ -41,8 +40,6 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
         var ref$, data;
         if (((ref$ = vlc.prj || (vlc.prj = {})).detail || (ref$.detail = {})) && vlc.prj.detail.custom) {
           data = vlc.prj.detail.custom;
-        } else {
-          data = JSON.parse(window.localStorage.getItem(localkey()));
         }
         if (!data) {
           return;
@@ -146,12 +143,12 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
     budgetCalc = function(){
       var total, ref$, self, subsidy, percent, cur, old;
       total = ((ref$ = payload.list).budget || (ref$.budget = [])).map(function(it){
-        return it.value.price * it.value.count;
+        return +(it.value.price || 0) * +(it.value.count || 0);
       }).reduce(function(a, b){
         return a + +b;
       }, 0);
       self = ((ref$ = payload.list).budget || (ref$.budget = [])).map(function(it){
-        return it.value.self;
+        return +(it.value.self || 0);
       }).reduce(function(a, b){
         return a + +b;
       }, 0);
@@ -375,7 +372,7 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
           }
           if (n === 'budget') {
             total = ((ref$ = payload.list).budget || (ref$.budget = [])).map(function(it){
-              return (it.value || (it.value = {})).price * (it.value || (it.value = {})).count;
+              return +((it.value || (it.value = {})).price || 0) * +((it.value || (it.value = {})).count || 0);
             }).reduce(function(a, b){
               return a + +b;
             }, 0);
@@ -383,12 +380,12 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
           }
           if (ret = /^budget-(self|subsidy)(-percent)?$/.exec(n)) {
             total = ((ref$ = payload.list).budget || (ref$.budget = [])).map(function(it){
-              return (it.value || (it.value = {})).price * (it.value || (it.value = {})).count;
+              return +((it.value || (it.value = {})).price || 0) * +((it.value || (it.value = {})).count || 0);
             }).reduce(function(a, b){
               return a + +b;
             }, 0);
             self = ((ref$ = payload.list).budget || (ref$.budget = [])).map(function(it){
-              return (it.value || (it.value = {})).self;
+              return +((it.value || (it.value = {})).self || 0);
             }).reduce(function(a, b){
               return a + +b;
             }, 0);

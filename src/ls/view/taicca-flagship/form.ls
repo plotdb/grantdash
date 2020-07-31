@@ -20,7 +20,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
     save-locally = debounce ->
       if vlc.{}prj.state == \active => return payload
       payload.form = ldform.values!
-      window.localStorage.setItem localkey!, JSON.stringify(payload)
+      #window.localStorage.setItem localkey!, JSON.stringify(payload)
       return payload
 
     clear-localdata = -> window.localStorage.setItem localkey!, null
@@ -28,7 +28,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
       Promise.resolve!
         .then ->
           if vlc.{}prj.{}detail and vlc.prj.detail.custom => data = vlc.prj.detail.custom
-          else data = JSON.parse(window.localStorage.getItem(localkey!))
+          #else data = JSON.parse(window.localStorage.getItem(localkey!))
           if !data => return
           payload <<< data
           ldform.values payload.form
@@ -74,8 +74,8 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
         return is-ready.state
 
     budget-calc = ->
-      total = payload.list.[]budget.map(-> it.value.price * it.value.count).reduce(((a,b) -> a + +b),0)
-      self = payload.list.[]budget.map(-> it.value.self).reduce(((a,b) -> a + +b),0)
+      total = payload.list.[]budget.map(-> +(it.value.price or 0) * +(it.value.count or 0)).reduce(((a,b) -> a + +b),0)
+      self = payload.list.[]budget.map(-> +(it.value.self or 0)).reduce(((a,b) -> a + +b),0)
       subsidy = total - self
       percent = do
         self: self / (total or 1)
@@ -213,11 +213,15 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
           if n == \doc-month => return (new Date!).getMonth! + 1
           if n == \doc-day => return (new Date!).getDate!
           if n == \budget =>
-            total = payload.list.[]budget.map(-> it.{}value.price * it.{}value.count).reduce(((a,b) -> a + +b),0)
+            total = payload.list.[]budget
+              .map(-> +(it.{}value.price or 0) * +(it.{}value.count or 0))
+              .reduce(((a,b) -> a + +b),0)
             return total
           if ret = (/^budget-(self|subsidy)(-percent)?$/.exec(n)) =>
-            total = payload.list.[]budget.map(-> it.{}value.price * it.{}value.count).reduce(((a,b) -> a + +b),0)
-            self = payload.list.[]budget.map(-> it.{}value.self).reduce(((a,b) -> a + +b),0)
+            total = payload.list.[]budget
+              .map(-> +(it.{}value.price or 0) * +(it.{}value.count or 0))
+              .reduce(((a,b) -> a + +b),0)
+            self = payload.list.[]budget.map(-> +(it.{}value.self or 0)).reduce(((a,b) -> a + +b),0)
             if ret.2 =>
               if ret.1 == \self => return Math.floor(10000 * self / (total or 1))/100
               else return Math.ceil(10000 * (total - self) / (total or 1))/100
