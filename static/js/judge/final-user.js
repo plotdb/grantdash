@@ -326,16 +326,16 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                       });
                     });
                     handle = function(){
-                      this$.data.prj[context.key].v[data.key] = +input.value;
+                      this$.data.prj[context.key].v[data.key] = input.value;
                       local.render(data);
                       return _update();
                     };
                     local.render = function(data){
-                      var ref$, ref1$, key$, v;
-                      local.input.value = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[data.key] || '';
-                      v = +local.input.value;
+                      var v, ref$, ref1$, key$;
+                      v = ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[data.key];
+                      local.input.value = v != null ? v : '';
                       ['bg-danger', 'text-white'].map(function(it){
-                        return input.classList.toggle(it, v > data.percent);
+                        return input.classList.toggle(it, +v > data.percent);
                       });
                       return this$.view.local.render(['progress-bar', 'progress-percent', 'count']);
                     };
@@ -493,8 +493,9 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
         total: this.prjs.length || 1,
         done: this.prjs.filter(function(p){
           return !this$.grade.filter(function(g){
-            var ref$, ref1$, key$;
-            return ((ref$ = (ref1$ = this$.data.prj)[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key] == null;
+            var v, ref$, ref1$, key$;
+            v = ((ref$ = (ref1$ = this$.data.prj)[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key];
+            return !(v != null) || v === '';
           }).length;
         }).length
       };

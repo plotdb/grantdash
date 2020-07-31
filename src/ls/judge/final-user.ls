@@ -145,14 +145,14 @@ Ctrl = (opt) ->
                     @view.local.render \project
                     @ops-out ~> @data
                   handle = ~>
-                    @data.prj[context.key].v[data.key] = +input.value
+                    @data.prj[context.key].v[data.key] = input.value
                     local.render data
                     _update!
 
                   local.render = (data) ~>
-                    local.input.value = @data.prj{}[context.key].{}v[data.key] or ''
-                    v = +local.input.value
-                    <[bg-danger text-white]>.map -> input.classList.toggle it, (v > data.percent)
+                    v = @data.prj{}[context.key].{}v[data.key]
+                    local.input.value = if v? => v else ''
+                    <[bg-danger text-white]>.map -> input.classList.toggle it, (+v > data.percent)
                     @view.local.render <[progress-bar progress-percent count]>
                   input.addEventListener \input, handle
                   input.addEventListener \keyup, handle
@@ -230,8 +230,11 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
   get-progress: ->
     @progress = do
       total: (@prjs.length or 1)
-      #done: @prjs.filter(->it.total).length
-      done: @prjs.filter((p) ~> !(@grade.filter((g) ~>!@data.prj{}[p.key].{}v[g.key]?).length)).length
+      done: @prjs.filter((p) ~>
+        !(@grade.filter((g) ~>
+          v = @data.prj{}[p.key].{}v[g.key]
+          !(v?) or v == ''
+        ).length)).length
 
 
 ctrl = new Ctrl root: document.body
