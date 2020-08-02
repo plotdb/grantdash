@@ -36,6 +36,7 @@ Ctrl = (opt) ->
           n.classList.toggle \bg-light, !@total-editable
 
       "comment-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
+      "detail-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
       "progress-percent": ({node}) ~> node.innerText = Math.floor(100 * @progress.done / @progress.total)
       "progress-bar": ({node}) ~> node.style.width = "#{(100 * @progress.done / @progress.total)}%"
       count: ({node}) ~>
@@ -98,7 +99,7 @@ Ctrl = (opt) ->
                 @active = context
                 @view.local.render \detail
                 @ldcv.detail.toggle!
-
+                @view.local.render \detail-name
               comment: ({node, context}) ~>
                 @active = context
                 view.get(\comment).value = (@data.prj{}[@active.key].comment or '')
