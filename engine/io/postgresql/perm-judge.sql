@@ -20,7 +20,7 @@ create table if not exists permtoken_judge (
   id text not null unique,
   email text,
   createdtime timestamp not null default now(),
-  redeemspan int not null default 172800000,
+  redeemspan int not null default 1209600,
   count int not null default 1
 );
 

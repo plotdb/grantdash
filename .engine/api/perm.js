@@ -125,9 +125,9 @@
         if (!(lc.ret = ret = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
-        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan) {
+        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan * 1000) {
           io.query("delete from permtoken where token = $1", [token]).then(function(){
-            return aux.reject(1013);
+            return aux.reject(new ldError(1013));
           });
         }
         return io.query("insert into perm (objtype, objslug, role, type, ref, owner)\nvalues ($1, $2, $3, $4, $5, $6)\non conflict do nothing", [ret.objtype, ret.objslug, ret.role, 'token', ret.id + ":" + ret.count, req.user.key]);
@@ -217,7 +217,7 @@
         if (lc.ret.email !== req.user.username) {
           return aux.reject(403);
         }
-        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan) {
+        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan * 1000) {
           io.query("delete from permtoken_judge where token = $1", [token]).then(function(){
             return aux.reject(1013);
           });

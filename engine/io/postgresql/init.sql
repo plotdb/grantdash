@@ -52,7 +52,7 @@ create table if not exists permtoken (
   token text not null unique primary key,
   id text not null unique,
   createdtime timestamp not null default now(),
-  redeemspan int not null default 172800000,
+  redeemspan int not null default 1209600,
   count int not null default 1
 );
 
