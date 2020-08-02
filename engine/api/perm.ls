@@ -69,7 +69,7 @@ api.put \/token, aux.signed, (req, res) ->
       if !(lc.ret = ret = r.[]rows.0) => return aux.reject 404
       if Date.now! >= ((new Date(ret.createdtime).getTime!) + ret.redeemspan * 1000) =>
         io.query "delete from permtoken where token = $1", [token]
-          .then -> return aux.reject(new ldError(1013))
+          .then -> return aux.reject(new lderror(1013))
       io.query """
       insert into perm (objtype, objslug, role, type, ref, owner)
       values ($1, $2, $3, $4, $5, $6)
@@ -124,7 +124,7 @@ api.put \/judgetoken, aux.signed, grecaptcha, (req, res) ->
       if lc.ret.email != req.user.username => return aux.reject 403
       if Date.now! >= ((new Date(ret.createdtime).getTime!) + ret.redeemspan * 1000) =>
         io.query "delete from permtoken_judge where token = $1", [token]
-          .then -> return aux.reject 1013
+          .then -> return aux.reject(new lderror(1013))
       io.query """
       insert into perm_judge (brd, grp, type, id, owner)
       values ($1, $2, $3, $4, $5)
