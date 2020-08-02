@@ -1,68 +1,185 @@
 ({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeFinalAll,
 <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
 
-typemap = {0: "accept", 1: "pending", 2: "reject"}
-clsmap = [
-  <[i-check text-success]>
-  <[i-circle text-secondary]>
-  <[i-close text-danger]>
-]
-clsset = (node, val) ->
-  newcls = clsmap[val]
-  oldcls = Array.from(node.classList)
-  if oldcls.length => node.classList.remove.apply node.classList, oldcls
-  node.classList.add.apply node.classList, newcls
-
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
   @data = {prj: {}}
   @active = null
+  @progress = {total: 1, done: 0}
+
+  @ldcv = do
+    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0), escape: false
+    detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
 
   @view.local = view = new ldView do
     init-render: false
     root: @root
+    action:
+      input: do
+        comment: ({node}) ~>
+          if !@active => return
+          @data.prj{}[@active.key].comment = node.value
+          @update debounced: 300
+          @view.local.render {name: 'project', key: @active.slug}
+      click: do
+        sort: ({node}) ~> @sort node.getAttribute \data-name
+        "toggle-total": ~>
+          @total-editable = !@total-editable
+          @view.local.render \toggle-total
+
+    handler: do
+      "toggle-total": ({node}) ~>
+        ld$.find(node, '.switch', 0).classList.toggle \on, !!@total-editable
+        ld$.find(@root, 'input[ld=total]').map (n) ~>
+          if @total-editable => n.removeAttribute \readonly
+          else n.setAttribute \readonly, null
+          n.classList.toggle \bg-light, !@total-editable
+
+      "comment-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
+      "detail-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
+      "progress-percent": ({node}) ~> node.innerText = Math.floor(100 * @progress.done / @progress.total)
+      "progress-bar": ({node}) ~> node.style.width = "#{(100 * @progress.done / @progress.total)}%"
+      count: ({node}) ~>
+        n = node.getAttribute(\data-name)
+        if n == \total => node.innerText = @progress.total or 0
+        else if n == \pending => node.innerText = (@progress.total - @progress.done) or 0
+
+      detail: do
+        list: ~>
+          if !@active => return []
+          ret = for k,v of (@criteria-result.{}data.user or {}) =>
+            p = v.prj{}[@active.key]
+            obj = do
+              user: k
+              name: @usermap[k].displayname
+              comment: p.comment or ''
+              criteria: @criteria.map (c) ~> {name: c.name, value: if p.{}v[c.key]? => p.v[c.key] else 1}
+          ret.sort (a,b) -> (if b.comment? => b.comment.length else 0) - (if a.comment? => a.comment.length else 0)
+        init: ({node, local, data}) ->
+          local.view = new ldView do
+            root: node
+            context: data
+            text: do
+              name: ({context}) -> context.name
+            handler: do
+              comment: ({node, context}) ->
+                node.innerText = (context.comment or '( 沒有評論 )')
+                node.classList.toggle \text-muted, !context.comment
+              avatar: ({node, context}) -> node.style.backgroundImage = "url(/dash/s/avatar/#{context.user}.png)"
+              criteria: do
+                list: ({context}) -> context.criteria
+                handler: ({node,data}) ->
+                  ld$.find(node, '[ld=name]', 0).innerText = data.name
+                  label = ld$.find(node, '[ld=value]', 0)
+                  icon = ld$.find(label, 'i', 0)
+                  label.classList.remove \text-success, \text-secondary, \text-danger
+                  label.classList.add <[text-success text-secondary text-danger]>[data.value]
+                  icon.classList.remove \i-close, \i-circle, \i-check
+                  icon.classList.add <[i-check i-circle i-close]>[data.value]
+
+      "total-max": ({node}) ~> node.innerText = "0 ~ #{@grade.reduce(((a,b) -> a + +b.percent),0)}"
+      judge: do
+        list: ({context}) ~> @judge
+      grade: do
+        list: ({context}) ~> @grade
+        handler: ({node, data}) ->
+          ld$.find(node, 'span', 0).innerText = data.name
+          ld$.find(node, 'div', 0).innerText = "0 ~ #{data.percent}"
+        action: click: ({node, data}) ~> @sort \grade, data
+      project: do
+        key: -> it.slug
+        list: ~> @prjs
+        init: ({node, local, data}) ~>
+          root = node
+          node.classList.remove \d-none
+          local.view = new ldView do
+            init-render: false
+            root: node
+            context: data
+            action: click: do
+              detail: ({node, context}) ~>
+                @active = context
+                @view.local.render \detail
+                @ldcv.detail.toggle!
+                @view.local.render \detail-name
+              comment: ({node, context}) ~>
+                @active = context
+                view.get(\comment).value = (@data.prj{}[@active.key].comment or '')
+                @ldcv.comment.toggle!
+                @view.local.render \comment-name
+              name: ({node, context}) ->
+                view.get("iframe").setAttribute \src, "/dash/prj/#{context.slug}?simple"
+                view.get("iframe-placeholder").classList.add \d-none
+                if @active-node => @active-node.classList.remove \active
+                @active-node = root
+                @active-node.classList.add \active
+            init: do
+              total: ({node, context}) ~>
+                handle = ~>
+                  if context.total == (v = +node.value) => return
+                  if isNaN(v) => return node.value = context.total
+                  context.total = v
+                  sum = @grade.reduce(((a,b) -> a + +b.percent),0)
+                  @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / sum
+                  #@view.local.render {name: \project, key: context.slug}
+                  @view.local.render \project
+
+                node.addEventListener \input, handle
+                node.addEventListener \change, handle
+                node.addEventListener \keyup, handle
+            handler: do
+              comment: ({node, context}) ~> node.classList.toggle \text-primary, !!@data.prj{}[context.key].comment
+              name: ({node, context}) -> node.innerText = context.name
+              key: ({node, context}) -> node.innerText = context.key or ''
+              total: ({node, context}) -> node.value = if context.total? => context.total else '-'
+              rank: ({node, context}) -> node.value = if context.rank? => context.rank else '-'
+
+              criteria: ({node, context}) ->
+                n = node.getAttribute(\data-name)
+                node.innerText = ({0:"+",2:"-"}[n] or '') + context.{}criteria[n]
+              /*grade: do
+                key: -> it.key
+                list: ({context}) ~> @grade
+                init: ({local, node, context, data}) ~>
+                  local.input = input = ld$.find(node, 'input', 0)
+                  input.value = @data.prj{}[context.key].{}v[data.key] or ''
+                  _update = debounce 300, ~>
+                    @rerank!
+                    @view.local.render \project
+                    @ops-out ~> @data
+                  handle = ~>
+                    @data.prj[context.key].v[data.key] = input.value
+                    local.render data
+                    _update!
+
+                  local.render = (data) ~>
+                    v = @data.prj{}[context.key].{}v[data.key]
+                    local.input.value = if v? => v else ''
+                    <[bg-danger text-white]>.map -> input.classList.toggle it, (+v > data.percent)
+                    @view.local.render <[progress-bar progress-percent count]>
+                  input.addEventListener \input, handle
+                  input.addEventListener \keyup, handle
+                  input.addEventListener \change, handle
+                handler: ({local, context, data}) ~>
+                  local.render data
+              */
+
+        handler: ({node, local, data}) ~>
+          local.view.setContext data
+          local.view.render!
+
 
   @
 
 Ctrl.prototype = {} <<< judge-base.prototype <<< do
-
   ops-in: ({data,ops,source}) ->
     if source => return
     @data = JSON.parse(JSON.stringify(data))
     @data.{}prj
-
-    ret = @prjs.map (p,i) ~>
-      ret = [i]
-      @judges.map (judge) ~>
-        v = @data.user{}[judge.key]
-        sum = @grade
-          .map (g,i) ~> v.{}prj{}[p.key].{}v[g.key] or 0
-          .reduce(((a,b) -> a + +b),0)
-        ret.push sum
-        ret.push 0
-      return ret
-    @judges.map (judge,i) ->
-      idx = 2 * i + 1
-      ret.sort (a,b) -> b[idx] - a[idx]
-      last = idx: 0, value: null
-      for i from 0 til ret.length =>
-        if last.value != ret[i][idx] =>
-          last.idx = i
-          last.value = ret[i][idx]
-        ret[i][idx + 1] = (last.idx + 1)
-
-    ret.sort (a,b) -> a.0 - b.0
-    ret = ret.map -> it.splice 1
-
-
-
-    if !ret.length => ret = [[]]
-    @sheet.populateFromArray 2, 3, ret
-
     @render!
 
   render: ->
-    @get-progress!
+    @rerank!
     @view.base.render!
     @view.local.render!
 
@@ -71,66 +188,58 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @sort \name, null, false
       .then ~> console.log "initied."
 
-  init-sheet: ->
-    console.log "init sheet ... "
-    @sheet = init-hot {
-      root: edit
-      afterChange: (changes = []) ~>
-    }
-
-    @judges = [
-      {name: "評審A",key: 1}
-      {name: "評審B",key: 2}
-      {name: "評審C",key: 3}
-    ]
-    @prjs.sort (a,b) -> a.key - b.key
-    data = [
-      (['','','評審'] ++ @judges.map(-> [it.name, '']).reduce(((a,b) -> a ++ b), []) ++ ['平均','優勝']),
-      (['編號', '評論', '提案'] ++ @judges.map(->["分數","排名"]).reduce(((a,b) -> a ++ b),[]) ++ ['排名', '註記'])
-    ] ++ @prjs.map (d,i) ~> [d.key, '', d.name] ++ (@grade.map -> 0) ++ [0, 1, '']
-
-    @sheet.load-data data
-    @sheet.render!
-    @render!
-
-
   init: ->
     Promise.resolve!
       .then ~> @auth!
       .then ~> @init-view!
+      #.then ~> @user = @global.user
       .then ~> @fetch-info!
       .then ~>
         if !@grpinfo.grade => ldcvmgr.get('judge-grade-missing')
         else @grade = @grpinfo.grade.entries
       .then ~> @fetch-prjs!
-      .then ~> @init-sheet!
+      .then ~> @fetch-criteria-result!
       .then ~> @sharedb!
-      .then ~> @getdoc!
-      .then ~> console.log "initied."
+      .then ~> @reconnect!
       .catch error!
 
+  fetch-criteria-result: ->
+    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge/criteria/result", {method: \GET}, {type: \json}
+      .then (ret = {}) ~>
+        @criteria-result = ret.data
+        @get-displayname [k for k of @criteria-result.data.user]
+        users = @criteria-result.data.user
+        @prjs.map (p) ~>
+          p.criteria = {0: 0, 1: 0, 2: 0}
+          for k,v of users =>
+            @criteria.map (c) ~>
+              idx = v.{}prj{}[p.key].v[c.key]
+              if !(idx?) => idx = 1
+              p.criteria[idx]++
+
+  rerank: ->
+    ranks = for k,v of @data.{}prj =>
+      if !(prj = @prjkeymap[k]) => continue
+      sum = 0
+      for g in @grade => sum += +(v.{}v[g.key] or 0)
+      prj.total = sum
+      [prj,sum]
+    lc = {idx: 1, value: null}
+    ranks.sort (a,b) -> b.1 - a.1
+    ranks.map (d,i) ->
+      if lc.value != d.1 => [lc.value, lc.idx] = [d.1, i + 1]
+      d.0.rank = lc.idx
+    @get-progress!
 
   get-progress: ->
+    @progress = do
+      total: (@prjs.length or 1)
+      done: @prjs.filter((p) ~>
+        !(@grade.filter((g) ~>
+          v = @data.prj{}[p.key].{}v[g.key]
+          !(v?) or v == ''
+        ).length)).length
+
 
 ctrl = new Ctrl root: document.body
 ctrl.init!
-
-init-hot = (opt) ->
-  Handsontable.renderers.registerRenderer \myrenderer, (instance, td, row, col, prop, value, cellProperties) ->
-    Handsontable.renderers.TextRenderer.apply @, arguments
-  hot = new Handsontable opt.root, {
-    rowHeaders: true
-    colHeaders: true
-    filters: true
-    dropdownMenu: true
-    rowHeights: 25
-    colWidths: [40,50,220]
-    minRows: 50
-    minCols: 15
-    stretchH: \all
-    fixedRowsTop: 2
-    fixedColumnsLeft: 3
-    cells: (row, col) -> return {renderer: \myrenderer}
-
-  } <<< opt
-  hot
