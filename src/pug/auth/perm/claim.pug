@@ -3,20 +3,18 @@ extends /base.pug
 block vars
  - ctrl.navtop.placeholder = false
 block body
-  +scope("claimed").ldcv: .base.w-640: .inner
-    .typeset.heading-contast.vertical-center.my-0: .w-100.text-center: .p-4
-      .my-4 您的權限已設定完成。
-      a.d-block.mb-4(href="#",onclick="lda.general.admin()") 前往主控台
+  include cover.pug
+
 block script
   script: :lsc
-    ldc.register <[loader error auth viewLocals]>, ({loader, error, auth, viewLocals}) ->
+    ldc.register <[ldcmgr loader error auth viewLocals]>, ({ldcvmgr, loader, error, auth, viewLocals}) ->
       auth.ensure {info: \token}
         .then (g) ->
           loader.on!
           ld$.fetch '/dash/api/token', {method: \PUT}, {json: {token: viewLocals.token}}
             .finally -> loader.off!
-            .then ->
-              ldcv = new ldCover {root: '[ld-scope=claimed]'}
-              ldcv.toggle!
-        .catch error!
+            .then -> ldcvmgr.toggle \perm-claimed
+        .catch (e) ->
+          if ldError.id(e) == 1013 => return ldcvmgr.toggle \perm-fail
+          error! e
   +register-locals()

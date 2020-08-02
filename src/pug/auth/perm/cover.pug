@@ -1,0 +1,31 @@
+//- module
+
+.ldcvmgr.ldcv(data-name="perm-claimed",data-lock="true"): .base.w-480: .inner
+  .typeset.heading-contast.vertical-center.my-0: .w-100.text-center: .p-4
+    .my-4 您的權限已設定完成。
+    a.d-block.mb-4(href="#",onclick="lda.general.admin()") 前往主控台
+
+.ldcvmgr.ldcv(data-name="judge-claimed"): .base.w-480: .inner
+  .typeset.heading-contast.vertical-center.my-0: .w-100.text-center: .p-4.m-4
+    .mb-4 您的權限已設定完成。
+    .btn.btn-outline-primary(onclick="window.location.reload()") 載入評選表
+
+.ldcvmgr.ldcv(data-name="perm-fail",data-lock="true"): .base.w-480: .inner
+  .typeset.heading-contast.vertical-center.my-0: .w-100.p-4: .p-4
+    h3.text-center 無法設定權限。
+    .py-4
+      p 您所使用的這個連結已經過期或者失效，所以您無法再透過這個連結設定權限了。若您先前有成功設定過，您可以試著重新登入後嘗試再次載入頁面。
+    br
+    .row
+      .col-md: a.btn.btn-lg.btn-block.btn-outline-primary(href="/") 回首頁
+      .col-md: a.btn.btn-lg.btn-block.btn-primary(href="/dash/me/reauth") 重新登入
+
+.ldcvmgr.ldcv(data-name="judge-list",data-lock="true"): .base.w-480: .inner
+  .typeset.heading-contast.vertical-center.my-0: .w-100.p-4: .p-4
+    h3.text-center 評選表
+    p 您可點擊以下連結進入您所擔任評審的活動之評選表：
+    .pb-4
+      each item in exports
+        .pb-2
+          a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/final/user`) 決選表 - #{item.name} 
+    a.btn.btn-lg.btn-block.btn-primary(href="/") 回首頁
