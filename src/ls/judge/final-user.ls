@@ -29,7 +29,7 @@ Ctrl = (opt) ->
 
     handler: do
       "toggle-total": ({node}) ~>
-        ld$.find(node, '.switch', 0).classList.toggle \on, @total-editable
+        ld$.find(node, '.switch', 0).classList.toggle \on, !!@total-editable
         ld$.find(@root, 'input[ld=total]').map (n) ~>
           if @total-editable => n.removeAttribute \readonly
           else n.setAttribute \readonly, null

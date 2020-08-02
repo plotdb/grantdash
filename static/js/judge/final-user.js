@@ -59,7 +59,7 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
         "toggle-total": function(arg$){
           var node;
           node = arg$.node;
-          ld$.find(node, '.switch', 0).classList.toggle('on', this$.totalEditable);
+          ld$.find(node, '.switch', 0).classList.toggle('on', !!this$.totalEditable);
           return ld$.find(this$.root, 'input[ld=total]').map(function(n){
             if (this$.totalEditable) {
               n.removeAttribute('readonly');
