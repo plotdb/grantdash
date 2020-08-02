@@ -125,7 +125,7 @@
         if (!(lc.ret = ret = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
-        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan) {
+        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan * 1000) {
           io.query("delete from permtoken where token = $1", [token]).then(function(){
             return aux.reject(new ldError(1013));
           });
@@ -217,7 +217,7 @@
         if (lc.ret.email !== req.user.username) {
           return aux.reject(403);
         }
-        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan) {
+        if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan * 1000) {
           io.query("delete from permtoken_judge where token = $1", [token]).then(function(){
             return aux.reject(1013);
           });
