@@ -3,15 +3,7 @@ extends /base.pug
 block vars
  - ctrl.navtop.placeholder = false
 block body
-  .ldcvmgr.ldcv(data-name="judge-fail",data-lock="true"): .base.w-480: .inner
-    .typeset.heading-contast.vertical-center.my-0: .w-100.p-4: .p-4
-      h3.text-center 無法設定權限。
-      .py-4
-        p 您所使用的這個連結已經過期或者失效，所以您無法再透過這個連結設定權限了。若您先前有成功設定過，您可以試著登入後嘗試重新載入頁面。
-      br
-      .row
-        .col-md: a.btn.btn-lg.btn-block.btn-outline-primary(href="/") 回首頁
-        .col-md: .btn.btn-lg.btn-block.btn-primary(onclick="lda.auth.show().then(function(){window.location.reload();})") 登入
+  include cover.pug
 block script
   script: :lsc
-    ldc.register <[ldcvmgr]>, ({ldcvmgr}) -> ldcvmgr.toggle \judge-fail
+    ldc.register <[ldcvmgr]>, ({ldcvmgr}) -> ldcvmgr.toggle \perm-fail

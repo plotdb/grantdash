@@ -126,8 +126,8 @@
           return aux.reject(404);
         }
         if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan * 1000) {
-          io.query("delete from permtoken where token = $1", [token]).then(function(){
-            return aux.reject(new lderror(1013));
+          return io.query("delete from permtoken where token = $1", [token]).then(function(){
+            return Promise.reject(new lderror(1013));
           });
         }
         return io.query("insert into perm (objtype, objslug, role, type, ref, owner)\nvalues ($1, $2, $3, $4, $5, $6)\non conflict do nothing", [ret.objtype, ret.objslug, ret.role, 'token', ret.id + ":" + ret.count, req.user.key]);
@@ -218,8 +218,8 @@
           return aux.reject(403);
         }
         if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan * 1000) {
-          io.query("delete from permtoken_judge where token = $1", [token]).then(function(){
-            return aux.reject(new lderror(1013));
+          return io.query("delete from permtoken_judge where token = $1", [token]).then(function(){
+            return Promise.reject(new lderror(1013));
           });
         }
         return io.query("insert into perm_judge (brd, grp, type, id, owner)\nvalues ($1, $2, $3, $4, $5)\non conflict do nothing", [ret.brd, ret.grp, 1, ret.id + ":" + ret.count, req.user.key]);
