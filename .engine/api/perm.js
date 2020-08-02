@@ -127,7 +127,7 @@
         }
         if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan) {
           io.query("delete from permtoken where token = $1", [token]).then(function(){
-            return aux.reject(1013);
+            return aux.reject(new ldError(1013));
           });
         }
         return io.query("insert into perm (objtype, objslug, role, type, ref, owner)\nvalues ($1, $2, $3, $4, $5, $6)\non conflict do nothing", [ret.objtype, ret.objslug, ret.role, 'token', ret.id + ":" + ret.count, req.user.key]);
