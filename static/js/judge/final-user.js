@@ -74,6 +74,11 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
           node = arg$.node;
           return node.innerText = (this$.active && this$.active.name) || '';
         },
+        "detail-name": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.innerText = (this$.active && this$.active.name) || '';
+        },
         "progress-percent": function(arg$){
           var node;
           node = arg$.node;
@@ -219,7 +224,8 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                     node = arg$.node, context = arg$.context;
                     this$.active = context;
                     this$.view.local.render('detail');
-                    return this$.ldcv.detail.toggle();
+                    this$.ldcv.detail.toggle();
+                    return this$.view.local.render('detail-name');
                   },
                   comment: function(arg$){
                     var node, context, ref$, key$;
