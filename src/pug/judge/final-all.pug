@@ -39,9 +39,9 @@ block body
               div(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
               div(style="width:4em") 評註
               .flex-grow-1(ld="sort",data-name="name") 提案名稱
-              .clickable(ld-each="judge",style="width:8em")
+              div(ld-each="judge",style="width:8em")
                 div(ld="name")
-                .d-flex.text-sm.justify-content-center
+                .d-flex.text-sm.justify-content-center.clickable
                   div(data-name="score",style="width:4em") 分數
                   div(data-name="rank",style="width:4em") 排名
               .clickable(ld="sort",data-name="total",style="width:4em") 平均分

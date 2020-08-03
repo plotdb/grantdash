@@ -74,7 +74,7 @@ Ctrl = (opt) ->
         list: ({context}) ~> @judge
         handler: ({node, data}) -> ld$.find(node, 'div', 0).innerText = data.name
         action: click: ({node, data, evt}) ~>
-          n = evt.target.getAttribute(\data-name)
+          if !(evt.target and (n = evt.target.getAttribute(\data-name))) => return
           @sort "judge-#{n}", data
       project: do
         key: -> it.slug

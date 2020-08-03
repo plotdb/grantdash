@@ -166,7 +166,9 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
             click: function(arg$){
               var node, data, evt, n;
               node = arg$.node, data = arg$.data, evt = arg$.evt;
-              n = evt.target.getAttribute('data-name');
+              if (!(evt.target && (n = evt.target.getAttribute('data-name')))) {
+                return;
+              }
               return this$.sort("judge-" + n, data);
             }
           }
