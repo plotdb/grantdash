@@ -11,7 +11,7 @@ function pug_rethrow(n,e,r,t){if(!(n instanceof Error))throw n;if(!("undefined"=
 function pug_style(r){if(!r)return"";if("object"==typeof r){var t="";for(var e in r)pug_has_own_property.call(r,e)&&(t=t+e+":"+r[e]+";");return t}return r+""}function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;var pug_debug_filename, pug_debug_line;try {;var locals_for_with = (locals || {});(function (Array, JSON, blockLoader, cssLoader, decache, escape, parentName, prefix, prjs, scriptLoader, user) {;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003C!DOCTYPE html\u003E";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fversion.pug";
-var version = "695e292";
+var version = "bc20158";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fstatic\u002Fassets\u002Flib\u002Fldui\u002Fpug\u002Fldui.pug";
 if(!ctrl) var ctrl = {};
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fstatic\u002Fassets\u002Flib\u002Fldui\u002Fpug\u002Fcore\u002Fchevron-down.pug";
@@ -4558,7 +4558,7 @@ if (!prj.deleted) {
 ;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"prj\"\u003E";
 ;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-if (prj.detail) {
+if (prj.detail && prj.state == 'active') {
 ;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4 state text-center\"\u003E";
 ;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
@@ -4679,7 +4679,7 @@ if (!prj.deleted) {
 ;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"prj\"\u003E";
 ;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-if (prj.detail) {
+if (prj.detail && prj.state == 'active') {
 ;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4 state text-center\"\u003E";
 ;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
