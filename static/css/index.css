@@ -35,6 +35,10 @@ p {
   display: inline;
   font-family: 'M Plus Rounded 1c';
 }
+.ldNotify {
+  top: 10px;
+  font-size: 0.9em;
+}
 ::placeholder {
   color: rgba(0,0,0,0.4) !important;
   font-weight: 200;
