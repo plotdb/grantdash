@@ -57,6 +57,48 @@
         return res.send(prj);
       })['catch'](aux.errorHandler(res));
     });
+    app.get('/prj/:slug/edit', function(req, res){
+      var lc;
+      lc = {};
+      return cache.stage.check({
+        io: io,
+        type: 'brd',
+        slug: req.scope.brd,
+        name: "prj-edit"
+      })['catch'](function(){
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: req.scope.brd,
+          action: ['prj-edit-own']
+        });
+      }).then(function(){
+        return getPrj(req.params.slug);
+      }).then(function(prj){
+        lc.prj = prj;
+        return io.query("select name,slug,org,detail from brd where slug = $1 and deleted is not true", [lc.prj.brd]);
+      }).then(function(r){
+        var brd, view, ref$, ref1$;
+        r == null && (r = {});
+        if (!(lc.brd = brd = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(400);
+        }
+        if (!(brd.detail.custom && brd.detail.custom.view)) {
+          view = 'view/default/prj-edit.pug';
+        } else {
+          view = "view/" + brd.detail.custom.view + "/prj-edit.pug";
+        }
+        delete brd.detail;
+        return res.render(view, (ref$ = (ref1$ = {
+          prj: lc.prj,
+          brd: lc.brd
+        }, ref1$.exports = {
+          prj: lc.prj,
+          brd: lc.brd
+        }, ref1$), ref$.domain = req.scope.domain, ref$));
+      })['catch'](aux.errorHandler(res));
+    });
     app.get('/prj/:slug', function(req, res){
       var lc;
       lc = {};
