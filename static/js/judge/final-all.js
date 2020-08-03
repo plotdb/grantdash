@@ -206,17 +206,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                     this$.view.local.render('detail-name');
                     this$.view.local.render('judge-comment');
                     return this$.ldcv["judge-comment"].toggle();
-                  },
-                  name: function(arg$){
-                    var node, context;
-                    node = arg$.node, context = arg$.context;
-                    view.get("iframe").setAttribute('src', "/dash/prj/" + context.slug + "?simple");
-                    view.get("iframe-placeholder").classList.add('d-none');
-                    if (this.activeNode) {
-                      this.activeNode.classList.remove('active');
-                    }
-                    this.activeNode = root;
-                    return this.activeNode.classList.add('active');
                   }
                 }
               },
@@ -229,7 +218,8 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                 name: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.innerText = context.name;
+                  node.innerText = context.name;
+                  return node.setAttribute('href', "/dash/prj/" + context.slug + "?simple");
                 },
                 key: function(arg$){
                   var node, context;
