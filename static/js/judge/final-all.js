@@ -237,7 +237,7 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                 total: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.value = context.total != null ? context.total : '-';
+                  return node.value = context.total != null ? Math.round(100 * context.total) / 100 : '-';
                 },
                 rank: function(arg$){
                   var node, context;
