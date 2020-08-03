@@ -4247,7 +4247,7 @@ pug_html = pug_html + "\u003Ci class=\"i-plus\"\u003E\u003C\u002Fi\u003E";
 ;pug_debug_line = 280;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
 pug_html = pug_html + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 282;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
-pug_mixins["nbr"](2);
+pug_mixins["nbr"](1);
 ;pug_debug_line = 283;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"no-break\"\u003E";
 ;pug_debug_line = 285;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
