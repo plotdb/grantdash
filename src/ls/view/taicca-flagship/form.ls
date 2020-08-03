@@ -145,22 +145,6 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
             <style type="text/css">
             #{ld$.find(\style, 0).innerText}
             </style>
-            <style type="text/css">
-              @font-face {
-                font-family: 'notosans';
-                src: url('https://dash.taicca.tw/dash/assets/lib/font/notosans-cjk-tc/NotoSansCJKtc-Light.otf');
-                font-weight: 300;
-              }
-              @font-face {
-                font-family: 'notosans';
-                src: url('https://dash.taicca.tw/dash/assets/lib/font/notosans-cjk-tc/NotoSansCJKtc-Bold.otf');
-                font-weight: 700;
-              }
-              form\@flagship-form {
-                font-family: 'notosans';
-              }
-            </style>
-
             """
             html = """
             <html>
