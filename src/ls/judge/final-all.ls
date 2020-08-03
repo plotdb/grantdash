@@ -103,26 +103,13 @@ Ctrl = (opt) ->
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
                 @active-node.classList.add \active
-            init: do
-              total: ({node, context}) ~>
-                handle = ~>
-                  if context.total == (v = +node.value) => return
-                  if isNaN(v) => return node.value = context.total
-                  context.total = v
-                  sum = @grade.reduce(((a,b) -> a + +b.percent),0)
-                  @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / sum
-                  #@view.local.render {name: \project, key: context.slug}
-                  @view.local.render \project
-
-                node.addEventListener \input, handle
-                node.addEventListener \change, handle
-                node.addEventListener \keyup, handle
             handler: do
               "judge-comment": ({node, context}) ~>
                 node.classList.toggle \text-primary, context.has-comment
               name: ({node, context}) -> node.innerText = context.name
               key: ({node, context}) -> node.innerText = context.key or ''
-              total: ({node, context}) -> node.value = if context.total? => context.total else '-'
+              total: ({node, context}) ->
+                node.value = if context.total? => Math.round(100 * context.total) / 100else '-'
               rank: ({node, context}) -> node.value = if context.rank? => context.rank else '-'
 
               criteria: ({node, context}) ->
@@ -138,33 +125,6 @@ Ctrl = (opt) ->
                   score.innerText = data.score[context.key] or 0
                   rank.innerText = data.rank[context.key] or 0
 
-
-              /*grade: do
-                key: -> it.key
-                list: ({context}) ~> @grade
-                init: ({local, node, context, data}) ~>
-                  local.input = input = ld$.find(node, 'input', 0)
-                  input.value = @data.prj{}[context.key].{}v[data.key] or ''
-                  _update = debounce 300, ~>
-                    @rerank!
-                    @view.local.render \project
-                    @ops-out ~> @data
-                  handle = ~>
-                    @data.prj[context.key].v[data.key] = input.value
-                    local.render data
-                    _update!
-
-                  local.render = (data) ~>
-                    v = @data.prj{}[context.key].{}v[data.key]
-                    local.input.value = if v? => v else ''
-                    <[bg-danger text-white]>.map -> input.classList.toggle it, (+v > data.percent)
-                    @view.local.render <[progress-bar progress-percent count]>
-                  input.addEventListener \input, handle
-                  input.addEventListener \keyup, handle
-                  input.addEventListener \change, handle
-                handler: ({local, context, data}) ~>
-                  local.render data
-              */
 
         handler: ({node, local, data}) ~>
           local.view.setContext data
@@ -242,7 +202,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
         if lc.value != d.1 => lc <<< {value: d.1, rank: i + 1}
         j.rank[d.0] = lc.rank
     scores = @prjs.map (p,i) ~>
-      p.total = @judge.reduce(((a,b) -> +(b.score[p.key] or 0) + a), 0)
+      p.total = @judge.reduce(((a,b) -> +(b.score[p.key] or 0) + a), 0) / @judge.length
       return [p,p.total]
     scores.sort (a,b) -> b.1 - a.1
     lc = {}

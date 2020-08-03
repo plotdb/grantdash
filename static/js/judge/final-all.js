@@ -218,33 +218,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                   }
                 }
               },
-              init: {
-                total: function(arg$){
-                  var node, context, handle;
-                  node = arg$.node, context = arg$.context;
-                  handle = function(){
-                    var v, sum;
-                    if (context.total === (v = +node.value)) {
-                      return;
-                    }
-                    if (isNaN(v)) {
-                      return node.value = context.total;
-                    }
-                    context.total = v;
-                    sum = this$.grade.reduce(function(a, b){
-                      return a + +b.percent;
-                    }, 0);
-                    this$.grade.map(function(it){
-                      var ref$, ref1$, key$;
-                      return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = it.percent * v / sum;
-                    });
-                    return this$.view.local.render('project');
-                  };
-                  node.addEventListener('input', handle);
-                  node.addEventListener('change', handle);
-                  return node.addEventListener('keyup', handle);
-                }
-              },
               handler: {
                 "judge-comment": function(arg$){
                   var node, context;
@@ -302,32 +275,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                     return rank.innerText = data.rank[context.key] || 0;
                   }
                 }
-                /*grade: do
-                  key: -> it.key
-                  list: ({context}) ~> @grade
-                  init: ({local, node, context, data}) ~>
-                    local.input = input = ld$.find(node, 'input', 0)
-                    input.value = @data.prj{}[context.key].{}v[data.key] or ''
-                    _update = debounce 300, ~>
-                      @rerank!
-                      @view.local.render \project
-                      @ops-out ~> @data
-                    handle = ~>
-                      @data.prj[context.key].v[data.key] = input.value
-                      local.render data
-                      _update!
-                
-                    local.render = (data) ~>
-                      v = @data.prj{}[context.key].{}v[data.key]
-                      local.input.value = if v? => v else ''
-                      <[bg-danger text-white]>.map -> input.classList.toggle it, (+v > data.percent)
-                      @view.local.render <[progress-bar progress-percent count]>
-                    input.addEventListener \input, handle
-                    input.addEventListener \keyup, handle
-                    input.addEventListener \change, handle
-                  handler: ({local, context, data}) ~>
-                    local.render data
-                */
               }
             });
           },
@@ -475,7 +422,7 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       scores = this.prjs.map(function(p, i){
         p.total = this$.judge.reduce(function(a, b){
           return +(b.score[p.key] || 0) + a;
-        }, 0);
+        }, 0) / this$.judge.length;
         return [p, p.total];
       });
       scores.sort(function(a, b){
