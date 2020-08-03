@@ -674,7 +674,13 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
       return isReady.get();
     });
     view.render();
-    return loadLocally();
+    loadLocally();
+    if ((vlc.prj || (vlc.prj = {})).state === 'active') {
+      return ld$.find(ld$.find('#flagship-form', 0), "textarea,input,select").map(function(n, i){
+        n.setAttribute('disabled', '');
+        return n.setAttribute('readonly', '');
+      });
+    }
   };
   return auth.ensure().then(function(it){
     return init({

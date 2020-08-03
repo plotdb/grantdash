@@ -365,6 +365,10 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
     ldform.on \readystatechange, -> is-ready.get!
     view.render!
     load-locally!
+    if vlc.{}prj.state == \active =>
+      ld$.find ld$.find('#flagship-form', 0), "textarea,input,select" .map (n,i) ->
+        n.setAttribute \disabled, ''
+        n.setAttribute \readonly, ''
 
   auth.ensure!
     .then -> init {global: it}
