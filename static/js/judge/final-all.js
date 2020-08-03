@@ -3,7 +3,7 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
   var notify, judgeBase, error, loader, auth, ldcvmgr, sdbAdapter, Ctrl, ctrl;
   notify = arg$.notify, judgeBase = arg$.judgeBase, error = arg$.error, loader = arg$.loader, auth = arg$.auth, ldcvmgr = arg$.ldcvmgr, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var obj, view, this$ = this;
+    var obj, coloring, view, this$ = this;
     import$(this, obj = new judgeBase(opt));
     this.data = {
       prj: {}
@@ -12,6 +12,16 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
     this.progress = {
       total: 1,
       done: 0
+    };
+    this.cfg = {
+      heatmap: true
+    };
+    coloring = function(v){
+      var r, g;
+      r = v >= 0.5 ? 255 : 0;
+      g = v < 0.5 ? 255 : 0;
+      v = Math.abs(v - 0.5);
+      return "rgba(" + r + "," + g + ",0," + v + ")";
     };
     this.ldcv = {
       "judge-comment": new ldCover({
@@ -31,13 +41,19 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
             node = arg$.node;
             return this$.sort(node.getAttribute('data-name'));
           },
-          "toggle-total": function(){
-            this$.totalEditable = !this$.totalEditable;
-            return this$.view.local.render('toggle-total');
+          "toggle-heatmap": function(){
+            this$.cfg.heatmap = !this$.cfg.heatmap;
+            this$.view.local.render('toggle-heatmap');
+            return this$.view.local.render('project');
           }
         }
       },
       handler: {
+        "toggle-heatmap": function(arg$){
+          var node;
+          node = arg$.node;
+          return ld$.find(node, '.switch', 0).classList.toggle('on', !!this$.cfg.heatmap);
+        },
         "comment-name": function(arg$){
           var node;
           node = arg$.node;
@@ -233,12 +249,14 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                     return node.innerText = '-';
                   }
                   v = Math.round(10 * context.total) / 10;
-                  return node.innerText = v.toFixed(1);
+                  node.innerText = v.toFixed(1);
+                  return node.style.background = this$.cfg.heatmap ? '#fff' : '#eee';
                 },
                 rank: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.innerText = context.rank != null ? context.rank : '-';
+                  node.innerText = context.rank != null ? context.rank : '-';
+                  return node.style.background = this$.cfg.heatmap ? coloring(+(context.rank || 0) / (this$.prjs.length || 1)) : '#eee';
                 },
                 criteria: function(arg$){
                   var node, context, n;
@@ -263,17 +281,13 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                     local = arg$.local, node = arg$.node, context = arg$.context, data = arg$.data;
                   },
                   handler: function(arg$){
-                    var node, context, data, score, rank, v, r, g;
+                    var node, context, data, score, rank;
                     node = arg$.node, context = arg$.context, data = arg$.data;
                     score = ld$.find(node, '[ld=score]', 0);
                     rank = ld$.find(node, '[ld=rank]', 0);
                     score.innerText = data.score[context.key] || 0;
                     rank.innerText = data.rank[context.key] || 0;
-                    v = +data.rank[context.key] / this$.prjs.length;
-                    r = v >= 0.5 ? 255 : 0;
-                    g = v < 0.5 ? 255 : 0;
-                    v = Math.abs(v - 0.5);
-                    return rank.style.background = "rgba(" + r + "," + g + ",0," + v + ")";
+                    return rank.style.background = this$.cfg.heatmap ? coloring(+(data.rank[context.key] || 0) / (this$.prjs.length || 1)) : '#fff';
                   }
                 }
               }
