@@ -113,14 +113,22 @@ Ctrl = (opt) ->
                 @active-node.classList.add \active
             init: do
               total: ({node, context}) ~>
+                _update = debounce 300, ~>
+                  @rerank!
+                  @view.local.render \project
+                  @ops-out ~> @data
                 handle = ~>
                   if context.total == (v = +node.value) => return
                   if isNaN(v) => return node.value = context.total
                   context.total = v
                   sum = @grade.reduce(((a,b) -> a + +b.percent),0)
-                  @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / sum
-                  #@view.local.render {name: \project, key: context.slug}
+                  @grade.map ~> @data.prj{}[context.key].{}v[it.key] = Math.round(100 * it.percent * v / sum) / 100
+                  _sum = @grade.reduce(((a,b) ~> +(@data.prj{}[context.key].{}v[b.key] or 0) + a),0)
+                  @data.prj{}[context.key].{}v[@grade[* - 1].key] = Math.round(100 * (
+                    +(@data.prj{}[context.key].{}v[@grade[* - 1].key] or 0) + (v - _sum )
+                  )) / 100
                   @view.local.render \project
+                  _update!
 
                 node.addEventListener \input, handle
                 node.addEventListener \change, handle
