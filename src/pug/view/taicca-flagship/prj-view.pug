@@ -8,9 +8,10 @@ block head
       margin-bottom: 2em
     .typeset.heading-contrast
       .table-tiny
+        th, td
+          font-size: .9em
         td
           padding: .75em 2px
-          font-size: .9em
           input, .form-control
             font-size: .8em
           input.is-valid
@@ -362,8 +363,10 @@ block body
           label 本計畫是否申請或已獲其他機關 ( 單位 ) 經費補助？
           .ml-4.mb-4
             +radio("has-other-sub", "0", true) 否
-            +radio("has-other-sub", "1", false)
-              div 是，本計畫已獲 #[+input-inline({len:10,name:"other-sub-name"})] 補助新臺幣 #[+input-inline({len:10,name:"other-sub-amount"})] 元整。
+            .form-check.d-flex.align-items-center
+              input.form-check-input(type="radio",name="has-other-sub",value="1")
+              label.form-check-label
+                div 是，本計畫已獲 #[+input-inline({len:10,name:"other-sub-name"})] 補助新臺幣 #[+input-inline({len:10,name:"other-sub-amount"})] 元整。
 
       .no-break
         h4 預算明細表
@@ -513,21 +516,23 @@ block body
       p 四、您得自由選擇是否提供個人資料或行使個人資料保護法第三條所定之權利，但因提供資料不足或有其他冒用、盜用、不實之情形，可能不能獲得補助資格或影響您受領補助之權益。
       p 五、您所提供之個人資料，本院將依據「個人資料保護法」相關規定進行保密。
 
-  .w-1024.mx-auto.rwd.no-print
-    .d-flex.align-items-stretch
-      div(ld="not submitted"): .d-flex.align-items-stretch
-        .btn.btn-primary.btn-lg.mr-2(ld="save submit"): .vertical-center: div 暫存進度
-        .btn.btn-primary.btn-lg.mr-2(ld="submit")
-          span 線上送件
-          .text-sm 點選後將不能再修改檔案
-      .d-none(ld="submitted")
-        .btn.btn-primary.btn-lg.disabled.mr-2
-          span 案件已送出
-          .text-sm 無法再進行修改
-      .btn.btn-primary.btn-lg.mr-4(ld="download")
-        .vertical-center: .ld-ext-right 線上文件 PDF 檔下載 #[.ld.ld-spin.ld-spinner.ldld]
-      div: .vertical-center: .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
-    +nbr(4)
+  .position-fixed.w-100.no-print.bg-white(style="bottom:0;left:0;right:0;padding:1em 0;border-top:1px solid #ccc")
+    .w-1024.mx-auto.rwd
+      .d-flex.align-items-stretch
+        div(ld="not submitted"): .d-flex.align-items-stretch
+          .btn.btn-primary.mr-2(ld="save submit"): .vertical-center: div 暫存進度
+          .btn.btn-primary.mr-2(ld="submit")
+            span 線上送件
+            .text-sm 點選後將不能再修改檔案
+        .d-none(ld="submitted")
+          .btn.btn-primary.disabled.mr-2
+            span 案件已送出
+            .text-sm 無法再進行修改
+        .btn.btn-primary.mr-4(ld="download")
+          .vertical-center: .ld-ext-right 線上文件 PDF 檔下載 #[.ld.ld-spin.ld-spinner.ldld]
+        div: .vertical-center: .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
+
+  +nbr(2)
 
   .ldcv.ldcvmgr(data-name="flagship-print-timeout",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
     .text-center

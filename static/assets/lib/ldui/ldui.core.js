@@ -100,6 +100,9 @@ if (document.createEvent || n.fireEvent) {
     }
     return it.addEventListener('click', function(){
       var evt;
+      if (n.hasAttribute('disabled')) {
+        return;
+      }
       if (document.createEvent) {
         if (n.getAttribute('type') === 'radio') {
           n.checked = true;
