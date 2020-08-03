@@ -625,17 +625,18 @@
       })['catch'](aux.errorHandler(res));
     });
     api.post('/brd/:brd/grp/:grp/info', function(req, res){
-      var brd, grp, fields, ref$;
+      var lc, brd, grp, fields, ref$;
+      lc = {};
       if (!((brd = req.params.brd) && (grp = req.params.grp))) {
         return aux.r400(res);
       }
       fields = ((ref$ = req.body).fields || (ref$.fields = [])).filter(function(it){
-        return it === 'grade' || it === 'criteria' || it === 'form';
+        return it === 'grade' || it === 'criteria' || it === 'form' || it === 'judgePerm';
       });
       return io.query("select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [brd]).then(function(r){
-        var ret, g, ref$, grpinfo, i$, len$, f;
+        var ret, g, ref$, grpinfo, i$, len$, f, jp, emails;
         r == null && (r = {});
-        if (!(ret = (r.rows || (r.rows = []))[0])) {
+        if (!(lc.ret = ret = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
         if (!(g = ((ref$ = ret.detail).group || (ref$.group = [])).filter(function(it){
@@ -643,7 +644,7 @@
         })[0])) {
           return aux.reject(404);
         }
-        grpinfo = {
+        lc.grpinfo = grpinfo = {
           info: g.info,
           key: g.key
         };
@@ -651,14 +652,35 @@
           f = ref$[i$];
           grpinfo[f] = g[f];
         }
+        if (in$('judgePerm', fields)) {
+          jp = (ref$ = grpinfo.judgePerm || (grpinfo.judgePerm = {})).list || (ref$.list = []);
+          emails = jp.map(function(it){
+            return it.email;
+          });
+          return io.query("select u.key,u.username from users as u where u.username = ANY($1::text[])", [emails]).then(function(r){
+            var hash;
+            r == null && (r = {});
+            hash = {};
+            (r.rows || (r.rows = [])).map(function(it){
+              return hash[it.username] = it.key;
+            });
+            return jp.map(function(j){
+              return j.key = hash[j.email];
+            });
+          });
+        } else {
+          return Promise.resolve();
+        }
+      }).then(function(){
+        var ref$;
         return res.send({
           brd: {
-            key: ret.key,
-            name: ret.name,
-            description: ret.description,
-            slug: ret.slug
+            key: (ref$ = lc.ret).key,
+            name: ref$.name,
+            description: ref$.description,
+            slug: ref$.slug
           },
-          grp: grpinfo
+          grp: lc.grpinfo
         });
       })['catch'](aux.errorHandler(res));
     });
@@ -719,5 +741,10 @@
     var own = {}.hasOwnProperty;
     for (var key in src) if (own.call(src, key)) obj[key] = src[key];
     return obj;
+  }
+  function in$(x, xs){
+    var i = -1, l = xs.length >>> 0;
+    while (++i < l) if (x === xs[i]) return true;
+    return false;
   }
 }).call(this);

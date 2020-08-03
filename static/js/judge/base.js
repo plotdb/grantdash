@@ -100,7 +100,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         method: 'POST'
       }, {
         json: {
-          fields: ['criteria', 'grade', 'form']
+          fields: ['criteria', 'grade', 'form', 'judgePerm']
         },
         type: 'json'
       }).then(function(ret){
@@ -224,7 +224,9 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         budget: "預算",
         total: "總分",
         rank: "排名",
-        "criteria-result": "審查結果"
+        "criteria-result": "審查結果",
+        "judge-rank": "評審排名",
+        "judge-score": "評審分數"
       };
       verbose = {
         name: namemap[name] || value,
@@ -330,6 +332,14 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         } else if (name === 'rank') {
           this$.prjs.sort(function(a, b){
             return dir * (a.rank - b.rank);
+          });
+        } else if (name === 'judge-score') {
+          this$.prjs.sort(function(a, b){
+            return dir * (((value.score || (value.score = {}))[b.key] || 0) - ((value.score || (value.score = {}))[a.key] || 0));
+          });
+        } else if (name === 'judge-rank') {
+          this$.prjs.sort(function(a, b){
+            return dir * (((value.rank || (value.rank = {}))[b.key] || 0) - ((value.rank || (value.rank = {}))[a.key] || 0));
           });
         }
         if (hint) {

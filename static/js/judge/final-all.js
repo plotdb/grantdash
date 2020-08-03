@@ -14,9 +14,8 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       done: 0
     };
     this.ldcv = {
-      comment: new ldCover({
-        root: ld$.find(this.root, '[ld=comment-ldcv]', 0),
-        escape: false
+      "judge-comment": new ldCover({
+        root: ld$.find(this.root, '[ld=judge-comment-ldcv]', 0)
       }),
       detail: new ldCover({
         root: ld$.find(this.root, '[ld=detail-ldcv]', 0)
@@ -26,23 +25,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       initRender: false,
       root: this.root,
       action: {
-        input: {
-          comment: function(arg$){
-            var node, ref$, key$;
-            node = arg$.node;
-            if (!this$.active) {
-              return;
-            }
-            ((ref$ = this$.data.prj)[key$ = this$.active.key] || (ref$[key$] = {})).comment = node.value;
-            this$.update({
-              debounced: 300
-            });
-            return this$.view.local.render({
-              name: 'project',
-              key: this$.active.slug
-            });
-          }
-        },
         click: {
           sort: function(arg$){
             var node;
@@ -56,19 +38,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
         }
       },
       handler: {
-        "toggle-total": function(arg$){
-          var node;
-          node = arg$.node;
-          ld$.find(node, '.switch', 0).classList.toggle('on', !!this$.totalEditable);
-          return ld$.find(this$.root, 'input[ld=total]').map(function(n){
-            if (this$.totalEditable) {
-              n.removeAttribute('readonly');
-            } else {
-              n.setAttribute('readonly', null);
-            }
-            return n.classList.toggle('bg-light', !this$.totalEditable);
-          });
-        },
         "comment-name": function(arg$){
           var node;
           node = arg$.node;
@@ -79,24 +48,32 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
           node = arg$.node;
           return node.innerText = (this$.active && this$.active.name) || '';
         },
-        "progress-percent": function(arg$){
-          var node;
-          node = arg$.node;
-          return node.innerText = Math.floor(100 * this$.progress.done / this$.progress.total);
-        },
-        "progress-bar": function(arg$){
-          var node;
-          node = arg$.node;
-          return node.style.width = 100 * this$.progress.done / this$.progress.total + "%";
-        },
-        count: function(arg$){
-          var node, n;
-          node = arg$.node;
-          n = node.getAttribute('data-name');
-          if (n === 'total') {
-            return node.innerText = this$.progress.total || 0;
-          } else if (n === 'pending') {
-            return node.innerText = this$.progress.total - this$.progress.done || 0;
+        "judge-comment": {
+          list: function(){
+            var ret;
+            if (!this$.active) {
+              return [];
+            }
+            ret = this$.judge.map(function(j){
+              var ref$, ref1$, key$;
+              return {
+                judge: j,
+                comment: ((ref$ = (ref1$ = this$.data.user)[key$ = j.key] || (ref1$[key$] = {})).prj || (ref$.prj = {}))[this$.active.key].comment
+              };
+            }).filter(function(it){
+              return it.comment;
+            });
+            return ret.sort(function(a, b){
+              return (b.comment != null ? b.comment.length : 0) - (a.comment != null ? a.comment.length : 0);
+            });
+          },
+          handler: function(arg$){
+            var node, data, name, comment;
+            node = arg$.node, data = arg$.data;
+            name = ld$.find(node, '[ld=name]', 0);
+            comment = ld$.find(node, '[ld=comment]', 0);
+            name.innerText = data.judge.name;
+            return comment.innerText = data.comment;
           }
         },
         detail: {
@@ -174,37 +151,25 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
             });
           }
         },
-        "total-max": function(arg$){
-          var node;
-          node = arg$.node;
-          return node.innerText = "0 ~ " + this$.grade.reduce(function(a, b){
-            return a + +b.percent;
-          }, 0);
-        },
         judge: {
           list: function(arg$){
             var context;
             context = arg$.context;
             return this$.judge;
-          }
-        },
-        grade: {
-          list: function(arg$){
-            var context;
-            context = arg$.context;
-            return this$.grade;
           },
           handler: function(arg$){
             var node, data;
             node = arg$.node, data = arg$.data;
-            ld$.find(node, 'span', 0).innerText = data.name;
-            return ld$.find(node, 'div', 0).innerText = "0 ~ " + data.percent;
+            return ld$.find(node, 'div', 0).innerText = data.name;
           },
           action: {
             click: function(arg$){
-              var node, data;
-              node = arg$.node, data = arg$.data;
-              return this$.sort('grade', data);
+              var node, data, evt, n;
+              node = arg$.node, data = arg$.data, evt = arg$.evt;
+              if (!(evt.target && (n = evt.target.getAttribute('data-name')))) {
+                return;
+              }
+              return this$.sort("judge-" + n, data);
             }
           }
         },
@@ -234,13 +199,13 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                     this$.ldcv.detail.toggle();
                     return this$.view.local.render('detail-name');
                   },
-                  comment: function(arg$){
-                    var node, context, ref$, key$;
+                  "judge-comment": function(arg$){
+                    var node, context;
                     node = arg$.node, context = arg$.context;
                     this$.active = context;
-                    view.get('comment').value = ((ref$ = this$.data.prj)[key$ = this$.active.key] || (ref$[key$] = {})).comment || '';
-                    this$.ldcv.comment.toggle();
-                    return this$.view.local.render('comment-name');
+                    this$.view.local.render('detail-name');
+                    this$.view.local.render('judge-comment');
+                    return this$.ldcv["judge-comment"].toggle();
                   },
                   name: function(arg$){
                     var node, context;
@@ -255,38 +220,11 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                   }
                 }
               },
-              init: {
-                total: function(arg$){
-                  var node, context, handle;
-                  node = arg$.node, context = arg$.context;
-                  handle = function(){
-                    var v, sum;
-                    if (context.total === (v = +node.value)) {
-                      return;
-                    }
-                    if (isNaN(v)) {
-                      return node.value = context.total;
-                    }
-                    context.total = v;
-                    sum = this$.grade.reduce(function(a, b){
-                      return a + +b.percent;
-                    }, 0);
-                    this$.grade.map(function(it){
-                      var ref$, ref1$, key$;
-                      return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = it.percent * v / sum;
-                    });
-                    return this$.view.local.render('project');
-                  };
-                  node.addEventListener('input', handle);
-                  node.addEventListener('change', handle);
-                  return node.addEventListener('keyup', handle);
-                }
-              },
               handler: {
-                comment: function(arg$){
-                  var node, context, ref$, key$;
+                "judge-comment": function(arg$){
+                  var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.classList.toggle('text-primary', !!((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment);
+                  return node.classList.toggle('text-primary', context.hasComment);
                 },
                 name: function(arg$){
                   var node, context;
@@ -299,14 +237,18 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                   return node.innerText = context.key || '';
                 },
                 total: function(arg$){
-                  var node, context;
+                  var node, context, v;
                   node = arg$.node, context = arg$.context;
-                  return node.value = context.total != null ? context.total : '-';
+                  if (!(context.total != null)) {
+                    return node.innerText = '-';
+                  }
+                  v = Math.round(10 * context.total) / 10;
+                  return node.innerText = v.toFixed(1);
                 },
                 rank: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.value = context.rank != null ? context.rank : '-';
+                  return node.innerText = context.rank != null ? context.rank : '-';
                 },
                 criteria: function(arg$){
                   var node, context, n;
@@ -316,33 +258,29 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                     0: "+",
                     2: "-"
                   }[n] || '') + (context.criteria || (context.criteria = {}))[n];
+                },
+                judge: {
+                  key: function(it){
+                    return it.key;
+                  },
+                  list: function(arg$){
+                    var context;
+                    context = arg$.context;
+                    return this$.judge;
+                  },
+                  init: function(arg$){
+                    var local, node, context, data;
+                    local = arg$.local, node = arg$.node, context = arg$.context, data = arg$.data;
+                  },
+                  handler: function(arg$){
+                    var node, context, data, score, rank;
+                    node = arg$.node, context = arg$.context, data = arg$.data;
+                    score = ld$.find(node, '[ld=score]', 0);
+                    rank = ld$.find(node, '[ld=rank]', 0);
+                    score.innerText = data.score[context.key] || 0;
+                    return rank.innerText = data.rank[context.key] || 0;
+                  }
                 }
-                /*grade: do
-                  key: -> it.key
-                  list: ({context}) ~> @grade
-                  init: ({local, node, context, data}) ~>
-                    local.input = input = ld$.find(node, 'input', 0)
-                    input.value = @data.prj{}[context.key].{}v[data.key] or ''
-                    _update = debounce 300, ~>
-                      @rerank!
-                      @view.local.render \project
-                      @ops-out ~> @data
-                    handle = ~>
-                      @data.prj[context.key].v[data.key] = input.value
-                      local.render data
-                      _update!
-                
-                    local.render = (data) ~>
-                      v = @data.prj{}[context.key].{}v[data.key]
-                      local.input.value = if v? => v else ''
-                      <[bg-danger text-white]>.map -> input.classList.toggle it, (+v > data.percent)
-                      @view.local.render <[progress-bar progress-percent count]>
-                    input.addEventListener \input, handle
-                    input.addEventListener \keyup, handle
-                    input.addEventListener \change, handle
-                  handler: ({local, context, data}) ~>
-                    local.render data
-                */
               }
             });
           },
@@ -389,6 +327,9 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
         return this$.initView();
       }).then(function(){
         return this$.fetchInfo();
+      }).then(function(){
+        var ref$, ref1$;
+        return this$.judge = (ref$ = (ref1$ = this$.grpinfo).judgePerm || (ref1$.judgePerm = {})).list || (ref$.list = []);
       }).then(function(){
         if (!this$.grpinfo.grade) {
           return ldcvmgr.get('judge-grade-missing');
@@ -447,50 +388,60 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       });
     },
     rerank: function(){
-      var ranks, res$, k, ref$, ref1$, v, prj, sum, i$, len$, g, lc;
-      res$ = [];
-      for (k in ref$ = (ref1$ = this.data).prj || (ref1$.prj = {})) {
-        v = ref$[k];
-        if (!(prj = this.prjkeymap[k])) {
-          continue;
-        }
-        sum = 0;
-        for (i$ = 0, len$ = (ref1$ = this.grade).length; i$ < len$; ++i$) {
-          g = ref1$[i$];
-          sum += +((v.v || (v.v = {}))[g.key] || 0);
-        }
-        prj.total = sum;
-        res$.push([prj, sum]);
+      var scores, lc, this$ = this;
+      if (!this.prjs) {
+        return;
       }
-      ranks = res$;
-      lc = {
-        idx: 1,
-        value: null
-      };
-      ranks.sort(function(a, b){
+      this.prjs.map(function(p){
+        return p.hasComment = !!this$.judge.filter(function(j){
+          var ref$, key$, ref1$, ref2$, key1$;
+          return ((ref$ = (ref1$ = (ref2$ = this$.data.user)[key1$ = j.key] || (ref2$[key1$] = {})).prj || (ref1$.prj = {}))[key$ = p.key] || (ref$[key$] = {})).comment;
+        }).length;
+      });
+      this.judge.map(function(j, i){
+        var u, scores, lc;
+        u = this$.data.user[j.key] || {};
+        j.score = {};
+        j.rank = {};
+        scores = this$.prjs.map(function(p, i){
+          var ref$, key$, sum;
+          ((ref$ = u.prj || (u.prj = {}))[key$ = p.key] || (ref$[key$] = {})).comment;
+          sum = this$.grade.reduce(function(a, g){
+            var ref$, ref1$, key$;
+            return +(((ref$ = (ref1$ = u.prj || (u.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key] || 0) + a;
+          }, 0);
+          j.score[p.key] = sum;
+          return [p.key, sum];
+        });
+        lc = {};
+        scores.sort(function(a, b){
+          return b[1] - a[1];
+        });
+        return scores.map(function(d, i){
+          if (lc.value !== d[1]) {
+            lc.value = d[1];
+            lc.rank = i + 1;
+          }
+          return j.rank[d[0]] = lc.rank;
+        });
+      });
+      scores = this.prjs.map(function(p, i){
+        p.total = this$.judge.reduce(function(a, b){
+          return +(b.score[p.key] || 0) + a;
+        }, 0) / this$.judge.length;
+        return [p, p.total];
+      });
+      scores.sort(function(a, b){
         return b[1] - a[1];
       });
-      ranks.map(function(d, i){
-        var ref$;
+      lc = {};
+      return scores.map(function(d, i){
         if (lc.value !== d[1]) {
-          ref$ = [d[1], i + 1], lc.value = ref$[0], lc.idx = ref$[1];
+          lc.value = d[1];
+          lc.rank = i + 1;
         }
-        return d[0].rank = lc.idx;
+        return d[0].rank = lc.rank;
       });
-      return this.getProgress();
-    },
-    getProgress: function(){
-      var this$ = this;
-      return this.progress = {
-        total: this.prjs.length || 1,
-        done: this.prjs.filter(function(p){
-          return !this$.grade.filter(function(g){
-            var v, ref$, ref1$, key$;
-            v = ((ref$ = (ref1$ = this$.data.prj)[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key];
-            return !(v != null) || v === '';
-          }).length;
-        }).length
-      };
     }
   });
   ctrl = new Ctrl({

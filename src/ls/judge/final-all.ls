@@ -8,19 +8,13 @@ Ctrl = (opt) ->
   @progress = {total: 1, done: 0}
 
   @ldcv = do
-    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0), escape: false
+    "judge-comment": new ldCover root: ld$.find(@root, '[ld=judge-comment-ldcv]', 0)
     detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
 
   @view.local = view = new ldView do
     init-render: false
     root: @root
     action:
-      input: do
-        comment: ({node}) ~>
-          if !@active => return
-          @data.prj{}[@active.key].comment = node.value
-          @update debounced: 300
-          @view.local.render {name: 'project', key: @active.slug}
       click: do
         sort: ({node}) ~> @sort node.getAttribute \data-name
         "toggle-total": ~>
@@ -28,21 +22,20 @@ Ctrl = (opt) ->
           @view.local.render \toggle-total
 
     handler: do
-      "toggle-total": ({node}) ~>
-        ld$.find(node, '.switch', 0).classList.toggle \on, !!@total-editable
-        ld$.find(@root, 'input[ld=total]').map (n) ~>
-          if @total-editable => n.removeAttribute \readonly
-          else n.setAttribute \readonly, null
-          n.classList.toggle \bg-light, !@total-editable
-
       "comment-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
       "detail-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
-      "progress-percent": ({node}) ~> node.innerText = Math.floor(100 * @progress.done / @progress.total)
-      "progress-bar": ({node}) ~> node.style.width = "#{(100 * @progress.done / @progress.total)}%"
-      count: ({node}) ~>
-        n = node.getAttribute(\data-name)
-        if n == \total => node.innerText = @progress.total or 0
-        else if n == \pending => node.innerText = (@progress.total - @progress.done) or 0
+      "judge-comment": do
+        list: ~>
+          if !@active => return []
+          ret = @judge
+            .map (j) ~> {judge: j, comment: @data.user{}[j.key].{}prj[@active.key].comment}
+            .filter -> it.comment
+          ret.sort (a,b) -> (if b.comment? => b.comment.length else 0) - (if a.comment? => a.comment.length else 0)
+        handler: ({node,data}) ->
+          name = ld$.find(node, '[ld=name]', 0)
+          comment = ld$.find(node, '[ld=comment]', 0)
+          name.innerText = data.judge.name
+          comment.innerText = data.comment
 
       detail: do
         list: ~>
@@ -77,15 +70,12 @@ Ctrl = (opt) ->
                   icon.classList.remove \i-close, \i-circle, \i-check
                   icon.classList.add <[i-check i-circle i-close]>[data.value]
 
-      "total-max": ({node}) ~> node.innerText = "0 ~ #{@grade.reduce(((a,b) -> a + +b.percent),0)}"
       judge: do
         list: ({context}) ~> @judge
-      grade: do
-        list: ({context}) ~> @grade
-        handler: ({node, data}) ->
-          ld$.find(node, 'span', 0).innerText = data.name
-          ld$.find(node, 'div', 0).innerText = "0 ~ #{data.percent}"
-        action: click: ({node, data}) ~> @sort \grade, data
+        handler: ({node, data}) -> ld$.find(node, 'div', 0).innerText = data.name
+        action: click: ({node, data, evt}) ~>
+          if !(evt.target and (n = evt.target.getAttribute(\data-name))) => return
+          @sort "judge-#{n}", data
       project: do
         key: -> it.slug
         list: ~> @prjs
@@ -102,67 +92,42 @@ Ctrl = (opt) ->
                 @view.local.render \detail
                 @ldcv.detail.toggle!
                 @view.local.render \detail-name
-              comment: ({node, context}) ~>
+              "judge-comment": ({node, context}) ~>
                 @active = context
-                view.get(\comment).value = (@data.prj{}[@active.key].comment or '')
-                @ldcv.comment.toggle!
-                @view.local.render \comment-name
+                @view.local.render \detail-name
+                @view.local.render \judge-comment
+                @ldcv["judge-comment"].toggle!
               name: ({node, context}) ->
                 view.get("iframe").setAttribute \src, "/dash/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
                 if @active-node => @active-node.classList.remove \active
                 @active-node = root
                 @active-node.classList.add \active
-            init: do
-              total: ({node, context}) ~>
-                handle = ~>
-                  if context.total == (v = +node.value) => return
-                  if isNaN(v) => return node.value = context.total
-                  context.total = v
-                  sum = @grade.reduce(((a,b) -> a + +b.percent),0)
-                  @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / sum
-                  #@view.local.render {name: \project, key: context.slug}
-                  @view.local.render \project
-
-                node.addEventListener \input, handle
-                node.addEventListener \change, handle
-                node.addEventListener \keyup, handle
             handler: do
-              comment: ({node, context}) ~> node.classList.toggle \text-primary, !!@data.prj{}[context.key].comment
+              "judge-comment": ({node, context}) ~>
+                node.classList.toggle \text-primary, context.has-comment
               name: ({node, context}) -> node.innerText = context.name
               key: ({node, context}) -> node.innerText = context.key or ''
-              total: ({node, context}) -> node.value = if context.total? => context.total else '-'
-              rank: ({node, context}) -> node.value = if context.rank? => context.rank else '-'
+              total: ({node, context}) ->
+                if !(context.total?) => return node.innerText = '-'
+                v = Math.round(10 * context.total) / 10
+                node.innerText = v.toFixed(1)
+              rank: ({node, context}) ->
+                node.innerText = if context.rank? => context.rank else '-'
 
               criteria: ({node, context}) ->
                 n = node.getAttribute(\data-name)
                 node.innerText = ({0:"+",2:"-"}[n] or '') + context.{}criteria[n]
-              /*grade: do
+              judge: do
                 key: -> it.key
-                list: ({context}) ~> @grade
+                list: ({context}) ~> @judge
                 init: ({local, node, context, data}) ~>
-                  local.input = input = ld$.find(node, 'input', 0)
-                  input.value = @data.prj{}[context.key].{}v[data.key] or ''
-                  _update = debounce 300, ~>
-                    @rerank!
-                    @view.local.render \project
-                    @ops-out ~> @data
-                  handle = ~>
-                    @data.prj[context.key].v[data.key] = input.value
-                    local.render data
-                    _update!
+                handler: ({node, context, data}) ~>
+                  score = ld$.find(node, '[ld=score]', 0)
+                  rank = ld$.find(node, '[ld=rank]', 0)
+                  score.innerText = data.score[context.key] or 0
+                  rank.innerText = data.rank[context.key] or 0
 
-                  local.render = (data) ~>
-                    v = @data.prj{}[context.key].{}v[data.key]
-                    local.input.value = if v? => v else ''
-                    <[bg-danger text-white]>.map -> input.classList.toggle it, (+v > data.percent)
-                    @view.local.render <[progress-bar progress-percent count]>
-                  input.addEventListener \input, handle
-                  input.addEventListener \keyup, handle
-                  input.addEventListener \change, handle
-                handler: ({local, context, data}) ~>
-                  local.render data
-              */
 
         handler: ({node, local, data}) ~>
           local.view.setContext data
@@ -195,6 +160,8 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       #.then ~> @user = @global.user
       .then ~> @fetch-info!
       .then ~>
+        @judge = @grpinfo.{}judgePerm.[]list
+      .then ~>
         if !@grpinfo.grade => ldcvmgr.get('judge-grade-missing')
         else @grade = @grpinfo.grade.entries
       .then ~> @fetch-prjs!
@@ -218,27 +185,33 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
               p.criteria[idx]++
 
   rerank: ->
-    ranks = for k,v of @data.{}prj =>
-      if !(prj = @prjkeymap[k]) => continue
-      sum = 0
-      for g in @grade => sum += +(v.{}v[g.key] or 0)
-      prj.total = sum
-      [prj,sum]
-    lc = {idx: 1, value: null}
-    ranks.sort (a,b) -> b.1 - a.1
-    ranks.map (d,i) ->
-      if lc.value != d.1 => [lc.value, lc.idx] = [d.1, i + 1]
-      d.0.rank = lc.idx
-    @get-progress!
-
-  get-progress: ->
-    @progress = do
-      total: (@prjs.length or 1)
-      done: @prjs.filter((p) ~>
-        !(@grade.filter((g) ~>
-          v = @data.prj{}[p.key].{}v[g.key]
-          !(v?) or v == ''
-        ).length)).length
+    if !@prjs => return
+    @prjs.map (p) ~>
+      p.has-comment = !!@judge.filter((j) ~> @data.user{}[j.key].{}prj{}[p.key].comment).length
+    @judge.map (j,i) ~>
+      u = @data.user[j.key] or {}
+      j.score = {}
+      j.rank = {}
+      scores = @prjs.map (p,i) ~>
+        u.{}prj{}[p.key].comment
+        sum = @grade.reduce(((a,g) ->
+          +(u.{}prj{}[p.key].{}v[g.key] or 0) + a
+        ), 0)
+        j.score[p.key] = sum
+        return [p.key, sum]
+      lc = {}
+      scores.sort (a,b) -> b.1 - a.1
+      scores.map (d,i) ->
+        if lc.value != d.1 => lc <<< {value: d.1, rank: i + 1}
+        j.rank[d.0] = lc.rank
+    scores = @prjs.map (p,i) ~>
+      p.total = @judge.reduce(((a,b) -> +(b.score[p.key] or 0) + a), 0) / @judge.length
+      return [p,p.total]
+    scores.sort (a,b) -> b.1 - a.1
+    lc = {}
+    scores.map (d,i) ->
+      if lc.value != d.1 => lc <<< {value: d.1, rank: i + 1}
+      d.0.rank = lc.rank
 
 
 ctrl = new Ctrl root: document.body

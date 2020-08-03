@@ -365,15 +365,26 @@ api.post \/slug-check/:type, aux.signed, throttle.count.ip, (req, res) ->
 
 #TODO review
 api.post \/brd/:brd/grp/:grp/info, (req, res) ->
+  lc = {}
   if !((brd = req.params.brd) and (grp = req.params.grp)) => return aux.r400 res
-  fields = req.body.[]fields.filter -> it in <[grade criteria form]>
+  fields = req.body.[]fields.filter -> it in <[grade criteria form judgePerm]>
   io.query "select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [brd]
     .then (r={}) ->
-      if !(ret = r.[]rows.0) => return aux.reject 404
+      if !(lc.ret = ret = r.[]rows.0) => return aux.reject 404
       if !(g = ret.detail.[]group.filter(-> it.key == grp).0) => return aux.reject 404
-      grpinfo = g{info, key}
+      lc.grpinfo = grpinfo = g{info, key}
       for f in fields => grpinfo[f] = g[f]
-      res.send {brd: ret{key,name,description,slug}, grp: grpinfo}
+      if \judgePerm in fields =>
+        jp = grpinfo.{}judgePerm.[]list
+        emails = jp.map -> it.email
+        io.query "select u.key,u.username from users as u where u.username = ANY($1::text[])", [emails]
+          .then (r={}) ->
+            hash = {}
+            r.[]rows.map -> hash[it.username] = it.key
+            jp.map (j) -> j.key = hash[j.email]
+      else Promise.resolve!
+    .then ->
+      res.send {brd: lc.ret{key,name,description,slug}, grp: lc.grpinfo}
     .catch aux.error-handler res
 
 # TODO who use this?

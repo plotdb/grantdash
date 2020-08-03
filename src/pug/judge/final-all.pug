@@ -36,60 +36,36 @@ block body
           .sticky(style="top:0")
 
             .d-flex.py-2.bg-light.border-bottom.shadow-sm.text-center
-              div(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
-              .flex-grow-1(ld="sort",data-name="name") 提案名稱
-              //-.clickable(ld-each="grade",style="width:5em") #[span]#[.text-sm.text-muted]
-              //-.clickable(ld="sort",data-name="total",style="width:4em") 總分#[.text-sm.textmuted(ld="total-max")]
-              .clickable(ld="sort",data-name="rank",style="width:4em") 排名
-              .clickable(ld="sort",data-name="comment",style="width:5em") 評論
+              .clickable(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
+              div(style="width:4em") 評註
+              .clickable.flex-grow-1(ld="sort",data-name="name") 提案名稱
+              div(ld-each="judge",style="width:8em")
+                div(ld="name")
+                .d-flex.text-sm.justify-content-center.clickable
+                  div(data-name="score",style="width:4em") 分數
+                  div(data-name="rank",style="width:4em") 排名
+              .clickable(ld="sort",data-name="total",style="width:4em") 平均分
+              .clickable(ld="sort",data-name="rank",style="width:4em") 總排名
+              div(style="width:5em")
 
           .d-flex.text-center.score-row.d-none(ld-each="project")
             .clickable.px-1(ld="detail",style="width:5em"): .vertical-center: .w-100.btn.btn-outline-secondary.btn-sm
               span.text-success(ld="criteria",data-name="0")
               span.mx-1 /
               span.text-danger(ld="criteria",data-name="2")
+            .clickable(ld="judge-comment",style="width:4em"): .vertical-center: .w-100: i.i-pen
             .text-left.p-2(style="flex:1 0 0")
               span.clickable.text-underline(ld="name")
-            //-div(ld-each="grade",style="width:5em"): input
-            //-div(style="width:4em"): input(ld="total",tabindex="-1",readonly)
-            //-.bg-light(style="width:4em"): input(ld="rank",readonly,tabindex="-1")
-            .clickable(ld="comment",style="width:5em"): .vertical-center: .w-100: i.i-pen
-
-
-        //-.px-4.py-2.w-100
-          .d-flex.align-items-center
-            //-.mr-4
-              .text-muted.text-sm 距資格審查截止還有
-              .text-danger 2 天 15 小時 20 分
-            .mr-4.text-sm
-              .text-muted 評分進度
-              .d-flex.align-items-center.my-1(style="line-height:1rem")
-                .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
-                span.mr-2 已評分
-                .bg-light.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
-                span 未評分
-            .mr-4.flex-grow-1
-              .text-muted.text-sm 完成度 / #[span.text-danger(ld="progress progress-percent") 0]%
-              .progress.my-1(style="width:100%")
-                .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(
-                ld="progress progress-bar")
-            //-div: .btn.btn-outline-dark 提交審查結果
-
-
-
-      //-div(style="flex:1 1 45%")
-        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em")
-          .card-body.p-0.position-relative
-            iframe.border-0.w-100.h-100(ld="iframe")
-            .w-100.h-100.vertical-center.position-absolute.z-float.bg-light(
-            ld="iframe-placeholder",style="top:0;left:0")
-              .w-100.text-center.text-muted
-                .text-lg 提案瀏覽區
-                div 您可以點擊左方的提案名稱以在此瀏覽該提案內容
-            //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
-              embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
-
-
+            .d-flex(ld-each="judge",style="width:8em")
+              .px-2(style="width:4em;border-right:1px solid #ccc")
+                .d-flex.align-items-center.h-100.justify-content-end(ld="score")
+              .px-2(style="width:4em;border-right:1px solid #999")
+                .d-flex.align-items-center.h-100.justify-content-end(ld="rank")
+            .bg-light.px-2(style="width:4em")
+              .d-flex.align-items-center.h-100.justify-content-end(ld="total")
+            .bg-light.px-2(style="width:4em")
+              .d-flex.align-items-center.h-100.justify-content-end(ld="rank")
+            div(style="width:5em")
 
 
   div
@@ -120,6 +96,17 @@ block body
         .d-flex.justify-content-between
           .btn.btn-primary(data-ldcv-set="") 關閉
 
+
+    .ldcv.scroll(ld="judge-comment-ldcv"): .base.w-640: .inner.card.shadow-sm
+      .card-header.shadow-sm.position-relative.z-float
+        p.mb-0 評選附註
+        h4.mb-0(ld="detail-name")
+      .card-body
+        .pb-4.mb-4.border-light(ld-each="judge-comment")
+          div(ld="name")
+          .bg-light.p-4(ld="comment")
+      .card-footer
+        .btn.btn-primary(data-ldcv-set="") 關閉
 
 block script
   +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
