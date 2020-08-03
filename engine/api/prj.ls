@@ -27,6 +27,22 @@ api.get "/prj/:slug/", aux.signed, (req, res) ->
     .then (prj = {}) -> res.send prj
     .catch aux.error-handler res
 
+app.get \/prj/:slug/edit, (req, res) ->
+  lc = {}
+  cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
+    .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[prj-edit-own]>}
+    .then -> get-prj req.params.slug
+    .then (prj) ->
+      lc.prj = prj
+      io.query """select name,slug,org,detail from brd where slug = $1 and deleted is not true""", [lc.prj.brd]
+    .then (r={}) ->
+      if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
+      if !(brd.detail.custom and brd.detail.custom.view) => view = \view/default/prj-edit.pug
+      else view = "view/#{brd.detail.custom.view}/prj-edit.pug"
+      delete brd.detail
+      res.render view, lc{prj, brd} <<< {exports: lc{prj, brd}} <<< req.scope{domain}
+    .catch aux.error-handler res
+
 app.get \/prj/:slug, (req, res) ->
   lc = {}
   cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-view"}
