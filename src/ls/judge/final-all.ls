@@ -102,7 +102,7 @@ Ctrl = (opt) ->
                 node.classList.toggle \text-primary, context.has-comment
               name: ({node, context}) ->
                 node.innerText = context.name
-                node.setAttribute \href, "/dash/prj/#{context.slug}?simple"
+                node.setAttribute \href, "/dash/prj/#{context.slug}"
               key: ({node, context}) -> node.innerText = context.key or ''
               total: ({node, context}) ->
                 if !(context.total?) => return node.innerText = '-'
@@ -123,6 +123,11 @@ Ctrl = (opt) ->
                   rank = ld$.find(node, '[ld=rank]', 0)
                   score.innerText = data.score[context.key] or 0
                   rank.innerText = data.rank[context.key] or 0
+                  v = +data.rank[context.key] / @prjs.length
+                  r = if v >= 0.5 => 255 else 0
+                  g = if v < 0.5 => 255 else 0
+                  v = Math.abs(v - 0.5)
+                  rank.style.background = "rgba(#r,#g,0,#v)"
 
 
         handler: ({node, local, data}) ~>

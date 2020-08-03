@@ -219,7 +219,7 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                   var node, context;
                   node = arg$.node, context = arg$.context;
                   node.innerText = context.name;
-                  return node.setAttribute('href', "/dash/prj/" + context.slug + "?simple");
+                  return node.setAttribute('href', "/dash/prj/" + context.slug);
                 },
                 key: function(arg$){
                   var node, context;
@@ -263,12 +263,17 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                     local = arg$.local, node = arg$.node, context = arg$.context, data = arg$.data;
                   },
                   handler: function(arg$){
-                    var node, context, data, score, rank;
+                    var node, context, data, score, rank, v, r, g;
                     node = arg$.node, context = arg$.context, data = arg$.data;
                     score = ld$.find(node, '[ld=score]', 0);
                     rank = ld$.find(node, '[ld=rank]', 0);
                     score.innerText = data.score[context.key] || 0;
-                    return rank.innerText = data.rank[context.key] || 0;
+                    rank.innerText = data.rank[context.key] || 0;
+                    v = +data.rank[context.key] / this$.prjs.length;
+                    r = v >= 0.5 ? 255 : 0;
+                    g = v < 0.5 ? 255 : 0;
+                    v = Math.abs(v - 0.5);
+                    return rank.style.background = "rgba(" + r + "," + g + ",0," + v + ")";
                   }
                 }
               }
