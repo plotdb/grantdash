@@ -6,6 +6,13 @@ Ctrl = (opt) ->
   @data = {prj: {}}
   @active = null
   @progress = {total: 1, done: 0}
+  @cfg = {heatmap: true}
+
+  coloring = (v) ->
+    r = if v >= 0.5 => 255 else 0
+    g = if v < 0.5 => 255 else 0
+    v = Math.abs(v - 0.5)
+    return "rgba(#r,#g,0,#v)"
 
   @ldcv = do
     "judge-comment": new ldCover root: ld$.find(@root, '[ld=judge-comment-ldcv]', 0)
@@ -17,11 +24,15 @@ Ctrl = (opt) ->
     action:
       click: do
         sort: ({node}) ~> @sort node.getAttribute \data-name
-        "toggle-total": ~>
-          @total-editable = !@total-editable
-          @view.local.render \toggle-total
+        "toggle-heatmap": ~>
+          @cfg.heatmap = !@cfg.heatmap
+          @view.local.render \toggle-heatmap
+          @view.local.render \project
 
     handler: do
+      "toggle-heatmap": ({node}) ~>
+        ld$.find(node, '.switch', 0).classList.toggle \on, !!@cfg.heatmap
+
       "comment-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
       "detail-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
       "judge-comment": do
@@ -104,12 +115,16 @@ Ctrl = (opt) ->
                 node.innerText = context.name
                 node.setAttribute \href, "/dash/prj/#{context.slug}"
               key: ({node, context}) -> node.innerText = context.key or ''
-              total: ({node, context}) ->
+              total: ({node, context}) ~>
                 if !(context.total?) => return node.innerText = '-'
                 v = Math.round(10 * context.total) / 10
                 node.innerText = v.toFixed(1)
-              rank: ({node, context}) ->
+                node.style.background = if @cfg.heatmap => '#fff' else '#eee'
+              rank: ({node, context}) ~>
                 node.innerText = if context.rank? => context.rank else '-'
+                node.style.background = if @cfg.heatmap =>
+                  coloring(+(context.rank or 0) / (@prjs.length or 1))
+                else '#eee'
 
               criteria: ({node, context}) ->
                 n = node.getAttribute(\data-name)
@@ -123,11 +138,9 @@ Ctrl = (opt) ->
                   rank = ld$.find(node, '[ld=rank]', 0)
                   score.innerText = data.score[context.key] or 0
                   rank.innerText = data.rank[context.key] or 0
-                  v = +data.rank[context.key] / @prjs.length
-                  r = if v >= 0.5 => 255 else 0
-                  g = if v < 0.5 => 255 else 0
-                  v = Math.abs(v - 0.5)
-                  rank.style.background = "rgba(#r,#g,0,#v)"
+                  rank.style.background = if @cfg.heatmap =>
+                    coloring(+(data.rank[context.key] or 0) / (@prjs.length or 1))
+                  else '#fff'
 
 
         handler: ({node, local, data}) ~>
@@ -158,7 +171,6 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     Promise.resolve!
       .then ~> @auth!
       .then ~> @init-view!
-      #.then ~> @user = @global.user
       .then ~> @fetch-info!
       .then ~>
         @judge = @grpinfo.{}judgePerm.[]list
