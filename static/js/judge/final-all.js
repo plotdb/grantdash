@@ -56,19 +56,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
         }
       },
       handler: {
-        "toggle-total": function(arg$){
-          var node;
-          node = arg$.node;
-          ld$.find(node, '.switch', 0).classList.toggle('on', !!this$.totalEditable);
-          return ld$.find(this$.root, 'input[ld=total]').map(function(n){
-            if (this$.totalEditable) {
-              n.removeAttribute('readonly');
-            } else {
-              n.setAttribute('readonly', null);
-            }
-            return n.classList.toggle('bg-light', !this$.totalEditable);
-          });
-        },
         "comment-name": function(arg$){
           var node;
           node = arg$.node;
@@ -78,26 +65,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
           var node;
           node = arg$.node;
           return node.innerText = (this$.active && this$.active.name) || '';
-        },
-        "progress-percent": function(arg$){
-          var node;
-          node = arg$.node;
-          return node.innerText = Math.floor(100 * this$.progress.done / this$.progress.total);
-        },
-        "progress-bar": function(arg$){
-          var node;
-          node = arg$.node;
-          return node.style.width = 100 * this$.progress.done / this$.progress.total + "%";
-        },
-        count: function(arg$){
-          var node, n;
-          node = arg$.node;
-          n = node.getAttribute('data-name');
-          if (n === 'total') {
-            return node.innerText = this$.progress.total || 0;
-          } else if (n === 'pending') {
-            return node.innerText = this$.progress.total - this$.progress.done || 0;
-          }
         },
         detail: {
           list: function(){
@@ -174,37 +141,24 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
             });
           }
         },
-        "total-max": function(arg$){
-          var node;
-          node = arg$.node;
-          return node.innerText = "0 ~ " + this$.grade.reduce(function(a, b){
-            return a + +b.percent;
-          }, 0);
-        },
         judge: {
           list: function(arg$){
             var context;
             context = arg$.context;
             return this$.judge;
-          }
-        },
-        grade: {
-          list: function(arg$){
-            var context;
-            context = arg$.context;
-            return this$.grade;
           },
           handler: function(arg$){
             var node, data;
             node = arg$.node, data = arg$.data;
-            ld$.find(node, 'span', 0).innerText = data.name;
-            return ld$.find(node, 'div', 0).innerText = "0 ~ " + data.percent;
+            return ld$.find(node, 'div', 0).innerText = data.name;
           },
           action: {
             click: function(arg$){
-              var node, data;
-              node = arg$.node, data = arg$.data;
-              return this$.sort('grade', data);
+              var node, data, evt, n;
+              node = arg$.node, data = arg$.data, evt = arg$.evt;
+              n = evt.target.getAttribute('data-name');
+              console.log(n, evt.target);
+              return this$.sort("judge-" + n, data);
             }
           }
         },
@@ -316,6 +270,28 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                     0: "+",
                     2: "-"
                   }[n] || '') + (context.criteria || (context.criteria = {}))[n];
+                },
+                judge: {
+                  key: function(it){
+                    return it.key;
+                  },
+                  list: function(arg$){
+                    var context;
+                    context = arg$.context;
+                    return this$.judge;
+                  },
+                  init: function(arg$){
+                    var local, node, context, data;
+                    local = arg$.local, node = arg$.node, context = arg$.context, data = arg$.data;
+                  },
+                  handler: function(arg$){
+                    var node, context, data, score, rank;
+                    node = arg$.node, context = arg$.context, data = arg$.data;
+                    score = ld$.find(node, '[ld=score]', 0);
+                    rank = ld$.find(node, '[ld=rank]', 0);
+                    score.innerText = data.score[context.key] || 0;
+                    return rank.innerText = data.rank[context.key] || 0;
+                  }
                 }
                 /*grade: do
                   key: -> it.key
@@ -390,6 +366,19 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       }).then(function(){
         return this$.fetchInfo();
       }).then(function(){
+        return this$.judge = [
+          {
+            name: "Test1",
+            key: 1
+          }, {
+            name: "Test2",
+            key: 2
+          }, {
+            name: "Test3",
+            key: 3
+          }
+        ];
+      }).then(function(){
         if (!this$.grpinfo.grade) {
           return ldcvmgr.get('judge-grade-missing');
         } else {
@@ -447,50 +436,53 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       });
     },
     rerank: function(){
-      var ranks, res$, k, ref$, ref1$, v, prj, sum, i$, len$, g, lc;
-      res$ = [];
-      for (k in ref$ = (ref1$ = this.data).prj || (ref1$.prj = {})) {
-        v = ref$[k];
-        if (!(prj = this.prjkeymap[k])) {
-          continue;
-        }
-        sum = 0;
-        for (i$ = 0, len$ = (ref1$ = this.grade).length; i$ < len$; ++i$) {
-          g = ref1$[i$];
-          sum += +((v.v || (v.v = {}))[g.key] || 0);
-        }
-        prj.total = sum;
-        res$.push([prj, sum]);
+      var scores, lc, this$ = this;
+      if (!this.prjs) {
+        return;
       }
-      ranks = res$;
-      lc = {
-        idx: 1,
-        value: null
-      };
-      ranks.sort(function(a, b){
+      this.judge.map(function(j, i){
+        var u, scores, lc;
+        u = this$.data.user[j.key] || {};
+        j.score = {};
+        j.rank = {};
+        scores = this$.prjs.map(function(p, i){
+          var sum;
+          sum = this$.grade.reduce(function(a, g){
+            var ref$, ref1$, key$;
+            return +(((ref$ = (ref1$ = u.prj || (u.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key] || 0) + a;
+          }, 0);
+          j.score[p.key] = sum;
+          return [p.key, sum];
+        });
+        lc = {};
+        scores.sort(function(a, b){
+          return b[1] - a[1];
+        });
+        return scores.map(function(d, i){
+          if (lc.value !== d[1]) {
+            lc.value = d[1];
+            lc.rank = i + 1;
+          }
+          return j.rank[d[0]] = lc.rank;
+        });
+      });
+      scores = this.prjs.map(function(p, i){
+        p.total = this$.judge.reduce(function(a, b){
+          return +(b.score[p.key] || 0) + a;
+        }, 0);
+        return [p, p.total];
+      });
+      scores.sort(function(a, b){
         return b[1] - a[1];
       });
-      ranks.map(function(d, i){
-        var ref$;
+      lc = {};
+      return scores.map(function(d, i){
         if (lc.value !== d[1]) {
-          ref$ = [d[1], i + 1], lc.value = ref$[0], lc.idx = ref$[1];
+          lc.value = d[1];
+          lc.rank = i + 1;
         }
-        return d[0].rank = lc.idx;
+        return d[0].rank = lc.rank;
       });
-      return this.getProgress();
-    },
-    getProgress: function(){
-      var this$ = this;
-      return this.progress = {
-        total: this.prjs.length || 1,
-        done: this.prjs.filter(function(p){
-          return !this$.grade.filter(function(g){
-            var v, ref$, ref1$, key$;
-            v = ((ref$ = (ref1$ = this$.data.prj)[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key];
-            return !(v != null) || v === '';
-          }).length;
-        }).length
-      };
     }
   });
   ctrl = new Ctrl({

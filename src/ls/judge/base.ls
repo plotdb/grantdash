@@ -114,7 +114,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     namemap = do
       name: "名稱", state: "狀態", comment: "評論長度", comments: "評論長度"
       shortlist: "入選標記", budget: "預算", total: "總分", rank: "排名"
-      "criteria-result": "審查結果"
+      "criteria-result": "審查結果", "judge-rank": "評審排名", "judge-score": "評審分數"
     verbose = do
       name: namemap[name] or value
       dir: if dir > 0 => "順向" else "逆向"
@@ -177,6 +177,11 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         @prjs.sort (a, b) ~> dir * (a.total - b.total)
       else if name == \rank =>
         @prjs.sort (a, b) ~> dir * (a.rank - b.rank)
+      else if name == \judge-score =>
+        @prjs.sort (a, b) ~> dir * ((value.{}score[b.key] or 0) - (value.{}score[a.key] or 0))
+      else if name == \judge-rank =>
+        @prjs.sort (a, b) ~> dir * ((value.{}rank[b.key] or 0) - (value.{}rank[a.key] or 0))
+
       if hint => loader.off!
       @render!
 

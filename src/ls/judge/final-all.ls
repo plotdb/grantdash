@@ -28,21 +28,8 @@ Ctrl = (opt) ->
           @view.local.render \toggle-total
 
     handler: do
-      "toggle-total": ({node}) ~>
-        ld$.find(node, '.switch', 0).classList.toggle \on, !!@total-editable
-        ld$.find(@root, 'input[ld=total]').map (n) ~>
-          if @total-editable => n.removeAttribute \readonly
-          else n.setAttribute \readonly, null
-          n.classList.toggle \bg-light, !@total-editable
-
       "comment-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
       "detail-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
-      "progress-percent": ({node}) ~> node.innerText = Math.floor(100 * @progress.done / @progress.total)
-      "progress-bar": ({node}) ~> node.style.width = "#{(100 * @progress.done / @progress.total)}%"
-      count: ({node}) ~>
-        n = node.getAttribute(\data-name)
-        if n == \total => node.innerText = @progress.total or 0
-        else if n == \pending => node.innerText = (@progress.total - @progress.done) or 0
 
       detail: do
         list: ~>
@@ -77,15 +64,13 @@ Ctrl = (opt) ->
                   icon.classList.remove \i-close, \i-circle, \i-check
                   icon.classList.add <[i-check i-circle i-close]>[data.value]
 
-      "total-max": ({node}) ~> node.innerText = "0 ~ #{@grade.reduce(((a,b) -> a + +b.percent),0)}"
       judge: do
         list: ({context}) ~> @judge
-      grade: do
-        list: ({context}) ~> @grade
-        handler: ({node, data}) ->
-          ld$.find(node, 'span', 0).innerText = data.name
-          ld$.find(node, 'div', 0).innerText = "0 ~ #{data.percent}"
-        action: click: ({node, data}) ~> @sort \grade, data
+        handler: ({node, data}) -> ld$.find(node, 'div', 0).innerText = data.name
+        action: click: ({node, data, evt}) ~>
+          n = evt.target.getAttribute(\data-name)
+          console.log n, evt.target
+          @sort "judge-#{n}", data
       project: do
         key: -> it.slug
         list: ~> @prjs
@@ -137,6 +122,17 @@ Ctrl = (opt) ->
               criteria: ({node, context}) ->
                 n = node.getAttribute(\data-name)
                 node.innerText = ({0:"+",2:"-"}[n] or '') + context.{}criteria[n]
+              judge: do
+                key: -> it.key
+                list: ({context}) ~> @judge
+                init: ({local, node, context, data}) ~>
+                handler: ({node, context, data}) ~>
+                  score = ld$.find(node, '[ld=score]', 0)
+                  rank = ld$.find(node, '[ld=rank]', 0)
+                  score.innerText = data.score[context.key] or 0
+                  rank.innerText = data.rank[context.key] or 0
+
+
               /*grade: do
                 key: -> it.key
                 list: ({context}) ~> @grade
@@ -195,6 +191,12 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       #.then ~> @user = @global.user
       .then ~> @fetch-info!
       .then ~>
+        @judge = [
+          {name: "Test1", key: 1}
+          {name: "Test2", key: 2}
+          {name: "Test3", key: 3}
+        ]
+      .then ~>
         if !@grpinfo.grade => ldcvmgr.get('judge-grade-missing')
         else @grade = @grpinfo.grade.entries
       .then ~> @fetch-prjs!
@@ -218,27 +220,30 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
               p.criteria[idx]++
 
   rerank: ->
-    ranks = for k,v of @data.{}prj =>
-      if !(prj = @prjkeymap[k]) => continue
-      sum = 0
-      for g in @grade => sum += +(v.{}v[g.key] or 0)
-      prj.total = sum
-      [prj,sum]
-    lc = {idx: 1, value: null}
-    ranks.sort (a,b) -> b.1 - a.1
-    ranks.map (d,i) ->
-      if lc.value != d.1 => [lc.value, lc.idx] = [d.1, i + 1]
-      d.0.rank = lc.idx
-    @get-progress!
-
-  get-progress: ->
-    @progress = do
-      total: (@prjs.length or 1)
-      done: @prjs.filter((p) ~>
-        !(@grade.filter((g) ~>
-          v = @data.prj{}[p.key].{}v[g.key]
-          !(v?) or v == ''
-        ).length)).length
+    if !@prjs => return
+    @judge.map (j,i) ~>
+      u = @data.user[j.key] or {}
+      j.score = {}
+      j.rank = {}
+      scores = @prjs.map (p,i) ~>
+        sum = @grade.reduce(((a,g) ->
+          +(u.{}prj{}[p.key].{}v[g.key] or 0) + a
+        ), 0)
+        j.score[p.key] = sum
+        return [p.key, sum]
+      lc = {}
+      scores.sort (a,b) -> b.1 - a.1
+      scores.map (d,i) ->
+        if lc.value != d.1 => lc <<< {value: d.1, rank: i + 1}
+        j.rank[d.0] = lc.rank
+    scores = @prjs.map (p,i) ~>
+      p.total = @judge.reduce(((a,b) -> +(b.score[p.key] or 0) + a), 0)
+      return [p,p.total]
+    scores.sort (a,b) -> b.1 - a.1
+    lc = {}
+    scores.map (d,i) ->
+      if lc.value != d.1 => lc <<< {value: d.1, rank: i + 1}
+      d.0.rank = lc.rank
 
 
 ctrl = new Ctrl root: document.body
