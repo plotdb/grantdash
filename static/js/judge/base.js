@@ -100,7 +100,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         method: 'POST'
       }, {
         json: {
-          fields: ['criteria', 'grade', 'form']
+          fields: ['criteria', 'grade', 'form', 'judgePerm']
         },
         type: 'json'
       }).then(function(ret){

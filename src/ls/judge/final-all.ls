@@ -8,19 +8,13 @@ Ctrl = (opt) ->
   @progress = {total: 1, done: 0}
 
   @ldcv = do
-    comment: new ldCover root: ld$.find(@root, '[ld=comment-ldcv]', 0), escape: false
+    "judge-comment": new ldCover root: ld$.find(@root, '[ld=judge-comment-ldcv]', 0)
     detail: new ldCover root: ld$.find(@root, '[ld=detail-ldcv]', 0)
 
   @view.local = view = new ldView do
     init-render: false
     root: @root
     action:
-      input: do
-        comment: ({node}) ~>
-          if !@active => return
-          @data.prj{}[@active.key].comment = node.value
-          @update debounced: 300
-          @view.local.render {name: 'project', key: @active.slug}
       click: do
         sort: ({node}) ~> @sort node.getAttribute \data-name
         "toggle-total": ~>
@@ -30,6 +24,18 @@ Ctrl = (opt) ->
     handler: do
       "comment-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
       "detail-name": ({node}) ~> node.innerText = (@active and @active.name) or ''
+      "judge-comment": do
+        list: ~>
+          if !@active => return []
+          ret = @judge
+            .map (j) ~> {judge: j, comment: @data.user{}[j.key].{}prj[@active.key].comment}
+            .filter -> it.comment
+          ret.sort (a,b) -> (if b.comment? => b.comment.length else 0) - (if a.comment? => a.comment.length else 0)
+        handler: ({node,data}) ->
+          name = ld$.find(node, '[ld=name]', 0)
+          comment = ld$.find(node, '[ld=comment]', 0)
+          name.innerText = data.judge.name
+          comment.innerText = data.comment
 
       detail: do
         list: ~>
@@ -69,7 +75,6 @@ Ctrl = (opt) ->
         handler: ({node, data}) -> ld$.find(node, 'div', 0).innerText = data.name
         action: click: ({node, data, evt}) ~>
           n = evt.target.getAttribute(\data-name)
-          console.log n, evt.target
           @sort "judge-#{n}", data
       project: do
         key: -> it.slug
@@ -87,11 +92,11 @@ Ctrl = (opt) ->
                 @view.local.render \detail
                 @ldcv.detail.toggle!
                 @view.local.render \detail-name
-              comment: ({node, context}) ~>
+              "judge-comment": ({node, context}) ~>
                 @active = context
-                view.get(\comment).value = (@data.prj{}[@active.key].comment or '')
-                @ldcv.comment.toggle!
-                @view.local.render \comment-name
+                @view.local.render \detail-name
+                @view.local.render \judge-comment
+                @ldcv["judge-comment"].toggle!
               name: ({node, context}) ->
                 view.get("iframe").setAttribute \src, "/dash/prj/#{context.slug}?simple"
                 view.get("iframe-placeholder").classList.add \d-none
@@ -113,7 +118,8 @@ Ctrl = (opt) ->
                 node.addEventListener \change, handle
                 node.addEventListener \keyup, handle
             handler: do
-              comment: ({node, context}) ~> node.classList.toggle \text-primary, !!@data.prj{}[context.key].comment
+              "judge-comment": ({node, context}) ~>
+                node.classList.toggle \text-primary, context.has-comment
               name: ({node, context}) -> node.innerText = context.name
               key: ({node, context}) -> node.innerText = context.key or ''
               total: ({node, context}) -> node.value = if context.total? => context.total else '-'
@@ -191,11 +197,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       #.then ~> @user = @global.user
       .then ~> @fetch-info!
       .then ~>
-        @judge = [
-          {name: "Test1", key: 1}
-          {name: "Test2", key: 2}
-          {name: "Test3", key: 3}
-        ]
+        @judge = @grpinfo.{}judgePerm.[]list
       .then ~>
         if !@grpinfo.grade => ldcvmgr.get('judge-grade-missing')
         else @grade = @grpinfo.grade.entries
@@ -221,11 +223,14 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
 
   rerank: ->
     if !@prjs => return
+    @prjs.map (p) ~>
+      p.has-comment = !!@judge.filter((j) ~> @data.user{}[j.key].{}prj{}[p.key].comment).length
     @judge.map (j,i) ~>
       u = @data.user[j.key] or {}
       j.score = {}
       j.rank = {}
       scores = @prjs.map (p,i) ~>
+        u.{}prj{}[p.key].comment
         sum = @grade.reduce(((a,g) ->
           +(u.{}prj{}[p.key].{}v[g.key] or 0) + a
         ), 0)

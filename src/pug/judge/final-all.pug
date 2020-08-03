@@ -37,6 +37,7 @@ block body
 
             .d-flex.py-2.bg-light.border-bottom.shadow-sm.text-center
               div(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
+              div(ld="sort",data-name="comment",style="width:4em") 評註
               .flex-grow-1(ld="sort",data-name="name") 提案名稱
               .clickable(ld-each="judge",style="width:10em")
                 div(ld="name")
@@ -52,6 +53,7 @@ block body
               span.text-success(ld="criteria",data-name="0")
               span.mx-1 /
               span.text-danger(ld="criteria",data-name="2")
+            .clickable(ld="judge-comment",style="width:4em"): .vertical-center: .w-100: i.i-pen
             .text-left.p-2(style="flex:1 0 0")
               span.clickable.text-underline(ld="name")
             .d-flex(ld-each="judge",style="width:10em")
@@ -92,6 +94,17 @@ block body
         .d-flex.justify-content-between
           .btn.btn-primary(data-ldcv-set="") 關閉
 
+
+    .ldcv.scroll(ld="judge-comment-ldcv"): .base.w-640: .inner.card.shadow-sm
+      .card-header.shadow-sm.position-relative.z-float
+        p.mb-0 評選附註
+        h4.mb-0(ld="detail-name")
+      .card-body
+        .pb-4.mb-4.border-light(ld-each="judge-comment")
+          div(ld="name")
+          .bg-light.p-4(ld="comment")
+      .card-footer
+        .btn.btn-primary(data-ldcv-set="") 關閉
 
 block script
   +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")

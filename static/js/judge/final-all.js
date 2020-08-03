@@ -14,9 +14,8 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       done: 0
     };
     this.ldcv = {
-      comment: new ldCover({
-        root: ld$.find(this.root, '[ld=comment-ldcv]', 0),
-        escape: false
+      "judge-comment": new ldCover({
+        root: ld$.find(this.root, '[ld=judge-comment-ldcv]', 0)
       }),
       detail: new ldCover({
         root: ld$.find(this.root, '[ld=detail-ldcv]', 0)
@@ -26,23 +25,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       initRender: false,
       root: this.root,
       action: {
-        input: {
-          comment: function(arg$){
-            var node, ref$, key$;
-            node = arg$.node;
-            if (!this$.active) {
-              return;
-            }
-            ((ref$ = this$.data.prj)[key$ = this$.active.key] || (ref$[key$] = {})).comment = node.value;
-            this$.update({
-              debounced: 300
-            });
-            return this$.view.local.render({
-              name: 'project',
-              key: this$.active.slug
-            });
-          }
-        },
         click: {
           sort: function(arg$){
             var node;
@@ -65,6 +47,34 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
           var node;
           node = arg$.node;
           return node.innerText = (this$.active && this$.active.name) || '';
+        },
+        "judge-comment": {
+          list: function(){
+            var ret;
+            if (!this$.active) {
+              return [];
+            }
+            ret = this$.judge.map(function(j){
+              var ref$, ref1$, key$;
+              return {
+                judge: j,
+                comment: ((ref$ = (ref1$ = this$.data.user)[key$ = j.key] || (ref1$[key$] = {})).prj || (ref$.prj = {}))[this$.active.key].comment
+              };
+            }).filter(function(it){
+              return it.comment;
+            });
+            return ret.sort(function(a, b){
+              return (b.comment != null ? b.comment.length : 0) - (a.comment != null ? a.comment.length : 0);
+            });
+          },
+          handler: function(arg$){
+            var node, data, name, comment;
+            node = arg$.node, data = arg$.data;
+            name = ld$.find(node, '[ld=name]', 0);
+            comment = ld$.find(node, '[ld=comment]', 0);
+            name.innerText = data.judge.name;
+            return comment.innerText = data.comment;
+          }
         },
         detail: {
           list: function(){
@@ -157,7 +167,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
               var node, data, evt, n;
               node = arg$.node, data = arg$.data, evt = arg$.evt;
               n = evt.target.getAttribute('data-name');
-              console.log(n, evt.target);
               return this$.sort("judge-" + n, data);
             }
           }
@@ -188,13 +197,13 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                     this$.ldcv.detail.toggle();
                     return this$.view.local.render('detail-name');
                   },
-                  comment: function(arg$){
-                    var node, context, ref$, key$;
+                  "judge-comment": function(arg$){
+                    var node, context;
                     node = arg$.node, context = arg$.context;
                     this$.active = context;
-                    view.get('comment').value = ((ref$ = this$.data.prj)[key$ = this$.active.key] || (ref$[key$] = {})).comment || '';
-                    this$.ldcv.comment.toggle();
-                    return this$.view.local.render('comment-name');
+                    this$.view.local.render('detail-name');
+                    this$.view.local.render('judge-comment');
+                    return this$.ldcv["judge-comment"].toggle();
                   },
                   name: function(arg$){
                     var node, context;
@@ -237,10 +246,10 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                 }
               },
               handler: {
-                comment: function(arg$){
-                  var node, context, ref$, key$;
+                "judge-comment": function(arg$){
+                  var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.classList.toggle('text-primary', !!((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment);
+                  return node.classList.toggle('text-primary', context.hasComment);
                 },
                 name: function(arg$){
                   var node, context;
@@ -366,18 +375,8 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       }).then(function(){
         return this$.fetchInfo();
       }).then(function(){
-        return this$.judge = [
-          {
-            name: "Test1",
-            key: 1
-          }, {
-            name: "Test2",
-            key: 2
-          }, {
-            name: "Test3",
-            key: 3
-          }
-        ];
+        var ref$, ref1$;
+        return this$.judge = (ref$ = (ref1$ = this$.grpinfo).judgePerm || (ref1$.judgePerm = {})).list || (ref$.list = []);
       }).then(function(){
         if (!this$.grpinfo.grade) {
           return ldcvmgr.get('judge-grade-missing');
@@ -440,13 +439,20 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       if (!this.prjs) {
         return;
       }
+      this.prjs.map(function(p){
+        return p.hasComment = !!this$.judge.filter(function(j){
+          var ref$, key$, ref1$, ref2$, key1$;
+          return ((ref$ = (ref1$ = (ref2$ = this$.data.user)[key1$ = j.key] || (ref2$[key1$] = {})).prj || (ref1$.prj = {}))[key$ = p.key] || (ref$[key$] = {})).comment;
+        }).length;
+      });
       this.judge.map(function(j, i){
         var u, scores, lc;
         u = this$.data.user[j.key] || {};
         j.score = {};
         j.rank = {};
         scores = this$.prjs.map(function(p, i){
-          var sum;
+          var ref$, key$, sum;
+          ((ref$ = u.prj || (u.prj = {}))[key$ = p.key] || (ref$[key$] = {})).comment;
           sum = this$.grade.reduce(function(a, g){
             var ref$, ref1$, key$;
             return +(((ref$ = (ref1$ = u.prj || (u.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[g.key] || 0) + a;
