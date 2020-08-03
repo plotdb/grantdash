@@ -121,6 +121,7 @@ Ctrl = (opt) ->
                   @grade.map ~> @data.prj{}[context.key].{}v[it.key] = it.percent * v / sum
                   #@view.local.render {name: \project, key: context.slug}
                   @view.local.render \project
+                  @ops-out ~> @data
 
                 node.addEventListener \input, handle
                 node.addEventListener \change, handle

@@ -268,7 +268,10 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                       var ref$, ref1$, key$;
                       return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = it.percent * v / sum;
                     });
-                    return this$.view.local.render('project');
+                    this$.view.local.render('project');
+                    return this$.opsOut(function(){
+                      return this$.data;
+                    });
                   };
                   node.addEventListener('input', handle);
                   node.addEventListener('change', handle);
