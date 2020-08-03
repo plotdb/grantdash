@@ -138,16 +138,29 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
               else
                 if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
             style = """
-            <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;700&display=swap"
-            rel="stylesheet">
             <link rel="stylesheet" type="text/css"
             href="https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css">
             <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css">
             <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/css/index.css">
             <style type="text/css">
             #{ld$.find(\style, 0).innerText}
-            form\#flagship-form { font-family: 'Noto Sans TC', sans-serif; }
             </style>
+            <style type="text/css">
+              @font-face {
+                font-family: 'notosans';
+                src: url('https://dash.taicca.tw/dash/assets/lib/font/notosans-cjk-tc/NotoSansCJKtc-Light.otf');
+                font-weight: 300;
+              }
+              @font-face {
+                font-family: 'notosans';
+                src: url('https://dash.taicca.tw/dash/assets/lib/font/notosans-cjk-tc/NotoSansCJKtc-Bold.otf');
+                font-weight: 700;
+              }
+              form\@flagship-form {
+                font-family: 'notosans';
+              }
+            </style>
+
             """
             html = """
             <html>
