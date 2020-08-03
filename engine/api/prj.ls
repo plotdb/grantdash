@@ -45,7 +45,12 @@ app.get \/prj/:slug/edit, (req, res) ->
 
 app.get \/prj/:slug, (req, res) ->
   lc = {}
-  cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-view"}
+
+  get-prj req.params.slug
+    .then (prj) ->
+      lc.prj = prj
+      if !(req.user and req.user.key and prj.owner == req.user.key) =>
+        return cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-view"}
     .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge]>}
     .catch ->
       if !(req.user and req.user.key) => return aux.reject 403
@@ -53,10 +58,8 @@ app.get \/prj/:slug, (req, res) ->
         .then (r={}) ->
           if !r.[]rows.length => return aux.reject 403
           lc.judges = r.rows
-    .then -> get-prj req.params.slug
-    .then (prj) ->
-      lc.prj = prj
-      if !(prj.detail) => return aux.reject 404
+    .then ->
+      if !(lc.prj.detail) => return aux.reject 404
       io.query """select name,slug,org,detail from brd where slug = $1 and deleted is not true""", [lc.prj.brd]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400

@@ -102,11 +102,16 @@
     app.get('/prj/:slug', function(req, res){
       var lc;
       lc = {};
-      return cache.stage.check({
-        io: io,
-        type: 'brd',
-        slug: req.scope.brd,
-        name: "prj-view"
+      return getPrj(req.params.slug).then(function(prj){
+        lc.prj = prj;
+        if (!(req.user && req.user.key && prj.owner === req.user.key)) {
+          return cache.stage.check({
+            io: io,
+            type: 'brd',
+            slug: req.scope.brd,
+            name: "prj-view"
+          });
+        }
       })['catch'](function(){
         return cache.perm.check({
           io: io,
@@ -127,10 +132,7 @@
           return lc.judges = r.rows;
         });
       }).then(function(){
-        return getPrj(req.params.slug);
-      }).then(function(prj){
-        lc.prj = prj;
-        if (!prj.detail) {
+        if (!lc.prj.detail) {
           return aux.reject(404);
         }
         return io.query("select name,slug,org,detail from brd where slug = $1 and deleted is not true", [lc.prj.brd]);
