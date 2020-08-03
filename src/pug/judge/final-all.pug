@@ -36,9 +36,9 @@ block body
           .sticky(style="top:0")
 
             .d-flex.py-2.bg-light.border-bottom.shadow-sm.text-center
-              div(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
+              .clickable(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
               div(style="width:4em") 評註
-              .flex-grow-1(ld="sort",data-name="name") 提案名稱
+              .clickable.flex-grow-1(ld="sort",data-name="name") 提案名稱
               div(ld-each="judge",style="width:8em")
                 div(ld="name")
                 .d-flex.text-sm.justify-content-center.clickable
