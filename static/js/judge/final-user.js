@@ -250,10 +250,17 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
               },
               init: {
                 total: function(arg$){
-                  var node, context, handle;
+                  var node, context, _update, handle;
                   node = arg$.node, context = arg$.context;
+                  _update = debounce(300, function(){
+                    this$.rerank();
+                    this$.view.local.render('project');
+                    return this$.opsOut(function(){
+                      return this$.data;
+                    });
+                  });
                   handle = function(){
-                    var v, sum;
+                    var v, sum, _sum, ref$, ref1$, key$;
                     if (context.total === (v = +node.value)) {
                       return;
                     }
@@ -266,12 +273,15 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
                     }, 0);
                     this$.grade.map(function(it){
                       var ref$, ref1$, key$;
-                      return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = it.percent * v / sum;
+                      return ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[it.key] = Math.round(100 * it.percent * v / sum) / 100;
                     });
+                    _sum = this$.grade.reduce(function(a, b){
+                      var ref$, ref1$, key$;
+                      return +(((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[b.key] || 0) + a;
+                    }, 0);
+                    ((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[(ref$ = this$.grade)[ref$.length - 1].key] = Math.round(100 * (+(((ref$ = (ref1$ = this$.data.prj)[key$ = context.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[(ref$ = this$.grade)[ref$.length - 1].key] || 0) + (v - _sum))) / 100;
                     this$.view.local.render('project');
-                    return this$.opsOut(function(){
-                      return this$.data;
-                    });
+                    return _update();
                   };
                   node.addEventListener('input', handle);
                   node.addEventListener('change', handle);
