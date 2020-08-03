@@ -260,8 +260,8 @@ ldc.register('flagship-form', ['auth', 'error', 'viewLocals', 'ldcvmgr'], functi
                   }
                 }
               });
-              style = "<link rel=\"stylesheet\" type=\"text/css\"\nhref=\"https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/css/index.css\">\n<style type=\"text/css\"> " + ld$.find('style', 0).innerText + " </style>";
-              html = "<html>\n<head><meta charset=\"utf-8\">" + style + "</head>\n<body><div class=\"typeset heading-contrast\"><form id=\"flagship-form\">\n" + ld$.find('#flagship-form', 0).innerHTML + "\n</form></div></body>\n</html>";
+              style = "<link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;700&display=swap\"\nrel=\"stylesheet\">\n<link rel=\"stylesheet\" type=\"text/css\"\nhref=\"https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/css/index.css\">\n<style type=\"text/css\">\n" + ld$.find('style', 0).innerText + "\nform#flagship-form { font-family: 'Noto Sans TC', sans-serif; }\n</style>";
+              html = "<html>\n<head>\n<meta charset=\"utf-8\">\n" + style + "\n</head>\n<body><div class=\"typeset heading-contrast\"><form id=\"flagship-form\">\n" + ld$.find('#flagship-form', 0).innerHTML + "\n</form></div></body>\n</html>";
               return auth.recaptcha.get().then(function(recaptcha){
                 return ld$.fetch('/dash/api/flagship/download', {
                   method: 'POST'

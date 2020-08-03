@@ -1,6 +1,6 @@
 ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, viewLocals, ldcvmgr}) ->
   lc = {}
-  vlc = viewLocals or {} 
+  vlc = viewLocals or {}
   console.log vlc
 
   init = ({global}) ->
@@ -13,7 +13,7 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
         "past-sub": []
         "perform": []
 
-    localkey = -> 
+    localkey = ->
       slug = vlc.{}prj.slug
       id = "/#{global.user.key}/#{slug or '(n-a)'}"
       "taicca-flagship-form-snapshot-#id"
@@ -138,15 +138,23 @@ ldc.register \flagship-form, <[auth error viewLocals ldcvmgr]>, ({auth, error, v
               else
                 if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
             style = """
+            <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;700&display=swap"
+            rel="stylesheet">
             <link rel="stylesheet" type="text/css"
             href="https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css">
             <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css">
             <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/css/index.css">
-            <style type="text/css"> #{ld$.find(\style, 0).innerText} </style>
+            <style type="text/css">
+            #{ld$.find(\style, 0).innerText}
+            form\#flagship-form { font-family: 'Noto Sans TC', sans-serif; }
+            </style>
             """
             html = """
             <html>
-            <head><meta charset="utf-8">#style</head>
+            <head>
+            <meta charset="utf-8">
+            #style
+            </head>
             <body><div class="typeset heading-contrast"><form id="flagship-form">
             #{ld$.find(\#flagship-form, 0).innerHTML}
             </form></div></body>
