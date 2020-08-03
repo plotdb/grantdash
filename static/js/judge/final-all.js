@@ -235,14 +235,18 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                   return node.innerText = context.key || '';
                 },
                 total: function(arg$){
-                  var node, context;
+                  var node, context, v;
                   node = arg$.node, context = arg$.context;
-                  return node.value = context.total != null ? Math.round(100 * context.total) / 100 : '-';
+                  if (!(context.total != null)) {
+                    return node.innerText = '-';
+                  }
+                  v = Math.round(10 * context.total) / 10;
+                  return node.innerText = v.toFixed(1);
                 },
                 rank: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.value = context.rank != null ? context.rank : '-';
+                  return node.innerText = context.rank != null ? context.rank : '-';
                 },
                 criteria: function(arg$){
                   var node, context, n;

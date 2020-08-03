@@ -39,11 +39,11 @@ block body
               div(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
               div(ld="sort",data-name="comment",style="width:4em") 評註
               .flex-grow-1(ld="sort",data-name="name") 提案名稱
-              .clickable(ld-each="judge",style="width:10em")
+              .clickable(ld-each="judge",style="width:8em")
                 div(ld="name")
                 .d-flex.text-sm.justify-content-center
-                  div(data-name="score",style="width:5em") 分數
-                  div(data-name="rank",style="width:5em") 排名
+                  div(data-name="score",style="width:4em") 分數
+                  div(data-name="rank",style="width:4em") 排名
               .clickable(ld="sort",data-name="total",style="width:4em") 平均分
               .clickable(ld="sort",data-name="rank",style="width:4em") 總排名
               div(style="width:5em")
@@ -56,13 +56,15 @@ block body
             .clickable(ld="judge-comment",style="width:4em"): .vertical-center: .w-100: i.i-pen
             .text-left.p-2(style="flex:1 0 0")
               span.clickable.text-underline(ld="name")
-            .d-flex(ld-each="judge",style="width:10em")
-              div(style="width:5em;border-right:1px solid #ccc")
-                .d-flex.align-items-center.h-100.justify-content-center(ld="score")
-              div(style="width:5em;border-right:1px solid #ccc")
-                .d-flex.align-items-center.h-100.justify-content-center(ld="rank")
-            .bg-light(style="width:4em"): input(ld="total",readonly,tabindex="-1")
-            .bg-light(style="width:4em"): input(ld="rank",readonly,tabindex="-1")
+            .d-flex(ld-each="judge",style="width:8em")
+              .px-2(style="width:4em;border-right:1px solid #ccc")
+                .d-flex.align-items-center.h-100.justify-content-end(ld="score")
+              .px-2(style="width:4em;border-right:1px solid #999")
+                .d-flex.align-items-center.h-100.justify-content-end(ld="rank")
+            .bg-light.px-2(style="width:4em")
+              .d-flex.align-items-center.h-100.justify-content-end(ld="total")
+            .bg-light.px-2(style="width:4em")
+              .d-flex.align-items-center.h-100.justify-content-end(ld="rank")
             div(style="width:5em")
 
 

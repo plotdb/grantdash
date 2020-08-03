@@ -109,8 +109,11 @@ Ctrl = (opt) ->
               name: ({node, context}) -> node.innerText = context.name
               key: ({node, context}) -> node.innerText = context.key or ''
               total: ({node, context}) ->
-                node.value = if context.total? => Math.round(100 * context.total) / 100 else '-'
-              rank: ({node, context}) -> node.value = if context.rank? => context.rank else '-'
+                if !(context.total?) => return node.innerText = '-'
+                v = Math.round(10 * context.total) / 10
+                node.innerText = v.toFixed(1)
+              rank: ({node, context}) ->
+                node.innerText = if context.rank? => context.rank else '-'
 
               criteria: ({node, context}) ->
                 n = node.getAttribute(\data-name)
