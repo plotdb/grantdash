@@ -280,7 +280,10 @@
         var that, this$ = this;
         return ((that = Printer.browser)
           ? Promise.resolve(that)
-          : puppeteer.launch()).then(function(browser){
+          : puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox']
+          })).then(function(browser){
           var i;
           Printer.browser = browser;
           return Promise.all((function(){
