@@ -16,6 +16,9 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
       return n.classList.toggle('disabled', lock);
     });
     return ld$.find(form, "textarea,input,select").map(function(n, i){
+      if (n.getAttribute('tabindex') === "-1") {
+        return;
+      }
       if (lock) {
         n.setAttribute('disabled', '');
         return n.setAttribute('readonly', '');

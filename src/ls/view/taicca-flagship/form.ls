@@ -9,6 +9,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
     form = ld$.find('#flagship-form', 0)
     ld$.find form, ".btn" .map (n, i) -> n.classList.toggle \disabled, lock
     ld$.find form, "textarea,input,select" .map (n,i) ->
+      if n.getAttribute(\tabindex) == "-1" => return
       if lock =>
         n.setAttribute \disabled, ''
         n.setAttribute \readonly, ''

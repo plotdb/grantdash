@@ -369,7 +369,10 @@ block body
                 div 是，本計畫已獲 #[+input-inline({len:10,name:"other-sub-name"})] 補助新臺幣 #[+input-inline({len:10,name:"other-sub-amount"})] 元整。
 
       .no-break
-        h4 預算明細表
+        .d-flex.align-items-end.mb-2
+          h4.mb-0 預算明細表
+          span.mx-1 /
+          .text-sm.text-primary.clickable(onclick="lda.ldcvmgr.toggle('flagship-budget-example')") 表格範例
         table.table.table-bordered.table-tiny
           thead
             tr
@@ -389,29 +392,29 @@ block body
             tr(ld-each="column",data-name="budget")
               td.clickable.text-center.pt-3: i.i-close.no-print
               td: .form-group.m-0
-                input.form-control(name="cat")
+                input.form-control(name="cat",placeholder="如:食宿費")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="detail")
+                input.form-control(name="detail",placeholder="如:便當")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="price")
+                input.form-control(name="price", placeholder="如:100")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="count")
+                input.form-control(name="count",placeholder="如:50")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="unit")
+                input.form-control(name="unit",placeholder="如:個")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="total",readonly,tabindex="-1")
+                input.form-control(name="total",readonly,disabled,tabindex="-1")
               td: .form-group.m-0
-                input.form-control(name="self")
+                input.form-control(name="self",placeholder="如:3000")
                 .invalid-feedback 數字不合
               td: .form-group.m-0
-                input.form-control(name="subsidy",readonly,tabindex="-1")
+                input.form-control(name="subsidy",readonly,disabled,tabindex="-1")
               td: .form-group.m-0
-                input.form-control(name="comment")
+                input.form-control(name="comment",placeholder="如:10人*5餐")
             tr
               td.text-center.align-middle(colspan="7") 小計
               td.text-right.px-2 #[span(ld="fill",data-name="budget-self")]元
@@ -568,6 +571,44 @@ block body
     .py-4
       p 您隨時可以回到這個頁面繼續編輯。若需要回到此頁，請由網頁右上角的下拉選單中點選「個人頁面」，即可找到您建立的案件。
     .btn.btn-lg.btn-primary.btn-block.ld-ext-right(data-ldcv-set="") 關閉
+  .ldcv.ldcvmgr(data-name="flagship-budget-example"): .base.w-768.rwd: .inner.card: .card-body: .p-2
+    h4 預算表填表範例
+    p.text-muted.text-sm 「小計」與「補助款」會依據您所填入的單價、數量與自籌款自動計算。備註則為選填。請注意補助款總計不可超過五百萬，且比例不得超過 49% 。
+    table.table.table-bordered.text-sm.my-3
+      tr
+        th(rowspan="2") 預算科目
+        th(rowspan="2") 預算明細
+        th(rowspan="2") 單價(元)
+        th(rowspan="2") 數量
+        th(rowspan="2") 單位
+        th(rowspan="2") 小計(元)
+        th(colspan="2") 分攤金額
+        th(rowspan="2") 備註
+      tr
+        th 自籌款
+        th 補助款
+      tr
+        td 食宿費
+        td 便當
+        td 100
+        td 50
+        td 個
+        td.bg-light 5000
+        td 3000
+        td.bg-light 2000
+        td 10人*5餐
+      tr
+        td 食宿費
+        td 雙人房
+        td 3000
+        td 25
+        td 房晚
+        td.bg-light 75000
+        td 50000
+        td.bg-light 25000
+        td 5房*5晚
+    .text-right
+      .btn.btn-primary(data-ldcv-set="") 關閉
 
 
 block script
