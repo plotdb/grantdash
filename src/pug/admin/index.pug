@@ -156,6 +156,14 @@ block script
               .btn.btn-sm.btn-outline-light.ml-4(pd="publish-modification") 發布變更
               //-.btn.btn-sm.btn-outline-light.ml-2(pd="restore-settings") 放棄變更
 
+  .ldcvmgr.ldcv(data-name="brd-deletion"): .w-640.base: .inner.card: .card-body: .p-4
+    h4 刪除活動
+    p 確定要刪除此活動嗎？
+    .row
+      .col-md: .btn.btn-block.btn-lg.btn-outline-secondary(data-ldcv-set="") 取消
+      .col-md: .btn.btn-block.btn-lg.btn-danger(data-ldcv-set="yes") 是的，請刪除
+
+
   +script("/dash/assets/lib/ldbar/loading-bar.min.js")
   +script("/dash/assets/lib/clipboard.js/2.0.4/clipboard.min.js")
   +script("/dash/assets/lib/handsontable/handsontable.min.js")
