@@ -213,6 +213,15 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
           }
         },
         click: {
+          "delete-brd": function(arg$){
+            var node;
+            node = arg$.node;
+            return ldcvmgr.get("brd-deletion").then(function(v){
+              if (v === 'yes') {
+                return console.log("delete...");
+              }
+            });
+          },
           "delete-group": function(arg$){
             var node, grp;
             node = arg$.node;

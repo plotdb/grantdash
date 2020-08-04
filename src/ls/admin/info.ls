@@ -101,6 +101,10 @@ Ctrl = (opt) ->
               error! e
 
       click: do
+        "delete-brd": ({node}) ->
+          ldcvmgr.get("brd-deletion")
+            .then (v) -> if v == \yes => console.log "delete..."
+
         "delete-group": ({node}) ~>
           if node.classList.contains \disabled => return
           if !(grp = @adapter.doc.data.group[@adapter.path.1]) => return
