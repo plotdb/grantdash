@@ -705,7 +705,14 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
     view.render();
     loadLocally();
     lockform();
-    return loader.off();
+    loader.off();
+    return new IntersectionObserver(function(it){
+      if (it[0] && it[0].isIntersecting) {
+        return ldform.checkAll();
+      }
+    }, {
+      threshold: 1
+    }).observe(ld$.find('#check-all', 0));
   };
   return auth.ensure().then(function(it){
     return init({

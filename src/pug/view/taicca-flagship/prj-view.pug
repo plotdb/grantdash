@@ -137,7 +137,7 @@ block body
           .text-right
             span 編號: #[span(ld="fill", data-name="docid") N/A]
         .form-group
-          label 計畫名稱
+          h4 計畫名稱
           input.form-control(name="name")
           .invalid-feedback 不可留白
         label 計畫類別（一與二為單選）：
@@ -241,7 +241,7 @@ block body
           .col-md: .aspect-ratio.ratio-2by1.text-center(style="border:1px solid #eee") 負責人章
 
       .form-group
-        label.mb-0 備註 ( 立案證明文件詳見計畫書附件一 )
+        label.mb-0 備註
         textarea.form-control(rows="6",name="comment")
 
       +nbr(2)
@@ -349,14 +349,14 @@ block body
           h4 預算概況 #[span.text-muted.text-sm]
           .blform
             .mb-2
-              b 計畫總經費
+              div #[b 計畫總經費] #[span.text-muted.text-sm (由預算明細表自動帶入)]
               div 新臺幣 #[span(ld="fill",data-name="budget") 0] 元整 ( 含稅 )
             .row.mb-4
               .col-md
-                b 自籌款
+                div #[b 自籌款] #[span.text-muted.text-sm (由預算明細表自動帶入)]
                 div 新臺幣 #[span(ld="fill",data-name="budget-self") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-self-percent") 0] %
               .col-md
-                b 申請經費
+                div #[b 申請經費] #[span.text-muted.text-sm (由預算明細表自動帶入)]
                 div 新臺幣 #[span(ld="fill",data-name="budget-subsidy") 0] 元整 ( 含稅 ), 比例: #[span(ld="fill",data-name="budget-subsidy-percent") 0] %
                 .text-danger.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
 
@@ -500,7 +500,7 @@ block body
                 .col-md: .aspect-ratio.ratio-4by3.text-center.text-sm(style="border:1px solid #eee") 公司章#[br](列印後用印一份)
                 .col-md: .aspect-ratio.ratio-4by3.text-center.text-sm(style="border:1px solid #eee") 負責人章#[br](列印後用印一份)
 
-
+      #check-all
 
       h3 授權文化內容策進院蒐集使用個人資料說明
       p 為遵守個人資料保護法規定，並保障當事人之權利，謹此向您說明本院將如何處理所蒐集到的個人資料：

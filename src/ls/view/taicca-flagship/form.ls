@@ -386,6 +386,9 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
     load-locally!
     lockform!
     loader.off!
+    (new IntersectionObserver (->
+      if it.0 and it.0.isIntersecting => ldform.checkAll!
+    ), {threshold: 1}).observe(ld$.find('#check-all',0))
 
   auth.ensure!
     .then -> init {global: it}
