@@ -4681,7 +4681,9 @@ pug_html = pug_html + "\u003Ctextarea class=\"form-control\" rows=\"5\" ld=\"inp
 ;pug_debug_line = 147;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cdiv class=\"w-100 bg-light rounded p-3 text-break\" ld=\"preview-panel\" style=\"min-height:200px\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 148;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center mt-2\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"mt-2\" ld=\"if-markdown-enabled\"\u003E";
+;pug_debug_line = 148;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
 ;pug_debug_line = 149;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center text-sm text-muted mr-4\"\u003E";
 ;pug_debug_line = 150;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
@@ -4705,95 +4707,105 @@ pug_html = pug_html + "\u003Cinput class=\"mr-1\" type=\"checkbox\" ld=\"toggle-
 ;pug_debug_line = 154;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cdiv\u003E";
 ;pug_debug_line = 154;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "預覽\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "預覽\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 156;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cdiv class=\"flex-grow-1 text-nowrap d-flex align-items-center mt-4\" ld=\"edit-only\"\u003E";
+;pug_debug_line = 157;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cdiv class=\"mr-2\"\u003E";
+;pug_debug_line = 157;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "顯示並提供 Markdown 選項給填表者\u003C\u002Fdiv\u003E";
+;pug_debug_line = 158;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cdiv\u003E";
+;pug_debug_line = 158;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cdiv class=\"switch ml-2\" ld=\"markdown-enabled\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 }
 }, {name: "form-long-answer"});
-;pug_debug_line = 156;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 160;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_mixins["form-block"].call({
 block: function(){
-;pug_debug_line = 157;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 161;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cinput class=\"form-control\" ld=\"input-field\" placeholder=\"請在這裡輸入 ...\"\u003E";
 }
 }, {name: "form-short-answer"});
-;pug_debug_line = 159;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 163;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_mixins["form-block"].call({
 block: function(){
-;pug_debug_line = 160;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 164;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cinput class=\"form-control\" ld=\"input-field\" placeholder=\"以逗號等標點符號分隔標籤 ...\"\u003E";
 }
 }, {name: "form-tag"});
-;pug_debug_line = 162;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 166;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_mixins["form-block"].call({
 block: function(){
-;pug_debug_line = 163;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center mb-4\"\u003E";
-;pug_debug_line = 164;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cinput class=\"form-control\" ld=\"input-field start\" placeholder=\"請輸入開始時間 ...\"\u003E";
-;pug_debug_line = 165;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cspan class=\"mx-4\" ld=\"is-range\"\u003E";
-;pug_debug_line = 165;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "至\u003C\u002Fspan\u003E";
-;pug_debug_line = 166;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cinput class=\"form-control\" ld=\"input-field end is-range\" placeholder=\"請輸入結束時間 ...\"\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 167;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center mb-4\"\u003E";
+;pug_debug_line = 168;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cinput class=\"form-control\" ld=\"input-field start\" placeholder=\"請輸入開始時間 ...\"\u003E";
+;pug_debug_line = 169;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cspan class=\"mx-4\" ld=\"is-range\"\u003E";
+;pug_debug_line = 169;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "至\u003C\u002Fspan\u003E";
+;pug_debug_line = 170;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cinput class=\"form-control\" ld=\"input-field end is-range\" placeholder=\"請輸入結束時間 ...\"\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 171;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cdiv class=\"flex-grow-1 text-nowrap d-flex align-items-center\" ld=\"edit-only\"\u003E";
-;pug_debug_line = 168;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 172;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cdiv class=\"mr-2\"\u003E";
-;pug_debug_line = 168;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 172;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "讓使用者以區間形式 ( 起始至結束 ) 設定時間\u003C\u002Fdiv\u003E";
-;pug_debug_line = 169;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 173;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cdiv\u003E";
-;pug_debug_line = 169;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 173;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cdiv class=\"switch ml-2\" ld=\"range-enabled\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 }
 }, {name: "form-datetime"});
-;pug_debug_line = 171;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_mixins["form-block"].call({
-block: function(){
-;pug_debug_line = 172;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"w-100 position-relative\"\u003E";
-;pug_debug_line = 173;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"w-100 z-base mb-2\" ld=\"table-root\" style=\"overflow-x:hidden;overflow-y:visible;min-height:200px\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-}
-}, {name: "form-table"});
 ;pug_debug_line = 175;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_mixins["form-block"].call({
 block: function(){
 ;pug_debug_line = 176;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"position-relative\" ld=\"is-view text\"\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"w-100 position-relative\"\u003E";
 ;pug_debug_line = 177;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"mt-2\" ld=\"not is-view\"\u003E";
-;pug_debug_line = 178;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"position-relative\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"w-100 z-base mb-2\" ld=\"table-root\" style=\"overflow-x:hidden;overflow-y:visible;min-height:200px\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+}
+}, {name: "form-table"});
 ;pug_debug_line = 179;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Ctextarea class=\"form-control\" rows=\"5\" ld=\"input-field edit-panel\"\u003E\u003C\u002Ftextarea\u003E";
+pug_mixins["form-block"].call({
+block: function(){
 ;pug_debug_line = 180;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"w-100 bg-light rounded p-3 text-break\" ld=\"preview-panel\" style=\"min-height:200px\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"position-relative\" ld=\"is-view text\"\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 181;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center mt-2\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"mt-2\" ld=\"not is-view\"\u003E";
 ;pug_debug_line = 182;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center text-sm text-muted mr-4\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"position-relative\"\u003E";
 ;pug_debug_line = 183;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cinput class=\"mr-1\" type=\"checkbox\" ld=\"use-markdown\"\u003E";
+pug_html = pug_html + "\u003Ctextarea class=\"form-control\" rows=\"5\" ld=\"input-field edit-panel\"\u003E\u003C\u002Ftextarea\u003E";
 ;pug_debug_line = 184;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv\u003E";
-;pug_debug_line = 184;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "啟用 Markdown 語法 ( ";
-;pug_debug_line = 184;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Ca href=\"https:\u002F\u002Fmarkdown.tw\u002F\" target=\"_blank\" rel=\"noopener noreferrer\"\u003E";
-;pug_debug_line = 184;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "語法說明\u003C\u002Fa\u003E";
-;pug_debug_line = 184;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + " )\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"w-100 bg-light rounded p-3 text-break\" ld=\"preview-panel\" style=\"min-height:200px\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 185;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-none\" ld=\"if-markdown\"\u003E";
-;pug_debug_line = 185;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center text-sm text-muted mr-4\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center mt-2\"\u003E";
 ;pug_debug_line = 186;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
-pug_html = pug_html + "\u003Cinput class=\"mr-1\" type=\"checkbox\" ld=\"toggle-preview\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center text-sm text-muted mr-4\"\u003E";
 ;pug_debug_line = 187;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cinput class=\"mr-1\" type=\"checkbox\" ld=\"use-markdown\"\u003E";
+;pug_debug_line = 188;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "\u003Cdiv\u003E";
-;pug_debug_line = 187;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+;pug_debug_line = 188;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "啟用 Markdown 語法 ( ";
+;pug_debug_line = 188;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Ca href=\"https:\u002F\u002Fmarkdown.tw\u002F\" target=\"_blank\" rel=\"noopener noreferrer\"\u003E";
+;pug_debug_line = 188;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "語法說明\u003C\u002Fa\u003E";
+;pug_debug_line = 188;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + " )\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 189;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cdiv class=\"d-none\" ld=\"if-markdown\"\u003E";
+;pug_debug_line = 189;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center text-sm text-muted mr-4\"\u003E";
+;pug_debug_line = 190;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cinput class=\"mr-1\" type=\"checkbox\" ld=\"toggle-preview\"\u003E";
+;pug_debug_line = 191;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
+pug_html = pug_html + "\u003Cdiv\u003E";
+;pug_debug_line = 191;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fform\u002Fsubblock.pug";
 pug_html = pug_html + "預覽\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 }
 }, {name: "form-text"});

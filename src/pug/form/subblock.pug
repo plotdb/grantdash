@@ -145,13 +145,17 @@ mixin criteria
   .position-relative
     textarea.form-control(rows="5",ld="input-field edit-panel")
     .w-100.bg-light.rounded.p-3.text-break(ld="preview-panel",style="min-height:200px")
-  .d-flex.align-items-center.mt-2
+  .mt-2(ld="if-markdown-enabled"): .d-flex.align-items-center
     .d-flex.align-items-center.text-sm.text-muted.mr-4
       input.mr-1(type="checkbox",ld="use-markdown")
       div 啟用 Markdown 語法 ( #[a(href="https://markdown.tw/",target="_blank",rel="noopener noreferrer") 語法說明] )
     .d-none(ld="if-markdown"): .d-flex.align-items-center.text-sm.text-muted.mr-4
       input.mr-1(type="checkbox",ld="toggle-preview")
       div 預覽
+
+  .flex-grow-1.text-nowrap.d-flex.align-items-center.mt-4(ld="edit-only")
+    .mr-2 顯示並提供 Markdown 選項給填表者
+    div: .switch.ml-2(ld="markdown-enabled")
 
 +form-block({name: "form-short-answer"})
   input.form-control(ld="input-field",placeholder="請在這裡輸入 ...")
