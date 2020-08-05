@@ -77,6 +77,16 @@ ldc.register('prjFormValidation', ['prjFormCriteria'], function(arg$){
       }
     },
     regex: {
+      type: function(v, i, j){
+        return [v, i, j].reduce(function(a, b){
+          return a && typeof b === 'string';
+        }, true);
+      },
+      convert: function(v, i, j){
+        return [v, i, j].map(function(it){
+          return it + "";
+        });
+      },
       match: function(v, i){
         return new RegExp(i).exec(v);
       },

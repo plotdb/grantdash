@@ -27,6 +27,8 @@ validator = do
     eq: (v,i) -> v == i
     between: (v,i,j) -> v >= i and v <= j
   regex: do
+    type: (v,i,j) -> [v,i,j].reduce(((a,b) -> a and (typeof(b) == \string)),true)
+    convert: (v, i, j) -> return [v,i,j].map -> "#it"
     match: (v,i) -> (new RegExp(i).exec(v))
     "not-match": (v,i) -> !(new RegExp(i).exec(v))
   smaller: do
