@@ -911,6 +911,16 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
               this$.preview = !!node.checked;
               return view.render();
             }
+          },
+          click: {
+            "markdown-enabled": function(arg$){
+              var node, evt, ref$;
+              node = arg$.node, evt = arg$.evt;
+              ((ref$ = this$.block).config || (ref$.config = {})).markdownEnabled = !((ref$ = this$.block).config || (ref$.config = {})).markdownEnabled;
+              node.classList.toggle('on', ((ref$ = this$.block).config || (ref$.config = {})).markdownEnabled);
+              this$.update();
+              return this$.render();
+            }
           }
         },
         handler: {
@@ -936,6 +946,11 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
             var node, ref$;
             node = arg$.node;
             return node.classList.toggle('d-none', !((ref$ = this$.block).value || (ref$.value = {})).useMarkdown);
+          },
+          "if-markdown-enabled": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            return node.classList.toggle('d-none', !((ref$ = this$.block).config || (ref$.config = {})).markdownEnabled);
           }
         }
       });

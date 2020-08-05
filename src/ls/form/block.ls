@@ -423,17 +423,25 @@ module <<< do
 module-textarea = module-init: ->
   @view.module = view = new ldView do
     root: @root
-    action: input: do
-      "use-markdown": ({node}) ~>
-        @block.{}value.use-markdown = node.checked
-        @update!
-        view.render!
-      "input-field": ({node}) ~>
-        @block.{}value.content = node.value
-        @update!
-      "toggle-preview": ({node}) ~>
-        @preview = !!node.checked
-        view.render!
+    action:
+      input: do
+        "use-markdown": ({node}) ~>
+          @block.{}value.use-markdown = node.checked
+          @update!
+          view.render!
+        "input-field": ({node}) ~>
+          @block.{}value.content = node.value
+          @update!
+        "toggle-preview": ({node}) ~>
+          @preview = !!node.checked
+          view.render!
+      click: do
+        "markdown-enabled": ({node, evt}) ~>
+          @block.{}config.markdown-enabled = !@block.{}config.markdown-enabled
+          node.classList.toggle \on, @block.{}config.markdown-enabled
+          @update!
+          @render!
+
     handler: do
       "input-field": ({node}) ~> node.value = @block.{}value.content or ''
       "preview-panel": ({node}) ~>
@@ -441,6 +449,7 @@ module-textarea = module-init: ->
         if @preview => node.innerHTML = DOMPurify.sanitize(marked(@block.{}value.content or ''))
       "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
       "if-markdown": ({node}) ~> node.classList.toggle \d-none, !@block.{}value.use-markdown
+      "if-markdown-enabled": ({node}) ~> node.classList.toggle \d-none, !@block.{}config.markdown-enabled
 
 module <<< do
   "form-long-answer": module-textarea
