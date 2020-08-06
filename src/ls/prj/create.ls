@@ -20,7 +20,7 @@ auth.get!
     lc.brd = brd
     lc.grps = brd.detail.{}group
     lc.grp = lc.grps.filter(->it.key == key.grp).0 or lc.grps.0
-    if !lc.grp => return Promise.reject new Error(1015, "group is not found")
+    if !lc.grp => return Promise.reject new ldError("no group",1015)
     root = ld$.find('[ld-scope=prj-create]',0)
     n = ld$.find(root, 'input[name=brd]', 0)
     n.value = lc.brd.slug
@@ -46,5 +46,7 @@ auth.get!
     n = ld$.find(root, 'select[name=grp]', 0)
     n.value = lc.grp.key
   .finally -> loader.off!
-  .catch error!
+  .catch (e) ->
+    if ldError.id(e) == 1015 and e.message == "no group" => ldcvmgr.toggle \prj-create-no-grp
+    else error! e
 
