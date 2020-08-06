@@ -202,6 +202,11 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
   [name, description] = [(info.name or info.title), info.description]
   cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
     .then ->
+      if type == \prj =>
+        cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
+          .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \prj-edit-own}
+      else Promise.resolve!
+    .then ->
       io.query """
       update #type set detail = $1 where slug = $2 and deleted is not true
       """, [JSON.stringify(payload), slug]

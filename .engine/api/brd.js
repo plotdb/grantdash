@@ -360,6 +360,25 @@
         slug: slug,
         action: 'owner'
       }).then(function(){
+        if (type === 'prj') {
+          return cache.stage.check({
+            io: io,
+            type: 'brd',
+            slug: req.scope.brd,
+            name: "prj-edit"
+          })['catch'](function(){
+            return cache.perm.check({
+              io: io,
+              user: req.user,
+              type: 'brd',
+              slug: req.scope.brd,
+              action: 'prj-edit-own'
+            });
+          });
+        } else {
+          return Promise.resolve();
+        }
+      }).then(function(){
         return io.query("update " + type + " set detail = $1 where slug = $2 and deleted is not true", [JSON.stringify(payload), slug]);
       }).then(function(){
         var thumb;
