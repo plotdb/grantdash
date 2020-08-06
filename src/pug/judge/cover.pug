@@ -19,3 +19,8 @@
     br
     .text-center
       .btn.btn-primary.btn-block.btn-lg.mr-2(onclick="lda.general.admin()") 進入主控台
++scope("judge-preview-attachment").ldcv.ldcvmgr.full.p-4(data-name="judge-preview-attachment")
+  .base.rwd: .inner.card: .card-body: .w-100.h-100.p-1(ld="container")
+    .closebtn.lg.bg-white
+    iframe.border-0.w-100.h-100(ld="iframe")
+    object.w-100.h-100(ld="object"): embed(ld="embed")
