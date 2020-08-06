@@ -231,9 +231,7 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
       doc_id = "#type/#slug"
       save-snapshot {io, sharedb: engine.sharedb, version: null, doc_id}
     .then -> res.send {}
-    .catch ->
-      console.log it
-      aux.error-handler(res) it
+    .catch aux.error-handler res
 
 get-prj-list = (req, res) ->
   Promise.resolve!
