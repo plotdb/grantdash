@@ -50,6 +50,14 @@
           slug: req.scope.brd,
           name: "prj-edit"
         });
+      })['catch'](function(){
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: req.scope.brd,
+          action: 'prj-edit-own'
+        });
       }).then(function(){
         return getPrj(req.params.slug);
       }).then(function(prj){
