@@ -33,7 +33,7 @@ ldc.register(['stage', 'general', 'ldcvmgr', 'adminInfo', 'prjCreate', 'auth', '
       return it.key === key.grp;
     })[0] || lc.grps[0];
     if (!lc.grp) {
-      return Promise.reject(new Error(1015, "group is not found"));
+      return Promise.reject(new ldError("no group", 1015));
     }
     root = ld$.find('[ld-scope=prj-create]', 0);
     n = ld$.find(root, 'input[name=brd]', 0);
@@ -96,5 +96,11 @@ ldc.register(['stage', 'general', 'ldcvmgr', 'adminInfo', 'prjCreate', 'auth', '
     return n.value = lc.grp.key;
   })['finally'](function(){
     return loader.off();
-  })['catch'](error());
+  })['catch'](function(e){
+    if (ldError.id(e) === 1015 && e.message === "no group") {
+      return ldcvmgr.toggle('prj-create-no-grp');
+    } else {
+      return error()(e);
+    }
+  });
 });
