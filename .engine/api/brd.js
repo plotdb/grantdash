@@ -419,10 +419,7 @@
         });
       }).then(function(){
         return res.send({});
-      })['catch'](function(it){
-        console.log(it);
-        return aux.errorHandler(res)(it);
-      });
+      })['catch'](aux.errorHandler(res));
     });
     getPrjList = function(req, res){
       return Promise.resolve().then(function(){
