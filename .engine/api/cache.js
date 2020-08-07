@@ -137,6 +137,9 @@
         if (!(user && user.key && slug && in$(type, this$.supportedTypes))) {
           return Promise.reject();
         }
+        if (user.staff === 1) {
+          return true;
+        }
         if (((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] != null) {
           return this$.cache[type][slug][user.key]
             ? true
