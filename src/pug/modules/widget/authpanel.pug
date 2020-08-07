@@ -5,6 +5,16 @@ mixin authpanel
     .vertical-center.p-4.info.position-absolute.h-100.w-50.text-light(style="background: #455667 center center no-repeat;background-size:cover;")
       .position-absolute.w-100.h-100.bg-semi-dark(style="top:0;left:0")
       .text-left.position-relative.z-float.text-shadow
+
+        .d-none(data-info="signup-failed")
+          h2.mb-4.font-weight-bold 註冊失敗。
+          p 您可能先前已經註冊過了，或者您所填的資訊有問題。您可以試著：
+          ul
+            li 切換至登入模式後再試一次
+            li 試著使用更複雜的密碼
+            li 嘗試使用社群帳號登入
+            li #[a(href="#",onclick="lda.ldcvmgr.toggle('contact');",style="color:#0ff") 與我們聯絡]
+
         .d-none(data-info="failed")
           h2.mb-4.font-weight-bold 登入失敗。
           p 您之前可能用的是別組帳號或密碼，或者使用不同的登入方式。您可以試著：
