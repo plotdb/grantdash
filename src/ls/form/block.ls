@@ -438,12 +438,12 @@ module-textarea = module-init: ->
       click: do
         "markdown-enabled": ({node, evt}) ~>
           @block.{}config.markdown-enabled = !@block.{}config.markdown-enabled
-          node.classList.toggle \on, @block.{}config.markdown-enabled
           @update!
           @render!
 
     handler: do
       "input-field": ({node}) ~> node.value = @block.{}value.content or ''
+      "markdown-enabled": ({node}) ~> node.classList.toggle \on, @block.{}config.markdown-enabled
       "preview-panel": ({node}) ~>
         node.classList.toggle \d-none, !@preview
         if @preview => node.innerHTML = DOMPurify.sanitize(marked(@block.{}value.content or ''))
