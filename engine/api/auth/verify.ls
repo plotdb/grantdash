@@ -1,25 +1,15 @@
 require! <[fs fs-extra crypto express-rate-limit lderror]>
-require! <[../../aux ../../util/throttle ../../util/mail]>
+require! <[../../aux ../../util/throttle ../../util/mail ../../util/action]>
 (engine,io) <- (->module.exports = it)  _
 
 
 engine.router.api.post \/me/mail/verify, throttle.count.action.mail, (req, res) ->
   obj = {}
   if !(req.user and req.user.key and req.user.username) => return aux.r400 res, "not login."
-  io.query "select key from users where key = $1", [req.user.key]
+  io.query "select key from users where key = $1 and deleted is not true", [req.user.key]
     .then (r={}) ->
-      if r.[]rows.length == 0 => return aux.reject 404
-      time = new Date!
-      obj <<< {key: r.rows.0.key, hex: "#{r.rows.0.key}-" + (crypto.randomBytes(30).toString \hex), time: time }
-      io.query "delete from mailverifytoken where owner=$1", [obj.key]
-    .then -> io.query "insert into mailverifytoken (owner,token,time) values ($1,$2,$3)", [obj.key, obj.hex, obj.time]
-    .then ->
-      mail.by-template(
-        \mail-verify
-        req.user.username
-        {token: obj.hex, domain: 'grantdash.io', orgname: 'Grant Dash'} <<< req.scope{domain, orgname}
-        {now: true}
-      )
+      if !(r.[]rows.length) => return aux.reject 404
+      action.verify-email {req, user: req.user, io}
     .then -> res.send!
     .catch aux.error-handler res, true
 

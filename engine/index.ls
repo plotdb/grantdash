@@ -6,7 +6,7 @@ require! <[passport passport-local passport-facebook passport-google-oauth20]>
 require! <[nodemailer]>
 require! <[sharedb-wrapper lderror]>
 require! <[./io/postgresql ./api ./ext ./util/view ./api/cache]>
-require! <[./aux ./util/throttle ./util/grecaptcha ./watch ../secret ./watch/build/mod]>
+require! <[./aux ./util/throttle ./util/grecaptcha ./util/action ./watch ../secret ./watch/build/mod]>
 require! 'uglify-js': uglify-js, LiveScript: lsc
 colors = require \colors/safe
 mod-builder = require "./watch/build/mod"
@@ -185,10 +185,10 @@ backend = do
         {email,displayname,passwd,config} = req.body{email,displayname,passwd,config}
         if !email or !displayname or passwd.length < 8 => return aux.r400 res
         authio.user.create email, passwd, true, {displayname}, (config or {})
-          .then (user) ->
-            req.logIn user, -> res.redirect \/dash/api/u/200; return null
-            return null
-          .catch -> res.redirect \/dash/api/u/403; return null
+          .then (user) -> new Promise (res, rej) -> req.logIn(user, -> res(user))
+          .then (user) -> action.verify-email {req, io: pgsql, user: user}
+          .then -> res.redirect \/dash/api/u/200
+          .catch -> console.log it; res.redirect \/dash/api/u/403
       ..post \/login, throttle.count.action.login, grecaptcha, passport.authenticate \local, do
         successRedirect: \/dash/api/u/200
         failureRedirect: \/dash/api/u/403
