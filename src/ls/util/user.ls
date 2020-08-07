@@ -101,7 +101,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @view.get('input').value = ''
     @render!
   _search: (name) ->
-    if !(name and name.length >= 3) => return @ <<< users: [], loading: false
+    if !(name and name.length >= 1) => return @ <<< users: [], loading: false
     @ <<< users: [], loading: true
     @render!
     auth.get!

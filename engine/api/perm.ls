@@ -27,7 +27,9 @@ api.post \/perm, aux.signed, (req, res) ->
 api.post \/account, aux.signed, (req, res) ->
   if !(name = req.body.name) => return aux.r404 res
   name = "#{name}".substring(0, 32)
-  io.query "select key,displayname from users where lower(displayname) ~ lower($1)", [name]
+  io.query """
+  select key,displayname from users where lower(displayname) ~ lower($1) or lower(username) ~ lower($1)
+  """, [name]
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res
   

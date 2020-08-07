@@ -160,7 +160,7 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
     },
     _search: function(name){
       var this$ = this;
-      if (!(name && name.length >= 3)) {
+      if (!(name && name.length >= 1)) {
         return this.users = [], this.loading = false, this;
       }
       this.users = [];

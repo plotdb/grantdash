@@ -45,7 +45,7 @@
         return aux.r404(res);
       }
       name = (name + "").substring(0, 32);
-      return io.query("select key,displayname from users where lower(displayname) ~ lower($1)", [name]).then(function(r){
+      return io.query("select key,displayname from users where lower(displayname) ~ lower($1) or lower(username) ~ lower($1)", [name]).then(function(r){
         r == null && (r = {});
         return res.send(r.rows || (r.rows = []));
       })['catch'](aux.errorHandler(res));
