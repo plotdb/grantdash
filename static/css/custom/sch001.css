@@ -105,15 +105,18 @@ body {
   padding: 0.25em 0.75em;
   font-size: 0.9em;
   background: #4b0;
+  border-bottom: 1px solid #170;
   top: 0.66em;
   left: -0.25em;
   color: #fff;
 }
 .gd-prj-card-badge[data-type=final] {
   background: #09f;
+  border-bottom: 1px solid #04c;
 }
 .gd-prj-card-badge[data-type=winner] {
   background: #f40;
+  border-bottom: 1px solid #c10;
 }
 .gd-prj-card-name {
   display: block;
