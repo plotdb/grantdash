@@ -276,8 +276,7 @@
             });
           }).then(function(){
             return res.redirect('/dash/api/u/200');
-          })['catch'](function(it){
-            console.log(it);
+          })['catch'](function(){
             return res.redirect('/dash/api/u/403');
           });
         });

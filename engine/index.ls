@@ -188,7 +188,7 @@ backend = do
           .then (user) -> new Promise (res, rej) -> req.logIn(user, -> res(user))
           .then (user) -> action.verify-email {req, io: pgsql, user: user}
           .then -> res.redirect \/dash/api/u/200
-          .catch -> console.log it; res.redirect \/dash/api/u/403
+          .catch -> res.redirect \/dash/api/u/403
       ..post \/login, throttle.count.action.login, grecaptcha, passport.authenticate \local, do
         successRedirect: \/dash/api/u/200
         failureRedirect: \/dash/api/u/403
