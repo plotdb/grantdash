@@ -80,6 +80,7 @@ perm = do
     Promise.resolve!
       .then ~>
         if !(user and user.key and slug and (type in @supported-types)) => return Promise.reject!
+        if user.staff == 1 => return true
         # NOTE instead of obj.perm, we also use an external table 'perm' for providing token for users.
         #      and for now we don't have strategy to invalidate caches for perm type update.
         # TODO better way for invalidating cache based on perm table change?
