@@ -2560,7 +2560,7 @@ pug_html = pug_html + "\u003Cdiv class=\"d-none ld ld-fade-in\" ld=\"loading\"\u
 ;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
 pug_html = pug_html + "\u003Cdiv class=\"position-absolute m-auto ld ld-spin ld-spinner\" style=\"top:0;bottom:0;right:.5em\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 46;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
-pug_html = pug_html + "\u003Cdiv class=\"z-float px-3 rounded border shadow-sm d-none ld ld-float-ttb-in bg-white xp15 position-absolute w-100\" ld=\"users\" style=\"border-radius: 0 0 .5em .5em\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"z-float px-3 rounded border shadow-sm d-none ld ld-float-ttb-in bg-white xp15 position-absolute w-100\" ld=\"users\" style=\"border-radius: 0 0 .5em .5em;max-height:200px;overflow-y:scroll\"\u003E";
 ;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center clickable my-2\" ld-each=\"user\"\u003E";
 ;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
@@ -3106,7 +3106,7 @@ pug_html = pug_html + "\u003Cdiv class=\"d-none ld ld-fade-in\" ld=\"loading\"\u
 ;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
 pug_html = pug_html + "\u003Cdiv class=\"position-absolute m-auto ld ld-spin ld-spinner\" style=\"top:0;bottom:0;right:.5em\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 46;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
-pug_html = pug_html + "\u003Cdiv class=\"z-float px-3 rounded border shadow-sm d-none ld ld-float-ttb-in bg-white xp15 position-absolute w-100\" ld=\"users\" style=\"border-radius: 0 0 .5em .5em\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"z-float px-3 rounded border shadow-sm d-none ld ld-float-ttb-in bg-white xp15 position-absolute w-100\" ld=\"users\" style=\"border-radius: 0 0 .5em .5em;max-height:200px;overflow-y:scroll\"\u003E";
 ;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center clickable my-2\" ld-each=\"user\"\u003E";
 ;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
@@ -3939,7 +3939,7 @@ pug_html = pug_html + "\u003Cdiv class=\"d-none ld ld-fade-in\" ld=\"loading\"\u
 ;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
 pug_html = pug_html + "\u003Cdiv class=\"position-absolute m-auto ld ld-spin ld-spinner\" style=\"top:0;bottom:0;right:.5em\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 46;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
-pug_html = pug_html + "\u003Cdiv class=\"z-float px-3 rounded border shadow-sm d-none ld ld-float-ttb-in bg-white xp15 position-absolute w-100\" ld=\"users\" style=\"border-radius: 0 0 .5em .5em\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"z-float px-3 rounded border shadow-sm d-none ld ld-float-ttb-in bg-white xp15 position-absolute w-100\" ld=\"users\" style=\"border-radius: 0 0 .5em .5em;max-height:200px;overflow-y:scroll\"\u003E";
 ;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center clickable my-2\" ld-each=\"user\"\u003E";
 ;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fperm.pug";
