@@ -84,7 +84,6 @@ body {
   display: flex;
   flex-direction: column;
   width: 19em;
-  overflow: hidden;
   color: #fff;
 }
 .gd-prj-card > a {
@@ -98,6 +97,23 @@ body {
   background-position: center center;
   border-radius: 0.2em;
   margin-bottom: 1em;
+}
+.gd-prj-card-badge[data-type=short],
+.gd-prj-card-badge[data-type=final],
+.gd-prj-card-badge[data-type=winner] {
+  position: absolute;
+  padding: 0.25em 0.75em;
+  font-size: 0.9em;
+  background: #4b0;
+  top: 0.66em;
+  left: -0.25em;
+  color: #fff;
+}
+.gd-prj-card-badge[data-type=final] {
+  background: #09f;
+}
+.gd-prj-card-badge[data-type=winner] {
+  background: #f40;
 }
 .gd-prj-card-name {
   display: block;
