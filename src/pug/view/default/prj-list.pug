@@ -16,7 +16,7 @@ block body
   - (grps || []).map(function(d,i) { ghash[d.key] = d; });
   mixin card(opt)
     - var badge = (opt.system && opt.system.badge) || {};
-    - var type = (Math.random() < 0.2 ? "winner" : (Math.random() < 0.2 ? "final" : (badge.shortlist ? "short" : null)))
+    - var type = (badge.winner ? "winner" : badge.finalist ? "final" : (badge.shortlist  ? "short" : null)))
     - var typename = {winner: "獲選", final: "決選", short: " 入圍"}[type]
     .gd-prj-card&attributes(attributes)
       a(href=`/dash/prj/${opt.slug}`)
