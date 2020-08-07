@@ -237,6 +237,7 @@ get-prj-list = (req, res) ->
   Promise.resolve!
     .then ->
       {offset,limit} = req.query{offset,limit}
+      badge = (req.query.badge or '').split(',')
       {keyword,tag,category} = req.query{keyword, category, tag}
       if !(slug = req.params.slug) => return aux.reject 400
       offset = (if isNaN(+offset) => 0 else +offset ) >? 0
@@ -256,6 +257,9 @@ get-prj-list = (req, res) ->
         "and tag ? $4" if tag
         "and category = $#idx1" if category
         "and name ~ $#idx2" if keyword
+        "and (system->'badge'->>'shortlist')::bool = true" if \shortlist in badge
+        "and (system->'badge'->>'finalist')::bool = true" if \finalist in badge
+        "and (system->'badge'->>'winner')::bool = true" if \winner in badge
         """) select * from (
           table cte limit $2 offset $1
         ) sub

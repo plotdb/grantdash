@@ -57,12 +57,9 @@ body {
   padding: 0.5em 0;
 }
 .gd-prj-list-ctrl .btn {
-  border: 1px solid #fff;
-  color: #fff;
-}
-.gd-prj-list-ctrl .btn:hover {
   background: #fff;
-  color: #000;
+  border: 1px solid #007bff;
+  color: #007bff;
 }
 .gd-prj-list-ctrl .btn.active {
   background: #007bff;

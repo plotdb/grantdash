@@ -423,11 +423,12 @@
     });
     getPrjList = function(req, res){
       return Promise.resolve().then(function(){
-        var ref$, offset, limit, keyword, tag, category, slug, ref1$, idx1, idx2;
+        var ref$, offset, limit, badge, keyword, tag, category, slug, ref1$, idx1, idx2;
         ref$ = {
           offset: (ref$ = req.query).offset,
           limit: ref$.limit
         }, offset = ref$.offset, limit = ref$.limit;
+        badge = (req.query.badge || '').split(',');
         ref$ = {
           keyword: (ref$ = req.query).keyword,
           category: ref$.category,
@@ -451,7 +452,7 @@
         idx2 = 4 + [tag, category].filter(function(it){
           return it;
         }).length;
-        return io.query(["with cte as (\nselect p.*,u.displayname as ownername, u.username as owneremail\nfrom prj as p, users as u\nwhere p.detail is not null and u.key = p.owner and p.brd = $3 and p.deleted is not true", tag ? "and tag ? $4" : void 8, category ? "and category = $" + idx1 : void 8, keyword ? "and name ~ $" + idx2 : void 8, ") select * from (\n  table cte limit $2 offset $1\n) sub\nright join (select count(*) from cte) c(full_count) on true"].filter(function(it){
+        return io.query(["with cte as (\nselect p.*,u.displayname as ownername, u.username as owneremail\nfrom prj as p, users as u\nwhere p.detail is not null and u.key = p.owner and p.brd = $3 and p.deleted is not true", tag ? "and tag ? $4" : void 8, category ? "and category = $" + idx1 : void 8, keyword ? "and name ~ $" + idx2 : void 8, in$('shortlist', badge) ? "and (system->'badge'->>'shortlist')::bool = true" : void 8, in$('finalist', badge) ? "and (system->'badge'->>'finalist')::bool = true" : void 8, in$('winner', badge) ? "and (system->'badge'->>'winner')::bool = true" : void 8, ") select * from (\n  table cte limit $2 offset $1\n) sub\nright join (select count(*) from cte) c(full_count) on true"].filter(function(it){
           return it;
         }).join(' '), [offset, limit, slug].concat([tag, category, keyword].filter(function(it){
           return it;
