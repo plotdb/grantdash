@@ -372,7 +372,7 @@ block body
         .d-flex.align-items-end.mb-2
           h4.mb-0 預算明細表
           span.mx-1 /
-          .text-sm.text-primary.clickable(onclick="lda.ldcvmgr.toggle('flagship-budget-example')") 表格範例
+          .text-sm.text-primary.clickable(onclick="lda.ldcvmgr.toggle('flagship-budget-example')") 如何撰寫？
         table.table.table-bordered.table-tiny
           thead
             tr
@@ -392,29 +392,29 @@ block body
             tr(ld-each="column",data-name="budget")
               td.clickable.text-center.pt-3: i.i-close.no-print
               td: .form-group.m-0
-                input.form-control(name="cat",placeholder="如:食宿費")
+                input.form-control(name="cat")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="detail",placeholder="如:便當")
+                input.form-control(name="detail")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="price", placeholder="如:100")
+                input.form-control(name="price")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="count",placeholder="如:50")
+                input.form-control(name="count")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
-                input.form-control(name="unit",placeholder="如:個")
+                input.form-control(name="unit")
                 .invalid-feedback 不可留白
               td: .form-group.m-0
                 input.form-control(name="total",readonly,disabled,tabindex="-1")
               td: .form-group.m-0
-                input.form-control(name="self",placeholder="如:3000")
+                input.form-control(name="self")
                 .invalid-feedback 數字不合
               td: .form-group.m-0
                 input.form-control(name="subsidy",readonly,disabled,tabindex="-1")
               td: .form-group.m-0
-                input.form-control(name="comment",placeholder="如:10人*5餐")
+                input.form-control(name="comment")
             tr
               td.text-center.align-middle(colspan="7") 小計
               td.text-right.px-2 #[span(ld="fill",data-name="budget-self")]元
