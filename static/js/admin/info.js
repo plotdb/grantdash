@@ -97,7 +97,9 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
         "tail-datetime": function(arg$){
           var node;
           node = arg$.node;
-          return tail.DateTime(node);
+          return tail.DateTime(node, {
+            time12h: true
+          });
         },
         orgs: function(){
           var payload;

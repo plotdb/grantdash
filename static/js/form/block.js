@@ -641,7 +641,9 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
                     var node;
                     node = arg$.node;
                     if (this$.viewing) {
-                      return tail.DateTime(node);
+                      return tail.DateTime(node, {
+                        time12h: true
+                      });
                     }
                   }
                 },
@@ -778,7 +780,9 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
                     var node;
                     node = arg$.node;
                     if (this$.viewing) {
-                      return tail.DateTime(node);
+                      return tail.DateTime(node, {
+                        time12h: true
+                      });
                     }
                   },
                   data: function(arg$){
@@ -995,7 +999,9 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
             var node, local;
             node = arg$.node, local = arg$.local;
             if (this$.viewing) {
-              return tail.DateTime(node);
+              return tail.DateTime(node, {
+                time12h: true
+              });
             }
           }
         },
