@@ -381,13 +381,23 @@
       }).then(function(){
         return io.query("update " + type + " set detail = $1 where slug = $2 and deleted is not true", [JSON.stringify(payload), slug]);
       }).then(function(){
-        var thumb;
+        var thumb, time;
         if (!name) {
           return;
         }
         if (type === 'prj') {
           thumb = (info.thumb || {}).fn;
           return io.query("update prj set (name,description,category,tag,thumb) = ($1,$2,$3,$4,$5)\nwhere slug = $6 and deleted is not true", [name, description, info.category || '', JSON.stringify(info.tag || []), thumb, slug]);
+        } else if (type === 'brd') {
+          time = ['starttime', 'endtime'].map(function(it){
+            var ret;
+            if (!info[it] || isNaN(ret = new Date(info[it]))) {
+              return null;
+            } else {
+              return ret.toISOString();
+            }
+          });
+          return io.query("update " + type + " set (name,description,starttime,endtime) = ($1,$2,$3,$4)\nwhere slug = $5 and deleted is not true", [name, description, time[0], time[1], slug]);
         } else {
           return io.query("update " + type + " set (name,description) = ($1,$2) where slug = $3 and deleted is not true", [name, description, slug]);
         }

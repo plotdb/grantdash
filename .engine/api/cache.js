@@ -5,6 +5,10 @@
   lderror = require('lderror');
   aux = require('../aux');
   codedDomains = {
+    "grantdash.dev": {
+      org: "grantdash-dev",
+      orgname: "Grant Dash Dev"
+    },
     "dev.grantdash.dev": {
       org: "grantdash-dev",
       orgname: "Grant Dash Dev"
