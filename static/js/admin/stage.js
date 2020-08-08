@@ -242,7 +242,9 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
       time: function(arg$){
         var node;
         node = arg$.node;
-        return tail.DateTime(node);
+        return tail.DateTime(node, {
+          time12h: true
+        });
       }
     });
     import$(viewConfig.handler, {

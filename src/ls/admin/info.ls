@@ -45,7 +45,7 @@ Ctrl = (opt) ->
   @view = view = new ldView do
     root: root
     init: do
-      "tail-datetime": ({node}) -> tail.DateTime(node)
+      "tail-datetime": ({node}) -> tail.DateTime(node, {time12h: true})
       orgs: ->
         payload = {type: \org}
         auth.get!

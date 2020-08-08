@@ -307,7 +307,7 @@ module["form-checkpoint"] = module-init: ->
           if node.view => return node.view.render!
           node.view = new ldView do
             root: node
-            init: date: ({node}) ~> if @viewing => tail.DateTime node
+            init: date: ({node}) ~> if @viewing => tail.DateTime node, {time12h: true}
             action: do
               input: do
                 input: ({node}) ~>
@@ -369,7 +369,7 @@ module-list = module-init: ->
           node.view = new ldView do
             root: node
             init:
-              date: ({node}) ~> if @viewing => tail.DateTime node
+              date: ({node}) ~> if @viewing => tail.DateTime node, {time12h: true}
               data: ({node}) ~>
                 node.setAttribute(\data-name, node.getAttribute(\editable))
                 if !editable and @viewing => node.removeAttribute \editable
@@ -473,7 +473,7 @@ module["form-datetime"] = module-init: ->
           @render!
 
     init:
-      "input-field": ({node,local}) ~> if @viewing => tail.DateTime node
+      "input-field": ({node,local}) ~> if @viewing => tail.DateTime node, {time12h: true}
     handler:
       "input-field": ({node,names}) ~>
         node.value = (if \start in names => @block.{}value.start else @block.{}value.end) or ''
