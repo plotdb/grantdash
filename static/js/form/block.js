@@ -650,7 +650,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
                     input: function(arg$){
                       var node, ref$;
                       node = arg$.node;
-                      data[node.getAttribute('data-name')] = node.value;
+                      data[node.getAttribute('data-name')] = moment(node.value).format();
                       ((ref$ = this$.block).value || (ref$.value = {})).list = this$.block.data;
                       return this$.update();
                     }
@@ -975,7 +975,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
               var node, local, names, n, ref$;
               node = arg$.node, local = arg$.local, names = arg$.names;
               n = in$('start', names) ? 'start' : 'end';
-              ((ref$ = this$.block).value || (ref$.value = {}))[n] = node.value;
+              ((ref$ = this$.block).value || (ref$.value = {}))[n] = moment(node.value).format();
               return this$.update();
             }
           },

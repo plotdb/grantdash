@@ -230,9 +230,10 @@ ldc.register('adminStage', ['sdbAdapter'], function(arg$){
       time: function(arg$){
         var node;
         node = arg$.node;
+        node.value = moment(node.value).format();
         stage.val({
           name: node.getAttribute('data-name'),
-          value: node.value
+          value: moment(node.value).format()
         });
         return obj.update();
       }
