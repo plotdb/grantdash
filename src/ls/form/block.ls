@@ -311,7 +311,7 @@ module["form-checkpoint"] = module-init: ->
             action: do
               input: do
                 input: ({node}) ~>
-                  data[node.getAttribute(\data-name)] = node.value
+                  data[node.getAttribute(\data-name)] = moment(node.value).format!
                   @block.{}value.list = @block.data
                   @update!
               click: do
@@ -463,7 +463,7 @@ module["form-datetime"] = module-init: ->
       change: do
         "input-field": ({node,local,names}) ~>
           n = if \start in names => \start else \end
-          @block.{}value[n] = node.value
+          @block.{}value[n] = moment(node.value).format!
           @update!
       click: do
         "range-enabled": ({node, evt}) ~>

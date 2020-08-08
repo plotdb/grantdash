@@ -91,7 +91,8 @@ Ctrl = (opt) !->
 
   view-config.action.input <<< do
     time: ({node}) ->
-      stage.val name: node.getAttribute(\data-name), value: node.value
+      node.value = moment(node.value).format!
+      stage.val name: node.getAttribute(\data-name), value: moment(node.value).format!
       obj.update!
   view-config.init <<< do
     time: ({node}) -> tail.DateTime(node)
