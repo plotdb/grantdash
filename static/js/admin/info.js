@@ -65,6 +65,9 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
         }, true) ? 0 : 2;
       },
       verify: function(n, v, e){
+        if (n === 'starttime' || n === 'endtime') {
+          v = moment(v).format();
+        }
         if (!in$(n, ['slug'])) {
           this$.opsOut(function(d){
             d[n] = v;

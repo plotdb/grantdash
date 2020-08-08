@@ -30,6 +30,7 @@ Ctrl = (opt) ->
       <[brd grp]>.map (n) -> s[n] = if f[n] and f[n]value => 0 else 2
       s.all = if fields.reduce(((a,b) -> a and s[b] == 0),true) => 0 else 2
     verify: (n,v,e) ~>
+      if n in <[starttime endtime]> => v = moment(v).format!
       if !(n in <[slug]>) => @ops-out (d) -> d[n] = v; d
       if n in <[slug]> =>
         if !/^[a-zA-Z0-9-]+$/.exec(v) => return 2
