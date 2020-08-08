@@ -218,6 +218,13 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
         update prj set (name,description,category,tag,thumb) = ($1,$2,$3,$4,$5)
         where slug = $6 and deleted is not true
         """, [name,description,(info.category or ''),JSON.stringify((info.tag or [])),thumb,slug]
+      else if type == \brd
+        time = <[starttime endtime]>.map ->
+          if !info[it] or isNaN(ret = new Date(info[it])) => null else ret.toISOString!
+        io.query """
+        update #type set (name,description,starttime,endtime) = ($1,$2,$3,$4)
+        where slug = $5 and deleted is not true
+        """, [name,description,time.0,time.1,slug]
       else
         io.query """
         update #type set (name,description) = ($1,$2) where slug = $3 and deleted is not true
