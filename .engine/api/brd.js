@@ -498,6 +498,36 @@
         return res.send(it);
       })['catch'](aux.errorHandler(res));
     });
+    app.get('/brd/:slug/prj/create', function(req, res){
+      var lc, slug;
+      lc = {};
+      slug = req.params.slug;
+      return cache.stage.check({
+        io: io,
+        type: 'brd',
+        slug: slug,
+        name: 'prj-new'
+      }).then(function(){
+        return io.query("select name,slug,org,detail from brd where slug = $1 and deleted is not true", [slug]);
+      }).then(function(r){
+        var brd, view, ref$, ref1$;
+        r == null && (r = {});
+        if (!(lc.brd = brd = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(400);
+        }
+        if (!(brd.detail.custom && brd.detail.custom.view)) {
+          view = 'view/default/prj-create.pug';
+        } else {
+          view = "view/" + brd.detail.custom.view + "/prj-create.pug";
+        }
+        delete brd.detail;
+        return res.render(view, (ref$ = (ref1$ = {
+          brd: lc.brd
+        }, ref1$.exports = {
+          brd: lc.brd
+        }, ref1$), ref$.domain = req.scope.domain, ref$));
+      })['catch'](aux.errorHandler(res));
+    });
     app.get('/brd/:slug/list', function(req, res){
       var lc, slug;
       lc = {};

@@ -284,6 +284,19 @@ api.get \/brd/:slug/list, throttle.count.user, (req, res) ->
     .then -> res.send it
     .catch aux.error-handler res
 
+app.get \/brd/:slug/prj/create, (req, res) ->
+  lc = {}
+  slug = req.params.slug
+  cache.stage.check {io, type: \brd, slug: slug, name: \prj-new}
+    .then -> io.query """select name,slug,org,detail from brd where slug = $1 and deleted is not true""", [slug]
+    .then (r={}) ->
+      if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
+      if !(brd.detail.custom and brd.detail.custom.view) => view = \view/default/prj-create.pug
+      else view = "view/#{brd.detail.custom.view}/prj-create.pug"
+      delete brd.detail
+      res.render view, lc{brd} <<< {exports: lc{brd}} <<< req.scope{domain}
+    .catch aux.error-handler res
+
 app.get \/brd/:slug/list, (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r400 res
