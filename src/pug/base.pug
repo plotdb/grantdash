@@ -19,6 +19,7 @@ html
     +css("/dash/assets/lib/ldui/ldui.min.css")
     +css("/dash/css/index.css")
     block head
+    script if(/MSIE|Trident/.exec(navigator.userAgent)) { window.location.href = "/dash/err/ie/" };
   body(data-spy=(ctrl.scrollspy?"scroll":false),data-target=(ctrl.scrollspy?ctrl.scrollspy:false))
     //-+script("/js/pack/base.min.js")
     include modules/common.pug
