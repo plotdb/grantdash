@@ -16,10 +16,10 @@ block body
     h4 最新動態
     hr
     each brd in brds
-      .d-flex
+      .d-flex.align-items-center
         .flex-grow-1
           h5.my-0 #{brd.name}
           p.my-0 #{(brd.description || '').substring(0,32)} ...
-        div
-          a.btn.btn-outline-secondary(href=`/brd/${brd.slug}`) 詳情
+        .ml-2
+          a.btn.btn-outline-secondary.text-nowrap(href=`/brd/${brd.slug}`) 詳情
       hr
