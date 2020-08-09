@@ -14,23 +14,31 @@ engine.router.api.post \/me/mail/verify, throttle.count.action.mail, (req, res) 
     .catch aux.error-handler res, true
 
 engine.app.get \/me/mail/verify/:token, throttle.count.ip-md, (req, res) ->
-  local = {}
+  lc = {}
   token = req.params.token
   if !token => return aux.r400 res, "", true
   io.query "select owner,time from mailverifytoken where token = $1", [token]
     .then (r={})->
       if !r.[]rows.length => return aux.reject 403, ""
-      local.obj = obj = r.rows.0
+      lc.obj = obj = r.rows.0
       io.query "delete from mailverifytoken where owner = $1", [obj.owner]
     .then ->
-      if new Date!getTime! - new Date(local.obj.time).getTime! > 1000 * 600 =>
+      if new Date!getTime! - new Date(lc.obj.time).getTime! > 1000 * 600 =>
         return Promise.reject(new lderror(1013))
-      verified = {date: Date.now!}
-      io.query "update users set verified = $2 where key = $1", [local.obj.owner, JSON.stringify(verified)]
-      if req.user =>
+      lc.verified = verified = {date: Date.now!}
+      io.query "update users set verified = $2 where key = $1", [lc.obj.owner, JSON.stringify(verified)]
+      if req.user and req.user.key == lc.obj.owner =>
         req.user.verified = verified
-        return new Promise (res, rej) -> req.logIn(req.user, -> res!); return null
-      else return null
+        new Promise (res, rej) -> req.logIn(req.user, -> res!); return null
+    .then ->
+      io.query "select * from users where key = $1", [lc.obj.owner]
+        .then (r={}) ->
+          if !(u = r.[]rows.0) => return
+          u.verified = lc.verified
+          io.query """
+          update sessions set detail = jsonb_set(detail, '{passport,user}', ($1)::jsonb)
+          where (detail->'passport'->'user'->>'key')::int = $2
+          """, [JSON.stringify(u), lc.obj.owner]
     .then ->
       res.redirect \/dash/auth/mail/verify/done/
       return null
