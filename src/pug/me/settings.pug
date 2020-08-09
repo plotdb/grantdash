@@ -110,11 +110,12 @@ block body
 
             .col-md-4 &nbsp;
         +nbr(3)
-        h3 危險區域
-        hr
-        p 在這裡你可以刪除你的帳號。要刪除帳號的話，請點擊以下按鈕，並依指示再次輸入您的電子郵件地址做為確認。
-        .btn.btn-danger(onclick="lda.ldcvmgr.toggle('delete-account')") 刪除帳號
-        //-include /modules/cover/delete-account.pug
+        //-
+          h3 危險區域
+          hr
+          p 在這裡你可以刪除你的帳號。要刪除帳號的話，請點擊以下按鈕，並依指示再次輸入您的電子郵件地址做為確認。
+          .btn.btn-danger(onclick="lda.ldcvmgr.toggle('delete-account')") 刪除帳號
+          //-include /modules/cover/delete-account.pug
 
 block script
   +script("/dash/js/me/settings.js")
