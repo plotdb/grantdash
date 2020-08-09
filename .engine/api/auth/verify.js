@@ -34,8 +34,8 @@
       })['catch'](aux.errorHandler(res, true));
     });
     return engine.app.get('/me/mail/verify/:token', throttle.count.ipMd, function(req, res){
-      var local, token;
-      local = {};
+      var lc, token;
+      lc = {};
       token = req.params.token;
       if (!token) {
         return aux.r400(res, "", true);
@@ -46,18 +46,18 @@
         if (!(r.rows || (r.rows = [])).length) {
           return aux.reject(403, "");
         }
-        local.obj = obj = r.rows[0];
+        lc.obj = obj = r.rows[0];
         return io.query("delete from mailverifytoken where owner = $1", [obj.owner]);
       }).then(function(){
         var verified;
-        if (new Date().getTime() - new Date(local.obj.time).getTime() > 1000 * 600) {
+        if (new Date().getTime() - new Date(lc.obj.time).getTime() > 1000 * 600) {
           return Promise.reject(new lderror(1013));
         }
-        verified = {
+        lc.verified = verified = {
           date: Date.now()
         };
-        io.query("update users set verified = $2 where key = $1", [local.obj.owner, JSON.stringify(verified)]);
-        if (req.user) {
+        io.query("update users set verified = $2 where key = $1", [lc.obj.owner, JSON.stringify(verified)]);
+        if (req.user && req.user.key === lc.obj.owner) {
           req.user.verified = verified;
           return new Promise(function(res, rej){
             req.logIn(req.user, function(){
@@ -65,9 +65,17 @@
             });
             return null;
           });
-        } else {
-          return null;
         }
+      }).then(function(){
+        return io.query("select * from users where key = $1", [lc.obj.owner]).then(function(r){
+          var u;
+          r == null && (r = {});
+          if (!(u = (r.rows || (r.rows = []))[0])) {
+            return;
+          }
+          u.verified = lc.verified;
+          return io.query("update sessions set detail = jsonb_set(detail, '{passport,user}', ($1)::jsonb)\nwhere (detail->'passport'->'user'->>'key')::int = $2", [JSON.stringify(u), lc.obj.owner]);
+        });
       }).then(function(){
         res.redirect('/dash/auth/mail/verify/done/');
         return null;
