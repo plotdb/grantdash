@@ -641,7 +641,7 @@ ctrl.navtop.shown = true
 ;pug_debug_line = 5;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fbrd.pug";
 ctrl.navtop.placeholder = true
 ;pug_debug_line = 6;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fbrd.pug";
-ctrl.navtop.className="bg-none"
+ctrl.navtop.className="bg-none navbar-light"
 ;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fbrd.pug";
 ctrl.foot.shown = false
 ;pug_debug_line = 13;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
