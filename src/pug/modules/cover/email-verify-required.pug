@@ -1,0 +1,10 @@
+include /modules/common.pug
+.ldcv.ldcvmgr(data-name="auth-required",data-lock="true"): .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
+  h1 電子信箱未認證
+  p 您需完成電子信箱認證後才能使用這個功能
+  br
+  .m-auto.text-left.text-muted
+    p 電子信箱認證信在您註冊時已經同時寄發給您了，但若您未收到信，或者認證信已經過期，您亦可至 #[a(href="/dash/me/settings") 帳號設定] 頁面請求重新寄發一次電子信箱認證信。
+    p 若您持續未收到認證信件，或者因任何理由無法順利認證電子信箱，請 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 與我們聯絡] 。
+    br
+  a.btn.btn-primary.btn-block.btn-lg.mr-2(onclick="window.location.reload()",href="#") 已完成認證，重新載入

@@ -1,6 +1,12 @@
 //- view
 extends base.pug
 block script
+  script var err = !{escjson(err)};
   script: :lsc
     ldc.register <[ldcvmgr]>, ({ldcvmgr}) ->
-      ldcvmgr.toggle \auth-required
+      map = {
+        1000: "auth-required"
+        1021: "email-verify-required"
+      }
+      cover = map[err.id] or "error"
+      ldcvmgr.toggle cover

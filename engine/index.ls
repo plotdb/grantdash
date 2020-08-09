@@ -275,7 +275,7 @@ backend = do
         else res.redirect "/auth/?nexturl=#{req.originalUrl}"
       else
         if err.name == \ldError =>
-          if err.id == 1000 => return res.render "err/custom.pug", {err}
+          if err.id == 1000 => return res.render "err/custom.pug", {err: err{id,message}}
           return res.status 500 .send err
         # ignore some errors that we don't need to take care.
         else if (err instanceof URIError) and "#{err.stack}".startsWith('URIError: Failed to decode param') =>
