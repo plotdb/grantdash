@@ -403,7 +403,10 @@
               if (err.name === 'ldError') {
                 if (err.id === 1000) {
                   return res.render("err/custom.pug", {
-                    err: err
+                    err: {
+                      id: err.id,
+                      message: err.message
+                    }
                   });
                 }
                 return res.status(500).send(err);
