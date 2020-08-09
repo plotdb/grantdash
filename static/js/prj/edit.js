@@ -151,11 +151,7 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
         }).then(function(){
           return this$.ctrlForm.render();
         }).then(function(){
-          return ldcvmgr.toggle('published', true);
-        }).then(function(){
-          return debounce(2000);
-        })['finally'](function(){
-          return ldcvmgr.toggle('published', false);
+          return ldcvmgr.toggle('prj-published', true);
         })['catch'](error());
       });
       return this.adapt();
