@@ -2,7 +2,7 @@
 mixin authpanel
   .inner.card.p-0.border-0.authpanel.signup: .card-body.p-0
     .closebtn(data-ldcv-set="")
-    .vertical-center.p-4.info.position-absolute.h-100.w-50.text-light(style="background: #455667 center center no-repeat;background-size:cover;")
+    .vertical-center.p-4.info.position-absolute.h-100.w-50.text-light
       .position-absolute.w-100.h-100.bg-semi-dark(style="top:0;left:0")
       .text-left.position-relative.z-float.text-shadow
 
@@ -38,7 +38,7 @@ mixin authpanel
       .position-absolute.text-sm(style="bottom:20px;right:20px")
         span Powered by Grant Dash
         //-img(src="/assets/img/c/logo/battledash.svg",style="height:1.3em;vertical-align:-.2em")
-    .form.bg-white.w-50.h-100.d-flex.flex-column.position-absolute(style="margin-left:50%")
+    .form.d-flex.flex-column
       ul.nav.nav-tabs.pt-2.bg-light(
       onclick="this.parentNode.classList.toggle('login');this.parentNode.classList.toggle('signup')")
         li.nav-item.ml-2: a.nav-link(data-action="signup") 註冊
@@ -73,6 +73,6 @@ mixin authpanel
         div
           .sep.sep-text.my-4: span.text-sm 或者用下列登入
           .row
-            .col-sm: .btn.btn-primary.btn-block.btn-sm(onclick="lda.auth.fb()") #[i.i-fb] Facebook
-            .col-sm: .btn.btn-outline-dark.btn-block.btn-sm(onclick="lda.auth.google()") #[i.i-google] Google
+            .col: .btn.btn-primary.btn-block.btn-sm(onclick="lda.auth.fb()") #[i.i-fb] Facebook
+            .col: .btn.btn-outline-dark.btn-block.btn-sm(onclick="lda.auth.google()") #[i.i-google] Google
 
