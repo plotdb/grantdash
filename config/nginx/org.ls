@@ -23,6 +23,8 @@ config = do
  "domain-name": process.argv.2
  "web-root": path.join(root, "static")
  "user-root": path.join(root, "users")
+ "web-path": "static"
+ "user-path": "users"
  "org-slug": process.argv.3
  "brd-slug": process.argv.4
  "server-root": root

@@ -17,9 +17,12 @@ getwd = ->
 
 root = getwd!
 config = do
+ "server-root": root
  "domain-name": process.argv.2
  "web-root": path.join(root, "static")
  "user-root": path.join(root, "user")
+ "web-path": "static"
+ "user-path": "users"
 
 console.log "usage: lsc build <domain-name>"
 if !config["domain-name"] => console.log "run without main domain ( single site mode )... "
