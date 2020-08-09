@@ -42,6 +42,26 @@ block head
       border-radius: .5em
       border: 1px solid #ddd
       box-shadow: 0 2px 4px rgba(0,0,0,.1)
+
+    .submit-panel
+      position: fixed
+      width: 100%
+      background: #fff
+
+    @media (max-width: 768px)
+      .form-inner-box
+        padding: .5em
+        border: none
+        box-shadow: none
+      .page
+        margin: .5em
+      .page.px-4
+        padding: 0!important
+      .submit-panel
+        position: static
+        .d-flex > div
+          width: 100%
+
     .no-break
       page-break-inside: avoid
     .only-print
@@ -252,7 +272,7 @@ block body
           +radio("has-sub", "0", true) 無 ( 勾本項者以下免填 )
           +radio("has-sub", "1", false) 有
         .d-none(ldform,ld="toggler",data-name="has-sub")
-          table.table.table-bordered
+          div(style="overflow-x:scroll"): table.table.table-bordered
             thead
               tr
                 th.no-print
@@ -288,7 +308,7 @@ block body
           +radio("has-perform", "1", false) 有
 
         .d-none(ldform,ld="toggler",data-name="has-perform")
-          table.table.table-bordered
+          div(style="overflow-x:scroll"): table.table.table-bordered
             thead
               tr
                 th.no-print
@@ -373,7 +393,7 @@ block body
           h4.mb-0 預算明細表
           span.mx-1 /
           .text-sm.text-primary.clickable(onclick="lda.ldcvmgr.toggle('flagship-budget-example')") 如何撰寫？
-        table.table.table-bordered.table-tiny
+        div(style="overflow-x:scroll"): table.table.table-bordered.table-tiny
           thead
             tr
               th(rowspan="2")
@@ -519,21 +539,23 @@ block body
       p 四、您得自由選擇是否提供個人資料或行使個人資料保護法第三條所定之權利，但因提供資料不足或有其他冒用、盜用、不實之情形，可能不能獲得補助資格或影響您受領補助之權益。
       p 五、您所提供之個人資料，本院將依據「個人資料保護法」相關規定進行保密。
 
-  .position-fixed.w-100.no-print.bg-white(style="bottom:0;left:0;right:0;padding:1em 0;border-top:1px solid #ccc")
+  +nbr(2)
+
+  .submit-panel.no-print(style="bottom:0;left:0;right:0;padding:1em 0;border-top:1px solid #ccc")
     .w-1024.mx-auto.rwd
-      .d-flex.align-items-stretch
+      .d-flex.align-items-stretch.flex-wrap
         div(ld="not submitted"): .d-flex.align-items-stretch
-          .btn.btn-primary.mr-2(ld="save submit"): .vertical-center: div 暫存進度
-          .btn.btn-primary.mr-2(ld="submit")
+          .btn.btn-primary.mx-1.mb-2(ld="save submit"): .vertical-center: div 暫存進度
+          .btn.btn-primary.mx-1.mb-2(ld="submit")
             span 線上送件
             .text-sm 點選後將不能再修改檔案
         .d-none(ld="submitted")
-          .btn.btn-primary.disabled.mr-2
+          .btn.btn-primary.disabled.mx-1.mb-2
             span 案件已送出
             .text-sm 無法再進行修改
-        .btn.btn-primary.mr-4(ld="download")
+        .btn.btn-primary.mx-1.mb-2(ld="download")
           .vertical-center: .ld-ext-right 線上文件 PDF 檔下載 #[.ld.ld-spin.ld-spinner.ldld]
-        div: .vertical-center: .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
+        .mx-1.mb-2: .vertical-center: .text-danger(ld="ready-state") 您有未完成的欄位，請完成後再送出。
 
   +nbr(2)
 
@@ -574,7 +596,7 @@ block body
   .ldcv.ldcvmgr(data-name="flagship-budget-example"): .base.w-768.rwd: .inner.card: .card-body: .p-2
     h4 預算表填表範例
     p.text-muted.text-sm 「小計」與「補助款」會依據您所填入的單價、數量與自籌款自動計算。備註則為選填。請注意補助款總計不可超過五百萬，且比例不得超過 49% 。
-    table.table.table-bordered.text-sm.my-3
+    div(style="overflow-x:scroll"): table.table.table-bordered.text-sm.my-3
       tr
         th(rowspan="2") 預算科目
         th(rowspan="2") 預算明細

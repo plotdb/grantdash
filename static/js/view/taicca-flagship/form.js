@@ -633,7 +633,9 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
         if (name === 'brief' && (v.length < 300 || v.length > 500)) {
           return 2;
         } else if (name === 'uid') {
-          return /[a-zA-Z][0-9]{9}/.exec(v) ? 0 : 2;
+          return /^[a-zA-Z][0-9]{9}$/.exec(v) ? 0 : 2;
+        } else if (name === 'vatid') {
+          return /^[0-9]{8}$/.exec(v) ? 0 : 2;
         } else if (name === 'found-reason') {
           return v.length > 100 ? 2 : 0;
         } else if (name === 'comment') {

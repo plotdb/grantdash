@@ -356,7 +356,8 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
         if name == \group1-category => ldform.check n: \group1-category-other
         if name == \group2-category => ldform.check n: \group2-category-other
         if name == \brief and (v.length < 300 or v.length > 500) => return 2
-        else if name == \uid => return (if /[a-zA-Z][0-9]{9}/.exec(v) => 0 else 2)
+        else if name == \uid => return (if /^[a-zA-Z][0-9]{9}$/.exec(v) => 0 else 2)
+        else if name == \vatid => return (if /^[0-9]{8}$/.exec(v) => 0 else 2)
         else if name == \found-reason => return (if v.length > 100 => 2 else 0)
         else if name == \comment => return 0
         else if name == \consent => return (if element.checked => 0 else 2)
