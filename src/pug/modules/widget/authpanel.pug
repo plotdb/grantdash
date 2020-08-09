@@ -38,7 +38,7 @@ mixin authpanel
       .position-absolute.text-sm(style="bottom:20px;right:20px")
         span Powered by Grant Dash
         //-img(src="/assets/img/c/logo/battledash.svg",style="height:1.3em;vertical-align:-.2em")
-    .form.bg-white.w-50.h-100.d-flex.flex-column(style="margin-left:50%")
+    .form.bg-white.w-50.h-100.d-flex.flex-column.position-absolute(style="margin-left:50%")
       ul.nav.nav-tabs.pt-2.bg-light(
       onclick="this.parentNode.classList.toggle('login');this.parentNode.classList.toggle('signup')")
         li.nav-item.ml-2: a.nav-link(data-action="signup") 註冊
