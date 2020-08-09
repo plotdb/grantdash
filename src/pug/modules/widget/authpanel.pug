@@ -49,7 +49,7 @@ mixin authpanel
           .form-group
             label 電子郵件
             input.form-control.form-control-sm(name="email",placeholder="電子郵件即您的帳號名稱")
-            .invalid-feedback 無效的電子郵件
+            .invalid-feedback(style="margin-bottom:-.75em") 無效的電子郵件
           .form-group(data-show="signup")
             label 顯示名稱
             input.form-control.form-control-sm(name="displayname",placeholder="例如：王小明")
@@ -57,7 +57,7 @@ mixin authpanel
           .form-group
             label 密碼
             input.form-control.form-control-sm(name="passwd",placeholder="密碼，至少八個字元",type="password")
-            .invalid-feedback 不合格的密碼
+            .invalid-feedback(style="margin-bottom:-.75em") 不合格的密碼
           .form-group
             .text-center.form-text.text-muted.small
               | 登入即表示您同意我們的 #[a(href="/dash/tos/",target="_blank",rel="noopener noreferrer") 用戶條款] 與 #[a(href="/dash/privacy/",target="_blank") 隱私權政策]
