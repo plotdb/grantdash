@@ -3775,7 +3775,7 @@ pug_html = pug_html + "\u002F 會顯示在個人檔案中\u003C\u002Fsmall\u003E
 ;pug_debug_line = 60;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
 pug_html = pug_html + "\u003C\u002Flabel\u003E";
 ;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
-pug_html = pug_html + "\u003Ctextarea class=\"form-control\" name=\"tags\" rows=\"1\" placeholder=\"寫幾個跟你有關的關鍵詞吧\"\u003E";
+pug_html = pug_html + "\u003Ctextarea class=\"form-control\" name=\"tags\" rows=\"1\" placeholder=\"關於你的關鍵字，以逗號 ',' 分隔\"\u003E";
 ;pug_debug_line = 62;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = user.tags) ? "" : pug_interp)) + "\u003C\u002Ftextarea\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 63;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
