@@ -27,7 +27,8 @@ block body
 
   +scope("prj-form-use").w-1024.mx-auto.rwd.typeset.heading-contrast
     .d-flex.w-100
-      .mr-4.p-4.rounded.border(style="background:linear-gradient(315deg,#f4f5f6,#fff);min-height:calc(100vh - 7em)")
+      .mr-4.p-4.rounded.border.d-none.d-md-block(
+      style="background:linear-gradient(315deg,#f4f5f6,#fff);min-height:calc(100vh - 7em)")
         .h-100(pd="init-loader",style="width:250px")
         .pb-4.mb-4.h-100.d-none(pd="content")
           h3.my-0.d-none(ld="nview") 編輯提案
@@ -98,23 +99,25 @@ block body
             .d-none(ld="to-fix"): .d-flex.align-items-center
               .mr-2: i.i-question.text-primary
               .flex-grow-1 您尚有#[span(ld="remain") 數]個欄位須修正，在請修正完成過後，便能發布您的提案。
-              .btn.btn-outline-primary.disabled 發布提案
+              .btn.btn-outline-primary.disabled 送件
             .d-none(ld="to-publish"): .d-flex.align-items-center
               .mr-2: i.i-question.text-primary
-              .flex-grow-1 填完後請記得按下發布，以確保案件正確送出。
-              .btn.btn-primary(ld="submit") 發布提案
+              .flex-grow-1 填完後請記得按下「送件」，以確保案件正確送出。
+              .btn.btn-primary.ml-2(ld="submit") 送件
             .d-none(ld="published"): .d-flex.align-items-center
               .flex-grow-1
-              .btn.btn-outline-primary.disabled 提案已發布
+              .btn.btn-outline-primary.disabled 案件已送出
             //-.flex-grow-1 您的任何修改都會即時儲存到系統中，因此不用擔心資料會遺失。不過，一旦有修改，在您正式按下發布按鈕之前，您的填答並不會正式被更新到您的提案內容中，請在確認完成填答並打算發表的時候，按下「儲存並發布」按鈕。
 
         //- for space of fixed alert
         +nbr(2)
 
-    .sticky.w-1024.mx-auto.z-float(style="bottom:2em;padding-right:1em")
+    .sticky.w-1024.rwd.mx-auto.z-float(style="bottom:2em")
       .d-none(ld="to-publish"): .alert.alert-info.d-flex.align-items-center.shadow-sm
-        .flex-grow-1 您有尚未發布的修改，記得按「發布提案」更新提案的最新版本喔！
-        div: .btn.btn.btn-primary.mr-2(ld="submit") 發布提案
+        .flex-grow-1
+          span 您有尚未發布的修改
+          span.d-none.d-md-inline-block ，記得按「送件」更新提案的最新版本喔！
+        div: .btn.btn.btn-primary.mr-1(ld="submit") 送件
         //-div: .btn.btn.btn-outline-primary(ld="cancel") 取消並還原
       .d-none(ld="to-fix"): .alert.alert-warning.d-flex.align-items-center.shadow-sm
         .flex-grow-1 您尚有#[span(ld="remain") 數]個欄位須修正，在請修正完成過後，便能發布您的提案。

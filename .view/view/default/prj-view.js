@@ -3793,7 +3793,7 @@ pug_html = pug_html + "討論提問\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Ca" + (" class=\"btn btn-primary btn-block text-white my-4 d-none\""+" pd=\"stage-ctrl\" data-name=\"prj-new\""+pug_attr("href", `/dash/brd/${prj.brd}/prj/create`, true, true)) + "\u003E";
 ;pug_debug_line = 72;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fprj-view.pug";
-pug_html = pug_html + "我也要提案\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "我要提案\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 73;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"col-md-10\"\u003E";
 ;pug_debug_line = 74;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Fprj-view.pug";

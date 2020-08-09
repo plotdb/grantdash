@@ -77,9 +77,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
         .finally -> ldcvmgr.toggle \publishing, false
         .then ~> @prj.detail = JSON.parse(JSON.stringify(answer))
         .then ~> @ctrl-form.render!
-        .then -> ldcvmgr.toggle \published, true
-        .then -> debounce 2000
-        .finally -> ldcvmgr.toggle \published, false
+        .then -> ldcvmgr.toggle \prj-published, true
         .catch error!
     @adapt!
 

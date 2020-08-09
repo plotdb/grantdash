@@ -1,0 +1,13 @@
+include /modules/common.pug
+.ldcv.ldcvmgr(data-name="publishing"): .base.w-480: .inner.card: .card-body: .p-4
+  .text-center
+    h3 送件完成
+    .py-3.text-lg: .ld.ld-jump-in: i.i-check.text-lg.text-success
+  .text-left
+    p 您已將提案內容送出。您可以留在此頁繼續做調整，若有任何修改，亦請記得再次按下送出，我們才能正確收到您的修改。
+    p 您亦可從個人選單中的「#[a(href="/dash/me/") 個人頁面]」看到您的提案。
+  br
+  .row
+    .col-sm.mb-2: a.btn.btn-lg.btn-block.btn-outline-primary(href="/dash/me/") 個人頁面
+    .col-sm.mb-2: .btn.btn-lg.btn-block.btn-primary(data-ldcv-set="") 關閉
+
