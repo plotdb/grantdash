@@ -14,9 +14,18 @@
 #nav-top nav.navbar .navbar-brand a {
   color: #222;
 }
+@media (max-width: 768px) {
+  .navbar-collapse {
+    background: rgba(255,255,255,0.9);
+    padding: 1em;
+    border-radius: 0.5em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+}
 .authpanel,
 .ldcv > .base > .inner.authpanel {
   background: none;
+  margin: 0 auto;
   width: 700px;
   height: 510px;
   max-width: 100%;
