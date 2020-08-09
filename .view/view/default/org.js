@@ -3621,10 +3621,6 @@ pug_html = pug_html + (pug_escape(null == (pug_interp = (org.description || '').
 pug_html = pug_html + " ...\u003C\u002Fp\u003E";
 ;pug_debug_line = 12;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
 pug_html = pug_html + "\u003Cdiv class=\"py-2\"\u003E";
-;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
-pug_html = pug_html + "\u003Cdiv class=\"btn btn-sm btn-outline-secondary mr-2\" onclick=\"lda.general.admin()\"\u003E";
-;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
-pug_html = pug_html + "主控台\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
 pug_html = pug_html + "\u003Cdiv class=\"btn btn-sm btn-outline-secondary mr-2\" onclick=\"lda.general.profile()\"\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
