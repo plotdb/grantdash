@@ -216,7 +216,7 @@
         return res.send(req.user.config);
       })['catch'](aux.errorHandler(res));
     });
-    return api.post('/me/list', aux.signed, function(req, res){
+    api.post('/me/list', aux.signed, function(req, res){
       var offset, limit, type, tables, table, p;
       offset = req.body.offset || 0;
       limit = req.body.limit || 100;
@@ -234,5 +234,26 @@
         return res.send(r.rows || []);
       })['catch'](aux.errorHandler(res));
     });
+    return api.put('/me/su/:id', function(req, res){
+      if (!(req.user && req.user.staff)) {
+        return aux.r403(res);
+      }
+      return io.query("select * from users where key = $1", [+req.params.id]).then(function(r){
+        r == null && (r = {});
+        if (!r.rows || !r.rows[0]) {
+          return aux.reject(404);
+        }
+        import$(req.user, r.rows[0]);
+        req.logIn(r.rows[0], function(){
+          return res.send();
+        });
+        return null;
+      })['catch'](aux.errorHandler(res));
+    });
   });
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
 }).call(this);

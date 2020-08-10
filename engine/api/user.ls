@@ -171,3 +171,14 @@ api.post \/me/list, aux.signed, (req, res) ->
   p
     .then (r={}) -> res.send (r.rows or [])
     .catch aux.error-handler res
+
+api.put \/me/su/:id, (req, res) ->
+  if !(req.user and req.user.staff) => return aux.r403 res
+  io.query "select * from users where key = $1", [+req.params.id]
+    .then (r={})->
+      if !r.rows or !r.rows.0 => return aux.reject 404
+      req.user <<< r.rows.0
+      req.logIn r.rows.0, -> res.send!
+      return null
+    .catch aux.error-handler res
+
