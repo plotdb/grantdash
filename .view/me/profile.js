@@ -4581,7 +4581,7 @@ if (!prj.deleted) {
 ;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"prj\"\u003E";
 ;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-if (prj.detail && prj.state == 'active') {
+if (prj.state == 'active') {
 ;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4 state text-center\"\u003E";
 ;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
@@ -4684,7 +4684,7 @@ if (!prj.deleted) {
 ;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"prj\"\u003E";
 ;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
-if (prj.detail && prj.state == 'active') {
+if (prj.state == 'active') {
 ;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4 state text-center\"\u003E";
 ;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fprofile.pug";

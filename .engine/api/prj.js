@@ -248,7 +248,7 @@
         if (!lc.brd.org) {
           return aux.reject(404);
         }
-        return io.query("insert into prj (name,description,brd,grp,slug,owner)\nvalues ($1,$2,$3,$4,$5,$6) returning key", [name, description, brd, grp, slug, req.user.key]);
+        return io.query("insert into prj (name,description,brd,grp,slug,owner,state)\nvalues ($1,$2,$3,$4,$5,$6,'pending') returning key", [name, description, brd, grp, slug, req.user.key]);
       }).then(function(r){
         r == null && (r = {});
         lc.ret = ((r.rows || (r.rows = [])) || [])[0];

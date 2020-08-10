@@ -40,7 +40,7 @@ block body
           each prj in prjs
             if !prj.deleted
               .prj
-                if prj.detail && prj.state == 'active'
+                if prj.state == 'active'
                   .m-4.state.text-center
                     .text-lg: i.i-radio.text-success
                     .badge.badge-success 已發布

@@ -103,8 +103,8 @@ api.post \/prj/, aux.signed, throttle.count.user-md, express-formidable!, grecap
       #if (limit = (+grpinfo.{}info.limit or 0)) =>
 
       io.query """
-      insert into prj (name,description,brd,grp,slug,owner)
-      values ($1,$2,$3,$4,$5,$6) returning key
+      insert into prj (name,description,brd,grp,slug,owner,state)
+      values ($1,$2,$3,$4,$5,$6,'pending') returning key
       """, [name, description, brd, grp, slug, req.user.key]
     .then (r = {}) ->
       lc.ret = (r.[]rows or []).0
