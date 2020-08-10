@@ -387,7 +387,7 @@
         }
         if (type === 'prj') {
           thumb = (info.thumb || {}).fn;
-          return io.query("update prj set (name,description,category,tag,thumb) = ($1,$2,$3,$4,$5)\nwhere slug = $6 and deleted is not true", [name, description, info.category || '', JSON.stringify(info.tag || []), thumb, slug]);
+          return io.query("update prj set (name,description,category,tag,thumb,state) = ($1,$2,$3,$4,$5,'active')\nwhere slug = $6 and deleted is not true", [name, description, info.category || '', JSON.stringify(info.tag || []), thumb, slug]);
         } else if (type === 'brd') {
           time = ['starttime', 'endtime'].map(function(it){
             var ret;

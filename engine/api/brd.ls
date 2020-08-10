@@ -215,7 +215,7 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
       if type == \prj
         thumb = (info.thumb or {}).fn
         io.query """
-        update prj set (name,description,category,tag,thumb) = ($1,$2,$3,$4,$5)
+        update prj set (name,description,category,tag,thumb,state) = ($1,$2,$3,$4,$5,'active')
         where slug = $6 and deleted is not true
         """, [name,description,(info.category or ''),JSON.stringify((info.tag or [])),thumb,slug]
       else if type == \brd
