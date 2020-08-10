@@ -136,21 +136,28 @@ Printer = (opt = {}) ->
   @
 
 Printer.prototype = Object.create(Object.prototype) <<< do
-  print: (payload = {}) ->
-    lc = {}
-    @get!
-      .then (obj) ->
-        lc.obj = obj
-        if payload.html => obj.page.setContent payload.html, {waitUntil: "networkidle0"}
-        else if payload.url => obj.page.goto payload.url
-        else return Promise.reject(new ldError(1015))
-      .then -> lc.obj.page.pdf format: \A4
-      .then -> lc.pdf = it
-      .then ~> @free lc.obj
-      .then -> return lc.pdf
+  exec: (cb) ->
+    lc = {trial: 0}
+    _ = ~>
+      @get!
+        .then (obj) -> lc.obj = obj
+        .then -> cb(lc.obj.page)
+        .then -> lc.ret = it
+        .catch ~>
+          if (lc.trial++) > 5 => return Promise.reject new lderror(0)
+          @respawn lc.obj .then -> _!
+        .then ~> @free lc.obj
+        .then -> return lc.ret
+    _!
+
+  print: (payload = {}) -> @exec (page) ->
+    p = if payload.html => page.setContent payload.html, {waitUntil: "networkidle0"}
+    else if payload.url => page.goto payload.url
+    else Promise.reject(new ldError(1015))
+    p.then -> page.pdf format: \A4
 
   get: -> new Promise (res, rej) ~>
-    for i from 0 til @count =>
+    for i from 0 til @pages.length =>
       if !@pages[i].busy =>
         @pages[i].busy = true
         return res @pages[i]
@@ -163,6 +170,13 @@ Printer.prototype = Object.create(Object.prototype) <<< do
     else
       obj.busy = false
 
+  respawn: (obj) ->
+    Promise.resolve!
+      .then -> if !(obj.page.isClosed!) => page.close!
+      .catch -> # failed to close. anyway, just ignore it and create a new page.
+      .then -> Printer.browser.newPage!
+      .then (page) ~> obj.page = page
+
   init: ->
     (if Printer.browser => Promise.resolve(that) else puppeteer.launch({headless: true, args: <[--no-sandbox]>}))
       .then (browser) ~>
@@ -170,5 +184,5 @@ Printer.prototype = Object.create(Object.prototype) <<< do
         Promise.all (for i from 0 til @count => browser.newPage!then(-> {busy: false, page: it}))
       .then ~> @pages = it
 
-printer = new Printer {count: 20}
+printer = new Printer {count: 15}
 printer.init!

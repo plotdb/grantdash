@@ -223,38 +223,56 @@
       return this;
     };
     Printer.prototype = import$(Object.create(Object.prototype), {
-      print: function(payload){
-        var lc, this$ = this;
-        payload == null && (payload = {});
-        lc = {};
-        return this.get().then(function(obj){
-          lc.obj = obj;
-          if (payload.html) {
-            return obj.page.setContent(payload.html, {
-              waitUntil: "networkidle0"
+      exec: function(cb){
+        var lc, _, this$ = this;
+        lc = {
+          trial: 0
+        };
+        _ = function(){
+          return this$.get().then(function(obj){
+            return lc.obj = obj;
+          }).then(function(){
+            return cb(lc.obj.page);
+          }).then(function(it){
+            return lc.ret = it;
+          })['catch'](function(){
+            if ((lc.trial++) > 5) {
+              return Promise.reject(new lderror(0));
+            }
+            return this$.respawn(lc.obj).then(function(){
+              return _();
             });
-          } else if (payload.url) {
-            return obj.page.goto(payload.url);
-          } else {
-            return Promise.reject(new ldError(1015));
-          }
-        }).then(function(){
-          return lc.obj.page.pdf({
-            format: 'A4'
+          }).then(function(){
+            return this$.free(lc.obj);
+          }).then(function(){
+            return lc.ret;
           });
-        }).then(function(it){
-          return lc.pdf = it;
-        }).then(function(){
-          return this$.free(lc.obj);
-        }).then(function(){
-          return lc.pdf;
+        };
+        return _();
+      },
+      print: function(payload){
+        payload == null && (payload = {});
+        return this.exec(function(page){
+          var p;
+          p = payload.html
+            ? page.setContent(payload.html, {
+              waitUntil: "networkidle0"
+            })
+            : payload.url
+              ? page.goto(payload.url)
+              : Promise.reject(new ldError(1015));
+          return p.then(function(){
+            return page.pdf({
+              format: 'A4'
+            });
+          });
         });
       },
       get: function(){
         var this$ = this;
         return new Promise(function(res, rej){
           var i$, to$, i;
-          for (i$ = 0, to$ = this$.count; i$ < to$; ++i$) {
+          for (i$ = 0, to$ = this$.pages.length; i$ < to$; ++i$) {
             i = i$;
             if (!this$.pages[i].busy) {
               this$.pages[i].busy = true;
@@ -275,6 +293,18 @@
         } else {
           return obj.busy = false;
         }
+      },
+      respawn: function(obj){
+        var this$ = this;
+        return Promise.resolve().then(function(){
+          if (!obj.page.isClosed()) {
+            return page.close();
+          }
+        })['catch'](function(){}).then(function(){
+          return Printer.browser.newPage();
+        }).then(function(page){
+          return obj.page = page;
+        });
       },
       init: function(){
         var that, this$ = this;
@@ -306,7 +336,7 @@
       }
     });
     printer = new Printer({
-      count: 20
+      count: 15
     });
     return printer.init();
   });
