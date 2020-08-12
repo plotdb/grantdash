@@ -81,7 +81,24 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       }, {
         type: 'json'
       }).then(function(it){
+        var j, ref$, key$, ref1$, filterName;
         this$.prjs = it;
+        j = (ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {}))[key$ = this$.type] || (ref$[key$] = {});
+        filterName = [];
+        if (j["filter-criteria"]) {
+          filterName.push('criteria');
+        }
+        if (j["filter-primary"]) {
+          filterName.push('shortlist');
+        }
+        if (filterName.length) {
+          this$.prjs = (this$.prjs || []).filter(function(p){
+            return filterName.reduce(function(a, b){
+              var ref$;
+              return a && ((ref$ = p.system || (p.system = {})).badge || (ref$.badge = {}))[b];
+            }, true);
+          });
+        }
         this$.prjs.map(function(it){
           this$.prjkeymap[it.key] = it;
           if (it.name.length > 25) {
@@ -100,7 +117,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         method: 'POST'
       }, {
         json: {
-          fields: ['criteria', 'grade', 'form', 'judgePerm']
+          fields: ['criteria', 'grade', 'judge', 'form', 'judgePerm']
         },
         type: 'json'
       }).then(function(ret){

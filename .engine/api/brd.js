@@ -688,7 +688,7 @@
         return aux.r400(res);
       }
       fields = ((ref$ = req.body).fields || (ref$.fields = [])).filter(function(it){
-        return it === 'grade' || it === 'criteria' || it === 'form' || it === 'judgePerm';
+        return it === 'grade' || it === 'judge' || it === 'criteria' || it === 'form' || it === 'judgePerm';
       });
       return io.query("select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [brd]).then(function(r){
         var ret, g, ref$, grpinfo, i$, len$, f, jp, emails;

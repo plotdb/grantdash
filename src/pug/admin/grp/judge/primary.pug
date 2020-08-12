@@ -8,7 +8,32 @@
     a.btn.btn-outline-primary(ld="primary-all-link",target="_blank", rel="noopener noreferrer",
     href="#") 瀏覽總表
     hr
-    .d-none.my-2(ld-each="primary-judge"): .d-flex.align-items-center
+    .row
+      .col-md
+        .form-group.d-flex.align-items-center
+          .flex-grow-1
+            div 過濾評選結果
+            .text-muted.text-sm 評選表僅列出依資格審查通過的專案
+          div: .switch.switch-lg(ld="switch",data-name="filter-criteria")
+      .col-md
+        .form-group.d-flex.align-items-center
+          .flex-grow-1
+            div 評審匿名
+            .text-muted.text-sm 若啟用，總表將會顯示評審名稱
+          div: .switch.switch-lg(ld="switch",data-name="anonymous")
+    .row
+      .col-md
+        .form-group.d-flex.align-items-center
+          .flex-grow-1
+            div 選項類型
+            .text-muted.text-sm 快選的選項項目與文字
+          div
+            select.form-control(ld="choice",data-name="option-type")
+              option(value="") 推薦、面議、汰除
+              option(value="2way") 通過、拒絕
+      .col-md
+
+    //-.d-none.my-2(ld-each="primary-judge"): .d-flex.align-items-center
       a.mr-2(href="#",style="flex:0 0 10em",ld="name",target="_blank", rel="noopener noreferrer")
       .flex-grow-1(ld="progress")
         .progress

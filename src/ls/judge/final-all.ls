@@ -3,6 +3,7 @@
 
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
+  @judge-base = obj
   @data = {prj: {}}
   @active = null
   @progress = {total: 1, done: 0}
@@ -83,7 +84,10 @@ Ctrl = (opt) ->
 
       judge: do
         list: ({context}) ~> @judge
-        handler: ({node, data}) -> ld$.find(node, 'div', 0).innerText = data.name
+        handler: ({node, data, idx}) ~>
+          name = if @grpinfo.{}judge.{}final.anonymous => "評審#{idx + 1}" else data.name
+          ld$.find(node, 'div', 0).innerText = name
+
         action: click: ({node, data, evt}) ~>
           if !(evt.target and (n = evt.target.getAttribute(\data-name))) => return
           @sort "judge-#{n}", data
@@ -172,8 +176,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @auth!
       .then ~> @init-view!
       .then ~> @fetch-info!
-      .then ~>
-        @judge = @grpinfo.{}judgePerm.[]list
+      .then ~> @judge = @grpinfo.{}judgePerm.[]list
       .then ~>
         if !@grpinfo.grade => ldcvmgr.get('judge-grade-missing')
         else @grade = @grpinfo.grade.entries

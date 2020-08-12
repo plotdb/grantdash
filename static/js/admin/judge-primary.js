@@ -9,11 +9,12 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
+    this.path = opt.path;
     this.brd = opt.brd;
     this.grp = null;
     this.view = {};
     this.data = {};
-    return this;
+    this.obj = {};
     adminPanel.on('active', function(arg$){
       var nav, name, panel;
       nav = arg$.nav, name = arg$.name, panel = arg$.panel;
@@ -26,7 +27,40 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
     });
     this.view = new ldView({
       root: this.root,
+      action: {
+        change: {
+          choice: function(arg$){
+            var node, n;
+            node = arg$.node;
+            n = node.getAttribute('data-name');
+            this$.obj[n] = node.value;
+            return this$.update();
+          }
+        },
+        click: {
+          'switch': function(arg$){
+            var node, n;
+            node = arg$.node;
+            n = node.getAttribute('data-name');
+            node.classList.toggle('on');
+            this$.obj[n] = node.classList.contains('on');
+            return this$.update();
+          }
+        }
+      },
       handler: {
+        choice: function(arg$){
+          var node, n;
+          node = arg$.node;
+          n = node.getAttribute('data-name');
+          return node.value = this$.obj[n] || '';
+        },
+        'switch': function(arg$){
+          var node, n;
+          node = arg$.node;
+          n = node.getAttribute('data-name');
+          return node.classList.toggle('on', !!this$.obj[n]);
+        },
         "primary-user-link": function(arg$){
           var node;
           node = arg$.node;
@@ -81,9 +115,25 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
     });
     return this;
   };
-  Ctrl.prototype = import$(Object.create(Object.prototype), {
+  Ctrl.prototype = import$(import$(Object.create(Object.prototype), sdbAdapter['interface']), {
+    opsIn: function(arg$){
+      var data, ops, source;
+      data = arg$.data, ops = arg$.ops, source = arg$.source;
+      if (source) {
+        return;
+      }
+      this.obj = JSON.parse(JSON.stringify(data || {}));
+      return this.view.update();
+    },
+    update: function(){
+      var this$ = this;
+      return this.opsOut(function(){
+        return this$.obj;
+      });
+    },
     prepare: function(){
       var this$ = this;
+      return Promise.resolve();
       return ld$.fetch("/dash/api/brd/" + this.brd.slug + "/grp/" + this.grp.key + "/judge/primary/all", {
         method: 'GET'
       }, {
