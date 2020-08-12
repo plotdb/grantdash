@@ -4,9 +4,11 @@
 Ctrl = (opt = {}) ->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
+  @path = opt.path
   @brd = opt.brd
   @grp = null
   @data = {}
+  @obj = {}
 
   admin-panel.on \active, ({nav, name, panel}) ~>
     if !(nav == \grp-judge and name == \final) => return
@@ -16,7 +18,18 @@ Ctrl = (opt = {}) ->
 
   @view = new ldView do
     root: @root
+    action: click: do
+      switch: ({node}) ~>
+        n = node.getAttribute(\data-name)
+        node.classList.toggle \on
+        @obj[n] = node.classList.contains \on
+        @update!
+
     handler: do
+      switch: ({node}) ~>
+        n = node.getAttribute(\data-name)
+        node.classList.toggle \on, !!@obj[n]
+
       "final-user-link": ({node}) ~>
         if !@grp => return
         node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/final/user"
@@ -42,7 +55,14 @@ Ctrl = (opt = {}) ->
 
   @
 
-Ctrl.prototype = Object.create(Object.prototype) <<< do
+Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+  ops-in: ({data, ops, source}) ->
+    if source => return
+    @obj = JSON.parse(JSON.stringify(data or {}))
+    @view.update!
+
+  update: -> @ops-out ~> @obj
+
   prepare: ->
     ld$.fetch "/dash/api/brd/#{@brd.slug}/grp/#{@grp.key}/judge/final/all", {method: \GET}, {type: \json}
       .then ~>

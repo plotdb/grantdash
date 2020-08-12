@@ -10,6 +10,7 @@ ldc.register('adminJudgeCriteria', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'a
       ? document.querySelector(opt.root)
       : opt.root;
     this.brd = opt.brd;
+    this.path = opt.path;
     this.grp = null;
     this.data = {};
     adminPanel.on('active', function(arg$){

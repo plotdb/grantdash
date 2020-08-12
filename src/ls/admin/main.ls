@@ -2,11 +2,13 @@ ldc.register \adminGuard,
 <[navtop ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
 adminPrjList prjForm adminEntry adminWelcome adminPage
-adminPrjDetail adminPostList adminJudgePerm adminJudgeCriteria adminJudgePrimary adminJudgeFinal adminDev]>,
+adminPrjDetail adminPostList adminJudgePerm adminJudgeCriteria adminJudgePrimary adminJudgeFinal adminDev
+adminJudgeCustom]>,
 ({navtop, ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
 admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail,
-admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, admin-judge-final, adminDev}) ->
+admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, admin-judge-final,
+adminDev, adminJudgeCustom}) ->
 
   Ctrl = ->
     @loader = loader
@@ -107,7 +109,8 @@ admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, ad
       (k) <~ [k for k of @ctrl.grp].map _
       if @ctrl.grp[k].set-data => @ctrl.grp[k].set-data @grp
       if !@ctrl.grp[k].adapt => return
-      p = ['group', idx, k]
+      p = ['group', idx]
+      p = p ++ (if @ctrl.grp[k].path => that else [k])
       if !@ctrl.grp[k].adapted! or force-adapt => @ctrl.grp[k].adapt {hub: @hubs.brd, path: p}
       else @ctrl.grp[k].set-path p
 
@@ -163,9 +166,10 @@ admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, ad
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
         ..list = new admin-prj-list {root: '[ld-scope=prj-list]', toc}
         ..judgePerm = new admin-judge-perm {root: '[ld-scope=judge-perm]', toc, brd: toc.brd}
-        ..judgeCriteria = new admin-judge-criteria {root: '[ld-scope=judge-criteria]', toc, brd: toc.brd}
-        ..judgePrimary = new admin-judge-primary {root: '[ld-scope=judge-primary]', toc, brd: toc.brd}
-        ..judgeFinal = new admin-judge-final {root: '[ld-scope=judge-final]', toc, brd: toc.brd}
+        ..judgeCriteria = new admin-judge-criteria {root: '[ld-scope=judge-criteria]', toc, brd: toc.brd, path:<[judge criteria]>}
+        ..judgePrimary = new admin-judge-primary {root: '[ld-scope=judge-primary]', toc, brd: toc.brd, path: <[judge primary]>}
+        ..judgeFinal = new admin-judge-final {root: '[ld-scope=judge-final]', toc, brd: toc.brd, path: <[judge final]>}
+        #..judgeCustom = new admin-judge-custom {root: '[ld-scope=judge-custom]', toc, brd: toc.brd}
 
       @ctrl.prj
         ..main = new admin-prj-detail {root: '[ld-scope=prj-detail]'}

@@ -17,6 +17,7 @@ clsset = (node, val) ->
 
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
+  @type = \primary
   @data = {prj: {}}
   @active = null
 
@@ -43,6 +44,16 @@ Ctrl = (opt) ->
     text: do
       count: ({node}) ~> @progress[typemap[+node.getAttribute(\data-name)]] or 0
     handler: do
+      option: ({node}) ~>
+        v = node.getAttribute(\data-value)
+        jinfo = @grpinfo.{}judge.{}primary or {}
+        text = if !jinfo["option-type"] => {"0": "推薦", "1": "面議", "2": "淘汰"}[v]
+        else if jinfo["option-type"] == \2way => {"0": "通過", "2": "拒絕"}[v]
+        else ""
+        ld$.find(node, 'span', 0).innerText = text
+        node.classList.toggle \d-none, !text
+
+
       "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
@@ -102,10 +113,12 @@ Ctrl = (opt) ->
             handler: do
               "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
               "has-comment": ({node, context}) ~>
-                node.classList.toggle \invisible, !@data.prj{}[context.key].comment
+                node.classList.toggle \text-primary, !!@data.prj{}[context.key].comment
               option: ({node, local, context}) ~>
                 name = +node.getAttribute(\data-name)
                 cls = bgmap[name]
+                if name == 1 =>
+                  node.classList.toggle \d-none, (@grpinfo.{}judge.{}primary["option-type"] == \2way)
                 act = if (@data.prj{}[context.key].v == name) => \add else \remove
                 node.classList[act].apply node.classList, [cls, 'text-white']
 

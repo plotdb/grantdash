@@ -242,7 +242,7 @@
         brd: brd,
         grp: grp
       }).then(function(){
-        return io.query("select p.key, p.name, p.slug, p.detail->'info' as info, u.displayname as ownername from prj as p\nleft join users as u on u.key = p.owner\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
+        return io.query("select p.key, p.name, p.slug, p.detail->'info' as info, p.system, u.displayname as ownername from prj as p\nleft join users as u on u.key = p.owner\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
       }).then(function(r){
         r == null && (r = {});
         return res.send(r.rows || (r.rows = []));

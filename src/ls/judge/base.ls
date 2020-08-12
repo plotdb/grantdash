@@ -40,9 +40,15 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     console.log "fetch prjs ... "
     # TODO unify prj list with general list api
     # Always fetch full list, but filter it in client
-    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge-list", {method: \GET}, { type: \json}
+    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge-list", {method: \GET}, { type: \json }
       .then ~>
         @prjs = it
+        j = @grpinfo.{}judge{}[@type]
+        filter-name = []
+        if j["filter-criteria"] => filter-name.push \criteria
+        if j["filter-primary"] => filter-name.push \shortlist
+        if filter-name.length =>
+          @prjs = (@prjs or []).filter((p)~> filter-name.reduce(((a,b) -> a and p.{}system.{}badge[b]),true))
         @prjs.map ~>
           @prjkeymap[it.key] = it
           if it.name.length > 25 => it.name = it.name.substring(0,25) + "..."
@@ -52,7 +58,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     console.log "fetch info ... "
     ld$.fetch(
       "/dash/api/brd/#{@brd}/grp/#{@grp}/info"
-      {method: \POST}, {json: {fields: <[criteria grade form judgePerm]>}, type: \json}
+      {method: \POST}, {json: {fields: <[criteria grade judge form judgePerm]>}, type: \json}
     )
       .then (ret) ~>
         @brdinfo = ret.brd

@@ -25,6 +25,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
   Ctrl = function(opt){
     var obj, renderDebounce, view, this$ = this;
     import$(this, obj = new judgeBase(opt));
+    this.type = 'primary';
     this.data = {
       prj: {}
     };
@@ -91,6 +92,24 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
         }
       },
       handler: {
+        option: function(arg$){
+          var node, v, jinfo, ref$, ref1$, text;
+          node = arg$.node;
+          v = node.getAttribute('data-value');
+          jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
+          text = !jinfo["option-type"]
+            ? {
+              "0": "推薦",
+              "1": "面議",
+              "2": "淘汰"
+            }[v]
+            : jinfo["option-type"] === '2way' ? {
+              "0": "通過",
+              "2": "拒絕"
+            }[v] : "";
+          ld$.find(node, 'span', 0).innerText = text;
+          return node.classList.toggle('d-none', !text);
+        },
         "show-budget": function(arg$){
           var node, ref$;
           node = arg$.node;
@@ -231,13 +250,16 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                 "has-comment": function(arg$){
                   var node, context, ref$, key$;
                   node = arg$.node, context = arg$.context;
-                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment);
+                  return node.classList.toggle('text-primary', !!((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment);
                 },
                 option: function(arg$){
-                  var node, local, context, name, cls, act, ref$, key$;
+                  var node, local, context, name, cls, ref$, ref1$, act, key$;
                   node = arg$.node, local = arg$.local, context = arg$.context;
                   name = +node.getAttribute('data-name');
                   cls = bgmap[name];
+                  if (name === 1) {
+                    node.classList.toggle('d-none', ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {}))["option-type"] === '2way');
+                  }
                   act = ((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).v === name ? 'add' : 'remove';
                   return node.classList[act].apply(node.classList, [cls, 'text-white']);
                 }

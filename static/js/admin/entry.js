@@ -45,7 +45,7 @@ ldc.register('adminEntry', ['sdbAdapter'], function(arg$){
             var node, evt, key, newData;
             node = arg$.node, evt = arg$.evt;
             obj.data.lastkey = key = (obj.data.lastkey || 0) + 1;
-            obj.data.entries.push(newData = {
+            obj.data.entries.push(newData = opt.sample || {
               name: "新項目",
               description: "未準備詳細描述的項目",
               key: key

@@ -4,11 +4,12 @@
 Ctrl = (opt = {}) ->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
+  @path = opt.path
   @brd = opt.brd
   @grp = null
   @view = {}
   @data = {}
-  return @
+  @obj = {}
 
   admin-panel.on \active, ({nav, name, panel}) ~>
     if !(nav == \grp-judge and name == \primary) => return
@@ -18,7 +19,29 @@ Ctrl = (opt = {}) ->
 
   @view = new ldView do
     root: @root
+    action: do
+      change: do
+        choice: ({node}) ~>
+          n = node.getAttribute(\data-name)
+          @obj[n] = node.value
+          @update!
+
+      click: do
+        switch: ({node}) ~>
+          n = node.getAttribute(\data-name)
+          node.classList.toggle \on
+          @obj[n] = node.classList.contains \on
+          @update!
+
     handler: do
+      choice: ({node}) ~>
+        n = node.getAttribute(\data-name)
+        node.value = @obj[n] or ''
+
+      switch: ({node}) ~>
+        n = node.getAttribute(\data-name)
+        node.classList.toggle \on, !!@obj[n]
+
       "primary-user-link": ({node}) ~>
         if !@grp => return
         node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/user"
@@ -45,8 +68,16 @@ Ctrl = (opt = {}) ->
 
   @
 
-Ctrl.prototype = Object.create(Object.prototype) <<< do
+Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+  ops-in: ({data, ops, source}) ->
+    if source => return
+    @obj = JSON.parse(JSON.stringify(data or {}))
+    @view.update!
+
+  update: -> @ops-out ~> @obj
+
   prepare: ->
+    return Promise.resolve!
     ld$.fetch "/dash/api/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/all", {method: \GET}, {type: \json}
       .then ~>
         @data = data = it

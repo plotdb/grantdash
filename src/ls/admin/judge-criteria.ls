@@ -5,6 +5,7 @@ Ctrl = (opt = {}) ->
   @opt = opt
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @brd = opt.brd
+  @path = opt.path
   @grp = null
   @data = {}
 

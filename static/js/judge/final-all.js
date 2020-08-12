@@ -5,6 +5,7 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
   Ctrl = function(opt){
     var obj, coloring, view, this$ = this;
     import$(this, obj = new judgeBase(opt));
+    this.judgeBase = obj;
     this.data = {
       prj: {}
     };
@@ -174,9 +175,13 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
             return this$.judge;
           },
           handler: function(arg$){
-            var node, data;
-            node = arg$.node, data = arg$.data;
-            return ld$.find(node, 'div', 0).innerText = data.name;
+            var node, data, idx, name, ref$, ref1$;
+            node = arg$.node, data = arg$.data, idx = arg$.idx;
+            console.log(this$.grpinfo);
+            name = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).final || (ref$.final = {})).anonymous
+              ? "評審" + (idx + 1)
+              : data.name;
+            return ld$.find(node, 'div', 0).innerText = name;
           },
           action: {
             click: function(arg$){

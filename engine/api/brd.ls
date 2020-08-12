@@ -394,7 +394,7 @@ api.post \/slug-check/:type, aux.signed, throttle.count.ip, (req, res) ->
 api.post \/brd/:brd/grp/:grp/info, (req, res) ->
   lc = {}
   if !((brd = req.params.brd) and (grp = req.params.grp)) => return aux.r400 res
-  fields = req.body.[]fields.filter -> it in <[grade criteria form judgePerm]>
+  fields = req.body.[]fields.filter -> it in <[grade judge criteria form judgePerm]>
   io.query "select key,name,description,slug,detail from brd where slug = $1 and deleted is not true", [brd]
     .then (r={}) ->
       if !(lc.ret = ret = r.[]rows.0) => return aux.reject 404

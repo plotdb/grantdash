@@ -1,0 +1,54 @@
+//- module
+h3 客製評選表
+p 依您的需求設定評選表。
++scope("judge-custom").position-relative
+  ul.nav.nav-tabs.mb-4
+    li.nav-item(ld-each="entry"): a.nav-link
+      span(ld="entry-text",data-name="name")
+    li.nav-item.flex-grow-1
+    li.nav-item.text-right: a.nav-link.text-muted.border-0(ld="new-entry") 新增 +
+  div(ld="empty")
+  .row
+    .col-md
+      .form-group
+        div 評選階段名稱
+        .text-muted.text-sm.mb-2 可讀的文字，用以了解此評選的用途
+        input.form-control.rounded.border(ld="entry-data",data-name="name",placeholder="如: 決選") 
+    .col-md
+      .form-group
+        div 評選階段代碼
+        .text-muted.text-sm.mb-2 自動生成的階段 ID
+        input.form-control.rounded.border(ld="entry-data",data-name="slug",readonly,disabled) 
+    .col-md
+      .form-group
+        div 評選表類型
+        .text-muted.text-sm.mb-2 自動生成的階段 ID
+        select.form-control(ld="entry-data",data-name="type")
+          option(value="score") 評分表
+          option(value="choice") 單選表
+  .row
+    .col-md
+      .form-group
+        div 啟用
+        .text-muted.text-sm.mb-2 若啟用，評審將可進入評分
+        .switch.switch-lg(ld="switch",data-name="enabled")
+    .col-md
+      .form-group
+        div 評審匿名
+        .text-muted.text-sm.mb-2 若啟用，總表將不會顯示評審名稱
+        .switch.switch-lg(ld="switch",data-name="anonymous")
+    .col-md
+      .form-group
+        div 名單預篩
+        .text-muted.text-sm.mb-2 用其它次評選結果做名單過濾
+        select.form-control(ld="entry-data",data-name="filter")
+          option(value="") 無
+          option(value="criteria") 資格審查
+          option(value="finalist") 決選
+          option(value="shortlist") 初選
+
+
+  .position-absolute.w-100.h-100.vertical-center.rounded.bg-white(style="top:0;left:0",ld="empty")
+    .w-100.text-center
+      .mb-4 您尚未建立任何項目. 要先建立一個嗎？
+      .btn.btn-outline-primary(ld="new-entry") 建立項目
