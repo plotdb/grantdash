@@ -161,7 +161,7 @@ adminDev, adminJudgeCustom}) ->
       @ctrl.grp
         ..form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}
         ..info = new admin-info {root: '[ld-scope=grp-info-panel]', type: \grp, set-group, delete-group, clone-group}
-        ..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]', brd: toc.brd}
+        #..perm = new admin-perm {toc, root: '[data-nav=grp-config] [ld-scope=perm-panel]', brd: toc.brd}
         ..grade = new admin-entry {root: '[ld-scope=grade-panel]'}
         ..criteria = new admin-entry {root: '[ld-scope=criteria-panel]'}
         ..list = new admin-prj-list {root: '[ld-scope=prj-list]', toc}
