@@ -65,6 +65,13 @@ ldc.register('adminInfo', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 'sdbA
         }, true) ? 0 : 2;
       },
       verify: function(n, v, e){
+        if (n === 'description') {
+          if (v && v.length >= 500) {
+            return 2;
+          } else {
+            0;
+          }
+        }
         if (n === 'starttime' || n === 'endtime') {
           v = moment(v).format();
         }
