@@ -71,7 +71,7 @@ block body
                 ld="progress progress-bar",data-name="accept")
                 .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
                 ld="progress progress-bar",data-name="reject")
-            //-div: .btn.btn-outline-dark 提交審查結果
+            div: .btn.btn-outline-dark(ld="publish") 發布審查結果
 
 
 
@@ -92,6 +92,16 @@ block body
 
 
   div
+
+    .ldcv.ldcvmgr(data-name="confirm-publish"): .base.w-480: .inner.card: .card-body
+      .text-center
+        h3 發布審核結果
+        .py-4: p 您確定要將資格審查的結果更新至系統中嗎？
+      .row
+        .col-md: .btn.btn-block.btn-lg.btn-outline-primary(data-ldcv-set="") 取消
+        .col-md: .btn.btn-block.btn-lg.btn-primary(data-ldcv-set="yes") 是的，請更新
+
+
 
     .ldcv.scroll(ld="detail-ldcv"): .base.w-640: .inner.card.shadow-sm
       .card-header.shadow-sm.position-relative.z-float

@@ -17,6 +17,23 @@ Ctrl = (opt) ->
       click: do
         criteria: ({node}) ~> @ldcv.criteria.toggle!
         sort: ({node}) ~> @sort node.getAttribute(\data-name), node.getAttribute(\data-value)
+        publish: ({node}) ~>
+          ldcvmgr.get('confirm-publish')
+            .then (v) ~>
+              if v != \yes => return
+              json = do
+                prjs: @prjs
+                  .filter -> it.state == 0
+                  .map -> it.key
+              ld$.fetch(
+                "/dash/api/brd/#{@brd}/grp/#{@grp}/judge/#{@type}/publish",
+                {method: \POST}, {json}
+              )
+                .then -> ldcvmgr.toggle('published', true)
+                .then -> debounce 1500
+                .then -> ldcvmgr.toggle('published', false)
+            .catch error!
+
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
     handler: do
