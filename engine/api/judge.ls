@@ -32,6 +32,24 @@ api.put \/usermap/, (req, res) ->
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res
 
+
+api.post \/brd/:brd/grp/:grp/judge/:type/publish, (req, res) ->
+  type = {"criteria": "criteria", "primary": "shortlist", "winner": "final"}[req.params.type]
+  {brd,grp} = req.params{brd,grp}
+  if !type => return aux.r403 res
+  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[owner]>}
+    .then ->
+      io.query "select key,system from prj where brd = $1 and grp = $2", [brd, grp]
+    .then (r={}) ->
+      list = r.[]rows
+      list.map -> it.{}system.{}badge[type] = (it.key in req.body.prjs)
+      io.query """
+      with data as ( select unnest($1::int[]) as key, unnest($2::jsonb[]) as system )
+      update prj set system = data.system from data where prj.key = data.key
+      """, [list.map(->it.key), list.map(->it.system)]
+    .then (r={}) -> res.send!
+    .catch aux.error-handler res
+
 api.get \/brd/:brd/grp/:grp/judge/:type/result, (req, res) ->
   {brd,grp,type} = req.params{brd,grp,type}
   permission-check {req, res, brd, grp}

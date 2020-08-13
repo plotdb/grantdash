@@ -73,6 +73,14 @@
         return res.send(r.rows || (r.rows = []));
       })['catch'](aux.errorHandler(res));
     });
+    /*
+    api.post \/brd/:brd/grp/:grp/judge/:type/publish, (req, res) ->
+      console.log req.body
+      type = {"criteria": "criteria", "primary": "shortlist", "winner": "final"}[req.params.type]
+      if !type => return aux.r403 res
+      """update prj set system = jsonb_set(system, "{badge,#type}", jsonb 'true') where key = ANY($1::int[])"""
+      res.send {}
+    */
     api.get('/brd/:brd/grp/:grp/judge/:type/result', function(req, res){
       var ref$, brd, grp, type;
       ref$ = {

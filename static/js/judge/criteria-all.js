@@ -31,6 +31,34 @@ ldc.register('judgeCriteriaAll', ['notify', 'judgeBase', 'error', 'loader', 'aut
             var node;
             node = arg$.node;
             return this$.sort(node.getAttribute('data-name'), node.getAttribute('data-value'));
+          },
+          publish: function(arg$){
+            var node;
+            node = arg$.node;
+            return ldcvmgr.get('confirm-publish').then(function(v){
+              var json;
+              if (v !== 'yes') {
+                return;
+              }
+              json = {
+                prjs: this$.prjs.filter(function(it){
+                  return it.state === 0;
+                }).map(function(it){
+                  return it.key;
+                })
+              };
+              return ld$.fetch("/dash/api/brd/" + this$.brd + "/grp/" + this$.grp + "/judge/" + this$.type + "/publish", {
+                method: 'POST'
+              }, {
+                json: json
+              }).then(function(){
+                return ldcvmgr.toggle('published', true);
+              }).then(function(){
+                return debounce(1500);
+              }).then(function(){
+                return ldcvmgr.toggle('published', false);
+              });
+            })['catch'](error());
           }
         }
       },
