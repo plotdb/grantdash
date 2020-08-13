@@ -109,7 +109,7 @@ perm = do
 
     .then ~> @cache{}[type]{}[slug][user.key] = true
     .catch (e) ~>
-      @cache{}[type]{}[slug][user.key] = false
+      if user and user.key => @cache{}[type]{}[slug][user.key] = false
       if e and e.id != 1012 => console.log "[sharedb access error]", e
       return Promise.reject(e or (new lderror 1012))
 

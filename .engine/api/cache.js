@@ -190,7 +190,9 @@
         return ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = true;
       })['catch'](function(e){
         var ref$, ref1$;
-        ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = false;
+        if (user && user.key) {
+          ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = false;
+        }
         if (e && e.id !== 1012) {
           console.log("[sharedb access error]", e);
         }
