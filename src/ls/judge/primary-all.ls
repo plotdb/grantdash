@@ -40,6 +40,20 @@ Ctrl = (opt) ->
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
     handler: do
+
+      option: ({node}) ~>
+        v = node.getAttribute(\data-value)
+        jinfo = @grpinfo.{}judge.{}primary or {}
+        span = ld$.find node, \span, 0
+        type = jinfo["option-type"]
+        console.log type, v, (v == \1)
+        jinfo = @grpinfo.{}judge.{}primary or {}
+        text = if !type => {"accept": "推薦", "pending": "面議", "reject": "淘汰"}[v]
+        else if type == \2way => {"accept": "通過", "reject": "拒絕"}[v]
+        else ""
+        span.innerText = text
+        node.classList.toggle \d-none, (if v == \pending and type == \2way => true else false)
+
       "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
@@ -89,6 +103,15 @@ Ctrl = (opt) ->
               ownername: ({context}) -> context.info.teamname or context.ownername or ''
               key: ({context}) -> context.key or ''
             handler: do
+              option: ({node}) ~>
+                v = node.getAttribute(\data-value)
+                jinfo = @grpinfo.{}judge.{}primary or {}
+                span = ld$.find node, \span, 0
+                type = jinfo["option-type"]
+                console.log type, v, (v == \1)
+                node.classList.toggle \d-none, (if v == \1 and type == \2way => true else false)
+
+
               "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
               pick: ({node, context}) ~>
                 cls = [<[text-white bg-success]>, <[text-secondary bg-light]>]

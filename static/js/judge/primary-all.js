@@ -82,6 +82,28 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
         }
       },
       handler: {
+        option: function(arg$){
+          var node, v, jinfo, ref$, ref1$, span, type, text;
+          node = arg$.node;
+          v = node.getAttribute('data-value');
+          jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
+          span = ld$.find(node, 'span', 0);
+          type = jinfo["option-type"];
+          console.log(type, v, v === '1');
+          jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
+          text = !type
+            ? {
+              "accept": "推薦",
+              "pending": "面議",
+              "reject": "淘汰"
+            }[v]
+            : type === '2way' ? {
+              "accept": "通過",
+              "reject": "拒絕"
+            }[v] : "";
+          span.innerText = text;
+          return node.classList.toggle('d-none', v === 'pending' && type === '2way' ? true : false);
+        },
         "show-budget": function(arg$){
           var node, ref$;
           node = arg$.node;
@@ -199,6 +221,16 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                 }
               },
               handler: {
+                option: function(arg$){
+                  var node, v, jinfo, ref$, ref1$, span, type;
+                  node = arg$.node;
+                  v = node.getAttribute('data-value');
+                  jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
+                  span = ld$.find(node, 'span', 0);
+                  type = jinfo["option-type"];
+                  console.log(type, v, v === '1');
+                  return node.classList.toggle('d-none', v === '1' && type === '2way' ? true : false);
+                },
                 "show-budget": function(arg$){
                   var node, ref$;
                   node = arg$.node;
