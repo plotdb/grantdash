@@ -26,7 +26,7 @@ Ctrl = (opt) ->
                 ans = get-answer context
                 ret = Ctrl.render {block: context, answer: ans, prj: @prj, org: @org}
                 node.classList.toggle 'empty', !ret
-                node.innerHTML = DOMPurify.sanitize(ret)
+                node.innerHTML = DOMPurify.sanitize(ret, { ADD_ATTR: <[target]>})
         handler: ({local, data}) ->
           local.view.setContext data
           local.view.render!
