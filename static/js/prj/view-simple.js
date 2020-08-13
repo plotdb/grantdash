@@ -50,7 +50,9 @@ ldc.register('prjViewSimple', [], function(){
                     org: this$.org
                   });
                   node.classList.toggle('empty', !ret);
-                  return node.innerHTML = DOMPurify.sanitize(ret);
+                  return node.innerHTML = DOMPurify.sanitize(ret, {
+                    ADD_ATTR: ['target']
+                  });
                 }
               }
             });
