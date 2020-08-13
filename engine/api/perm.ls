@@ -32,7 +32,7 @@ api.post \/account, aux.signed, (req, res) ->
   """, [name]
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res
-  
+
 api.get \/stage, (req, res) ->
   {brd} = req.query{brd}
   if !brd => return aux.r400 res
@@ -106,12 +106,21 @@ app.get \/judgetoken/:token, (req, res) ->
         return res.render "auth/perm/judge-claim.pug", {exports: {token, email: ret.email}}
       if !(req.user and req.user.key) => return res.render "auth/perm/judge-fail.pug"
       io.query """
-      select b.name,p.brd,p.grp from perm_judge as p
+      select b.name,b.detail->'stage' as stage,p.brd,p.grp from perm_judge as p
       left join brd as b on b.slug = p.brd
       where p.owner = $1""", [req.user.key]
         .then (r={}) ->
-          if !(r.[]rows.length) => return res.render "auth/perm/judge-fail.pug"
-          return res.render "auth/perm/judge-list.pug", {exports: r.[]rows}
+          list = r.[]rows
+            .map ->
+              cfgs = it.{}stage.[]list.filter (s) ->
+                if s.start and Date.now! < new Date(s.start).getTime! => return false
+                if s.end and Date.now! > new Date(s.end).getTime! => return false
+                return true
+              it.stage = cfgs{}[* - 1].config or {}
+              it
+            .filter -> it.stage["judge-final"] or it.stage["judge-primary"]
+          if !(list.length) => return res.render "auth/perm/judge-fail.pug"
+          return res.render "auth/perm/judge-list.pug", {exports: list}
     .catch aux.error-handler res
 
 api.put \/judgetoken, aux.signed, grecaptcha, (req, res) ->

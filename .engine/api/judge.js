@@ -73,14 +73,48 @@
         return res.send(r.rows || (r.rows = []));
       })['catch'](aux.errorHandler(res));
     });
-    /*
-    api.post \/brd/:brd/grp/:grp/judge/:type/publish, (req, res) ->
-      console.log req.body
-      type = {"criteria": "criteria", "primary": "shortlist", "winner": "final"}[req.params.type]
-      if !type => return aux.r403 res
-      """update prj set system = jsonb_set(system, "{badge,#type}", jsonb 'true') where key = ANY($1::int[])"""
-      res.send {}
-    */
+    api.post('/brd/:brd/grp/:grp/judge/:type/publish', function(req, res){
+      var type, ref$, brd, grp;
+      type = {
+        "criteria": "criteria",
+        "primary": "shortlist",
+        "winner": "final"
+      }[req.params.type];
+      ref$ = {
+        brd: (ref$ = req.params).brd,
+        grp: ref$.grp
+      }, brd = ref$.brd, grp = ref$.grp;
+      if (!type) {
+        return aux.r403(res);
+      }
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: brd,
+        action: ['owner']
+      }).then(function(){
+        return io.query("select key,system from prj where brd = $1 and grp = $2", [brd, grp]);
+      }).then(function(r){
+        var list;
+        r == null && (r = {});
+        list = r.rows || (r.rows = []);
+        list.map(function(it){
+          var ref$;
+          return ((ref$ = it.system || (it.system = {})).badge || (ref$.badge = {}))[type] = in$(it.key, req.body.prjs);
+        });
+        return io.query("with data as ( select unnest($1::int[]) as key, unnest($2::jsonb[]) as system )\nupdate prj set system = data.system from data where prj.key = data.key", [
+          list.map(function(it){
+            return it.key;
+          }), list.map(function(it){
+            return it.system;
+          })
+        ]);
+      }).then(function(r){
+        r == null && (r = {});
+        return res.send();
+      })['catch'](aux.errorHandler(res));
+    });
     api.get('/brd/:brd/grp/:grp/judge/:type/result', function(req, res){
       var ref$, brd, grp, type;
       ref$ = {
@@ -257,4 +291,9 @@
       })['catch'](aux.errorHandler(res));
     });
   });
+  function in$(x, xs){
+    var i = -1, l = xs.length >>> 0;
+    while (++i < l) if (x === xs[i]) return true;
+    return false;
+  }
 }).call(this);

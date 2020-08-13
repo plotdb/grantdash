@@ -191,13 +191,30 @@
         if (!(req.user && req.user.key)) {
           return res.render("auth/perm/judge-fail.pug");
         }
-        return io.query("select b.name,p.brd,p.grp from perm_judge as p\nleft join brd as b on b.slug = p.brd\nwhere p.owner = $1", [req.user.key]).then(function(r){
+        return io.query("select b.name,b.detail->'stage' as stage,p.brd,p.grp from perm_judge as p\nleft join brd as b on b.slug = p.brd\nwhere p.owner = $1", [req.user.key]).then(function(r){
+          var list;
           r == null && (r = {});
-          if (!(r.rows || (r.rows = [])).length) {
+          list = (r.rows || (r.rows = [])).map(function(it){
+            var cfgs, ref$, key$;
+            cfgs = ((ref$ = it.stage || (it.stage = {})).list || (ref$.list = [])).filter(function(s){
+              if (s.start && Date.now() < new Date(s.start).getTime()) {
+                return false;
+              }
+              if (s.end && Date.now() > new Date(s.end).getTime()) {
+                return false;
+              }
+              return true;
+            });
+            it.stage = (cfgs[key$ = cfgs.length - 1] || (cfgs[key$] = {})).config || {};
+            return it;
+          }).filter(function(it){
+            return it.stage["judge-final"] || it.stage["judge-primary"];
+          });
+          if (!list.length) {
             return res.render("auth/perm/judge-fail.pug");
           }
           return res.render("auth/perm/judge-list.pug", {
-            exports: r.rows || (r.rows = [])
+            exports: list
           });
         });
       })['catch'](aux.errorHandler(res));
