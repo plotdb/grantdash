@@ -4,6 +4,23 @@ block vars
  - ctrl.navtop.placeholder = false
 block body
   include cover.pug
+  .ldcvmgr.ldcv(data-name="judge-list",data-lock="true"): .base.w-480: .inner
+    .typeset.heading-contast.vertical-center.my-0: .w-100.p-4: .p-4
+      h3.text-center 評選表
+      p 您可點擊以下連結進入您所擔任評審的活動之評選表：
+      .pb-4.d-flex.flex-column
+        each item in exports
+          - stage = item.stage || {}
+          .pb-4
+            .mr-4 #{item.name} /
+            .ml-2
+              if item.stage["judge-primary"]
+                div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/primary/user`) 篩選表
+              if item.stage["judge-final"]
+                div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/final/user`) 評分表
+
+      a.btn.btn-lg.btn-block.btn-primary(href="/") 回首頁
+
 block script
   script: :lsc
     ldc.register <[ldcvmgr]>, ({ldcvmgr}) -> ldcvmgr.toggle \judge-list
