@@ -46,6 +46,46 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
             this$.cfg.heatmap = !this$.cfg.heatmap;
             this$.view.local.render('toggle-heatmap');
             return this$.view.local.render('project');
+          },
+          "download-csv": function(){
+            var judges, head, body, data, href, n;
+            judges = this$.judge.map(function(j, i){
+              return ["評審" + (i + 1) + "分數", "評審" + (i + 1) + "排名", "評審" + (i + 1) + "評論"];
+            }).reduce(function(a, b){
+              return a.concat(b);
+            }, []);
+            head = ['提案名稱', '提案單位'].concat(judges, ['平均分', '總排名'], this$.judge.map(function(j, i){
+              return "評審" + i + "評論";
+            }));
+            body = this$.prjs.map(function(p){
+              var scores, comments;
+              scores = this$.judge.map(function(j){
+                return [j.score[p.key], j.rank[p.key]];
+              }).reduce(function(a, b){
+                return a.concat(b);
+              }, []);
+              comments = this$.judge.map(function(j){
+                var ref$;
+                return ((ref$ = this$.data.user[j.key]).prj || (ref$.prj = {}))[p.key].comment || '';
+              });
+              return ([p.name, p.info.teamname || p.ownername || ''].concat(scores, [p.total, p.rank], comments)).map(function(it){
+                return "\"" + ('' + it).replace('"', '\\"') + "\"";
+              }).join(',');
+            }).join('\n');
+            data = head + "\n" + body;
+            href = URL.createObjectURL(new Blob([data], {
+              type: "text/csv"
+            }));
+            n = ld$.create({
+              name: 'a',
+              attr: {
+                href: href,
+                download: 'result.csv'
+              }
+            });
+            document.body.appendChild(n);
+            n.click();
+            return document.body.removeChild(n);
           }
         }
       },
@@ -177,7 +217,6 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
           handler: function(arg$){
             var node, data, idx, name, ref$, ref1$;
             node = arg$.node, data = arg$.data, idx = arg$.idx;
-            console.log(this$.grpinfo);
             name = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).final || (ref$.final = {})).anonymous
               ? "評審" + (idx + 1)
               : data.name;
@@ -391,8 +430,8 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
           }
           return results$;
           function fn$(c){
-            var idx, ref$, key$;
-            idx = ((ref$ = v.prj || (v.prj = {}))[key$ = p.key] || (ref$[key$] = {})).v[c.key];
+            var idx, ref$, ref1$, key$;
+            idx = ((ref$ = (ref1$ = v.prj || (v.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[c.key];
             if (!(idx != null)) {
               idx = 1;
             }

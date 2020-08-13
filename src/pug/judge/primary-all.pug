@@ -14,26 +14,38 @@ block body
     .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
       .d-flex.flex-column(style="flex:3 2 55%")
 
-        .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow:scroll")
+        .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow-y:scroll")
           .w-100
             .p-2.d-flex.align-items-center.border-bottom.border-secondary.bg-light.sticky.shadow-sm(style="top:0")
               .flex-grow-1.clickable(ld="sort",data-name="name") 提案名稱
               .mr-2.text-right.px-2.clickable.d-none(ld="show-budget sort",data-name="budget",style="width:50px") 預算
               .mx-2.clickable(ld="sort",data-name="shortlist") 入選標記
 
-              .d-flex.justify-content-center.align-items-center(style="width:200px")
-                .clickable(ld="option sort",data-name="primary-all",data-value="accept")
+              //-.d-flex.justify-content-center.align-items-center(style="width:200px")
+                .clickable(ld="option sort",data-name="primary-all",data-value="0")
                   .d-flex.align-items-center
                     .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                     span.mr-3 推薦
-                .clickable(ld="option sort",data-name="primary-all",data-value="pending")
+                .clickable(ld="option sort",data-name="primary-all",data-value="1")
                   .d-flex.align-items-center
                     .bg-warning.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                     span.mr-3 面議
-                .clickable(ld="option sort",data-name="primary-all",data-value="reject")
+                .clickable(ld="option sort",data-name="primary-all",data-value="2")
                   .d-flex.align-items-center
                     .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                     span 汰除
+
+              .mx-2.clickable.text-center(ld="option sort",data-name="primary-all",data-value="0",style="width:3em")
+                span 推薦
+                .bg-success.rounded(style="height:4px;width:100%")
+              .mx-2.clickable.text-center(ld="option sort",data-name="primary-all",data-value="1",style="width:3em")
+                span 面議
+                .bg-warning.rounded(style="height:4px;width:100%")
+              .mx-2.clickable.text-center(ld="option sort",data-name="primary-all",data-value="2",style="width:3em")
+                div 汰除
+                .bg-danger.rounded(style="height:4px;width:100%")
+              .mx-2.text-center.clickable(ld="sort",data-name="rate",style="width:5em") 各項比例
+              .mx-2.text-center.clickable(ld="sort",data-name="rate",style="width:4em") 推薦率
 
             div(ld-each="project")
               .px-2.py-1.d-flex.align-items-center.border-bottom.border-light
@@ -52,16 +64,26 @@ block body
 
                 .mx-2.rounded.text-center.text-secondary.bg-light.clickable.py-1(
                 ld="pick",style="width:4em"): i
-                .px-1(style="flex:0 0 200px")
-                  div: .progress.w-100
+                .mx-2.text-center(ld="option",data-value="0",style="width:3em"): span(ld="count",data-name="accept")
+                .mx-2.text-center(ld="option",data-value="1",style="width:3em"): span(ld="count",data-name="pending")
+                .mx-2.text-center(ld="option",data-value="2",style="width:3em"): span(ld="count",data-name="reject")
+                .mx-2(style="width:5em")
+                  .progress.w-100(style="height:2em")
                     .progress-bar.bg-success(ld="progress",data-name="accept")
                     .progress-bar.bg-warning(ld="progress",data-name="pending")
                     .progress-bar.bg-danger(ld="progress",data-name="reject")
-                  .d-flex.align-items-center.text-sm.mt-1.ml-1(style="line-height:1em")
+                .mx-2.text-right(ld="rate",style="width:4em") 0%
+
+                  //-.d-flex.align-items-center.text-sm.mt-1.ml-1(style="line-height:1em")
                     each c in [["bg-success","accept",0],["bg-warning","pending",1],["bg-danger","reject",2]]
                       .mr-3(ld="option",data-value=c[2]): .d-flex.align-items-center
                         .d-inline-block.rounded.mr-1(style="width:1.1em;height:1em;",class=c[0])
                         span(ld="count", data-name=c[1])
+
+        .p-2.text-right
+          .btn.btn-text.mr-2 下載:
+          .btn.btn-outline-primary.mr-2(ld="download-pdf") PDF
+          .btn.btn-outline-primary.mr-4(ld="download-csv") CSV
 
       div(style="flex:2 3 45%")
         .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0

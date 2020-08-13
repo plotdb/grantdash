@@ -218,7 +218,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
           p.criteria = {0: 0, 1: 0, 2: 0}
           for k,v of users =>
             @criteria.map (c) ~>
-              idx = v.{}prj{}[p.key].v[c.key]
+              idx = v.{}prj{}[p.key].{}v[c.key]
               if !(idx?) => idx = 1
               p.criteria[idx]++
 

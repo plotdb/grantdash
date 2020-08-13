@@ -30,13 +30,35 @@ Ctrl = (opt) ->
       input: do
         comment: ({node}) ~>
           if !@active => return
-          @data.prj{}[@active.slug].comment = node.value
+          @data.prj{}[@active.key].comment = node.value
           @update debounced: 300
           @view.local.render {name: 'project', key: @active.slug}
       click: do
         detail: ({node}) ~> @ldcv.detail.toggle!
         criteria: ({node}) ~> @ldcv.criteria.toggle!
         sort: ({node}) ~> @sort node.getAttribute(\data-name), node.getAttribute(\data-value)
+        "download-csv": ~>
+          head = '"名稱","提案單位","入選標記","推薦票數","面議票數","汰除票數","推薦佔例"'
+          body = @prjs
+            .map (p) ~>
+              [
+                p.name, p.info.teamname or p.ownername or ''
+                (if @data.{}prj{}[p.key].picked => 'O' else '')
+                p.count.accept
+                p.count.pending
+                p.count.reject
+                p.rate
+              ]
+                .map -> "\"#{('' + it).replace('"','\\"')}\""
+                .join(',')
+            .join('\n')
+          data = "#head\n#body"
+          href = URL.createObjectURL(new Blob([data], {type: "text/csv"}))
+          n = ld$.create name: \a, attr: {href,download: 'result.csv'}
+          document.body.appendChild n
+          n.click!
+          document.body.removeChild n
+
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
     handler: do
@@ -46,13 +68,8 @@ Ctrl = (opt) ->
         jinfo = @grpinfo.{}judge.{}primary or {}
         span = ld$.find node, \span, 0
         type = jinfo["option-type"]
-        console.log type, v, (v == \1)
         jinfo = @grpinfo.{}judge.{}primary or {}
-        text = if !type => {"accept": "推薦", "pending": "面議", "reject": "淘汰"}[v]
-        else if type == \2way => {"accept": "通過", "reject": "拒絕"}[v]
-        else ""
-        span.innerText = text
-        node.classList.toggle \d-none, (if v == \pending and type == \2way => true else false)
+        node.classList.toggle \d-none, (if v == \1 and type == \2way => true else false)
 
       "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
       "comment-name": ({node}) ~>
@@ -86,7 +103,7 @@ Ctrl = (opt) ->
                 @active-node = root
                 @active-node.classList.add \active
               pick: ({node, context}) ~>
-                obj = @data.{}prj{}[context.slug]
+                obj = @data.{}prj{}[context.key]
                 obj.picked = !obj.picked
                 local.view.render!
                 @update debounced: 10
@@ -103,19 +120,21 @@ Ctrl = (opt) ->
               ownername: ({context}) -> context.info.teamname or context.ownername or ''
               key: ({context}) -> context.key or ''
             handler: do
+              rate: ({node,context}) ->
+                node.innerText = "#{(context.rate * 100).toFixed(1)}%"
+
               option: ({node}) ~>
                 v = node.getAttribute(\data-value)
                 jinfo = @grpinfo.{}judge.{}primary or {}
                 span = ld$.find node, \span, 0
                 type = jinfo["option-type"]
-                console.log type, v, (v == \1)
                 node.classList.toggle \d-none, (if v == \1 and type == \2way => true else false)
 
 
               "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
               pick: ({node, context}) ~>
                 cls = [<[text-white bg-success]>, <[text-secondary bg-light]>]
-                obj = @data.{}prj{}[context.slug]
+                obj = @data.{}prj{}[context.key]
                 cl = node.classList
                 cl.add.apply cl, if obj.picked => cls.0 else cls.1
                 cl.remove.apply cl, if obj.picked => cls.1 else cls.0
@@ -125,7 +144,7 @@ Ctrl = (opt) ->
                 cl.add.apply cl, if obj.picked => cls.0 else cls.1
                 cl.remove.apply cl, if obj.picked => cls.1 else cls.0
               "has-comment": ({node, context}) ~>
-                node.classList.toggle \invisible, !@data.prj{}[context.slug].comment
+                node.classList.toggle \invisible, !@data.prj{}[context.key].comment
               progress: ({node, context}) ~>
                 n = node.getAttribute(\data-name)
                 node.style.width = "#{100 * context.{}count[n] / (context.{}count.total or 1)}%"
@@ -163,16 +182,21 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @auth!
       .then ~> @init-view!
       .then ~> @fetch-info!
+      .then ~> @judge = @grpinfo.{}judgePerm.[]list
       .then ~> @fetch-prjs!
       .then ~> @sharedb!
       .then ~> @reconnect!
       .catch error!
 
   get-count: ->
-    len = [k for k of @data.user].length
+    len = @judge.length
     @prjs.map (p,i) ~>
       p.count = count = {accept: 0, pending: 0, reject: 0, total: len}
-      for k,u of @data.user => if (v = u.prj{}[p.key].v)? => count[typemap[v]]++
+      @judge.map (j) ~>
+        if !(u = @data.user[j.key]) => return
+        if (v = u.prj{}[p.key].v)? => count[typemap[v]]++
+      #for k,u of @data.user => if (v = u.prj{}[p.key].v)? => count[typemap[v]]++
+      p.rate = count.accept / (count.total or 1)
 
   get-progress: ->
     @progress = ret = {done: 0, accept: 0, pending: 0, reject: 0, total: (@prjs.length or 1)}

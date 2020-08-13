@@ -47,11 +47,7 @@ Ctrl = (opt) ->
       option: ({node}) ~>
         v = node.getAttribute(\data-value)
         jinfo = @grpinfo.{}judge.{}primary or {}
-        text = if !jinfo["option-type"] => {"0": "推薦", "1": "面議", "2": "淘汰"}[v]
-        else if jinfo["option-type"] == \2way => {"0": "通過", "2": "拒絕"}[v]
-        else ""
-        ld$.find(node, 'span', 0).innerText = text
-        node.classList.toggle \d-none, !text
+        node.classList.toggle \d-none, (v == \1)
 
 
       "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
