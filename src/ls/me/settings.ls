@@ -57,10 +57,11 @@
           root: '.form[data-name=basic]'
           submit: '.btn[ld=updateBasicData]'
           after-check: (s) ->
-            s.description = 0
             s.title = 0
             s.tags = 0
             if @fields.displayname.value => s.displayname = 0
+          verify: (n,v,e) ->
+            if n == \description => return if !(v and v.length >= 1024) => 0 else 2
         new Tagify form.fields.tags, do
           originalInputValueFormat: (vals) -> vals.map(-> it.value).join \,
           delimiters: /[,.:;，。：；]/
@@ -100,11 +101,11 @@
                       {method: \PUT}, {json, type: \text}
                     )
 
-                  .catch -> ldcvmgr.toggle \error; console.log it
                   .then -> auth.fetch {renew: true}
                   .then -> debounce 500
                   .then -> notify.send \success, \更新完成
                   .then -> debounce 500
+                  .catch -> ldcvmgr.toggle \error; console.log it
                   .then -> ldld.off!
             mailVerify: ({node}) ->
               ldld = new ldLoader root: node

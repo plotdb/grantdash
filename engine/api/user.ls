@@ -107,6 +107,7 @@ api.put \/user/:id, throttle.count.user, grecaptcha, aux.numid false, (req, res)
       req.user <<< {displayname, description, title, tags}
       req.login req.user, -> res.send!
       return null
+    .catch aux.error-handler res
 
 api.post \/user/avatar,
   aux.signed,

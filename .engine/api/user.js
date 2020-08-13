@@ -148,7 +148,7 @@
           return res.send();
         });
         return null;
-      });
+      })['catch'](aux.errorHandler(res));
     }));
     api.post('/user/avatar', aux.signed, throttle.count.user, expressFormidable(), grecaptcha, function(req, res){
       if (!req.user) {

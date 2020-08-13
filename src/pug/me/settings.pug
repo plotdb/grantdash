@@ -49,7 +49,7 @@ block body
                   .btn.btn-success.btn-block.ld.ld-ext-right(ld="mailVerify")
                     | 寄發認證信 #[i.i-mail.ml-2] #[.ld.ld-spin.ld-ring]
           .form-group.mb-4
-            label 描述 #[small.text-muted / 會顯示在個人檔案中]
+            label 描述 #[small.text-muted / 會顯示在個人檔案中。上限 1024 字]
             textarea.form-control(name="description",rows="3",placeholder="談談關於你的事吧")= user.description
           .row
             .col-md
