@@ -1,8 +1,8 @@
 //- module
 +scope("judge-final")
   .rwd.mx-auto.typeset.heading-contrast.mt-0
-    h3 決選作業
-    p.text-muted 決選由指定的評審進行，用於選出最後獲選的名單。
+    h3 評分作業
+    p.text-muted 評評分指定的評審進行，使用配分的方式以排名的方式決定入選的名單。
     a.btn.btn-outline-primary.mr-2(ld="final-user-link",target="_blank",rel="noopener noreferrer",
     href="#") 進行審查
     a.btn.btn-outline-primary(ld="final-all-link",target="_blank", rel="noopener noreferrer",
@@ -19,7 +19,7 @@
         .form-group.d-flex.align-items-center
           .flex-grow-1
             div 過濾評選結果
-            .text-muted.text-sm 評選表僅列出初選通過的專案
+            .text-muted.text-sm 評選表僅列出篩選表通過的專案
           div: .switch.switch-lg(ld="switch",data-name="filter-primary")
     .row
       .col-md
