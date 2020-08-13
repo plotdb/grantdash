@@ -1,12 +1,25 @@
 //- view
 extends base.pug
+block content
+  #fallback.d-none.text-center
+    h1.display-4.font-weight-bolder 無法使用
+    p.text-muted 很抱歉 - 可能因為權限、帳號或系統內部問題的關係，這個頁面目前無法使用。
+    br
+    .sep.my-4
+    br
+    a(href="/") 回首頁
+
 block script
   script var err = !{escjson(err)};
   script: :lsc
     ldc.register <[ldcvmgr]>, ({ldcvmgr}) ->
-      map = {
-        1000: "auth-required"
-        1021: "email-verify-required"
-      }
-      cover = map[err.id] or "error"
-      ldcvmgr.toggle cover
+      if err.ldcv =>
+        ldcvmgr.toggle err.ldcv
+      else
+        map = {
+          1000: "auth-required"
+          1021: "email-verify-required"
+        }
+        cover = map[err.id]
+        if cover => ldcvmgr.toggle cover
+        else ld$.find('#fallback',0).classList.remove \d-none

@@ -32,6 +32,7 @@ app.get \/prj/:slug/edit, (req, res) ->
   lc = {}
   cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
     .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[prj-edit-own]>}
+    .catch -> return Promise.reject new lderror({ldcv: "not-yet-available"}, 1012)
     .then -> get-prj req.params.slug
     .then (prj) ->
       lc.prj = prj

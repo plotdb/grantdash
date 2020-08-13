@@ -38,6 +38,7 @@ app.get \/admin/, aux.signed, (req, res) -> res.render \admin/index.pug
 app.get \/org/:slug/admin, aux.signed, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   cache.perm.check {io, user: req.user, type: \org, slug, action: \owner}
+    .catch -> Promise.reject new lderror({ldcv: "access-denied"}, 1012)
     .then ->
       res.render \admin/index.pug, {org: {slug}}
       return null
@@ -47,6 +48,7 @@ app.get \/brd/:slug/admin, aux.signed, (req, res) ->
   lc = {}
   if !(slug = req.params.slug) => return aux.r400 res
   cache.perm.check {io, user: req.user, type: \brd, slug: slug, action: \owner}
+    .catch -> Promise.reject new lderror({ldcv: "access-denied"}, 1012)
     .then -> io.query "select * from brd where slug = $1 and deleted is not true", [slug]
     .then (r={}) ->
       if !(brd = r.[]rows.0) => return aux.reject 404

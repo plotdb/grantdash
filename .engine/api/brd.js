@@ -507,6 +507,10 @@
         type: 'brd',
         slug: slug,
         name: 'prj-new'
+      })['catch'](function(){
+        return Promise.reject(new lderror({
+          ldcv: "not-yet-available"
+        }, 1012));
       }).then(function(){
         return io.query("select name,slug,org,detail from brd where slug = $1 and deleted is not true", [slug]);
       }).then(function(r){

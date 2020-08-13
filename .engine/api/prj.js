@@ -81,6 +81,10 @@
           slug: req.scope.brd,
           action: ['prj-edit-own']
         });
+      })['catch'](function(){
+        return Promise.reject(new lderror({
+          ldcv: "not-yet-available"
+        }, 1012));
       }).then(function(){
         return getPrj(req.params.slug);
       }).then(function(prj){
