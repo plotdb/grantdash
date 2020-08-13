@@ -19,23 +19,23 @@ block body
         .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow:scroll")
           .w-100
             .p-2.d-flex.align-items-center.border-bottom.border-secondary.bg-light.sticky.shadow-sm(style="top:0")
-              //-.mr-2.text-right.px-2(style="width:50px") 編號
-              //-.mr-2.text-right.px-2(style="width:50px") 資格
-              //-.mr-2.text-right.px-2(style="width:50px") 評論
               .flex-grow-1.clickable(ld="sort",data-name="name") 提案名稱
               .mr-2.text-right.px-2.clickable.d-none(ld="show-budget sort",data-name="budget",style="width:50px") 預算
               .mx-2.clickable(ld="sort",data-name="shortlist") 入選標記
 
               .d-flex.justify-content-center.align-items-center(style="width:200px")
-                .d-flex.align-items-center.clickable(ld="sort",data-name="primary-all",data-value="accept")
-                  .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
-                  span.mr-3 推薦
-                .d-flex.align-items-center.clickable(ld="sort",data-name="primary-all",data-value="pending")
-                  .bg-warning.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
-                  span.mr-3 面議
-                .d-flex.align-items-center.clickable(ld="sort",data-name="primary-all",data-value="reject")
-                  .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
-                  span 汰除
+                .clickable(ld="option sort",data-name="primary-all",data-value="accept")
+                  .d-flex.align-items-center
+                    .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                    span.mr-3 推薦
+                .clickable(ld="option sort",data-name="primary-all",data-value="pending")
+                  .d-flex.align-items-center
+                    .bg-warning.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                    span.mr-3 面議
+                .clickable(ld="option sort",data-name="primary-all",data-value="reject")
+                  .d-flex.align-items-center
+                    .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                    span 汰除
 
             div(ld-each="project")
               .px-2.py-1.d-flex.align-items-center.border-bottom.border-light
@@ -60,8 +60,8 @@ block body
                     .progress-bar.bg-warning(ld="progress",data-name="pending")
                     .progress-bar.bg-danger(ld="progress",data-name="reject")
                   .d-flex.align-items-center.text-sm.mt-1.ml-1(style="line-height:1em")
-                    each c in [["bg-success","accept"],["bg-warning","pending"],["bg-danger","reject"]]
-                      .d-flex.align-items-center.mr-3
+                    each c in [["bg-success","accept",0],["bg-warning","pending",1],["bg-danger","reject",2]]
+                      .mr-3(ld="option",data-value=c[2]): .d-flex.align-items-center
                         .d-inline-block.rounded.mr-1(style="width:1.1em;height:1em;",class=c[0])
                         span(ld="count", data-name=c[1])
 
