@@ -3757,7 +3757,7 @@ pug_html = pug_html + "描述 ";
 ;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
 pug_html = pug_html + "\u003Csmall class=\"text-muted\"\u003E";
 ;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
-pug_html = pug_html + "\u002F 會顯示在個人檔案中\u003C\u002Fsmall\u003E";
+pug_html = pug_html + "\u002F 會顯示在個人檔案中。上限 1024 字\u003C\u002Fsmall\u003E";
 ;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";
 pug_html = pug_html + "\u003C\u002Flabel\u003E";
 ;pug_debug_line = 53;pug_debug_filename = "src\u002Fpug\u002Fme\u002Fsettings.pug";

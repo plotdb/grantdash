@@ -96,11 +96,15 @@
         root: '.form[data-name=basic]',
         submit: '.btn[ld=updateBasicData]',
         afterCheck: function(s){
-          s.description = 0;
           s.title = 0;
           s.tags = 0;
           if (this.fields.displayname.value) {
             return s.displayname = 0;
+          }
+        },
+        verify: function(n, v, e){
+          if (n === 'description') {
+            return !(v && v.length >= 1024) ? 0 : 2;
           }
         }
       });
@@ -176,9 +180,6 @@
                   json: json,
                   type: 'text'
                 });
-              })['catch'](function(it){
-                ldcvmgr.toggle('error');
-                return console.log(it);
               }).then(function(){
                 return auth.fetch({
                   renew: true
@@ -189,6 +190,9 @@
                 return notify.send('success', '更新完成');
               }).then(function(){
                 return debounce(500);
+              })['catch'](function(it){
+                ldcvmgr.toggle('error');
+                return console.log(it);
               }).then(function(){
                 return ldld.off();
               });
