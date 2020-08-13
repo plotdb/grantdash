@@ -16,8 +16,9 @@
             node = arg$.node;
             node.innerText = g.scope.orgname || '';
             if (g.scope.brd) {
-              return node.setAttribute('href', "/brd/" + g.scope.brd);
+              node.setAttribute('href', "/brd/" + g.scope.brd);
             }
+            return node.setAttribute('href', "/org/" + g.scope.org);
           },
           "brand-brd": function(arg$){
             var node;
