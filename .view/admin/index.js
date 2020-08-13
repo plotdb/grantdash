@@ -4990,7 +4990,7 @@ pug_html = pug_html + "推薦、面議、汰除\u003C\u002Foption\u003E";
 ;pug_debug_line = 33;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fprimary.pug";
 pug_html = pug_html + "\u003Coption value=\"2way\"\u003E";
 ;pug_debug_line = 33;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fprimary.pug";
-pug_html = pug_html + "通過、拒絕\u003C\u002Foption\u003E\u003C\u002Fselect\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "推薦、汰除\u003C\u002Foption\u003E\u003C\u002Fselect\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fprimary.pug";
 pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 }

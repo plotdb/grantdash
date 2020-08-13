@@ -93,22 +93,11 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
       },
       handler: {
         option: function(arg$){
-          var node, v, jinfo, ref$, ref1$, text;
+          var node, v, jinfo, ref$, ref1$;
           node = arg$.node;
           v = node.getAttribute('data-value');
           jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
-          text = !jinfo["option-type"]
-            ? {
-              "0": "推薦",
-              "1": "面議",
-              "2": "淘汰"
-            }[v]
-            : jinfo["option-type"] === '2way' ? {
-              "0": "通過",
-              "2": "拒絕"
-            }[v] : "";
-          ld$.find(node, 'span', 0).innerText = text;
-          return node.classList.toggle('d-none', !text);
+          return node.classList.toggle('d-none', v === '1');
         },
         "show-budget": function(arg$){
           var node, ref$;

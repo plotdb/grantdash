@@ -288,6 +288,7 @@ app.get \/brd/:slug/prj/create, (req, res) ->
   lc = {}
   slug = req.params.slug
   cache.stage.check {io, type: \brd, slug: slug, name: \prj-new}
+    .catch -> Promise.reject new lderror({ldcv: "not-yet-available"}, 1012)
     .then -> io.query """select name,slug,org,detail from brd where slug = $1 and deleted is not true""", [slug]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400

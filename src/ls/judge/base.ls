@@ -121,6 +121,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       name: "名稱", state: "狀態", comment: "評論長度", comments: "評論長度"
       shortlist: "入選標記", budget: "預算", total: "總分", rank: "排名"
       "criteria-result": "審查結果", "judge-rank": "評審排名", "judge-score": "評審分數"
+      rate: "比例"
     verbose = do
       name: namemap[name] or value
       dir: if dir > 0 => "順向" else "逆向"
@@ -165,8 +166,11 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
           a = if a? => a else 0
           b = if b? => b else 0
           return dir * ( b - a )
+      else if name == \rate =>
+        @prjs.sort (a,b) ~> dir * (b.rate - a.rate)
       else if name == \primary-all =>
-        @prjs.sort (a, b) ~> return dir * (a.count[value] or 0) - (b.count[value] or 0)
+        v = {"0": "accept", "1": "pending", "2": "reject"}[value]
+        @prjs.sort (a, b) ~> return dir * (a.count[v] or 0) - (b.count[v] or 0)
       else if name == \primary =>
         @prjs.sort (a, b) ~>
           a = if @data.prj{}[a.key].v == value => 1 else 0
@@ -192,22 +196,3 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       @render!
 
 return Ctrl
-/*
-
-
-clsmap = [
-  <[i-check text-success]>
-  <[i-circle text-secondary]>
-  <[i-close text-danger]>
-]
-clsset = (node, val) ->
-  newcls = clsmap[val]
-  oldcls = Array.from(node.classList)
-  if oldcls.length => node.classList.remove.apply node.classList, oldcls
-  node.classList.add.apply node.classList, newcls
-
-symbol = do
-  accept: <[i-check text-success]>
-  pending: <[i-circle text-secondary]>
-  reject: <[i-close text-danger]>
-*/

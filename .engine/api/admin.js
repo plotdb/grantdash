@@ -47,6 +47,10 @@
         type: 'org',
         slug: slug,
         action: 'owner'
+      })['catch'](function(){
+        return Promise.reject(new lderror({
+          ldcv: "access-denied"
+        }, 1012));
       }).then(function(){
         res.render('admin/index.pug', {
           org: {
@@ -68,6 +72,10 @@
         type: 'brd',
         slug: slug,
         action: 'owner'
+      })['catch'](function(){
+        return Promise.reject(new lderror({
+          ldcv: "access-denied"
+        }, 1012));
       }).then(function(){
         return io.query("select * from brd where slug = $1 and deleted is not true", [slug]);
       }).then(function(r){

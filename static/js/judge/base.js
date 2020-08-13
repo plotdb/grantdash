@@ -243,7 +243,8 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         rank: "排名",
         "criteria-result": "審查結果",
         "judge-rank": "評審排名",
-        "judge-score": "評審分數"
+        "judge-score": "評審分數",
+        rate: "比例"
       };
       verbose = {
         name: namemap[name] || value,
@@ -271,7 +272,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         notify.send('success', "重新將表格依 " + verbose.name + " 做 " + verbose.dir + " 排序");
       }
       return debounce(100).then(function(){
-        var statemap;
+        var statemap, v;
         this$.sort.inversed[n] = !this$.sort.inversed[n];
         statemap = [2, 0, 1];
         if (name === 'state') {
@@ -319,9 +320,18 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
             b = b != null ? b : 0;
             return dir * (b - a);
           });
-        } else if (name === 'primary-all') {
+        } else if (name === 'rate') {
           this$.prjs.sort(function(a, b){
-            return dir * (a.count[value] || 0) - (b.count[value] || 0);
+            return dir * (b.rate - a.rate);
+          });
+        } else if (name === 'primary-all') {
+          v = {
+            "0": "accept",
+            "1": "pending",
+            "2": "reject"
+          }[value];
+          this$.prjs.sort(function(a, b){
+            return dir * (a.count[v] || 0) - (b.count[v] || 0);
           });
         } else if (name === 'primary') {
           this$.prjs.sort(function(a, b){

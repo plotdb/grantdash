@@ -46,7 +46,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
             if (!this$.active) {
               return;
             }
-            ((ref$ = this$.data.prj)[key$ = this$.active.slug] || (ref$[key$] = {})).comment = node.value;
+            ((ref$ = this$.data.prj)[key$ = this$.active.key] || (ref$[key$] = {})).comment = node.value;
             this$.update({
               debounced: 300
             });
@@ -71,6 +71,30 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
             var node;
             node = arg$.node;
             return this$.sort(node.getAttribute('data-name'), node.getAttribute('data-value'));
+          },
+          "download-csv": function(){
+            var head, body, data, href, n;
+            head = '"名稱","提案單位","入選標記","推薦票數","面議票數","汰除票數","推薦佔例"';
+            body = this$.prjs.map(function(p){
+              var ref$, key$, ref1$;
+              return [p.name, p.info.teamname || p.ownername || '', ((ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = p.key] || (ref$[key$] = {})).picked ? 'O' : '', p.count.accept, p.count.pending, p.count.reject, p.rate].map(function(it){
+                return "\"" + ('' + it).replace('"', '\\"') + "\"";
+              }).join(',');
+            }).join('\n');
+            data = head + "\n" + body;
+            href = URL.createObjectURL(new Blob([data], {
+              type: "text/csv"
+            }));
+            n = ld$.create({
+              name: 'a',
+              attr: {
+                href: href,
+                download: 'result.csv'
+              }
+            });
+            document.body.appendChild(n);
+            n.click();
+            return document.body.removeChild(n);
           }
         }
       },
@@ -83,26 +107,14 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
       },
       handler: {
         option: function(arg$){
-          var node, v, jinfo, ref$, ref1$, span, type, text;
+          var node, v, jinfo, ref$, ref1$, span, type;
           node = arg$.node;
           v = node.getAttribute('data-value');
           jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
           span = ld$.find(node, 'span', 0);
           type = jinfo["option-type"];
-          console.log(type, v, v === '1');
           jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
-          text = !type
-            ? {
-              "accept": "推薦",
-              "pending": "面議",
-              "reject": "淘汰"
-            }[v]
-            : type === '2way' ? {
-              "accept": "通過",
-              "reject": "拒絕"
-            }[v] : "";
-          span.innerText = text;
-          return node.classList.toggle('d-none', v === 'pending' && type === '2way' ? true : false);
+          return node.classList.toggle('d-none', v === '1' && type === '2way' ? true : false);
         },
         "show-budget": function(arg$){
           var node, ref$;
@@ -176,7 +188,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                   pick: function(arg$){
                     var node, context, obj, ref$, key$, ref1$;
                     node = arg$.node, context = arg$.context;
-                    obj = (ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.slug] || (ref$[key$] = {});
+                    obj = (ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.key] || (ref$[key$] = {});
                     obj.picked = !obj.picked;
                     local.view.render();
                     return this$.update({
@@ -221,6 +233,11 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                 }
               },
               handler: {
+                rate: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.innerText = (context.rate * 100).toFixed(1) + "%";
+                },
                 option: function(arg$){
                   var node, v, jinfo, ref$, ref1$, span, type;
                   node = arg$.node;
@@ -228,7 +245,6 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                   jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
                   span = ld$.find(node, 'span', 0);
                   type = jinfo["option-type"];
-                  console.log(type, v, v === '1');
                   return node.classList.toggle('d-none', v === '1' && type === '2way' ? true : false);
                 },
                 "show-budget": function(arg$){
@@ -240,7 +256,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                   var node, context, cls, obj, ref$, key$, ref1$, cl, icon;
                   node = arg$.node, context = arg$.context;
                   cls = [['text-white', 'bg-success'], ['text-secondary', 'bg-light']];
-                  obj = (ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.slug] || (ref$[key$] = {});
+                  obj = (ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.key] || (ref$[key$] = {});
                   cl = node.classList;
                   cl.add.apply(cl, obj.picked
                     ? cls[0]
@@ -261,7 +277,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                 "has-comment": function(arg$){
                   var node, context, ref$, key$;
                   node = arg$.node, context = arg$.context;
-                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.slug] || (ref$[key$] = {})).comment);
+                  return node.classList.toggle('invisible', !((ref$ = this$.data.prj)[key$ = context.key] || (ref$[key$] = {})).comment);
                 },
                 progress: function(arg$){
                   var node, context, n;
@@ -323,6 +339,9 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
       }).then(function(){
         return this$.fetchInfo();
       }).then(function(){
+        var ref$, ref1$;
+        return this$.judge = (ref$ = (ref1$ = this$.grpinfo).judgePerm || (ref1$.judgePerm = {})).list || (ref$.list = []);
+      }).then(function(){
         return this$.fetchPrjs();
       }).then(function(){
         return this$.sharedb();
@@ -331,29 +350,26 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
       })['catch'](error());
     },
     getCount: function(){
-      var len, k, this$ = this;
-      len = (function(){
-        var results$ = [];
-        for (k in this.data.user) {
-          results$.push(k);
-        }
-        return results$;
-      }.call(this)).length;
+      var len, this$ = this;
+      len = this.judge.length;
       return this.prjs.map(function(p, i){
-        var count, k, ref$, u, v, ref1$, key$, results$ = [];
+        var count;
         p.count = count = {
           accept: 0,
           pending: 0,
           reject: 0,
           total: len
         };
-        for (k in ref$ = this$.data.user) {
-          u = ref$[k];
-          if ((v = ((ref1$ = u.prj)[key$ = p.key] || (ref1$[key$] = {})).v) != null) {
-            results$.push(count[typemap[v]]++);
+        this$.judge.map(function(j){
+          var u, v, ref$, key$;
+          if (!(u = this$.data.user[j.key])) {
+            return;
           }
-        }
-        return results$;
+          if ((v = ((ref$ = u.prj)[key$ = p.key] || (ref$[key$] = {})).v) != null) {
+            return count[typemap[v]]++;
+          }
+        });
+        return p.rate = count.accept / (count.total || 1);
       });
     },
     getProgress: function(){

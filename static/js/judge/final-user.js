@@ -463,8 +463,8 @@ ldc.register('judgeFinalUser', ['notify', 'judgeBase', 'error', 'loader', 'auth'
           }
           return results$;
           function fn$(c){
-            var idx, ref$, key$;
-            idx = ((ref$ = v.prj || (v.prj = {}))[key$ = p.key] || (ref$[key$] = {})).v[c.key];
+            var idx, ref$, ref1$, key$;
+            idx = ((ref$ = (ref1$ = v.prj || (v.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {}))[c.key];
             if (!(idx != null)) {
               idx = 1;
             }

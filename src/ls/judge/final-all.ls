@@ -29,6 +29,30 @@ Ctrl = (opt) ->
           @cfg.heatmap = !@cfg.heatmap
           @view.local.render \toggle-heatmap
           @view.local.render \project
+        "download-csv": ~>
+          judges = @judge
+            .map (j,i) -> ["評審#{i+1}分數","評審#{i+1}排名","評審#{i+1}評論"]
+            .reduce(((a,b) -> a ++ b), [])
+          head = <[提案名稱 提案單位]> ++ judges ++ <[平均分 總排名]> ++ @judge.map((j,i) -> "評審#{i}評論")
+
+          body = @prjs
+            .map (p) ~>
+              scores = @judge
+                .map (j) -> [ j.score[p.key], j.rank[p.key]]
+                .reduce(((a,b) -> a ++ b), [])
+              comments = @judge
+                .map (j) ~> (@data.user[j.key].{}prj[p.key].comment or '')
+              return ([p.name, (p.info.teamname or p.ownername or '')] ++ scores ++ [p.total, p.rank] ++ comments)
+                .map -> "\"#{('' + it).replace('"','\\"')}\""
+                .join(',')
+            .join('\n')
+
+          data = "#head\n#body"
+          href = URL.createObjectURL(new Blob([data], {type: "text/csv"}))
+          n = ld$.create name: \a, attr: {href,download: 'result.csv'}
+          document.body.appendChild n
+          n.click!
+          document.body.removeChild n
 
     handler: do
       "toggle-heatmap": ({node}) ~>
@@ -196,7 +220,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
           p.criteria = {0: 0, 1: 0, 2: 0}
           for k,v of users =>
             @criteria.map (c) ~>
-              idx = v.{}prj{}[p.key].v[c.key]
+              idx = v.{}prj{}[p.key].{}v[c.key]
               if !(idx?) => idx = 1
               p.criteria[idx]++
 

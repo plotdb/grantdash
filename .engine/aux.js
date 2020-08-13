@@ -61,9 +61,15 @@
       return function(e){
         e == null && (e = {});
         if (e instanceof lderror) {
-          res.status(e.code || 403).send(e.toString({
-            stack: false
-          }));
+          if (e.ldcv) {
+            res.status(e.code || 450).render('err/custom.pug', {
+              err: e
+            });
+          } else {
+            res.status(e.code || 403).send(e.toString({
+              stack: false
+            }));
+          }
         } else if (typeof e.code === 'number') {
           if (asPage && base["r" + e.code]) {
             base["r" + e.code](res, e.message, asPage);
