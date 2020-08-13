@@ -359,11 +359,6 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
         deleteGroup: deleteGroup,
         cloneGroup: cloneGroup
       });
-      z$.perm = new adminPerm({
-        toc: toc,
-        root: '[data-nav=grp-config] [ld-scope=perm-panel]',
-        brd: toc.brd
-      });
       z$.grade = new adminEntry({
         root: '[ld-scope=grade-panel]'
       });
