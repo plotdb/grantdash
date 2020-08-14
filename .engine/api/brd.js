@@ -352,7 +352,7 @@
         return aux.r400(res);
       }
       info = payload.info || {};
-      ref$ = [info.name || info.title, info.description], name = ref$[0], description = ref$[1];
+      ref$ = [((info.name || info.title || '') + "").substring(0, 128), ((info.description || '') + "").substring(0, 500)], name = ref$[0], description = ref$[1];
       return cache.perm.check({
         io: io,
         user: req.user,
