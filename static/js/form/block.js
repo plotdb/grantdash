@@ -443,7 +443,7 @@ ldc.register('prjFormBlock', ['ldcvmgr', 'error', 'auth', 'prjFormCriteria'], fu
                 return;
               }
               if (files.filter(function(it){
-                return it.file && it.file.size >= 10485760;
+                return it.file && it.file.size >= 104857600;
               }).length) {
                 return ldcvmgr.toggle('error-413');
               }
