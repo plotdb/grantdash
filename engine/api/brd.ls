@@ -153,7 +153,7 @@ api.post \/upload, aux.signed, express-formidable({multiples:true}), grecaptcha,
   {org,brd,prj,post,files} = req.fields
   files = []
   for name,list of req.files => files ++= list
-  if files.length > 10 or files.filter(->it.size >= 10485760).length => return aux.r413 res
+  if files.length > 10 or files.filter(->it.size >= 104857600).length => return aux.r413 res
   slugs {io, org, brd, prj, post}
     .then (ret) -> lc <<< ret
     .then -> cache.perm.check {io, user: req.user, type: lc.type, slug: lc.slug, action: \owner}
