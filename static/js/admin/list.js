@@ -121,22 +121,27 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                     if (node.classList.contains('running')) {
                       return;
                     }
-                    node.classList.toggle('running', true);
-                    return ld$.fetch("/dash/api/prj/" + context.slug, {
-                      method: 'delete'
-                    }, {
-                      type: 'json'
-                    })['finally'](function(){
-                      return node.classList.toggle('running', false);
-                    }).then(function(){
-                      var idx;
-                      notify.send('success', "成功刪除了「" + context.name + "」提案");
-                      idx = this$.data.indexOf(context);
-                      if (~idx) {
-                        this$.data.splice(idx, 1);
+                    return ldcvmgr.get('confirm-deletion').then(function(it){
+                      if (it !== 'yes') {
+                        return;
                       }
-                      return this$.view.render();
-                    })['catch'](error());
+                      node.classList.toggle('running', true);
+                      return ld$.fetch("/dash/api/prj/" + context.slug, {
+                        method: 'delete'
+                      }, {
+                        type: 'json'
+                      })['finally'](function(){
+                        return node.classList.toggle('running', false);
+                      }).then(function(){
+                        var idx;
+                        notify.send('success', "成功刪除了「" + context.name + "」提案");
+                        idx = this$.data.indexOf(context);
+                        if (~idx) {
+                          this$.data.splice(idx, 1);
+                        }
+                        return this$.view.render();
+                      })['catch'](error());
+                    });
                   },
                   name: function(arg$){
                     var node, context;
