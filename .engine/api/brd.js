@@ -272,7 +272,7 @@
         files = files.concat(list);
       }
       if (files.length > 10 || files.filter(function(it){
-        return it.size >= 10485760;
+        return it.size >= 104857600;
       }).length) {
         return aux.r413(res);
       }
