@@ -268,7 +268,7 @@
           return that;
         }
         return io.query("select detail->'stage' as stage from brd where slug = $1 and deleted is not true", [slug]).then(function(r){
-          var ret, stage, cfgs;
+          var ret, stage, cfgs, ref$, idx, value, i$, to$, i, v, that;
           r == null && (r = {});
           if (!(ret = (r.rows || (r.rows = []))[0])) {
             return aux.reject(404);
@@ -283,7 +283,15 @@
             }
             return true;
           });
-          ret = cfgs[cfgs.length - 1] || {};
+          ref$ = [0, 0], idx = ref$[0], value = ref$[1];
+          for (i$ = 0, to$ = cfgs.length; i$ < to$; ++i$) {
+            i = i$;
+            v = (that = cfgs[i].start) ? Date.now() - new Date(that).getTime() : 0;
+            if (!value || (v <= value && v > 0)) {
+              ref$ = [i, v], idx = ref$[0], value = ref$[1];
+            }
+          }
+          ret = cfgs[idx] || {};
           if (!ret.config) {
             ret.config = {};
           }

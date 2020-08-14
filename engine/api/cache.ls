@@ -151,7 +151,12 @@ stage = do
                 if s.start and Date.now! < (new Date(s.start).getTime!) => return false
                 if s.end and Date.now! > (new Date(s.end).getTime!) => return false
                 return true
-            ret = (cfgs[* - 1] or {})
+            # if there are multiple matches, choose the one with closest start time
+            [idx,value] = [0,0]
+            for i from 0 til cfgs.length =>
+              v = if cfgs[i].start => (Date.now! - new Date(that).getTime!) else 0
+              if !value or (v <= value and v > 0) => [idx,value] = [i,v]
+            ret = cfgs[idx] or {}
             if !ret.config => ret.config = {}
             return (@cache[type][slug] = ret)
       .then (c) ->
