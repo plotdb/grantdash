@@ -199,7 +199,7 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
   if !(slug and type and payload) => return aux.r400 res
   if !(type in <[prj brd org post form]>) => return aux.r400 res
   info = payload.info or {}
-  [name, description] = [(info.name or info.title), info.description]
+  [name, description] = ["#{info.name or info.title or ''}".substring(0,128), "#{info.description or ''}".substring(0,500)]
   cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
     .then ->
       if type == \prj =>
