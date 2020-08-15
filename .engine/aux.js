@@ -59,11 +59,14 @@
     errorHandler: function(res, asPage){
       asPage == null && (asPage = false);
       return function(e){
+        var err;
         e == null && (e = {});
         if (e instanceof lderror) {
           if (e.ldcv) {
+            err = import$({}, e);
+            delete err.stack;
             res.status(e.code || 450).render('err/custom.pug', {
-              err: e
+              err: err
             });
           } else {
             res.status(e.code || 403).send(e.toString({
@@ -274,5 +277,10 @@
   function repeatString$(str, n){
     for (var r = ''; n > 0; (n >>= 1) && (str += str)) if (n & 1) r += str;
     return r;
+  }
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
   }
 }).call(this);
