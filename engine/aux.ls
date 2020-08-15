@@ -28,7 +28,10 @@ base = do
   #TODO use error-handler in every promise.catch
   error-handler: (res,as-page=false) -> (e={}) ->
     if e instanceof lderror =>
-      if e.ldcv => res.status(e.code or 450).render('err/custom.pug', {err: e})
+      if e.ldcv =>
+        err = {} <<< e
+        delete err.stack
+        res.status(e.code or 450).render('err/custom.pug', {err})
       else res.status(e.code or 403) .send e.toString({stack: false})
     else if typeof(e.code) == \number =>
       if as-page and base["r#{e.code}"] => base["r#{e.code}"] res, e.message, as-page
