@@ -143,7 +143,8 @@ api.get \/brd/:brd/grp/:grp/judge-list, (req, res) ->
         p.detail is not null and
         p.brd = $1 and
         p.grp = $2 and
-        p.deleted is not true
+        p.deleted is not true and
+        p.state = 'active'
       """, [brd, grp]
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res

@@ -261,6 +261,7 @@ get-prj-list = (req, res) ->
         select p.*,u.displayname as ownername, u.username as owneremail
         from prj as p, users as u
         where p.detail is not null and u.key = p.owner and p.brd = $3 and p.deleted is not true
+        and p.state = 'active'
         """,
         "and grp = $#idx3" if grp
         "and tag ? $4" if tag

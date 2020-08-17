@@ -163,7 +163,11 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
       })['catch'](error());
     },
     setData: function(grp){
-      return this.grp = grp;
+      var this$ = this;
+      this.grp = grp;
+      return this.prepare().then(function(){
+        return this$.view.render();
+      })['catch'](error());
     }
   });
   return Ctrl;

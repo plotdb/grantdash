@@ -168,7 +168,8 @@ ldc.register('adminJudgeCriteria', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'a
       })['catch'](error());
     },
     setData: function(grp){
-      return this.grp = grp;
+      this.grp = grp;
+      return this.prepare();
     }
   });
   return Ctrl;

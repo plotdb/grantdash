@@ -74,6 +74,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
       .then ~> @view.render!
       .catch error!
 
-  set-data: (grp) -> @grp = grp
+  set-data: (grp) ->
+    @grp = grp
+    @prepare!
 
 Ctrl
