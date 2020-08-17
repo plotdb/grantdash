@@ -6,7 +6,7 @@ Ctrl = (opt) ->
   @data = []
   admin-panel.on \active, ({nav, name, panel}) ~>
     if name == \grp-list =>
-      ld$.fetch "/dash/api/brd/#{@toc.brd.slug}/list", {method: \GET}, {type: \json}
+      ld$.fetch "/dash/api/brd/#{@toc.brd.slug}/list", {method: \GET}, {params: {grp: @grp.key}, type: \json}
         .then ~>
           @data = it
           @data.map -> it.info = it.detail.info
@@ -38,7 +38,6 @@ Ctrl = (opt) ->
               a.click!
               document.body.removeChild a
               a.remove!
-              console.log url
 
             .catch error!
     handler: do
@@ -73,7 +72,7 @@ Ctrl = (opt) ->
                 admin-panel.toggle {nav: \main, name: \grp-detail}
                 @set-prj context
             text: do
-              name: ({context}) -> context.name
+              name: ({context}) -> context.name or '(未命名的提案)'
               index: ({context}) -> context.key
               ownername: ({context}) -> context.{}info.teamname or context.ownername or ''
               username: ({context}) -> context.ownername or ''

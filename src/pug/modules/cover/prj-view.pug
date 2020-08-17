@@ -1,0 +1,11 @@
+include /modules/common.pug
++scope("prj-view").ldcv.ldcvmgr.full.p-4(data-name="prj-view"): .base: .inner.card
+  .closebtn.lg.z-fixed(data-ldcv-set="")
+  .card-body.p-0: .h-100
+    iframe.border-0.w-100.h-100(ld="iframe")
+    .w-100.h-100.vertical-center.position-absolute.z-float.bg-light(
+    ld="iframe-placeholder",style="top:0;left:0")
+      .w-100.text-center.text-muted
+        .text-lg 提案瀏覽區
+        div 在此瀏覽該提案內容
+

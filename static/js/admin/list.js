@@ -15,6 +15,9 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
         return ld$.fetch("/dash/api/brd/" + this$.toc.brd.slug + "/list", {
           method: 'GET'
         }, {
+          params: {
+            grp: this$.grp.key
+          },
           type: 'json'
         }).then(function(it){
           this$.data = it;
@@ -85,8 +88,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
               document.body.appendChild(a);
               a.click();
               document.body.removeChild(a);
-              a.remove();
-              return console.log(url);
+              return a.remove();
             })['catch'](error());
           }
         }
@@ -158,7 +160,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                 name: function(arg$){
                   var context;
                   context = arg$.context;
-                  return context.name;
+                  return context.name || '(未命名的提案)';
                 },
                 index: function(arg$){
                   var context;

@@ -245,7 +245,7 @@ get-prj-list = (req, res) ->
     .then ->
       {offset,limit} = req.query{offset,limit}
       badge = (req.query.badge or '').split(',')
-      {keyword,tag,category} = req.query{keyword, category, tag}
+      {keyword,tag,category,grp} = req.query{keyword, category, tag, grp}
       if !(slug = req.params.slug) => return aux.reject 400
       offset = (if isNaN(+offset) => 0 else +offset ) >? 0
       # TODO we make limit quite large so we dont have to support pagination. at least for now
@@ -253,6 +253,7 @@ get-prj-list = (req, res) ->
       if !slug => return aux.reject 400
       idx1 = 4 + ([tag].filter(-> it).length)
       idx2 = 4 + ([tag,category].filter(-> it).length)
+      idx3 = 4 + ([tag,category,keyword].filter(-> it).length)
       io.query(
         [
         """
@@ -261,6 +262,7 @@ get-prj-list = (req, res) ->
         from prj as p, users as u
         where p.detail is not null and u.key = p.owner and p.brd = $3 and p.deleted is not true
         """,
+        "and grp = $#idx3" if grp
         "and tag ? $4" if tag
         "and category = $#idx1" if category
         "and name ~ $#idx2" if keyword
@@ -272,7 +274,7 @@ get-prj-list = (req, res) ->
         ) sub
         right join (select count(*) from cte) c(full_count) on true
         """
-        ].filter(->it).join(' '), [offset, limit, slug] ++ ([tag, category, keyword].filter(->it))
+        ].filter(->it).join(' '), [offset, limit, slug] ++ ([tag, category, keyword, grp].filter(->it))
       )
     .then (r={}) -> return r.[]rows.filter(-> it.slug)
 
