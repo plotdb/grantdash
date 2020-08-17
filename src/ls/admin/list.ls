@@ -48,6 +48,11 @@ Ctrl = (opt) ->
             it.slug and ( !lc.keyword or ~(
               [it.name,it.{}info.teamname,it.username,it.ownername].filter(->it).join(' ').indexOf(lc.keyword)
             ))
+        handler: ({node, local, data}) ->
+          local.view.set-context data
+          local.view.render!
+          if data.state == 'active' => node.style <<< {color: 'auto'}
+          else node.style <<< {color: 'rgba(0,0,0,.6)'}
         init: ({node,local,data}) ~>
           local.view = new ldView do
             context: data
@@ -74,9 +79,13 @@ Ctrl = (opt) ->
             text: do
               name: ({context}) -> context.name or '(未命名的提案)'
               index: ({context}) -> context.key
+              state: ({context}) -> if context.state == 'active' => "已送件" else "編輯中"
               ownername: ({context}) -> context.{}info.teamname or context.ownername or ''
               username: ({context}) -> context.ownername or ''
             handler: do
+              state: ({node, context}) ->
+                node.classList.toggle \text-success, (context.state == 'active')
+                node.classList.toggle \text-warning, (context.state != 'active')
               "budget-consume": ({node,context}) ->
               "budget-detail": ({node,context}) ->
               avatar: ({node,context}) -> node.style.background = "url(/s/avatar/#{context.owner}.png)"
