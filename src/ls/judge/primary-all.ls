@@ -116,7 +116,7 @@ Ctrl = (opt) ->
                 if !(b = context.info.budget) => return ''
                 total = b.subsidy or 0
                 return "#{Math.round(total / 10000)}萬"
-              name: ({context}) -> context.name or ''
+              name: ({context}) -> context.name or '(未命名)'
               ownername: ({context}) -> context.info.teamname or context.ownername or ''
               key: ({context}) -> context.key or ''
             handler: do

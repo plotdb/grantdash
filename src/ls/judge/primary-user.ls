@@ -95,7 +95,7 @@ Ctrl = (opt) ->
                 @active-node = root
                 @active-node.classList.add \active
             text: do
-              name: ({context}) -> context.name or ''
+              name: ({context}) -> context.name or '(未命名)'
               ownername: ({context}) -> context.info.teamname or context.ownername or ''
               key: ({context}) -> context.key or ''
               budget: ({context}) ->

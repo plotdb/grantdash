@@ -171,7 +171,7 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
                 name: function(arg$){
                   var context;
                   context = arg$.context;
-                  return context.name;
+                  return context.name || '(未命名)';
                 }
               },
               handler: {
