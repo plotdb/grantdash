@@ -25,6 +25,7 @@
     .w-100
       .d-flex.border-bottom.border-top.p-2
         .px-1(style="width:48px") 編號
+        .px-1.mr-3(style="width:4em") 狀態
         .flex-grow-1 專案名稱 / 單位
         //-.px-1.text-center(style="width:200px") 預算概況
         //-.px-1.text-center(style="width:100px") 階段
@@ -32,11 +33,12 @@
         .p-4.text-center.text-muted(ld="empty") 目前尚沒有任何提案。
         .d-flex.border-bottom.align-items-center.p-2(ld-each="prj")
           .px-1(ld="index",style="width:48px")
+          .px-1.mr-3(ld="state",style="width:4em")
           .flex-grow-1
             .clickable.text-underline(ld="name")
-            .text-muted.text-sm(ld="ownername")
-          .px-1.rounded-circle.bg-cover.bg-portrait.bg-dark.mr-2(ld="avatar",style="width:2em;height:2em")
+            //-.text-muted.text-sm(ld="ownername")
           .px-1(ld="username")
+          .px-1.rounded-circle.bg-cover.bg-portrait.bg-dark.mr-2(ld="avatar",style="width:1.5em;height:1.5em")
           //-.px-1.text-center(style="width:70px")
             //-div 已核銷 #[span(ld="budget-consume")]
             //-.text-sm(ld="budget-detail")

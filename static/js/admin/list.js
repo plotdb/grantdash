@@ -109,6 +109,17 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
               }).join(' ').indexOf(lc.keyword));
             });
           },
+          handler: function(arg$){
+            var node, local, data, ref$;
+            node = arg$.node, local = arg$.local, data = arg$.data;
+            local.view.setContext(data);
+            local.view.render();
+            if (data.state === 'active') {
+              return ref$ = node.style, ref$.color = 'auto', ref$;
+            } else {
+              return ref$ = node.style, ref$.color = 'rgba(0,0,0,.6)', ref$;
+            }
+          },
           init: function(arg$){
             var node, local, data;
             node = arg$.node, local = arg$.local, data = arg$.data;
@@ -167,6 +178,15 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                   context = arg$.context;
                   return context.key;
                 },
+                state: function(arg$){
+                  var context;
+                  context = arg$.context;
+                  if (context.state === 'active') {
+                    return "已送件";
+                  } else {
+                    return "編輯中";
+                  }
+                },
                 ownername: function(arg$){
                   var context;
                   context = arg$.context;
@@ -179,6 +199,12 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                 }
               },
               handler: {
+                state: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  node.classList.toggle('text-success', context.state === 'active');
+                  return node.classList.toggle('text-warning', context.state !== 'active');
+                },
                 "budget-consume": function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
