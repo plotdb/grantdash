@@ -77,7 +77,7 @@ app.get \/prj/:slug, (req, res) ->
         view = if (req.{}query.simple)? => "view/#{brd.detail.custom.view}/prj-view-simple.pug"
         else "view/#{brd.detail.custom.view}/prj-view.pug"
       delete brd.detail
-      res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}} <<< req.scope{domain}
+      res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}, simple: (req.{}query.simple)?} <<< req.scope{domain}
     .catch aux.error-handler res
 
 api.delete \/prj/:slug, aux.signed, (req, res) ->

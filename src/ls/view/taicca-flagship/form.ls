@@ -3,9 +3,10 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
   lc = {}
   vlc = viewLocals or {}
   console.log vlc
+  viewmode = /simple/.exec(window.location.search)
 
   lockform = debounce 100, (lock) ->
-    lock = if lock? => !!lock else (vlc.{}prj.state == \active)
+    lock = if lock? => !!lock else if viewmode => true else (vlc.{}prj.state == \active)
     form = ld$.find('#flagship-form', 0)
     ld$.find form, ".btn" .map (n, i) -> n.classList.toggle \disabled, lock
     ld$.find form, "textarea,input,select" .map (n,i) ->
@@ -261,6 +262,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
           return ""
 
       handler: do
+        "editmode-only": ({node}) -> node.classList.toggle \d-none, viewmode
         "budget-limit": ({node}) ->
           budget-calc!
           node.classList.toggle \d-none, payload.budget.ready

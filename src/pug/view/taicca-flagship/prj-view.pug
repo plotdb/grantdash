@@ -1,5 +1,7 @@
 //- view
 extends /base.pug
+block vars
+  - ctrl.navtop.shown = !simple;
 block head
   style(type="text/css"): :stylus
     .blform
@@ -297,7 +299,7 @@ block body
                 td: .form-group.m-0
                   input.form-control(name="amount")
                   .invalid-feedback 不可留白
-          .btn.btn-outline-secondary.no-print(ld="add-column",data-name="past-sub") 新增一項 #[i.i-plus]
+          .btn.btn-outline-secondary.no-print(ld="editmode-only add-column",data-name="past-sub") 新增一項 #[i.i-plus]
 
       +nbr(1)
       .no-break
@@ -333,7 +335,7 @@ block body
                 td: .form-group.m-0
                   textarea.form-control(rows="5",name="result")
                   .invalid-feedback 字數不符
-          .btn.btn-outline-secondary.no-print(ld="add-column",data-name="perform") 新增一項 #[i.i-plus]
+          .btn.btn-outline-secondary.no-print(ld="editmode-only add-column",data-name="perform") 新增一項 #[i.i-plus]
 
       +nbr(2)
     .page
@@ -452,7 +454,7 @@ block body
 
         .d-flex.align-items-start
           .flex-grow-1.d-flex.align-items-center
-            .btn.btn-outline-secondary.no-print(ld="add-column",data-name="budget") 新增一項 #[i.i-plus]
+            .btn.btn-outline-secondary.no-print(ld="editmode-only add-column",data-name="budget") 新增一項 #[i.i-plus]
             .text-danger.ml-4.d-none(ld="budget-limit") 補助經費不得超過五百萬，且比例不得超過 49%
           span 單位: 新台幣
 
@@ -466,7 +468,7 @@ block body
           a.ml-4.only-print(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
 
 
-    .page.px-4
+    .page.px-4(ld="editmode-only")
       h3 109年度文化內容開發與內容產業領航行動方案切結書
 
       p 茲保證「#[span(ld="fill",data-name="name")]」計畫案（以下簡稱本計畫案）及立切結書人（即申請人）符合下列事項：
@@ -498,7 +500,7 @@ block body
       p 中華民國 #[span(ld="fill",data-name="doc-year")] 年 #[span(ld="fill",data-name="doc-month")] 月 #[span(ld="fill",data-name="doc-day")] 日
 
 
-    .page.px-4
+    .page.px-4(ld="editmode-only")
       .border.p-4.border-dark
 
         h3.text-center 個人資料蒐集、處理、利用同意書
@@ -541,7 +543,7 @@ block body
 
   +nbr(2)
 
-  .submit-panel.no-print(style="bottom:0;left:0;right:0;padding:1em 0;border-top:1px solid #ccc")
+  .submit-panel.no-print(ld="editmode-only",style="bottom:0;left:0;right:0;padding:1em 0;border-top:1px solid #ccc")
     .w-1024.mx-auto.rwd
       .d-flex.align-items-stretch.flex-wrap
         div(ld="not submitted"): .d-flex.align-items-stretch

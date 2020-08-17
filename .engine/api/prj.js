@@ -187,7 +187,7 @@
           prj: lc.prj,
           brd: lc.brd,
           grp: lc.grp
-        }, ref1$), ref$.domain = req.scope.domain, ref$));
+        }, ref1$.simple = (req.query || (req.query = {})).simple != null, ref1$), ref$.domain = req.scope.domain, ref$));
       })['catch'](aux.errorHandler(res));
     });
     api['delete']('/prj/:slug', aux.signed, function(req, res){
