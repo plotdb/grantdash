@@ -69,13 +69,16 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         @data = data = it or {}
         @data.{}data.{}user
         prjs = data.prjs
-        console.log it
-        data.users.map (u) ->
+        (data.users or []).map (u) ->
           prjs.filter (p) ->
             [v for k,v of data.data.user{}[u.key].{}prj{}[p.key].v].reduce(((a,b)->a + (b or 0)),0) > 0
 
       .catch error!
 
-  set-data: (grp) -> @grp = grp
+  set-data: (grp) ->
+    @grp = grp
+    @prepare!
+      .then ~> @view.render!
+      .catch error!
 
 Ctrl

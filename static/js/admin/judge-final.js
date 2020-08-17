@@ -124,8 +124,7 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
         this$.data = data = it || {};
         (ref$ = (ref1$ = this$.data).data || (ref1$.data = {})).user || (ref$.user = {});
         prjs = data.prjs;
-        console.log(it);
-        return data.users.map(function(u){
+        return (data.users || []).map(function(u){
           return prjs.filter(function(p){
             var k, v;
             return (function(){
@@ -143,7 +142,11 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
       })['catch'](error());
     },
     setData: function(grp){
-      return this.grp = grp;
+      var this$ = this;
+      this.grp = grp;
+      return this.prepare().then(function(){
+        return this$.view.render();
+      })['catch'](error());
     }
   });
   return Ctrl;

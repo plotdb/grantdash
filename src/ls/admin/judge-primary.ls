@@ -90,6 +90,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
           u
       .catch error!
 
-  set-data: (grp) -> @grp = grp
+  set-data: (grp) ->
+    @grp = grp
+    @prepare!
+      .then ~> @view.render!
+      .catch error!
 
 Ctrl
