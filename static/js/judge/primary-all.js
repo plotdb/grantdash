@@ -219,7 +219,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                 name: function(arg$){
                   var context;
                   context = arg$.context;
-                  return context.name || '';
+                  return context.name || '(未命名)';
                 },
                 ownername: function(arg$){
                   var context;

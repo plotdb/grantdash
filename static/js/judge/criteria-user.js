@@ -182,7 +182,7 @@ ldc.register('judgeCriteriaUser', ['notify', 'judgeBase', 'error', 'loader', 'au
                 name: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
-                  return node.innerText = context.name;
+                  return node.innerText = context.name || '(未命名)';
                 },
                 key: function(arg$){
                   var node, context;

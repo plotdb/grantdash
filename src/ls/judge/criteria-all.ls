@@ -62,7 +62,7 @@ Ctrl = (opt) ->
             root: node
             context: data
             text: do
-              name: ({context}) -> context.name
+              name: ({context}) -> context.name or '(未命名)'
             handler: do
               comment: ({node, context}) ->
                 node.innerText = (context.comment or '( 沒有評論 )')

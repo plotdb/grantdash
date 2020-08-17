@@ -90,7 +90,7 @@ Ctrl = (opt) ->
                 cls = [<[bg-success text-white]> <[bg-light text-secondary]> <[bg-danger text-white]>]
                 node.classList.add.apply node.classList, (cls[state] ++ <[rounded]>)
                 span.innerText = <[通過 待查 不符]>[state]
-              name: ({node, context}) -> node.innerText = context.name
+              name: ({node, context}) -> node.innerText = context.name or '(未命名)'
               key: ({node, context}) -> node.innerText = context.key or ''
               criteria: do
                 list: ({context}) ~> @criteria
