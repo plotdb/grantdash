@@ -83,6 +83,7 @@ Ctrl = (opt) ->
               ownername: ({context}) -> context.{}info.teamname or context.ownername or ''
               username: ({context}) -> context.ownername or ''
             handler: do
+              edit: ({node, context}) ~> node.setAttribute \href, "/dash/prj/#{context.slug}/edit"
               state: ({node, context}) ->
                 node.classList.toggle \text-success, (context.state == 'active')
                 node.classList.toggle \text-warning, (context.state != 'active')
