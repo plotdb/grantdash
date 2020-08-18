@@ -43,6 +43,14 @@
         type: 'prj',
         slug: req.params.slug,
         action: 'owner'
+      })['catch'](function(){
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: req.scope.brd,
+          action: 'owner'
+        });
       }).then(function(){
         return cache.stage.check({
           io: io,

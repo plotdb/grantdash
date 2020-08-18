@@ -219,12 +219,11 @@
       });
     },
     sharedb: function(arg$){
-      var io, user, id, data, type, action, ref$, slug, ids, this$ = this;
+      var io, user, id, data, type, action, ids, ref$, slug, this$ = this;
       io = arg$.io, user = arg$.user, id = arg$.id, data = arg$.data, type = arg$.type, action = arg$.action;
       if (!id) {
         return Promise.resolve();
       }
-      ref$ = id.split('/'), type = ref$[0], slug = ref$[1];
       ref$ = ids = id.split('/'), type = ref$[0], slug = ref$[1];
       return this.check({
         io: io,

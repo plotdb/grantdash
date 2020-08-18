@@ -359,6 +359,18 @@
         type: type,
         slug: slug,
         action: 'owner'
+      })['catch'](function(e){
+        if (type === 'prj') {
+          return cache.perm.check({
+            io: io,
+            user: req.user,
+            type: 'brd',
+            slug: req.scope.brd,
+            action: 'owner'
+          });
+        } else {
+          return Promise.reject(e);
+        }
       }).then(function(){
         if (type === 'prj') {
           return cache.stage.check({

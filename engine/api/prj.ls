@@ -22,6 +22,8 @@ get-prj = (slug) ->
 # used by project editing. so we only provide this to owner.
 api.get "/prj/:slug/", aux.signed, (req, res) ->
   cache.perm.check {io, user: req.user, type: \prj, slug: req.params.slug, action: \owner}
+    .catch ->
+      cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
     .then -> cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
     .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \prj-edit-own}
     .then -> get-prj req.params.slug
