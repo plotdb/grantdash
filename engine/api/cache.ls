@@ -125,7 +125,6 @@ perm = do
 
   sharedb: ({io, user, id, data, type, action}) ->
     if !id => return Promise.resolve!
-    [type,slug] = id.split('/')
     [type,slug] = ids = id.split('/')
     @check({io, user, type, slug, action})
       .catch ~>
