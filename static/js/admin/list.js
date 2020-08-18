@@ -199,6 +199,11 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                 }
               },
               handler: {
+                edit: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.setAttribute('href', "/dash/prj/" + context.slug + "/edit");
+                },
                 state: function(arg$){
                   var node, context;
                   node = arg$.node, context = arg$.context;
