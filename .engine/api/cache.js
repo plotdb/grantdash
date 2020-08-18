@@ -109,6 +109,7 @@
   };
   perm = {
     cache: {},
+    cachePrj: {},
     cacheJudge: {
       brd: {}
     },
@@ -232,6 +233,29 @@
         slug: slug,
         action: action
       })['catch'](function(it){
+        var p, that, ret;
+        if (type === 'prj') {
+          p = (that = this$.cachePrj[slug]) != null
+            ? Promise.resolve(that)
+            : io.query("select brd from prj where slug = $1", [slug]).then(function(r){
+              r == null && (r = {});
+              return (r.rows || (r.rows = []))[0];
+            });
+          ret = p.then(function(prj){
+            if (!prj) {
+              return Promise.reject(new lderror(1012));
+            }
+            this$.cachePrj[slug] = prj;
+            return this$.check({
+              io: io,
+              user: user,
+              type: 'brd',
+              slug: prj.brd,
+              action: ['owner']
+            });
+          });
+          return ret;
+        }
         if (!(type === 'brd' && ids[2] === 'grp')) {
           return Promise.reject(it);
         }
