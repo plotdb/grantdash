@@ -66,6 +66,7 @@ route = do
 
 perm = do
   cache: {}
+  cache-prj: {}
   cache-judge: {brd: {}}
   perm: {}
   supported-types: <[org brd prj post form]>
@@ -123,13 +124,24 @@ perm = do
           return Promise.reject(new lderror(1012))
         @cache-judge.brd{}[brd].{}[grp][user.key] = true
 
+
   sharedb: ({io, user, id, data, type, action}) ->
     if !id => return Promise.resolve!
     [type,slug] = ids = id.split('/')
     @check({io, user, type, slug, action})
       .catch ~>
+        if type == \prj =>
+          p = if (@cache-prj[slug])? => Promise.resolve that
+          else io.query("select brd from prj where slug = $1", [slug]).then((r={}) -> r.[]rows.0)
+          ret = p
+            .then (prj) ~>
+              if !prj => return Promise.reject new lderror(1012)
+              @cache-prj[slug] = prj
+              @check {io, user, type: \brd, slug: prj.brd, action: <[owner]>}
+          return ret
         if !(type == \brd and ids.2 == \grp) => return Promise.reject it
         @check-judge {io, brd: ids.1, grp: ids.3, user}
+
 
 stage = do
   cache: {}

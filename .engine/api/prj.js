@@ -36,7 +36,10 @@
         return prj;
       });
     };
-    api.get("/prj/:slug/", aux.signed, function(req, res){
+    api.get("/prj/:slug/", function(req, res){
+      if (!(req.user && req.user.key)) {
+        return aux.r403(res);
+      }
       return cache.perm.check({
         io: io,
         user: req.user,
