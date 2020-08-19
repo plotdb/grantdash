@@ -86,12 +86,29 @@ app.get \/brd/:slug, (req, res) ->
   if !(slug = req.params.slug) => return aux.r400 res
   landing-page \brd, slug, req, res
 
+# upload-vids hacks - PDF only show the very first page
+# - for PDF with fast web view option on, Chrome fires several request through this API for a single PDF.
+#   however, except the first request, following requests don't have the required cookie for session,
+#   thus user object will be undefined, and thus access to protected files will be denied.
+# - To resolve this issue, we add an "id" in frontend in query params for identifying the same request
+#   and cache the permission calculation result about the specific id. then, we identify requests
+#   by the same request through the id.
+upload-vids = {}
 # project file permission check
 # X-Accel-Redirect will be intercepted by Nginx, and then use to serve corresponding location.
 # once we config it as internal, it will only accessible through this route.
 app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
   {org, prj, file} = req.params{org, prj, file}
   lc = {}
+  vid = req.query.id
+  now = Date.now!
+  if vid and upload-vids[vid] =>
+    if upload-vids[vid].time > now and !(req.user and req.user.key)  =>
+      res.set {"X-Accel-Redirect": "/dash/private/org/#org/prj/#prj/upload/#file"}
+      return res.send!
+    upload-vids[vid] = null
+  for k,v of upload-vids => if v and v.time > now => delete upload-vids[k]
+
   cache.perm.check {io, user: req.user, type: \prj, slug: prj, action: \owner}
     .catch ->
       cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge]>}
@@ -117,6 +134,7 @@ app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
             .then (r={}) ->
               if !(r.[]rows.length) => return Promise.reject 403
     .then ->
+      if vid => upload-vids[vid] = {time: Date.now! + 1000 * 30}
       res.set {"X-Accel-Redirect": "/dash/private/org/#org/prj/#prj/upload/#file"}
       res.send!
     .catch -> res.status 403 .send {}

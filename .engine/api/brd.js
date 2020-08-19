@@ -21,7 +21,7 @@
   (function(it){
     return module.exports = it;
   })(function(engine, io){
-    var deploy, slugs, saveSnapshot, api, app, landing, landingPage, upload, updatePermission, getPrjList;
+    var deploy, slugs, saveSnapshot, api, app, landing, landingPage, uploadVids, upload, updatePermission, getPrjList;
     deploy = common.deploy, slugs = common.slugs, saveSnapshot = common.saveSnapshot;
     api = engine.router.api;
     app = engine.app;
@@ -152,14 +152,32 @@
       }
       return landingPage('brd', slug, req, res);
     });
+    uploadVids = {};
     app.get('/org/:org/prj/:prj/upload/:file', function(req, res){
-      var ref$, org, prj, file, lc;
+      var ref$, org, prj, file, lc, vid, now, k, v;
       ref$ = {
         org: (ref$ = req.params).org,
         prj: ref$.prj,
         file: ref$.file
       }, org = ref$.org, prj = ref$.prj, file = ref$.file;
       lc = {};
+      vid = req.query.id;
+      now = Date.now();
+      if (vid && uploadVids[vid]) {
+        if (uploadVids[vid].time > now && !(req.user && req.user.key)) {
+          res.set({
+            "X-Accel-Redirect": "/dash/private/org/" + org + "/prj/" + prj + "/upload/" + file
+          });
+          return res.send();
+        }
+        uploadVids[vid] = null;
+      }
+      for (k in ref$ = uploadVids) {
+        v = ref$[k];
+        if (v && v.time > now) {
+          delete uploadVids[k];
+        }
+      }
       return cache.perm.check({
         io: io,
         user: req.user,
@@ -218,6 +236,11 @@
           });
         });
       }).then(function(){
+        if (vid) {
+          uploadVids[vid] = {
+            time: Date.now() + 1000 * 30
+          };
+        }
         res.set({
           "X-Accel-Redirect": "/dash/private/org/" + org + "/prj/" + prj + "/upload/" + file
         });
