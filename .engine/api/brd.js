@@ -154,7 +154,7 @@
     });
     uploadVids = {};
     app.get('/org/:org/prj/:prj/upload/:file', function(req, res){
-      var ref$, org, prj, file, lc, vid, now, k, v;
+      var ref$, org, prj, file, lc, vid, now, fvid, k, v;
       ref$ = {
         org: (ref$ = req.params).org,
         prj: ref$.prj,
@@ -163,14 +163,15 @@
       lc = {};
       vid = req.query.id;
       now = Date.now();
-      if (vid && uploadVids[vid]) {
-        if (uploadVids[vid].time > now && !(req.user && req.user.key)) {
+      fvid = vid ? prj + "-" + file + "-" + vid : null;
+      if (fvid && uploadVids[fvid]) {
+        if (uploadVids[fvid].time > now && !(req.user && req.user.key)) {
           res.set({
             "X-Accel-Redirect": "/dash/private/org/" + org + "/prj/" + prj + "/upload/" + file
           });
           return res.send();
         }
-        uploadVids[vid] = null;
+        uploadVids[fvid] = null;
       }
       for (k in ref$ = uploadVids) {
         v = ref$[k];
@@ -236,8 +237,8 @@
           });
         });
       }).then(function(){
-        if (vid) {
-          uploadVids[vid] = {
+        if (fvid) {
+          uploadVids[fvid] = {
             time: Date.now() + 1000 * 30
           };
         }
