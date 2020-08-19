@@ -102,11 +102,12 @@ app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
   lc = {}
   vid = req.query.id
   now = Date.now!
-  if vid and upload-vids[vid] =>
-    if upload-vids[vid].time > now and !(req.user and req.user.key)  =>
+  fvid = if vid => "#{prj}-#{file}-#{vid}" else null
+  if fvid and upload-vids[fvid] =>
+    if upload-vids[fvid].time > now and !(req.user and req.user.key)  =>
       res.set {"X-Accel-Redirect": "/dash/private/org/#org/prj/#prj/upload/#file"}
       return res.send!
-    upload-vids[vid] = null
+    upload-vids[fvid] = null
   for k,v of upload-vids => if v and v.time > now => delete upload-vids[k]
 
   cache.perm.check {io, user: req.user, type: \prj, slug: prj, action: \owner}
@@ -134,7 +135,7 @@ app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
             .then (r={}) ->
               if !(r.[]rows.length) => return Promise.reject 403
     .then ->
-      if vid => upload-vids[vid] = {time: Date.now! + 1000 * 30}
+      if fvid => upload-vids[fvid] = {time: Date.now! + 1000 * 30}
       res.set {"X-Accel-Redirect": "/dash/private/org/#org/prj/#prj/upload/#file"}
       res.send!
     .catch -> res.status 403 .send {}
