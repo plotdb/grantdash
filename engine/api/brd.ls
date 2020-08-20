@@ -100,6 +100,8 @@ upload-vids = {}
 app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
   {org, prj, file} = req.params{org, prj, file}
   lc = {}
+  res.set {"X-Accel-Redirect": "/dash/private/org/#org/prj/#prj/upload/#file"}
+  return res.send!
   vid = req.query.id
   now = Date.now!
   fvid = if vid => "#{prj}-#{file}-#{vid}" else null

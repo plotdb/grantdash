@@ -161,6 +161,10 @@
         file: ref$.file
       }, org = ref$.org, prj = ref$.prj, file = ref$.file;
       lc = {};
+      res.set({
+        "X-Accel-Redirect": "/dash/private/org/" + org + "/prj/" + prj + "/upload/" + file
+      });
+      return res.send();
       vid = req.query.id;
       now = Date.now();
       fvid = vid ? prj + "-" + file + "-" + vid : null;
