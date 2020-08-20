@@ -133,7 +133,6 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
     },
     prepare: function(){
       var this$ = this;
-      return Promise.resolve();
       return ld$.fetch("/dash/api/brd/" + this.brd.slug + "/grp/" + this.grp.key + "/judge/primary/all", {
         method: 'GET'
       }, {
@@ -141,13 +140,15 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
       }).then(function(it){
         var data;
         this$.data = data = it;
-        return this$.users = data.users.map(function(u){
+        data.prjs || (data.prjs = []);
+        console.log(data.users || (data.users = []));
+        return (data.users || (data.users = [])).map(function(u){
           var count, obj, ref$;
           count = {
             0: 0,
             1: 0,
             2: 0,
-            total: 0
+            total: data.prjs.length || 1
           };
           obj = (ref$ = data.data.user[u.key] || {}).prj || (ref$.prj = {});
           data.prjs.map(function(p){
@@ -156,9 +157,7 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
               return count[v]++;
             }
           });
-          u.count = count;
-          count.total = count[0] + count[1] + count[2] || 1;
-          return u;
+          return u.count = count;
         });
       })['catch'](error());
     },

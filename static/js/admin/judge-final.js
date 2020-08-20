@@ -80,8 +80,9 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
                   return node.innerText = context.name;
                 },
                 "progress-bar": function(arg$){
-                  var node;
-                  node = arg$.node;
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.style.width = context.percent + "%";
                 }
               }
             });
@@ -125,19 +126,15 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
         (ref$ = (ref1$ = this$.data).data || (ref1$.data = {})).user || (ref$.user = {});
         prjs = data.prjs;
         return (data.users || []).map(function(u){
-          return prjs.filter(function(p){
-            var k, v;
-            return (function(){
-              var ref$, ref1$, key$, ref2$, ref3$, key1$, results$ = [];
-              for (k in ref$ = ((ref1$ = (ref2$ = (ref3$ = data.data.user)[key1$ = u.key] || (ref3$[key1$] = {})).prj || (ref2$.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v) {
-                v = ref$[k];
-                results$.push(v);
-              }
-              return results$;
-            }()).reduce(function(a, b){
-              return a + (b || 0);
-            }, 0) > 0;
+          var ret;
+          ret = prjs.filter(function(p){
+            var v, ref$, ref1$, key$, ref2$, ref3$, key1$;
+            v = (ref$ = (ref1$ = (ref2$ = (ref3$ = data.data.user)[key1$ = u.key] || (ref3$[key1$] = {})).prj || (ref2$.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {});
+            return !((ref$ = (ref1$ = this$.grp).grade || (ref1$.grade = {})).entries || (ref$.entries = [])).filter(function(g){
+              return !(v[g.key] != null) || v[g.key] === '';
+            }).length;
           });
+          return u.percent = ret.length * 100 / prjs.length;
         });
       })['catch'](error());
     },

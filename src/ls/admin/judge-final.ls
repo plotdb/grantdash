@@ -47,7 +47,7 @@ Ctrl = (opt = {}) ->
               name: ({node, context}) ~>
                 node.innerText = context.name
                 #node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/final/user/#{context.key}"
-              "progress-bar": ({node}) ->
+              "progress-bar": ({node, context}) -> node.style.width = "#{context.percent}%"
 
         handler: ({local, data}) ->
           local.view.setContext data
@@ -69,10 +69,13 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         @data = data = it or {}
         @data.{}data.{}user
         prjs = data.prjs
-        (data.users or []).map (u) ->
-          prjs.filter (p) ->
-            [v for k,v of data.data.user{}[u.key].{}prj{}[p.key].v].reduce(((a,b)->a + (b or 0)),0) > 0
-
+        (data.users or []).map (u) ~>
+          ret = prjs.filter (p) ~>
+            v = data.data.user{}[u.key].{}prj{}[p.key].{}v
+            !@grp.{}grade.[]entries
+              .filter (g) -> !((v[g.key])?) or v[g.key] == ''
+              .length
+          u.percent = ret.length * 100 / prjs.length
       .catch error!
 
   set-data: (grp) ->
