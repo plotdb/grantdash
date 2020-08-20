@@ -77,17 +77,17 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   update: -> @ops-out ~> @obj
 
   prepare: ->
-    return Promise.resolve!
     ld$.fetch "/dash/api/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/all", {method: \GET}, {type: \json}
       .then ~>
         @data = data = it
-        @users = data.users.map (u) ->
-          count = {0: 0, 1: 0, 2: 0, total: 0}
+        data.[]prjs
+        console.log data.[]users
+        data.[]users.map (u) ->
+          count = {0: 0, 1: 0, 2: 0, total: data.prjs.length or 1}
           obj = (data.data.user[u.key] or {}).{}prj
           data.prjs.map (p) -> if (v = (obj[p.key] or {}).v)? => count[v]++
           u.count = count
-          count.total = (count.0 + count.1 + count.2) or 1
-          u
+
       .catch error!
 
   set-data: (grp) ->
