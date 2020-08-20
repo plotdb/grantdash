@@ -54,8 +54,8 @@ Ctrl.render = ({block, answer, prj, brd, org}) ->
       ret = (answer.list or [])
         .map (f) ->
           """
-          <li><a href="/dash/org/#{org}/prj/#{prj}/upload/#{f.fn}?id=#{Math.random!toString(36)substring(2)}"t
-          arget="_blank" rel="noopener noreferrer">
+          <li><a href="/dash/org/#{org}/prj/#{prj}/upload/#{f.fn}?id=#{Math.random!toString(36)substring(2)}"
+          target="_blank" rel="noopener noreferrer">
           #{htmlentities(f.name)}
           </a></li>
           """
