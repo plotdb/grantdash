@@ -60,40 +60,23 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
             return;
           }
           return node.setAttribute('href', "/dash/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/final/all");
-        },
-        "final-judge": {
-          list: function(){
-            var ref$;
-            return (ref$ = this$.data).users || (ref$.users = []);
-          },
-          init: function(arg$){
-            var node, local, data;
-            node = arg$.node, local = arg$.local, data = arg$.data;
-            node.classList.toggle('d-none', false);
-            return local.view = new ldView({
-              root: node,
-              context: data,
-              handler: {
-                name: function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.innerText = context.name;
-                },
-                "progress-bar": function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.style.width = context.percent + "%";
-                }
-              }
-            });
-          },
-          handler: function(arg$){
-            var local, data;
-            local = arg$.local, data = arg$.data;
-            local.view.setContext(data);
-            return local.view.render();
-          }
         }
+        /*"final-judge": do
+          list: ~> @data.[]users
+          init: ({node, local, data}) ~>
+            node.classList.toggle \d-none, false
+            local.view = new ldView do
+              root: node,
+              context: data
+              handler: do
+                name: ({node, context}) ~>
+                  node.innerText = context.name
+                  #node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/final/user/#{context.key}"
+                "progress-bar": ({node, context}) -> node.style.width = "#{context.percent}%"
+          handler: ({local, data}) ->
+            local.view.setContext data
+            local.view.render!
+        */
       }
     });
     return this;
