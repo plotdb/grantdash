@@ -231,7 +231,7 @@
         if (!(lc.ret = ret = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
         }
-        if (lc.ret.email !== req.user.username) {
+        if (lc.ret.email.toLowerCase() !== req.user.username) {
           return aux.reject(403);
         }
         if (Date.now() >= new Date(ret.createdtime).getTime() + ret.redeemspan * 1000) {

@@ -132,7 +132,7 @@ api.put \/judgetoken, aux.signed, grecaptcha, (req, res) ->
   """, [token]
     .then (r={}) ->
       if !(lc.ret = ret = r.[]rows.0) => return aux.reject 404
-      if lc.ret.email != req.user.username => return aux.reject 403
+      if lc.ret.email.toLowerCase! != req.user.username => return aux.reject 403
       if Date.now! >= ((new Date(ret.createdtime).getTime!) + ret.redeemspan * 1000) =>
         return io.query "delete from permtoken_judge where token = $1", [token]
           .then -> return Promise.reject(new lderror(1013))
