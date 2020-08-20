@@ -216,8 +216,8 @@
             var ref$;
             return (ref$ = it.name) === 'form-thumbnail' || ref$ === 'form-file';
           }).filter(function(it){
-            var ref$;
-            return ((ref$ = lc.prj.detail.answer[it.key]).list || (ref$.list = [])).filter(function(it){
+            var ref$, ref1$, key$, ref2$, ref3$;
+            return ((ref$ = (ref1$ = (ref2$ = (ref3$ = lc.prj).detail || (ref3$.detail = {})).answer || (ref2$.answer = {}))[key$ = it.key] || (ref1$[key$] = {})).list || (ref$.list = [])).filter(function(it){
               return it.fn === file;
             }).length;
           }).filter(function(it){
