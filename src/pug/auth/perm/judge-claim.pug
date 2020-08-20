@@ -8,7 +8,7 @@ block body
 block script
   script: :lsc
     ldc.register <[ldcvmgr loader error auth viewLocals]>, ({ldcvmgr, loader, error, auth, viewLocals}) ->
-      auth.ensure {info: \token, force-email: viewLocals.email}
+      auth.ensure {info: \token, force-email: (viewLocals.email || "").toLowerCase()}
         .then (g) -> auth.recaptcha.get!
         .then (recaptcha) ->
           payload = {token: viewLocals.token, recaptcha}
