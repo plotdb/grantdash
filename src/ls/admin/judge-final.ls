@@ -36,7 +36,7 @@ Ctrl = (opt = {}) ->
       "final-all-link": ({node}) ~>
         if !@grp => return
         node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/final/all"
-      "final-judge": do
+      /*"final-judge": do
         list: ~> @data.[]users
         init: ({node, local, data}) ~>
           node.classList.toggle \d-none, false
@@ -48,10 +48,10 @@ Ctrl = (opt = {}) ->
                 node.innerText = context.name
                 #node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/final/user/#{context.key}"
               "progress-bar": ({node, context}) -> node.style.width = "#{context.percent}%"
-
         handler: ({local, data}) ->
           local.view.setContext data
           local.view.render!
+      */
 
   @
 

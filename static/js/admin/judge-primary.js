@@ -76,41 +76,25 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
             return;
           }
           return node.setAttribute('href', "/dash/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/primary/all");
-        },
-        "primary-judge": {
-          list: function(){
-            var ref$;
-            return (ref$ = this$.data).users || (ref$.users = []);
-          },
-          init: function(arg$){
-            var node, local, data;
-            node = arg$.node, local = arg$.local, data = arg$.data;
-            node.classList.toggle('d-none', false);
-            return local.view = new ldView({
-              root: node,
-              context: data,
-              handler: {
-                name: function(arg$){
-                  var node, context;
-                  node = arg$.node, context = arg$.context;
-                  return node.innerText = context.name;
-                },
-                "progress-bar": function(arg$){
-                  var node, context, v;
-                  node = arg$.node, context = arg$.context;
-                  v = +node.getAttribute('data-name');
-                  return node.style.width = 100 * context.count[v] / context.count.total + "%";
-                }
-              }
-            });
-          },
-          handler: function(arg$){
-            var local, data;
-            local = arg$.local, data = arg$.data;
-            local.view.setContext(data);
-            return local.view.render();
-          }
         }
+        /*"primary-judge": do
+          list: ~> @data.[]users
+          init: ({node, local, data}) ~>
+            node.classList.toggle \d-none, false
+            local.view = new ldView do
+              root: node,
+              context: data
+              handler: do
+                name: ({node, context}) ~>
+                  node.innerText = context.name
+                  #node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/user/#{context.key}"
+                "progress-bar": ({node, context}) ->
+                  v = +node.getAttribute \data-name
+                  node.style.width = "#{100 * context.count[v] / context.count.total}%"
+          handler: ({local, data}) ->
+            local.view.setContext data
+            local.view.render!
+        */
       }
     });
     return this;

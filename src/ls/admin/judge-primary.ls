@@ -48,7 +48,7 @@ Ctrl = (opt = {}) ->
       "primary-all-link": ({node}) ~>
         if !@grp => return
         node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/all"
-      "primary-judge": do
+      /*"primary-judge": do
         list: ~> @data.[]users
         init: ({node, local, data}) ~>
           node.classList.toggle \d-none, false
@@ -65,6 +65,7 @@ Ctrl = (opt = {}) ->
         handler: ({local, data}) ->
           local.view.setContext data
           local.view.render!
+      */
 
   @
 
