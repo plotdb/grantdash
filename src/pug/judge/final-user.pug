@@ -45,7 +45,7 @@ block body
             .d-flex.py-2.bg-light.border-bottom.shadow-sm.text-center
               .clickable(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
               .clickable.flex-grow-1(ld="sort",data-name="name") 提案名稱
-              .clickable(ld-each="grade",style="width:5em") #[span]#[.text-sm.text-muted]
+              .clickable.px-1(ld-each="grade",style="width:5em") #[span]#[.text-sm.text-muted]
               .clickable(ld="sort",data-name="total",style="width:4em") 總分#[.text-sm.textmuted(ld="total-max")]
               .clickable(ld="sort",data-name="rank",style="width:4em") 排名
               .clickable(ld="sort",data-name="comment",style="width:5em") 評論
