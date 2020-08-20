@@ -30,7 +30,7 @@ block body
   include cover.pug
   .h-100.w-100.d-flex.flex-column
     div(style="padding-top:60px")
-    .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
+    .flex-grow-1.d-flex.w-100(style="overflow-y:hidden;overflow-x:scroll;margin-top:-.5em")
       .d-flex.flex-column(style="flex:1 1 55%")
 
         .judge-table.flex-grow-1.bg-white.border-top.border-bottom.mt-3.w-100(style="overflow-y:scroll")
@@ -48,11 +48,11 @@ block body
               .clickable(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
               div(style="width:4em") 評註
               .clickable.flex-grow-1(ld="sort",data-name="name") 提案名稱
-              div(ld-each="judge",style="width:8em")
-                div(ld="name")
+              div(ld-each="judge",style="width:6em")
+                .text-truncate(ld="name")
                 .d-flex.text-sm.justify-content-center.clickable
-                  div(data-name="score",style="width:4em") 分數
-                  div(data-name="rank",style="width:4em") 排名
+                  div(data-name="score",style="width:3em") 分數
+                  div(data-name="rank",style="width:3em") 排名
               .clickable(ld="sort",data-name="total",style="width:4em") 平均分
               .clickable(ld="sort",data-name="rank",style="width:4em") 總排名
               div(style="width:5em")
@@ -65,10 +65,10 @@ block body
             .clickable(ld="judge-comment",style="width:4em"): .vertical-center: .w-100: i.i-pen
             .text-left.p-2(style="flex:1 0 0")
               a.text-dark.text-underline(ld="name",target="_blank",rel="noopener noreferrer")
-            .d-flex(ld-each="judge",style="width:8em")
-              div(style="width:4em;border-left:1px solid #444")
+            .d-flex(ld-each="judge",style="width:6em")
+              div(style="width:3em;border-left:1px solid #444")
                 .px-2.d-flex.align-items-center.h-100.justify-content-end(ld="score")
-              div(style="width:4em;border-left:1px solid #ddd")
+              div(style="width:3em;border-left:1px solid #ddd")
                 .px-2.d-flex.align-items-center.h-100.justify-content-end(ld="rank")
             div(style="width:4em;border-left:3px solid #000")
               .px-2.d-flex.align-items-center.h-100.justify-content-end(ld="total")
