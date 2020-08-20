@@ -126,7 +126,7 @@ app.get \/org/:org/prj/:prj/upload/:file, (req, res) ->
           if !(grp = grps.filter(-> lc.prj.grp == it.key).0) => return aux.reject 404
 
           is-public = grp.{}form.[]list.filter(-> it.name in <[form-thumbnail form-file]>)
-            .filter -> lc.prj.detail.answer[it.key].[]list.filter(-> it.fn == file).length
+            .filter -> lc.prj.{}detail.{}answer{}[it.key].[]list.filter(-> it.fn == file).length
             .filter -> it.{}config.public
             .length
           if is-public => return
