@@ -175,7 +175,16 @@ api.post \/upload, aux.signed, express-formidable({multiples:true}), grecaptcha,
   if files.length > 10 or files.filter(->it.size >= 104857600).length => return aux.r413 res
   slugs {io, org, brd, prj, post}
     .then (ret) -> lc <<< ret
-    .then -> cache.perm.check {io, user: req.user, type: lc.type, slug: lc.slug, action: \owner}
+
+    .then ->
+      if lc.type == \prj =>
+        cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
+          .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[prj-edit-own]>}
+          .then -> cache.perm.check {io, user: req.user, type: \prj, slug: prj, action: <[owner]>}
+          .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner]>}
+
+      else cache.perm.check {io, user: req.user, type: lc.type, slug: lc.slug, action: \owner}
+
     # TODO verify prj form criteria
     .then -> upload {root: lc.root, files}
     .then -> res.send it

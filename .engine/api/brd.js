@@ -309,13 +309,46 @@
       }).then(function(ret){
         return import$(lc, ret);
       }).then(function(){
-        return cache.perm.check({
-          io: io,
-          user: req.user,
-          type: lc.type,
-          slug: lc.slug,
-          action: 'owner'
-        });
+        if (lc.type === 'prj') {
+          return cache.stage.check({
+            io: io,
+            type: 'brd',
+            slug: req.scope.brd,
+            name: "prj-edit"
+          })['catch'](function(){
+            return cache.perm.check({
+              io: io,
+              user: req.user,
+              type: 'brd',
+              slug: req.scope.brd,
+              action: ['prj-edit-own']
+            });
+          }).then(function(){
+            return cache.perm.check({
+              io: io,
+              user: req.user,
+              type: 'prj',
+              slug: prj,
+              action: ['owner']
+            });
+          })['catch'](function(){
+            return cache.perm.check({
+              io: io,
+              user: req.user,
+              type: 'brd',
+              slug: req.scope.brd,
+              action: ['owner']
+            });
+          });
+        } else {
+          return cache.perm.check({
+            io: io,
+            user: req.user,
+            type: lc.type,
+            slug: lc.slug,
+            action: 'owner'
+          });
+        }
       }).then(function(){
         return upload({
           root: lc.root,

@@ -40,26 +40,26 @@
       if (!(req.user && req.user.key)) {
         return aux.r403(res);
       }
-      return cache.perm.check({
+      return cache.stage.check({
         io: io,
-        user: req.user,
-        type: 'prj',
-        slug: req.params.slug,
-        action: 'owner'
+        type: 'brd',
+        slug: req.scope.brd,
+        name: "prj-edit"
       })['catch'](function(){
         return cache.perm.check({
           io: io,
           user: req.user,
           type: 'brd',
           slug: req.scope.brd,
-          action: 'owner'
+          action: ['prj-edit-own']
         });
       }).then(function(){
-        return cache.stage.check({
+        return cache.perm.check({
           io: io,
-          type: 'brd',
-          slug: req.scope.brd,
-          name: "prj-edit"
+          user: req.user,
+          type: 'prj',
+          slug: req.params.slug,
+          action: ['owner']
         });
       })['catch'](function(){
         return cache.perm.check({
@@ -67,7 +67,7 @@
           user: req.user,
           type: 'brd',
           slug: req.scope.brd,
-          action: 'prj-edit-own'
+          action: ['owner']
         });
       }).then(function(){
         return getPrj(req.params.slug);
@@ -91,6 +91,22 @@
           type: 'brd',
           slug: req.scope.brd,
           action: ['prj-edit-own']
+        });
+      }).then(function(){
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'prj',
+          slug: req.params.slug,
+          action: ['owner']
+        });
+      })['catch'](function(){
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: req.scope.brd,
+          action: ['owner']
         });
       })['catch'](function(){
         return Promise.reject(new lderror({
