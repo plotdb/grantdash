@@ -47,7 +47,7 @@ block body
             .d-flex.py-2.bg-light.border-bottom.shadow-sm.text-center
               .clickable(ld="sort",data-name="criteria-result",style="width:5em") 審核結果
               div(style="width:4em") 評註
-              .clickable.flex-grow-1(ld="sort",data-name="name") 提案名稱
+              .clickable.flex-grow-1.text-truncate(ld="sort",data-name="name",style="width:12em") 提案名稱
               div(ld-each="judge",style="width:6em")
                 .text-truncate(ld="name")
                 .d-flex.text-sm.justify-content-center.clickable
@@ -63,7 +63,7 @@ block body
               span.mx-1 /
               span.text-danger(ld="criteria",data-name="2")
             .clickable(ld="judge-comment",style="width:4em"): .vertical-center: .w-100: i.i-pen
-            .text-left.p-2(style="flex:1 0 0")
+            .text-left.p-2.flex-grow-1.text-truncate(style="width:12em")
               a.text-dark.text-underline(ld="name",target="_blank",rel="noopener noreferrer")
             .d-flex(ld-each="judge",style="width:6em")
               div(style="width:3em;border-left:1px solid #444")
