@@ -18,14 +18,19 @@ Ctrl = (opt = {}) ->
 
   @view = new ldView do
     root: @root
+    init: do
+      ldbar: ({node, local}) -> local.ldbar = new ldBar(node)
     action: click: do
       switch: ({node}) ~>
         n = node.getAttribute(\data-name)
         node.classList.toggle \on
         @obj[n] = node.classList.contains \on
         @update!
+        @get-progress!
+        @view.render \final-judge
 
     handler: do
+      ldbar: ({local}) ~> local.ldbar.set(Math.floor(100 * (@data.progress or 0)))
       switch: ({node}) ~>
         n = node.getAttribute(\data-name)
         node.classList.toggle \on, !!@obj[n]
@@ -36,7 +41,7 @@ Ctrl = (opt = {}) ->
       "final-all-link": ({node}) ~>
         if !@grp => return
         node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/final/all"
-      /*"final-judge": do
+      "final-judge": do
         list: ~> @data.[]users
         init: ({node, local, data}) ~>
           node.classList.toggle \d-none, false
@@ -51,7 +56,6 @@ Ctrl = (opt = {}) ->
         handler: ({local, data}) ->
           local.view.setContext data
           local.view.render!
-      */
 
   @
 
@@ -68,15 +72,28 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       .then ~>
         @data = data = it or {}
         @data.{}data.{}user
-        prjs = data.prjs
-        (data.users or []).map (u) ~>
-          ret = prjs.filter (p) ~>
-            v = data.data.user{}[u.key].{}prj{}[p.key].{}v
-            !@grp.{}grade.[]entries
-              .filter (g) -> !((v[g.key])?) or v[g.key] == ''
-              .length
-          u.percent = ret.length * 100 / prjs.length
+        @get-progress!
       .catch error!
+
+  get-progress: ->
+    data = @data
+    filter-name = []
+    if @obj["filter-criteria"] => filter-name.push \criteria
+    if @obj["filter-primary"] => filter-name.push \shortlist
+    prjs = data.[]prjs
+    if filter-name.length =>
+      prjs = (prjs or []).filter((p)~> filter-name.reduce(((a,b) -> a and p.{}system.{}badge[b]),true))
+    total = (data.[]users.length or 1) * (prjs.length or 1)
+    done = 0
+    data.[]users.map (u) ~>
+      ret = prjs.filter (p) ~>
+        v = data.data.user{}[u.key].{}prj{}[p.key].{}v
+        !@grp.{}grade.[]entries
+          .filter (g) -> !((v[g.key])?) or v[g.key] == ''
+          .length
+      u.percent = ret.length * 100 / prjs.length
+      done := done + ret.length
+    data.progress = done / total
 
   set-data: (grp) ->
     @grp = grp

@@ -27,6 +27,13 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
     });
     this.view = new ldView({
       root: this.root,
+      init: {
+        ldbar: function(arg$){
+          var node, local;
+          node = arg$.node, local = arg$.local;
+          return local.ldbar = new ldBar(node);
+        }
+      },
       action: {
         change: {
           choice: function(arg$){
@@ -34,7 +41,9 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
             node = arg$.node;
             n = node.getAttribute('data-name');
             this$.obj[n] = node.value;
-            return this$.update();
+            this$.update();
+            this$.getProgress();
+            return this$.view.render('primary-judge');
           }
         },
         click: {
@@ -44,11 +53,18 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
             n = node.getAttribute('data-name');
             node.classList.toggle('on');
             this$.obj[n] = node.classList.contains('on');
-            return this$.update();
+            this$.update();
+            this$.getProgress();
+            return this$.view.render('primary-judge');
           }
         }
       },
       handler: {
+        ldbar: function(arg$){
+          var local;
+          local = arg$.local;
+          return local.ldbar.set(Math.floor(100 * (this$.data.progress || 0)));
+        },
         choice: function(arg$){
           var node, n;
           node = arg$.node;
@@ -76,25 +92,42 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
             return;
           }
           return node.setAttribute('href', "/dash/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/primary/all");
-        }
-        /*"primary-judge": do
-          list: ~> @data.[]users
-          init: ({node, local, data}) ~>
-            node.classList.toggle \d-none, false
-            local.view = new ldView do
+        },
+        "primary-judge": {
+          list: function(){
+            var ref$;
+            return (ref$ = this$.data).users || (ref$.users = []);
+          },
+          init: function(arg$){
+            var node, local, data;
+            node = arg$.node, local = arg$.local, data = arg$.data;
+            node.classList.toggle('d-none', false);
+            return local.view = new ldView({
               root: node,
-              context: data
-              handler: do
-                name: ({node, context}) ~>
-                  node.innerText = context.name
-                  #node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/user/#{context.key}"
-                "progress-bar": ({node, context}) ->
-                  v = +node.getAttribute \data-name
-                  node.style.width = "#{100 * context.count[v] / context.count.total}%"
-          handler: ({local, data}) ->
-            local.view.setContext data
-            local.view.render!
-        */
+              context: data,
+              handler: {
+                name: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.innerText = context.name;
+                },
+                "progress-bar": function(arg$){
+                  var node, context, v;
+                  node = arg$.node, context = arg$.context;
+                  v = +node.getAttribute('data-name');
+                  context.count || (context.count = {});
+                  return node.style.width = 100 * (context.count[v] || 0) / context.count.total + "%";
+                }
+              }
+            });
+          },
+          handler: function(arg$){
+            var local, data;
+            local = arg$.local, data = arg$.data;
+            local.view.setContext(data);
+            return local.view.render();
+          }
+        }
       }
     });
     return this;
@@ -122,28 +155,51 @@ ldc.register('adminJudgePrimary', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'ad
       }, {
         type: 'json'
       }).then(function(it){
-        var data;
-        this$.data = data = it;
-        data.prjs || (data.prjs = []);
-        console.log(data.users || (data.users = []));
-        return (data.users || (data.users = [])).map(function(u){
-          var count, obj, ref$;
-          count = {
-            0: 0,
-            1: 0,
-            2: 0,
-            total: data.prjs.length || 1
-          };
-          obj = (ref$ = data.data.user[u.key] || {}).prj || (ref$.prj = {});
-          data.prjs.map(function(p){
-            var v;
-            if ((v = (obj[p.key] || {}).v) != null) {
-              return count[v]++;
-            }
-          });
-          return u.count = count;
-        });
+        var data, ref$, ref1$;
+        this$.data = data = it || {};
+        (ref$ = (ref1$ = this$.data).data || (ref1$.data = {})).user || (ref$.user = {});
+        return this$.getProgress();
       })['catch'](error());
+    },
+    getProgress: function(){
+      var data, filterName, prjs, total, done, this$ = this;
+      data = this.data;
+      filterName = [];
+      if (this.obj["filter-criteria"]) {
+        filterName.push('criteria');
+      }
+      prjs = data.prjs || (data.prjs = []);
+      if (filterName.length) {
+        prjs = (prjs || []).filter(function(p){
+          return filterName.reduce(function(a, b){
+            var ref$;
+            return a && ((ref$ = p.system || (p.system = {})).badge || (ref$.badge = {}))[b];
+          }, true);
+        });
+      }
+      total = ((data.users || (data.users = [])).length || 1) * (prjs.length || 1);
+      done = 0;
+      (data.users || (data.users = [])).map(function(u){
+        var count, obj, ref$;
+        count = {
+          0: 0,
+          1: 0,
+          2: 0,
+          total: prjs.length || 1
+        };
+        obj = (ref$ = data.data.user[u.key] || {}).prj || (ref$.prj = {});
+        prjs.map(function(p){
+          var v;
+          if ((v = (obj[p.key] || {}).v) != null) {
+            return count[v]++;
+          }
+        });
+        done = done + count[0] + (this$.obj["option-type"] === '2way'
+          ? 0
+          : count[1]) + count[2];
+        return u.count = count;
+      });
+      return data.progress = done / total;
     },
     setData: function(grp){
       var this$ = this;

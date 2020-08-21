@@ -19,12 +19,16 @@ Ctrl = (opt = {}) ->
 
   @view = new ldView do
     root: @root
+    init: do
+      ldbar: ({node, local}) -> local.ldbar = new ldBar(node)
     action: do
       change: do
         choice: ({node}) ~>
           n = node.getAttribute(\data-name)
           @obj[n] = node.value
           @update!
+          @get-progress!
+          @view.render \primary-judge
 
       click: do
         switch: ({node}) ~>
@@ -32,8 +36,11 @@ Ctrl = (opt = {}) ->
           node.classList.toggle \on
           @obj[n] = node.classList.contains \on
           @update!
+          @get-progress!
+          @view.render \primary-judge
 
     handler: do
+      ldbar: ({local}) ~> local.ldbar.set(Math.floor(100 * (@data.progress or 0)))
       choice: ({node}) ~>
         n = node.getAttribute(\data-name)
         node.value = @obj[n] or ''
@@ -48,7 +55,7 @@ Ctrl = (opt = {}) ->
       "primary-all-link": ({node}) ~>
         if !@grp => return
         node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/all"
-      /*"primary-judge": do
+      "primary-judge": do
         list: ~> @data.[]users
         init: ({node, local, data}) ~>
           node.classList.toggle \d-none, false
@@ -61,11 +68,11 @@ Ctrl = (opt = {}) ->
                 #node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/user/#{context.key}"
               "progress-bar": ({node, context}) ->
                 v = +node.getAttribute \data-name
-                node.style.width = "#{100 * context.count[v] / context.count.total}%"
+                context.{}count
+                node.style.width = "#{100 * (context.count[v] or 0) / context.count.total}%"
         handler: ({local, data}) ->
           local.view.setContext data
           local.view.render!
-      */
 
   @
 
@@ -80,16 +87,29 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   prepare: ->
     ld$.fetch "/dash/api/brd/#{@brd.slug}/grp/#{@grp.key}/judge/primary/all", {method: \GET}, {type: \json}
       .then ~>
-        @data = data = it
-        data.[]prjs
-        console.log data.[]users
-        data.[]users.map (u) ->
-          count = {0: 0, 1: 0, 2: 0, total: data.prjs.length or 1}
-          obj = (data.data.user[u.key] or {}).{}prj
-          data.prjs.map (p) -> if (v = (obj[p.key] or {}).v)? => count[v]++
-          u.count = count
-
+        @data = data = it or {}
+        @data.{}data.{}user
+        @get-progress!
       .catch error!
+
+  get-progress: ->
+    data = @data
+    filter-name = []
+    if @obj["filter-criteria"] => filter-name.push \criteria
+    prjs = data.[]prjs
+    if filter-name.length =>
+      prjs = (prjs or []).filter((p)~> filter-name.reduce(((a,b) -> a and p.{}system.{}badge[b]),true))
+    total = ((data.[]users.length or 1) * (prjs.length or 1))
+    done = 0
+    data.[]users.map (u) ~>
+      count = {0: 0, 1: 0, 2: 0, total: prjs.length or 1}
+      obj = (data.data.user[u.key] or {}).{}prj
+      prjs.map (p) -> if (v = (obj[p.key] or {}).v)? => count[v]++
+      done := done + count.0 + (if @obj["option-type"] == \2way => 0 else count.1) + count.2
+      u.count = count
+    data.progress = done / total
+
+
 
   set-data: (grp) ->
     @grp = grp
