@@ -120,7 +120,7 @@ api.get \/brd/:brd/grp/:grp/judge/:type/:scope, (req, res) ->
         .then ->
           # TODO must pass criteria judge
           io.query """
-          select p.key, p.slug from prj as p
+          select p.key, p.slug, p.system from prj as p
           where
             p.detail is not null and
             p.brd = $1 and

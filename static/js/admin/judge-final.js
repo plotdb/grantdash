@@ -26,6 +26,13 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
     });
     this.view = new ldView({
       root: this.root,
+      init: {
+        ldbar: function(arg$){
+          var node, local;
+          node = arg$.node, local = arg$.local;
+          return local.ldbar = new ldBar(node);
+        }
+      },
       action: {
         click: {
           'switch': function(arg$){
@@ -34,11 +41,18 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
             n = node.getAttribute('data-name');
             node.classList.toggle('on');
             this$.obj[n] = node.classList.contains('on');
-            return this$.update();
+            this$.update();
+            this$.getProgress();
+            return this$.view.render('final-judge');
           }
         }
       },
       handler: {
+        ldbar: function(arg$){
+          var local;
+          local = arg$.local;
+          return local.ldbar.set(Math.floor(100 * (this$.data.progress || 0)));
+        },
         'switch': function(arg$){
           var node, n;
           node = arg$.node;
@@ -60,23 +74,40 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
             return;
           }
           return node.setAttribute('href', "/dash/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/final/all");
-        }
-        /*"final-judge": do
-          list: ~> @data.[]users
-          init: ({node, local, data}) ~>
-            node.classList.toggle \d-none, false
-            local.view = new ldView do
+        },
+        "final-judge": {
+          list: function(){
+            var ref$;
+            return (ref$ = this$.data).users || (ref$.users = []);
+          },
+          init: function(arg$){
+            var node, local, data;
+            node = arg$.node, local = arg$.local, data = arg$.data;
+            node.classList.toggle('d-none', false);
+            return local.view = new ldView({
               root: node,
-              context: data
-              handler: do
-                name: ({node, context}) ~>
-                  node.innerText = context.name
-                  #node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/final/user/#{context.key}"
-                "progress-bar": ({node, context}) -> node.style.width = "#{context.percent}%"
-          handler: ({local, data}) ->
-            local.view.setContext data
-            local.view.render!
-        */
+              context: data,
+              handler: {
+                name: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.innerText = context.name;
+                },
+                "progress-bar": function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return node.style.width = context.percent + "%";
+                }
+              }
+            });
+          },
+          handler: function(arg$){
+            var local, data;
+            local = arg$.local, data = arg$.data;
+            local.view.setContext(data);
+            return local.view.render();
+          }
+        }
       }
     });
     return this;
@@ -104,22 +135,46 @@ ldc.register('adminJudgeFinal', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'admi
       }, {
         type: 'json'
       }).then(function(it){
-        var data, ref$, ref1$, prjs;
+        var data, ref$, ref1$;
         this$.data = data = it || {};
         (ref$ = (ref1$ = this$.data).data || (ref1$.data = {})).user || (ref$.user = {});
-        prjs = data.prjs;
-        return (data.users || []).map(function(u){
-          var ret;
-          ret = prjs.filter(function(p){
-            var v, ref$, ref1$, key$, ref2$, ref3$, key1$;
-            v = (ref$ = (ref1$ = (ref2$ = (ref3$ = data.data.user)[key1$ = u.key] || (ref3$[key1$] = {})).prj || (ref2$.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {});
-            return !((ref$ = (ref1$ = this$.grp).grade || (ref1$.grade = {})).entries || (ref$.entries = [])).filter(function(g){
-              return !(v[g.key] != null) || v[g.key] === '';
-            }).length;
-          });
-          return u.percent = ret.length * 100 / prjs.length;
-        });
+        return this$.getProgress();
       })['catch'](error());
+    },
+    getProgress: function(){
+      var data, filterName, prjs, total, done, this$ = this;
+      data = this.data;
+      filterName = [];
+      if (this.obj["filter-criteria"]) {
+        filterName.push('criteria');
+      }
+      if (this.obj["filter-primary"]) {
+        filterName.push('shortlist');
+      }
+      prjs = data.prjs || (data.prjs = []);
+      if (filterName.length) {
+        prjs = (prjs || []).filter(function(p){
+          return filterName.reduce(function(a, b){
+            var ref$;
+            return a && ((ref$ = p.system || (p.system = {})).badge || (ref$.badge = {}))[b];
+          }, true);
+        });
+      }
+      total = ((data.users || (data.users = [])).length || 1) * (prjs.length || 1);
+      done = 0;
+      (data.users || (data.users = [])).map(function(u){
+        var ret;
+        ret = prjs.filter(function(p){
+          var v, ref$, ref1$, key$, ref2$, ref3$, key1$;
+          v = (ref$ = (ref1$ = (ref2$ = (ref3$ = data.data.user)[key1$ = u.key] || (ref3$[key1$] = {})).prj || (ref2$.prj = {}))[key$ = p.key] || (ref1$[key$] = {})).v || (ref$.v = {});
+          return !((ref$ = (ref1$ = this$.grp).grade || (ref1$.grade = {})).entries || (ref$.entries = [])).filter(function(g){
+            return !(v[g.key] != null) || v[g.key] === '';
+          }).length;
+        });
+        u.percent = ret.length * 100 / prjs.length;
+        return done = done + ret.length;
+      });
+      return data.progress = done / total;
     },
     setData: function(grp){
       var this$ = this;

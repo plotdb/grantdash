@@ -259,7 +259,7 @@
             return it.name = (hash[it.id] || {}).name;
           });
         }).then(function(){
-          return io.query("select p.key, p.slug from prj as p\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
+          return io.query("select p.key, p.slug, p.system from prj as p\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true", [brd, grp]);
         }).then(function(r){
           var prjs;
           r == null && (r = {});
