@@ -227,7 +227,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
   rerank: ->
     if !@prjs => return
     @prjs.map (p) ~>
-      p.has-comment = !!@judge.filter((j) ~> @data.user{}[j.key].{}prj{}[p.key].comment).length
+      p.has-comment = !!@judge.filter((j) ~> @data.{}user{}[j.key].{}prj{}[p.key].comment).length
     @judge.map (j,i) ~>
       u = @data.user[j.key] or {}
       j.score = {}
