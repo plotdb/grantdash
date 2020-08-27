@@ -87,7 +87,6 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
         is-ready.state = _!
         view.render <[ready-state submit download]>
         return is-ready.state
-
     budget-calc = ->
       total = payload.list.[]budget.map(-> +(it.value.price or 0) * +(it.value.count or 0)).reduce(((a,b) -> a + +b),0)
       self = payload.list.[]budget.map(-> +(it.value.self or 0)).reduce(((a,b) -> a + +b),0)
@@ -98,7 +97,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
       payload.{}budget <<< {total, subsidy, self, percent}
       cur = (payload.budget.total
         and payload.budget.total > 0
-        and payload.budget.total <= 5000000
+        and payload.budget.subsidy <= 5000000
         and payload.budget.percent.subsidy <= 0.49
       )
       old = payload.budget.ready
