@@ -3,16 +3,16 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
   var notify, error, loader, auth, ldcvmgr, sdbAdapter, Ctrl;
   notify = arg$.notify, error = arg$.error, loader = arg$.loader, auth = arg$.auth, ldcvmgr = arg$.ldcvmgr, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var ret, ref$, brd, grp, type, lv, root;
+    var ret, ref$, brd, grp, type, lv, round, root;
     this.loader = loader;
     this.brd = opt.brd;
     this.grp = opt.grp;
     this.user = opt.user;
-    ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/([^/]+)\/([^/]+)$/.exec(window.location.href);
+    ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href);
     if (!ret) {
       throw new ldError(1015);
     }
-    ref$ = ret.slice(1), brd = ref$[0], grp = ref$[1], type = ref$[2], lv = ref$[3];
+    ref$ = ret.slice(1), brd = ref$[0], grp = ref$[1], type = ref$[2], lv = ref$[3], round = ref$[4];
     if (!((type === 'criteria' || type === 'primary' || type === 'final') && (lv === 'user' || lv === 'all'))) {
       throw new ldError(1015);
     }
@@ -20,6 +20,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
     this.grp = grp;
     this.type = type;
     this.lv = lv;
+    this.round = round;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
@@ -163,6 +164,9 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       console.log("get judge document ... ");
       this.hub.doc = null;
       id = "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/";
+      if (this.round) {
+        id = id + "/" + this.round;
+      }
       return this.sdb.get({
         id: id,
         watch: function(ops, source){

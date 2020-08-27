@@ -447,8 +447,8 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
       }
       this.prjs.map(function(p){
         return p.hasComment = !!this$.judge.filter(function(j){
-          var ref$, key$, ref1$, ref2$, key1$;
-          return ((ref$ = (ref1$ = (ref2$ = this$.data.user)[key1$ = j.key] || (ref2$[key1$] = {})).prj || (ref1$.prj = {}))[key$ = p.key] || (ref$[key$] = {})).comment;
+          var ref$, key$, ref1$, ref2$, key1$, ref3$;
+          return ((ref$ = (ref1$ = (ref2$ = (ref3$ = this$.data).user || (ref3$.user = {}))[key1$ = j.key] || (ref2$[key1$] = {})).prj || (ref1$.prj = {}))[key$ = p.key] || (ref$[key$] = {})).comment;
         }).length;
       });
       this.judge.map(function(j, i){

@@ -5,11 +5,11 @@ Ctrl = (opt) ->
   @loader = loader
   @ <<< opt{brd, grp, user}
 
-  ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/([^/]+)\/([^/]+)$/.exec(window.location.href)
+  ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href)
   if !ret => throw new ldError(1015)
-  [brd,grp,type,lv] = ret.slice 1
+  [brd,grp,type,lv,round] = ret.slice 1
   if !((type in <[criteria primary final]>) and (lv in <[user all]>)) => throw new ldError(1015)
-  @ <<< { brd, grp, type, lv }
+  @ <<< { brd, grp, type, lv, round }
 
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @prjs = []
@@ -87,6 +87,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     #if @user => id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/user/#{@user.key}"
     #else id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/"
     id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/"
+    if @round => id = "#id/#{@round}"
     (doc) <~ @sdb.get({
       id: id
       watch: (ops,source) ~> @hub.fire \change, {ops,source}
