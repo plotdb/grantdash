@@ -62,15 +62,11 @@ Ctrl = (opt) ->
     text: do
       count: ({node}) ~> @progress[node.getAttribute(\data-name)] or 0
     handler: do
-
       option: ({node}) ~>
         v = node.getAttribute(\data-value)
         jinfo = @grpinfo.{}judge.{}primary or {}
-        span = ld$.find node, \span, 0
         type = jinfo["option-type"]
-        jinfo = @grpinfo.{}judge.{}primary or {}
         node.classList.toggle \d-none, (if v == \1 and type == \2way => true else false)
-
       "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''

@@ -47,9 +47,8 @@ Ctrl = (opt) ->
       option: ({node}) ~>
         v = node.getAttribute(\data-value)
         jinfo = @grpinfo.{}judge.{}primary or {}
-        node.classList.toggle \d-none, (v == \1)
-
-
+        type = jinfo["option-type"]
+        node.classList.toggle \d-none, (if v == \1 and type == \2way => true else false)
       "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
