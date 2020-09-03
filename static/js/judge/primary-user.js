@@ -93,11 +93,12 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
       },
       handler: {
         option: function(arg$){
-          var node, v, jinfo, ref$, ref1$;
+          var node, v, jinfo, ref$, ref1$, type;
           node = arg$.node;
           v = node.getAttribute('data-value');
           jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
-          return node.classList.toggle('d-none', v === '1');
+          type = jinfo["option-type"];
+          return node.classList.toggle('d-none', v === '1' && type === '2way' ? true : false);
         },
         "show-budget": function(arg$){
           var node, ref$;

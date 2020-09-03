@@ -107,13 +107,11 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
       },
       handler: {
         option: function(arg$){
-          var node, v, jinfo, ref$, ref1$, span, type;
+          var node, v, jinfo, ref$, ref1$, type;
           node = arg$.node;
           v = node.getAttribute('data-value');
           jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
-          span = ld$.find(node, 'span', 0);
           type = jinfo["option-type"];
-          jinfo = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {})).primary || (ref$.primary = {})) || {};
           return node.classList.toggle('d-none', v === '1' && type === '2way' ? true : false);
         },
         "show-budget": function(arg$){
