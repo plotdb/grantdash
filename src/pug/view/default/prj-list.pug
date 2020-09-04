@@ -16,15 +16,20 @@ block body
   - (grps || []).map(function(d,i) { ghash[d.key] = d; });
   mixin card(opt)
     - var badge = (opt.system && opt.system.badge) || {};
-    - var type = (badge.winner ? "winner" : (badge.finalist ? "final" : (badge.shortlist  ? "short" : null)))
-    - var typename = {winner: "獲選", final: "決選", short: " 入圍"}[type]
+    -
+      var type =
+        badge.special ? "special" :
+          badge.winner ? "winner" :
+          badge.finalist ? "final" :
+          badge.shortlist  ? "short" : null
+    - var typename = {winner: "獲選提案", final: "決選提案", short: "入圍提案", special: "特別獎"}[type]
     .gd-prj-card&attributes(attributes)
       a(href=`/dash/prj/${opt.slug}`)
         - var thumb = opt.thumb ? `url(/dash/org/${brd.org}/prj/${opt.slug}/upload/${opt.thumb})` : 'none';
         .w-100.position-relative
           .gd-prj-card-thumb.aspect-ratio.ratio-3by2(style=`background-image:${thumb}`)
           if type
-            .gd-prj-card-badge(data-type=type) #{typename}提案
+            .gd-prj-card-badge(data-type=type) #{typename}
         .gd-prj-card-name.text-truncate(style="font-weight:500;font-size:1.25em") #{opt.name || '未命名的提案'}
       .gd-prj-card-owner.mb-2 By #[a(href=`/dash/user/${opt.owner}`) #{opt.ownername || '未具名'}]
       .gd-prj-card-description.mb-2.flex-grow-1 #{(opt.description || '').substring(0,50)} ...
@@ -57,6 +62,7 @@ block body
               //-.btn.btn-outline-secondary 得獎提案
               .btn(ld="badge-btn",data-name="all") 全部提案
               .btn(ld="badge-btn",data-name="shortlist") 入圍提案
+              .btn(ld="badge-btn",data-name="winner")  獲選提案
           div
             .gd-prj-list-search-box.input-group
               input.form-control(ld="search-input",placeholder="搜尋提案...")

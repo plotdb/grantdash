@@ -81,7 +81,7 @@ body
   margin-bottom: 1em
 
 .gd-prj-card-badge
-  &[data-type=short], &[data-type=final], &[data-type=winner]
+  &[data-type]
     position: absolute
     padding:.25em .75em
     font-size: .9em
@@ -96,6 +96,9 @@ body
 .gd-prj-card-badge[data-type=winner]
   background: #f40
   border-bottom: 1px solid #c10
+.gd-prj-card-badge[data-type=special]
+  background: #fa4
+  border-bottom: 1px solid #d99b49
 
 .gd-prj-card-name
   display: block
