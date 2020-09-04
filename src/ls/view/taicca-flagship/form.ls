@@ -70,7 +70,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
             }
           )
             .then ->
-              return {filename: file.name, size: file.size, id: id}
+              return {filename: file.name, size: file.size, id: id, modifiedtime: file.lastModified}
 
     is-ready = do
       state: false
@@ -295,7 +295,10 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
             node.classList.add \text-danger
             return node.innerText = "尚未上傳檔案"
           if node.classList.contains \no-print =>
-            node.innerText = "#{data.filename} / size: #{Math.round(data.size / 1024)}KB ( 點擊下載文件 )"
+            date = if data.modifiedtime =>
+              "/ 檔案修改時間: " + moment(data.modifiedtime).tz("Asia/Taipei").format("YYYY-MM-DD hh:mm:ss")
+            else ""
+            node.innerText = "#{data.filename} / size: #{Math.round(data.size / 1024)}KB #date ( 點擊下載文件 )"
           else
             node.innerText = "計畫書已上傳"
           node.setAttribute \href, "/dash/flagship/upload/#{data.id}"

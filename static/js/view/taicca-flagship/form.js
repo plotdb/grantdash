@@ -119,7 +119,8 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
           return {
             filename: file.name,
             size: file.size,
-            id: id
+            id: id,
+            modifiedtime: file.lastModified
           };
         });
       });
@@ -499,7 +500,7 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
           return node.classList.toggle('d-none', isReady.state);
         },
         "file-uploaded": function(arg$){
-          var node, name, data;
+          var node, name, data, date;
           node = arg$.node;
           name = node.getAttribute('data-name');
           node.removeAttribute('href');
@@ -509,7 +510,8 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
             return node.innerText = "尚未上傳檔案";
           }
           if (node.classList.contains('no-print')) {
-            node.innerText = data.filename + " / size: " + Math.round(data.size / 1024) + "KB ( 點擊下載文件 )";
+            date = data.modifiedtime ? "/ 檔案修改時間: " + moment(data.modifiedtime).tz("Asia/Taipei").format("YYYY-MM-DD hh:mm:ss") : "";
+            node.innerText = data.filename + " / size: " + Math.round(data.size / 1024) + "KB " + date + " ( 點擊下載文件 )";
           } else {
             node.innerText = "計畫書已上傳";
           }
