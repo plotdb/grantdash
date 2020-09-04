@@ -103,6 +103,9 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
       old = payload.budget.ready
       payload.budget.ready = cur
       if old != cur => is-ready.get!
+    update-view-for-budget = debounce 100, ->
+      view.render \fill
+      view.render \budget-limit
 
     view = new ldView do
       init-render: false
@@ -342,8 +345,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
                   ldform.fields["subsidy"].value = subsidy
                   ldform.fields["total"].value = total
                   if name == \self and subsidy < 0 => return 2
-                  view.render \fill
-                  view.render \budget-limit
+                  update-view-for-budget!
                 return if value => 0 else 2
             ldforms[][n].push ldform
             ldform.on \readystatechange, -> is-ready.get!

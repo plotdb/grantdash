@@ -32,7 +32,7 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
     });
   });
   init = function(arg$){
-    var global, ldforms, payload, localkey, saveLocally, clearLocaldata, loadLocally, getSignedUrl, uploadFile, isReady, budgetCalc, view, ldform;
+    var global, ldforms, payload, localkey, saveLocally, clearLocaldata, loadLocally, getSignedUrl, uploadFile, isReady, budgetCalc, updateViewForBudget, view, ldform;
     global = arg$.global;
     ldforms = {};
     payload = {
@@ -196,6 +196,10 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
         return isReady.get();
       }
     };
+    updateViewForBudget = debounce(100, function(){
+      view.render('fill');
+      return view.render('budget-limit');
+    });
     view = new ldView({
       initRender: false,
       root: document.body,
@@ -596,8 +600,7 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
                   if (name === 'self' && subsidy < 0) {
                     return 2;
                   }
-                  view.render('fill');
-                  view.render('budget-limit');
+                  updateViewForBudget();
                 }
                 return value ? 0 : 2;
               }
