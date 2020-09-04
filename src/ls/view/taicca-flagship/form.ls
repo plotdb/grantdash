@@ -111,15 +111,22 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
         change: do
           "file-upload": ({node, evt}) ->
             name = node.getAttribute(\data-name)
-            info-node = view.getAll("file-uploaded").filter(-> it.getAttribute(\data-name) == name).0
+            btn = ld$.parent node, '.btn'
+            if btn => btn.classList.toggle \running, true
+            info-node = view.getAll("file-uploaded")
+              .filter(-> it.classList.contains \no-print)
+              .filter(-> it.getAttribute(\data-name) == name)
+              .0
             # TODO use lastModifiedDatd,name,size to identify auto reupload after history.go -1
             p = if !(node.files and node.files.length) => Promise.resolve!then -> payload.file[name] = null
             else upload-file {file: node.files.0, info-node} .then -> payload.file[name] = it
             p
+              .finally ->
+                if btn => btn.classList.toggle \running, false
+                node.value = null
               .then ->
                 save-locally!
                 is-ready.get!
-                node.value = null
                 view.render \file-uploaded
               .catch (e) ->
                 if ldError.id(e) == 1020 => alert "不支援此種檔案類型，請用 PDF 檔."

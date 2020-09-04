@@ -4876,7 +4876,7 @@ pug_html = pug_html + "上傳計畫書 PDF ( 計畫書內容含目錄、原著�
 ;pug_debug_line = 465;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-flex align-items-center\"\u003E";
 ;pug_debug_line = 466;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
-pug_html = pug_html + "\u003Cdiv class=\"btn btn-upload btn-primary no-print\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-upload btn-primary no-print ld-ext-right\"\u003E";
 ;pug_debug_line = 466;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
 pug_html = pug_html + "上傳文件 ";
 ;pug_debug_line = 466;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
@@ -4885,6 +4885,10 @@ pug_html = pug_html + "\u003Cinput ld=\"file-upload\" type=\"file\" data-name=\"
 pug_html = pug_html + " ";
 ;pug_debug_line = 466;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cspan\u003E\u003C\u002Fspan\u003E";
+;pug_debug_line = 466;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
+pug_html = pug_html + " ";
+;pug_debug_line = 466;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
+pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner\"\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 466;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
 pug_html = pug_html + "\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 467;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";

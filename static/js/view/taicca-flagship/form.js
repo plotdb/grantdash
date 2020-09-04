@@ -201,10 +201,16 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
       action: {
         change: {
           "file-upload": function(arg$){
-            var node, evt, name, infoNode, p;
+            var node, evt, name, btn, infoNode, p;
             node = arg$.node, evt = arg$.evt;
             name = node.getAttribute('data-name');
+            btn = ld$.parent(node, '.btn');
+            if (btn) {
+              btn.classList.toggle('running', true);
+            }
             infoNode = view.getAll("file-uploaded").filter(function(it){
+              return it.classList.contains('no-print');
+            }).filter(function(it){
               return it.getAttribute('data-name') === name;
             })[0];
             p = !(node.files && node.files.length)
@@ -217,10 +223,14 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
               }).then(function(it){
                 return payload.file[name] = it;
               });
-            return p.then(function(){
+            return p['finally'](function(){
+              if (btn) {
+                btn.classList.toggle('running', false);
+              }
+              return node.value = null;
+            }).then(function(){
               saveLocally();
               isReady.get();
-              node.value = null;
               return view.render('file-uploaded');
             })['catch'](function(e){
               if (ldError.id(e) === 1020) {

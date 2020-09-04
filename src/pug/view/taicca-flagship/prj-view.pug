@@ -463,7 +463,7 @@ block body
       .form-group.no-print
         label 上傳計畫書 PDF ( 計畫書內容含目錄、原著授權、立案證明文件、合作意向書 / 合約 )
         .d-flex.align-items-center
-          .btn.btn-upload.btn-primary.no-print 上傳文件 #[input(ld="file-upload",type="file",data-name="plan")] #[span]
+          .btn.btn-upload.btn-primary.no-print.ld-ext-right 上傳文件 #[input(ld="file-upload",type="file",data-name="plan")] #[span] #[.ld.ld-spin.ld-spinner]
           a.ml-4.no-print(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
           a.ml-4.only-print(ld="file-uploaded",data-name="plan",target="_blank",rel="noopener noreferrer")
 
