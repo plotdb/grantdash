@@ -220,6 +220,7 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
             return p.then(function(){
               saveLocally();
               isReady.get();
+              node.value = null;
               return view.render('file-uploaded');
             })['catch'](function(e){
               if (ldError.id(e) === 1020) {

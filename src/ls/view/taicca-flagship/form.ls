@@ -119,6 +119,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
               .then ->
                 save-locally!
                 is-ready.get!
+                node.value = null
                 view.render \file-uploaded
               .catch (e) ->
                 if ldError.id(e) == 1020 => alert "不支援此種檔案類型，請用 PDF 檔."
