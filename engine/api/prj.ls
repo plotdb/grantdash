@@ -88,7 +88,16 @@ app.get \/prj/:slug, (req, res) ->
         view = if (req.{}query.simple)? => "view/#{brd.detail.custom.view}/prj-view-simple.pug"
         else "view/#{brd.detail.custom.view}/prj-view.pug"
       delete brd.detail
-      res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}} <<< req.scope{domain}
+      res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}, simple: (req.{}query.simple)?} <<< req.scope{domain}
+    .catch aux.error-handler res
+
+api.put \/prj/:slug/state, aux.signed, (req, res) ->
+  state = req.body.value
+  if !(state in <[pending active]>) => return aux.r400 res
+  if !(slug = req.params.slug) => return aux.r400 res
+  cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
+    .then -> io.query """update prj set state = $2 where slug = $1""", [slug, state]
+    .then -> res.send {}
     .catch aux.error-handler res
 
 api.delete \/prj/:slug, aux.signed, (req, res) ->

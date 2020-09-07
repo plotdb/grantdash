@@ -128,6 +128,31 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
               root: node,
               action: {
                 click: {
+                  "set-state": function(arg$){
+                    var node, context, name, json;
+                    node = arg$.node, context = arg$.context;
+                    name = node.getAttribute('data-name');
+                    json = {
+                      value: name
+                    };
+                    loader.on();
+                    return debounce(500).then(function(){
+                      return ld$.fetch("/dash/api/prj/" + context.slug + "/state", {
+                        method: 'PUT'
+                      }, {
+                        type: 'json',
+                        json: json
+                      });
+                    })['finally'](function(){
+                      return loader.off();
+                    }).then(function(){
+                      notify.send('success', '更新成功');
+                      context.state = name;
+                      return local.view.render('state');
+                    })['catch'](function(){
+                      return notify.send('danger', '更新失敗');
+                    });
+                  },
                   'delete': function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;
@@ -165,6 +190,13 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                     });
                     return this$.setPrj(context);
                   }
+                }
+              },
+              init: {
+                state: function(arg$){
+                  var node;
+                  node = arg$.node;
+                  return new Dropdown(node.parentNode);
                 }
               },
               text: {

@@ -33,7 +33,14 @@
         .p-4.text-center.text-muted(ld="empty") 目前尚沒有任何提案。
         .d-flex.border-bottom.align-items-center.p-2(ld-each="prj")
           .px-1(ld="index",style="width:48px")
-          .px-1.mr-3(ld="state",style="width:4em")
+          .px-1.mr-3(style="width:4em")
+            .dropdown.no-select
+              .dropdown-toggle(data-toggle="dropdown",ld="state")
+              .dropdown-menu
+                .dropdown-item.disabled 切換成 ...
+                .dropdown-divider
+                .dropdown-item(ld="set-state",data-name="pending") 編輯中
+                .dropdown-item(ld="set-state",data-name="active") 已送件
           .flex-grow-1
             .clickable.text-underline(ld="name")
             //-.text-muted.text-sm(ld="ownername")

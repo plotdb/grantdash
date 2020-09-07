@@ -58,6 +58,20 @@ Ctrl = (opt) ->
             context: data
             root: node
             action: click: do
+              "set-state": ({node, context}) ->
+                name = node.getAttribute(\data-name)
+                json = {value: name}
+                loader.on!
+                debounce 500
+                  .then ->
+                    ld$.fetch "/dash/api/prj/#{context.slug}/state", {method: \PUT}, {type: \json, json: json}
+                  .finally ->
+                    loader.off!
+                  .then ->
+                    notify.send \success, '更新成功'
+                    context.state = name
+                    local.view.render \state
+                  .catch -> notify.send \danger, '更新失敗'
               delete: ({node, context}) ~>
                 if node.classList.contains \running => return
                 ldcvmgr.get \confirm-deletion
@@ -76,6 +90,8 @@ Ctrl = (opt) ->
               name: ({node, context}) ~>
                 admin-panel.toggle {nav: \main, name: \grp-detail}
                 @set-prj context
+            init: do
+              state: ({node}) -> new Dropdown(node.parentNode)
             text: do
               name: ({context}) -> context.name or '(未命名的提案)'
               index: ({context}) -> context.key
