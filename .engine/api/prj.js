@@ -217,6 +217,27 @@
         }, ref1$.simple = (req.query || (req.query = {})).simple != null, ref1$), ref$.domain = req.scope.domain, ref$));
       })['catch'](aux.errorHandler(res));
     });
+    api.put('/prj/:slug/state', aux.signed, function(req, res){
+      var state, slug;
+      state = req.body.value;
+      if (!(state === 'pending' || state === 'active')) {
+        return aux.r400(res);
+      }
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: req.scope.brd,
+        action: 'owner'
+      }).then(function(){
+        return io.query("update prj set state = $2 where slug = $1", [slug, state]);
+      }).then(function(){
+        return res.send({});
+      })['catch'](aux.errorHandler(res));
+    });
     api['delete']('/prj/:slug', aux.signed, function(req, res){
       var slug;
       if (!(slug = req.params.slug)) {
