@@ -291,13 +291,13 @@ block body
                   option(value="108") 108
                   option(value="109") 109
                 td: .form-group.m-0
-                  input.form-control(name="name")
+                  input.form-control(name="name",style="height:auto")
                   .invalid-feedback 不可留白
                 td: .form-group.m-0
-                  input.form-control(name="sponsor")
+                  input.form-control(name="sponsor",style="height:auto")
                   .invalid-feedback 不可留白
                 td: .form-group.m-0
-                  input.form-control(name="amount")
+                  input.form-control(name="amount",style="height:auto")
                   .invalid-feedback 不可留白
           .btn.btn-outline-secondary.no-print(ld="editmode-only add-column",data-name="past-sub") 新增一項 #[i.i-plus]
 
@@ -316,8 +316,8 @@ block body
                 th.no-print
                 th 民國年度
                 th 計畫名稱
-                th 計畫概述及執行情形 ( 200 字以內 )
-                th 相關效益 ( 100 字以內 )
+                th 計畫概述及執行情形(200字以內)
+                th 相關效益 ( 100 字以內 ) 　　
             tbody
               tr(ld-each="column",data-name="perform")
                 td.clickable.text-center.pt-3.no-print: i.i-close
@@ -327,7 +327,7 @@ block body
                   option(value="108") 108
                   option(value="109") 109
                 td: .form-group.m-0
-                  input.form-control(name="name")
+                  input.form-control(name="name",style="min-width:8em;height:auto!important")
                   .invalid-feedback 不可留白
                 td: .form-group.m-0
                   textarea.form-control(rows="5",name="brief")
