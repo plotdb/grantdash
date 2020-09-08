@@ -101,9 +101,9 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
           return node.classList.toggle('d-none', v === '1' && type === '2way' ? true : false);
         },
         "show-budget": function(arg$){
-          var node, ref$;
+          var node, ref$, ref1$;
           node = arg$.node;
-          return node.classList.toggle('d-none', !((ref$ = this$.grpinfo.form).purpose || (ref$.purpose = {})).budget);
+          return node.classList.toggle('d-none', !((ref$ = (ref1$ = this$.grpinfo).form || (ref1$.form = {})).purpose || (ref$.purpose = {})).budget);
         },
         "comment-name": function(arg$){
           var node;
@@ -205,7 +205,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                 ownername: function(arg$){
                   var context;
                   context = arg$.context;
-                  return context.info.teamname || context.ownername || '';
+                  return (context.info || (context.info = {})).teamname || context.ownername || '';
                 },
                 key: function(arg$){
                   var context;
@@ -215,7 +215,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                 budget: function(arg$){
                   var context, b, total;
                   context = arg$.context;
-                  if (!(b = context.info.budget)) {
+                  if (!(b = (context.info || (context.info = {})).budget)) {
                     return '';
                   }
                   total = (b.self || 0) + (b.subsidy || 0);
@@ -224,7 +224,7 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                 subsidy: function(arg$){
                   var context, b, total;
                   context = arg$.context;
-                  if (!(b = context.info.budget)) {
+                  if (!(b = (context.info || (context.info = {})).budget)) {
                     return '';
                   }
                   total = b.subsidy || 0;
@@ -233,9 +233,9 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
               },
               handler: {
                 "show-budget": function(arg$){
-                  var node, ref$;
+                  var node, ref$, ref1$;
                   node = arg$.node;
-                  return node.classList.toggle('d-none', !((ref$ = this$.grpinfo.form).purpose || (ref$.purpose = {})).budget);
+                  return node.classList.toggle('d-none', !((ref$ = (ref1$ = this$.grpinfo).form || (ref1$.form = {})).purpose || (ref$.purpose = {})).budget);
                 },
                 "has-comment": function(arg$){
                   var node, context, ref$, key$;

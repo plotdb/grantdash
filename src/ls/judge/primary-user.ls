@@ -49,7 +49,7 @@ Ctrl = (opt) ->
         jinfo = @grpinfo.{}judge.{}primary or {}
         type = jinfo["option-type"]
         node.classList.toggle \d-none, (if v == \1 and type == \2way => true else false)
-      "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
+      "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.{}form.{}purpose.budget
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
       progress: ({node, names}) ~>
@@ -95,18 +95,18 @@ Ctrl = (opt) ->
                 @active-node.classList.add \active
             text: do
               name: ({context}) -> context.name or '(未命名)'
-              ownername: ({context}) -> context.info.teamname or context.ownername or ''
+              ownername: ({context}) -> context.{}info.teamname or context.ownername or ''
               key: ({context}) -> context.key or ''
               budget: ({context}) ->
-                if !(b = context.info.budget) => return ''
+                if !(b = context.{}info.budget) => return ''
                 total = (b.self or 0) + (b.subsidy or 0)
                 return "#{Math.round(total / 10000)}萬"
               subsidy: ({context}) ->
-                if !(b = context.info.budget) => return ''
+                if !(b = context.{}info.budget) => return ''
                 total = b.subsidy or 0
                 return "#{Math.round(total / 10000)}萬"
             handler: do
-              "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
+              "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.{}form.{}purpose.budget
               "has-comment": ({node, context}) ~>
                 node.classList.toggle \text-primary, !!@data.prj{}[context.key].comment
               option: ({node, local, context}) ~>

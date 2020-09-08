@@ -3,17 +3,24 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
   var notify, error, loader, auth, ldcvmgr, sdbAdapter, Ctrl;
   notify = arg$.notify, error = arg$.error, loader = arg$.loader, auth = arg$.auth, ldcvmgr = arg$.ldcvmgr, sdbAdapter = arg$.sdbAdapter;
   Ctrl = function(opt){
-    var ret, ref$, brd, grp, type, lv, round, root;
+    var ret, ref$, brd, grp, slug, lv, round, type, root;
     this.loader = loader;
     this.brd = opt.brd;
     this.grp = opt.grp;
     this.user = opt.user;
-    ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href);
-    if (!ret) {
-      throw new ldError(1015);
+    ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/custom\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href);
+    console.log(ret);
+    if (ret) {
+      ref$ = ret.slice(1), brd = ref$[0], grp = ref$[1], slug = ref$[2], lv = ref$[3], round = ref$[4];
+      type = 'custom';
+    } else {
+      ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href);
+      if (!ret) {
+        throw new ldError(1015);
+      }
+      ref$ = ret.slice(1), brd = ref$[0], grp = ref$[1], type = ref$[2], lv = ref$[3], round = ref$[4];
     }
-    ref$ = ret.slice(1), brd = ref$[0], grp = ref$[1], type = ref$[2], lv = ref$[3], round = ref$[4];
-    if (!((type === 'criteria' || type === 'primary' || type === 'final') && (lv === 'user' || lv === 'all'))) {
+    if (!((type === 'custom' || type === 'criteria' || type === 'primary' || type === 'final') && (lv === 'user' || lv === 'all'))) {
       throw new ldError(1015);
     }
     this.brd = brd;
@@ -21,6 +28,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
     this.type = type;
     this.lv = lv;
     this.round = round;
+    this.slug = slug;
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
@@ -84,7 +92,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       }).then(function(it){
         var j, ref$, key$, ref1$, filterName;
         this$.prjs = it;
-        j = (ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {}))[key$ = this$.type] || (ref$[key$] = {});
+        j = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {}))[key$ = this$.type] || (ref$[key$] = {})) || {};
         filterName = [];
         if (j["filter-criteria"]) {
           filterName.push('criteria');
@@ -164,8 +172,11 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       console.log("get judge document ... ");
       this.hub.doc = null;
       id = "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/";
+      if (this.slug) {
+        id = id + "/slug/" + this.slug;
+      }
       if (this.round) {
-        id = id + "/" + this.round;
+        id = id + "/round/" + this.round;
       }
       return this.sdb.get({
         id: id,
