@@ -63,6 +63,38 @@
         });
       });
     };
+    app.get('/brd/:brd/grp/:grp/judge/custom/:slug/:lv', function(req, res){
+      var lc, ref$, brd, grp, slug, lv, round, org;
+      lc = {};
+      ref$ = req.params, brd = ref$.brd, grp = ref$.grp, slug = ref$.slug, lv = ref$.lv, round = ref$.round;
+      org = req.scope.org;
+      return permissionCheck({
+        req: req,
+        res: res,
+        brd: brd,
+        grp: grp
+      }).then(function(){
+        return io.query("select (detail->'group') as group from brd where slug = $1 and deleted is not true", [brd]);
+      }).then(function(r){
+        var ref$, ref1$, ref2$, view;
+        r == null && (r = {});
+        if (!(lc.g = (((r.rows || (r.rows = []))[0] || {}).group || []).filter(function(it){
+          return it.key === grp;
+        })[0])) {
+          return aux.reject(404);
+        }
+        if (!(lc.j = ((ref$ = (ref1$ = (ref2$ = lc.g).judge || (ref2$.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(it){
+          return it.slug === slug;
+        })[0])) {
+          return aux.reject(404);
+        }
+        view = "users/org/" + org + "/brd/" + brd + "/view/judge/" + lc.j.view + "-" + lv + ".pug";
+        if (!fs.existsSync(view)) {
+          return aux.reject(404);
+        }
+        return res.render(path.join('../..', view));
+      })['catch'](aux.errorHandler(res));
+    });
     api.put('/usermap/', function(req, res){
       var keys;
       if (!((keys = req.body.userkeys) && Array.isArray(keys))) {

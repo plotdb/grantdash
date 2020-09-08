@@ -14,7 +14,7 @@ Ctrl = (opt = {}) ->
       enabled: false, anonymous: false, filter: '', key
     }
   @entry = new admin-entry {root, sample}
-  @entry.on \toggle, -> @view.render!
+  @entry.on \toggle, ~> @view.render!
   @view = new ldView do
     root: root
     handler: do
@@ -34,12 +34,11 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     @grp = grp
     @view.render!
   set-path: ->
-    @path = it
     @entry.set-path it
     @view.render!
+  set-doc: -> @entry.set-doc it
   adapted: -> @entry.adapted!
   adapt: ({hub, path, type}) ->
-    @path = path
     @entry.adapt {hub, path, type}
     @view.render!
 

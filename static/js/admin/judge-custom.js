@@ -32,7 +32,7 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
       sample: sample
     });
     this.entry.on('toggle', function(){
-      return this.view.render();
+      return this$.view.render();
     });
     this.view = new ldView({
       root: root,
@@ -65,9 +65,11 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
       return this.view.render();
     },
     setPath: function(it){
-      this.path = it;
       this.entry.setPath(it);
       return this.view.render();
+    },
+    setDoc: function(it){
+      return this.entry.setDoc(it);
     },
     adapted: function(){
       return this.entry.adapted();
@@ -75,7 +77,6 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
     adapt: function(arg$){
       var hub, path, type;
       hub = arg$.hub, path = arg$.path, type = arg$.type;
-      this.path = path;
       this.entry.adapt({
         hub: hub,
         path: path,
