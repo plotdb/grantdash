@@ -9,6 +9,7 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
     this.root = root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
+    this.path = opt.path;
     this.brd = opt.brd;
     this.grp = null;
     this.data = {};
@@ -29,6 +30,9 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
     this.entry = new adminEntry({
       root: root,
       sample: sample
+    });
+    this.entry.on('toggle', function(){
+      return this.view.render();
     });
     this.view = new ldView({
       root: root,
@@ -61,6 +65,7 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
       return this.view.render();
     },
     setPath: function(it){
+      this.path = it;
       this.entry.setPath(it);
       return this.view.render();
     },
@@ -70,6 +75,7 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
     adapt: function(arg$){
       var hub, path, type;
       hub = arg$.hub, path = arg$.path, type = arg$.type;
+      this.path = path;
       this.entry.adapt({
         hub: hub,
         path: path,

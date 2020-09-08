@@ -398,7 +398,8 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
       z$.judgeCustom = new adminJudgeCustom({
         root: '[ld-scope=judge-custom]',
         toc: toc,
-        brd: toc.brd
+        brd: toc.brd,
+        path: ['judge', 'custom']
       });
       z1$ = this.ctrl.prj;
       z1$.main = new adminPrjDetail({

@@ -1,6 +1,7 @@
 ({sdbAdapter}) <- ldc.register \adminEntry, <[sdbAdapter]>, _
 Ctrl = (opt) ->
   @opt = opt
+  @evt-handler = {}
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @obj = obj = {active: null, data: {entries: []}}
 
@@ -46,8 +47,9 @@ Ctrl = (opt) ->
       "empty": ({node}) -> node.classList.toggle \d-none, obj.data.entries.length
       entry: do
         list: -> obj.data.entries
-        action: click: ({node, data, evt}) ->
+        action: click: ({node, data, evt}) ~>
           obj.active = data
+          @fire \toggle, obj.active
           view.render!
         handler: ({node, data}) ->
           n = ld$.find(node, '.nav-link', 0)
@@ -58,6 +60,8 @@ Ctrl = (opt) ->
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
+  on: (n, cb) -> @evt-handler.[][n].push cb
+  fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
   update: -> @ops-out ~> @obj.data
   ops-in: ({data, ops, source}) ->
     if source => return
@@ -65,6 +69,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     if @obj.data => idx = @obj.data.entries.indexOf(@obj.active)
     @obj.data = JSON.parse(JSON.stringify(data or {}))
     @obj.active = @obj.data.[]entries[if !~idx => 0 else idx] or {}
+    @fire \toggle, @obj.active
     @view.render!
 
 return Ctrl

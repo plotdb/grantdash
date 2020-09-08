@@ -139,7 +139,7 @@ perm = do
               @cache-prj[slug] = prj
               @check {io, user, type: \brd, slug: prj.brd, action: <[owner]>}
           return ret
-        if !(type == \brd and ids.2 == \grp) => return Promise.reject it
+        if !(type == \brd and ids.2 == \grp and ids.3 == \judge) => return Promise.reject it
         @check-judge {io, brd: ids.1, grp: ids.3, user}
 
 
