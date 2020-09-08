@@ -28,18 +28,47 @@ Ctrl = (opt) ->
         search: ~> @view.render!
         download: ({node}) ~>
           n = node.getAttribute(\data-name)
+          type = node.getAttribute(\data-type)
           ld$.fetch "/dash/api/brd/#{@toc.brd.slug}/grp/#{@grp.key}/prjs", {method: \GET}, {type: \json}
-            .then (ret = {}) ->
-              if n == \mail => ret = ret.map -> it{username, name}
-              blob = new Blob([JSON.stringify(ret)], {type: "application/json"})
+            .then (prjs = {}) ~>
+              if type and type != \all =>
+                prjs = prjs.filter ->
+                  if type == \active => it.state == \active
+                  else it.{}system.{}badge[type]
+              if n == \custom =>
+                window.admin-extension = null
+                custom = @hubs.brd.doc.data.custom
+                return new Promise (res, rej) ~>
+                  fallback = ->
+                    blob = new Blob([JSON.stringify(prjs)], {type: "application/json"})
+                    name = "projects.json"
+                    return res {blob, name}
+                  if !(custom and custom.view) => return res fallback!
+                  script = document.createElement \script
+                  script.src = "/dash/js/view/#{custom.view}/admin.js"
+                  script.onload = ->
+                    func = (admin-extension or {}).download-projects
+                    if func => return res func {prjs}
+                    else return res fallback!
+                  script.onerror = -> res fallback!
+                  document.body.appendChild script
+              else
+                if n == \mail => prjs = prjs.map -> it{username, name}
+                blob = new Blob([JSON.stringify(prjs)], {type: "application/json"})
+                name = "projects-#{n}.json"
+                return {blob, name}
+
+            .then ({blob, name}) ->
               url = URL.createObjectURL(blob)
-              a = ld$.create name: \a, attr: {href: url, download: "projects-#{n}.json"}
+              a = ld$.create name: \a, attr: {href: url, download: name}
               document.body.appendChild a
               a.click!
               document.body.removeChild a
               a.remove!
 
             .catch error!
+    init: do
+      "download-dropdown": ({node}) -> new Dropdown(node)
     handler: do
       empty: ({node}) ~> node.classList.toggle \d-none, @data.filter(->it.slug).length
       prj: do
@@ -110,6 +139,7 @@ Ctrl = (opt) ->
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< do
+  set-hub: -> @hubs = it
   set-data: (grp) -> @grp = grp
   set-prj: (prj) -> @fire \set-prj, prj
   on: (n, cb) -> @evt-handler.[][n].push cb

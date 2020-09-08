@@ -129,6 +129,7 @@ adminDev, adminJudgeCustom}) ->
         ..perm.adapt   {hub: brd, path: <[perm]>}
         ..navbar.adapt {hub: brd, path: <[page navbar]>}
         ..page.adapt {hub: brd, path: <[page info]>}
+      @ctrl.grp.list.set-hub {brd}
       if @grp => @set-group that, true
 
     init-ctrl: ->

@@ -19,9 +19,18 @@
       .flex-grow-1: b 專案列表
       div
         .btn.btn-sm.btn-text 匯出：
-        .btn-group
+        .btn-group.mr-2
           .btn.btn-sm.btn-outline-secondary(ld="download",data-name="mail") #[i.i-mail]
-          .btn.btn-sm.btn-outline-secondary(ld="download",data-name="full") #[i.i-bars]
+          .btn.btn-sm.btn-outline-secondary(ld="download",data-name="full") #[i.i-html]
+        .d-inline-block: .dropdown(ld="download-dropdown")
+          .btn.btn-sm.btn-outline-secondary 下載資料 #[i.i-doc]
+          .dropdown-menu.dropdown-menu-right
+            .dropdown-item(ld="download",data-name="custom",data-type="all") 全部資料
+            .dropdown-item(ld="download",data-name="custom",data-type="active") 已送件
+            .dropdown-item(ld="download",data-name="custom",data-type="criteria") 通過資格審查
+            .dropdown-item(ld="download",data-name="custom",data-type="shortlist") 通過初審
+            .dropdown-item(ld="download",data-name="custom",data-type="finalist") 通過決選
+            .dropdown-item(ld="download",data-name="custom",data-type="winner") 獲選提案
     .w-100
       .d-flex.border-bottom.border-top.p-2
         .px-1(style="width:48px") 編號
