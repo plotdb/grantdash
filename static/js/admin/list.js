@@ -56,33 +56,91 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
             return this$.view.render();
           },
           download: function(arg$){
-            var node, n;
+            var node, n, type;
             node = arg$.node;
             n = node.getAttribute('data-name');
+            type = node.getAttribute('data-type');
             return ld$.fetch("/dash/api/brd/" + this$.toc.brd.slug + "/grp/" + this$.grp.key + "/prjs", {
               method: 'GET'
             }, {
               type: 'json'
-            }).then(function(ret){
-              var blob, url, a;
-              ret == null && (ret = {});
-              if (n === 'mail') {
-                ret = ret.map(function(it){
-                  return {
-                    username: it.username,
-                    name: it.name
-                  };
+            }).then(function(prjs){
+              var custom, blob, name;
+              prjs == null && (prjs = {});
+              if (type && type !== 'all') {
+                prjs = prjs.filter(function(it){
+                  var ref$;
+                  if (type === 'active') {
+                    return it.state === 'active';
+                  } else {
+                    return ((ref$ = it.system || (it.system = {})).badge || (ref$.badge = {}))[type];
+                  }
                 });
               }
-              blob = new Blob([JSON.stringify(ret)], {
-                type: "application/json"
-              });
+              if (n === 'custom') {
+                window.adminExtension = null;
+                custom = this$.hubs.brd.doc.data.custom;
+                return new Promise(function(res, rej){
+                  var fallback, script;
+                  fallback = function(){
+                    var blob, name;
+                    blob = new Blob([JSON.stringify(prjs)], {
+                      type: "application/json"
+                    });
+                    name = "projects.json";
+                    return res({
+                      blob: blob,
+                      name: name
+                    });
+                  };
+                  if (!(custom && custom.view)) {
+                    return res(fallback());
+                  }
+                  script = document.createElement('script');
+                  script.src = "/dash/js/view/" + custom.view + "/admin.js";
+                  script.onload = function(){
+                    var func;
+                    func = (adminExtension || {}).downloadProjects;
+                    if (func) {
+                      return res(func({
+                        prjs: prjs
+                      }));
+                    } else {
+                      return res(fallback());
+                    }
+                  };
+                  script.onerror = function(){
+                    return res(fallback());
+                  };
+                  return document.body.appendChild(script);
+                });
+              } else {
+                if (n === 'mail') {
+                  prjs = prjs.map(function(it){
+                    return {
+                      username: it.username,
+                      name: it.name
+                    };
+                  });
+                }
+                blob = new Blob([JSON.stringify(prjs)], {
+                  type: "application/json"
+                });
+                name = "projects-" + n + ".json";
+                return {
+                  blob: blob,
+                  name: name
+                };
+              }
+            }).then(function(arg$){
+              var blob, name, url, a;
+              blob = arg$.blob, name = arg$.name;
               url = URL.createObjectURL(blob);
               a = ld$.create({
                 name: 'a',
                 attr: {
                   href: url,
-                  download: "projects-" + n + ".json"
+                  download: name
                 }
               });
               document.body.appendChild(a);
@@ -91,6 +149,13 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
               return a.remove();
             })['catch'](error());
           }
+        }
+      },
+      init: {
+        "download-dropdown": function(arg$){
+          var node;
+          node = arg$.node;
+          return new Dropdown(node);
         }
       },
       handler: {
@@ -264,6 +329,9 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
     return this;
   };
   Ctrl.prototype = import$(Object.create(Object.prototype), {
+    setHub: function(it){
+      return this.hubs = it;
+    },
     setData: function(grp){
       return this.grp = grp;
     },

@@ -270,6 +270,9 @@ ldc.register('adminGuard', ['navtop', 'ldcvmgr', 'auth', 'loader', 'sdbAdapter',
         hub: brd,
         path: ['page', 'info']
       });
+      this.ctrl.grp.list.setHub({
+        brd: brd
+      });
       if (that = this.grp) {
         return this.setGroup(that, true);
       }
