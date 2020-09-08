@@ -7,14 +7,36 @@ Ctrl = (opt = {}) ->
   @brd = opt.brd
   @grp = null
   @data = {}
-  sample = {name: "評選表", slug: suuid!, type: "score", enabled: false, anonymous: false, filter: ''}
+  sample = ({key}) ->
+    {
+      name: "評選表", slug: suuid!, type: "score", view: \default
+      enabled: false, anonymous: false, filter: '', key
+    }
   @entry = new admin-entry {root, sample}
+  @view = new ldView do
+    root: root
+    handler: do
+      "user-link": ({node}) ~>
+        active = @entry.obj.active
+        if !(@grp and active) => return
+        node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/custom/#{@entry.obj.active.slug}/user"
+      "all-link": ({node}) ~>
+        active = @entry.obj.active
+        if !(@grp and active) => return
+        node.setAttribute \href, "/dash/brd/#{@brd.slug}/grp/#{@grp.key}/judge/custom/#{@entry.obj.active.slug}/all"
+
   @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< do
-  set-data: (grp) -> @grp = grp
+  set-data: (grp) ->
+    @grp = grp
+    @view.render!
+  set-path: ->
+    @entry.set-path it
+    @view.render!
+  adapted: -> @entry.adapted!
   adapt: ({hub, path, type}) ->
-    #adbAdapter.interface.adapt.apply @, {hub, path, type}
     @entry.adapt {hub, path, type}
+    @view.render!
 
 Ctrl

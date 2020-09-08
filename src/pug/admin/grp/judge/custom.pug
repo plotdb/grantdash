@@ -7,7 +7,12 @@ p 依您的需求設定評選表。
       span(ld="entry-text",data-name="name")
     li.nav-item.flex-grow-1
     li.nav-item.text-right: a.nav-link.text-muted.border-0(ld="new-entry") 新增 +
-  div(ld="empty")
+
+  a.btn.btn-outline-primary.mr-2(ld="user-link",target="_blank",rel="noopener noreferrer", href="#") 進行審查
+  a.btn.btn-outline-primary(ld="all-link",target="_blank", rel="noopener noreferrer", href="#") 瀏覽總表
+
+  hr
+
   .row
     .col-md
       .form-group
@@ -21,11 +26,9 @@ p 依您的需求設定評選表。
         input.form-control.rounded.border(ld="entry-data",data-name="slug",readonly,disabled) 
     .col-md
       .form-group
-        div 評選表類型
-        .text-muted.text-sm.mb-2 自動生成的階段 ID
-        select.form-control(ld="entry-data",data-name="type")
-          option(value="score") 評分表
-          option(value="choice") 單選表
+        div 評選表樣板名稱
+        .text-muted.text-sm.mb-2 若不清楚，請洽開發人員。
+        input.form-control.rounded.border(ld="entry-data",data-name="view")
   .row
     .col-md
       .form-group
@@ -46,6 +49,7 @@ p 依您的需求設定評選表。
           option(value="criteria") 資格審查
           option(value="finalist") 決選
           option(value="shortlist") 初選
+  .btn.btn-outline-danger(ld="delete-entry") 刪除
 
 
   .position-absolute.w-100.h-100.vertical-center.rounded.bg-white(style="top:0;left:0",ld="empty")

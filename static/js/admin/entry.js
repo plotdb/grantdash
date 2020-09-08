@@ -45,11 +45,20 @@ ldc.register('adminEntry', ['sdbAdapter'], function(arg$){
             var node, evt, key, newData;
             node = arg$.node, evt = arg$.evt;
             obj.data.lastkey = key = (obj.data.lastkey || 0) + 1;
-            obj.data.entries.push(newData = opt.sample || {
-              name: "新項目",
-              description: "未準備詳細描述的項目",
-              key: key
-            });
+            if (!opt.sample) {
+              newData = {
+                name: "新項目",
+                description: "未準備詳細描述的項目"
+              };
+            } else if (typeof opt.sample === 'function') {
+              newData = opt.sample({
+                key: key
+              });
+            } else {
+              newData = JSON.parse(JSON.stringify(opt.sample));
+            }
+            newData.key = key;
+            obj.data.entries.push(newData);
             obj.active = newData;
             view.render();
             return this$.update();

@@ -3,7 +3,7 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
   var ldcvmgr, auth, sdbAdapter, error, adminPanel, adminEntry, Ctrl;
   ldcvmgr = arg$.ldcvmgr, auth = arg$.auth, sdbAdapter = arg$.sdbAdapter, error = arg$.error, adminPanel = arg$.adminPanel, adminEntry = arg$.adminEntry;
   Ctrl = function(opt){
-    var root, sample;
+    var root, sample, this$ = this;
     opt == null && (opt = {});
     this.opt = opt;
     this.root = root = typeof opt.root === 'string'
@@ -12,32 +12,70 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
     this.brd = opt.brd;
     this.grp = null;
     this.data = {};
-    sample = {
-      name: "評選表",
-      slug: suuid(),
-      type: "score",
-      enabled: false,
-      anonymous: false,
-      filter: ''
+    sample = function(arg$){
+      var key;
+      key = arg$.key;
+      return {
+        name: "評選表",
+        slug: suuid(),
+        type: "score",
+        view: 'default',
+        enabled: false,
+        anonymous: false,
+        filter: '',
+        key: key
+      };
     };
     this.entry = new adminEntry({
       root: root,
       sample: sample
     });
+    this.view = new ldView({
+      root: root,
+      handler: {
+        "user-link": function(arg$){
+          var node, active;
+          node = arg$.node;
+          active = this$.entry.obj.active;
+          if (!(this$.grp && active)) {
+            return;
+          }
+          return node.setAttribute('href', "/dash/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/custom/" + this$.entry.obj.active.slug + "/user");
+        },
+        "all-link": function(arg$){
+          var node, active;
+          node = arg$.node;
+          active = this$.entry.obj.active;
+          if (!(this$.grp && active)) {
+            return;
+          }
+          return node.setAttribute('href', "/dash/brd/" + this$.brd.slug + "/grp/" + this$.grp.key + "/judge/custom/" + this$.entry.obj.active.slug + "/all");
+        }
+      }
+    });
     return this;
   };
   Ctrl.prototype = import$(Object.create(Object.prototype), {
     setData: function(grp){
-      return this.grp = grp;
+      this.grp = grp;
+      return this.view.render();
+    },
+    setPath: function(it){
+      this.entry.setPath(it);
+      return this.view.render();
+    },
+    adapted: function(){
+      return this.entry.adapted();
     },
     adapt: function(arg$){
       var hub, path, type;
       hub = arg$.hub, path = arg$.path, type = arg$.type;
-      return this.entry.adapt({
+      this.entry.adapt({
         hub: hub,
         path: path,
         type: type
       });
+      return this.view.render();
     }
   });
   return Ctrl;

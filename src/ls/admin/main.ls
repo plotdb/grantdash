@@ -170,7 +170,7 @@ adminDev, adminJudgeCustom}) ->
         ..judgeCriteria = new admin-judge-criteria {root: '[ld-scope=judge-criteria]', toc, brd: toc.brd, path:<[judge criteria]>}
         ..judgePrimary = new admin-judge-primary {root: '[ld-scope=judge-primary]', toc, brd: toc.brd, path: <[judge primary]>}
         ..judgeFinal = new admin-judge-final {root: '[ld-scope=judge-final]', toc, brd: toc.brd, path: <[judge final]>}
-        #..judgeCustom = new admin-judge-custom {root: '[ld-scope=judge-custom]', toc, brd: toc.brd}
+        ..judgeCustom = new admin-judge-custom {root: '[ld-scope=judge-custom]', toc, brd: toc.brd}
 
       @ctrl.prj
         ..main = new admin-prj-detail {root: '[ld-scope=prj-detail]'}
