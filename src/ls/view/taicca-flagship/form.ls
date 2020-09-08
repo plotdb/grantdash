@@ -157,7 +157,8 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
                   if !type =>
                     classes = Array.from(f.classList).filter(->!(it in <[is-valid is-invalid]>)) ++ ['_preview']
                     f.setAttribute \value, f.value
-                    n = ld$.create name: \div, className: classes, style: f.style
+                    n = ld$.create name: \div, className: classes
+                    n.setAttribute \style, f.getAttribute(\style)
                     if node-name == \textarea => n.style.height = \auto
                     n.innerText = f.value
                     f.parentNode.insertBefore n, f

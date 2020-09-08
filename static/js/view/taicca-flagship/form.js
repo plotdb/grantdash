@@ -286,9 +286,9 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
                   f.setAttribute('value', f.value);
                   n = ld$.create({
                     name: 'div',
-                    className: classes,
-                    style: f.style
+                    className: classes
                   });
+                  n.setAttribute('style', f.getAttribute('style'));
                   if (nodeName === 'textarea') {
                     n.style.height = 'auto';
                   }
