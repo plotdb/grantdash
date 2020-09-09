@@ -256,7 +256,7 @@
           });
           return ret;
         }
-        if (!(type === 'brd' && ids[2] === 'grp' && ids[3] === 'judge')) {
+        if (!(type === 'brd' && ids[2] === 'grp' && ids[4] === 'judge')) {
           return Promise.reject(it);
         }
         return this$.checkJudge({
