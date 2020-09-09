@@ -25,7 +25,6 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
   Ctrl = function(opt){
     var obj, renderDebounce, view, this$ = this;
     import$(this, obj = new judgeBase(opt));
-    this.type = 'primary';
     this.data = {
       prj: {}
     };

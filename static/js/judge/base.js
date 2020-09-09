@@ -9,7 +9,6 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
     this.grp = opt.grp;
     this.user = opt.user;
     ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/custom\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href);
-    console.log(ret);
     if (ret) {
       ref$ = ret.slice(1), brd = ref$[0], grp = ref$[1], slug = ref$[2], lv = ref$[3], round = ref$[4];
       type = 'custom';
@@ -173,10 +172,10 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       this.hub.doc = null;
       id = "brd/" + this.brd + "/grp/" + this.grp + "/judge/" + this.type + "/";
       if (this.slug) {
-        id = id + "/slug/" + this.slug;
+        id = id + "slug/" + this.slug;
       }
       if (this.round) {
-        id = id + "/round/" + this.round;
+        id = id + "round/" + this.round;
       }
       return this.sdb.get({
         id: id,

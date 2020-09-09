@@ -67,7 +67,7 @@ Ctrl = (opt) ->
         jinfo = @grpinfo.{}judge.{}primary or {}
         type = jinfo["option-type"]
         node.classList.toggle \d-none, (if v == \1 and type == \2way => true else false)
-      "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
+      "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.{}form.{}purpose.budget
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
       progress: ({node, names}) ~>
@@ -105,15 +105,15 @@ Ctrl = (opt) ->
                 @update debounced: 10
             text: do
               budget: ({context}) ->
-                if !(b = context.info.budget) => return ''
+                if !(b = context.{}info.budget) => return ''
                 total = (b.self or 0) + (b.subsidy or 0)
                 return "#{Math.round(total / 10000)}萬"
               subsidy: ({context}) ->
-                if !(b = context.info.budget) => return ''
+                if !(b = context.{}info.budget) => return ''
                 total = b.subsidy or 0
                 return "#{Math.round(total / 10000)}萬"
               name: ({context}) -> context.name or '(未命名)'
-              ownername: ({context}) -> context.info.teamname or context.ownername or ''
+              ownername: ({context}) -> context.{}info.teamname or context.ownername or ''
               key: ({context}) -> context.key or ''
             handler: do
               rate: ({node,context}) ->
@@ -127,7 +127,7 @@ Ctrl = (opt) ->
                 node.classList.toggle \d-none, (if v == \1 and type == \2way => true else false)
 
 
-              "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.form.{}purpose.budget
+              "show-budget": ({node}) ~> node.classList.toggle \d-none, !@grpinfo.{}form.{}purpose.budget
               pick: ({node, context}) ~>
                 cls = [<[text-white bg-success]>, <[text-secondary bg-light]>]
                 obj = @data.{}prj{}[context.key]
@@ -189,7 +189,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     @prjs.map (p,i) ~>
       p.count = count = {accept: 0, pending: 0, reject: 0, total: len}
       @judge.map (j) ~>
-        if !(u = @data.user[j.key]) => return
+        if !(u = @data.{}user[j.key]) => return
         if (v = u.prj{}[p.key].v)? => count[typemap[v]]++
       #for k,u of @data.user => if (v = u.prj{}[p.key].v)? => count[typemap[v]]++
       p.rate = count.accept / (count.total or 1)

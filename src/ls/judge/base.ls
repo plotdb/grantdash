@@ -6,7 +6,6 @@ Ctrl = (opt) ->
   @ <<< opt{brd, grp, user}
 
   ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/custom\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href)
-  console.log ret
   if ret =>
     [brd,grp,slug,lv,round] = ret.slice 1
     type = \custom
@@ -93,8 +92,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     #if @user => id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/user/#{@user.key}"
     #else id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/"
     id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/"
-    if @slug => id = "#id/slug/#{@slug}"
-    if @round => id = "#id/round/#{@round}"
+    if @slug => id = "#{id}slug/#{@slug}"
+    if @round => id = "#{id}round/#{@round}"
     (doc) <~ @sdb.get({
       id: id
       watch: (ops,source) ~> @hub.fire \change, {ops,source}
