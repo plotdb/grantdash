@@ -14,7 +14,7 @@ window.admin-extension = do
       else form["group2-category"]
       data = [
         id
-        category.join('\n')
+        category.join('\r\n')
         form["teamname"],
         form["name"],
         (budget.total or 0),
@@ -25,13 +25,25 @@ window.admin-extension = do
           .map ->
             v = it.value
             "#{v.year}年 / #{v.name} / #{v.sponsor} / #{v.amount}"
-          .join('\n')
+          .join('\r\n')
       ]
       data
         .map -> "#{it or ''}".replace '"', "'"
         .map -> "\"#it\""
-        .join(',')
-    result = head.join(',') + '\n' + data.join '\n'
-    blob = new Blob([result], {type: "text/csv"})
+        .join('\t')
+    result = head.map(->"\"#it\"").join('\t') + '\n' + data.join '\n'
+
+    # according to https://stackoverflow.com/questions/155097
+    # convert utf-8 csv to utf-16le with BOM (0xff 0xfe )
+    # even with this, quoted newline only works
+    # if csv is opened by double clicking instead of text import wizard.
+    ba = new Uint8Array(2 + result.length * 2)
+    for i from 0 til result.length
+      ba[i * 2 + 2] = result.charCodeAt i
+      ba[i * 2 + 1 + 2] = result.charCodeAt(i) .>>. 8
+    ba[0] = 0xff
+    ba[1] = 0xfe
+
+    blob = new Blob([ba], {type: "text/csv"})
     name = "projects.csv"
     return {blob, name}
