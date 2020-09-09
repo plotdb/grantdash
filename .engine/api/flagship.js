@@ -40,6 +40,10 @@
             type: 'brd',
             slug: brd,
             name: 'prj-new'
+          })['catch'](function(){
+            return Promise.reject(new lderror({
+              ldcv: "closed"
+            }, 1012));
           }).then(function(){
             return res.render('view/taicca-flagship/prj-view.pug');
           });
@@ -57,6 +61,10 @@
               slug: brd,
               action: 'prj-edit-own'
             });
+          })['catch'](function(){
+            return Promise.reject(new lderror({
+              ldcv: "closed"
+            }, 1012));
           }).then(function(){
             return res.render('view/taicca-flagship/prj-view.pug', {
               exports: {

@@ -23,10 +23,12 @@ app.get \/flagship/, aux.signed, (req, res) ->
     .then (r={}) ->
       if !(ret = r.[]rows.0) =>
         cache.stage.check {io, type: \brd, slug: brd, name: \prj-new}
+          .catch -> Promise.reject new lderror({ldcv: "closed"}, 1012)
           .then -> return res.render \view/taicca-flagship/prj-view.pug
       else
         cache.stage.check {io, type: \brd, slug: brd, name: \prj-edit}
           .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \prj-edit-own}
+          .catch -> Promise.reject new lderror({ldcv: "closed"}, 1012)
           .then -> return res.render \view/taicca-flagship/prj-view.pug, {exports: {prj: ret}}
     .catch aux.error-handler res
 
