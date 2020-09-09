@@ -21,7 +21,10 @@ window.admin-extension = do
         (budget.subsidy or 0),
         "#{Math.floor(budget.percent.subsidy * 10000) / 100}%"
         list["past-sub"]
-          .map -> "#{it.year}年 / #{it.name} / #{it.sponsor} / #{it.amount}"
+          .filter -> it.value
+          .map ->
+            v = it.value
+            "#{v.year}年 / #{v.name} / #{v.sponsor} / #{v.amount}"
           .join('\n')
       ]
       data

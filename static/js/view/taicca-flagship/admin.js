@@ -20,8 +20,12 @@ window.adminExtension = {
         ? form["group1-category"]
         : form["group2-category"];
       data = [
-        id, category.join('\n'), form["teamname"], form["name"], budget.total || 0, budget.subsidy || 0, Math.floor(budget.percent.subsidy * 10000) / 100 + "%", list["past-sub"].map(function(it){
-          return it.year + "年 / " + it.name + " / " + it.sponsor + " / " + it.amount;
+        id, category.join('\n'), form["teamname"], form["name"], budget.total || 0, budget.subsidy || 0, Math.floor(budget.percent.subsidy * 10000) / 100 + "%", list["past-sub"].filter(function(it){
+          return it.value;
+        }).map(function(it){
+          var v;
+          v = it.value;
+          return v.year + "年 / " + v.name + " / " + v.sponsor + " / " + v.amount;
         }).join('\n')
       ];
       return data.map(function(it){
