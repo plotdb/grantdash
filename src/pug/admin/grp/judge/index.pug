@@ -6,7 +6,7 @@
       li.nav-item: .nav-link(ld="nav-tab",data-name="criteria") 資格審查
       li.nav-item: .nav-link(ld="nav-tab",data-name="primary") 篩選表
       li.nav-item: .nav-link(ld="nav-tab",data-name="final") 評分表
-      //-li.nav-item: .nav-link(ld="nav-tab",data-name="custom") 客製評選表
+      li.nav-item: .nav-link(ld="nav-tab",data-name="custom") 客製評選表
 
 .py-2.px-4
   //-
@@ -22,7 +22,6 @@
     div(ld="nav-panel",data-nav="grp-judge",data-name="criteria"): include criteria.pug
     div(ld="nav-panel",data-nav="grp-judge",data-name="primary")
       include primary.pug
-      //-.w-100.h-100.bg-light.vertical-center.p-4: .m-4.w-100.text-center 尚未啟用
     div(ld="nav-panel",data-nav="grp-judge",data-name="final")
       include final.pug
     div(ld="nav-panel",data-nav="grp-judge",data-name="custom")

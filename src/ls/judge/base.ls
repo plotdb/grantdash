@@ -5,11 +5,17 @@ Ctrl = (opt) ->
   @loader = loader
   @ <<< opt{brd, grp, user}
 
-  ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href)
-  if !ret => throw new ldError(1015)
-  [brd,grp,type,lv,round] = ret.slice 1
-  if !((type in <[criteria primary final]>) and (lv in <[user all]>)) => throw new ldError(1015)
-  @ <<< { brd, grp, type, lv, round }
+  ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/custom\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href)
+  console.log ret
+  if ret =>
+    [brd,grp,slug,lv,round] = ret.slice 1
+    type = \custom
+  else
+    ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href)
+    if !ret => throw new ldError(1015)
+    [brd,grp,type,lv,round] = ret.slice 1
+  if !((type in <[custom criteria primary final]>) and (lv in <[user all]>)) => throw new ldError(1015)
+  @ <<< { brd, grp, type, lv, round, slug }
 
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @prjs = []
@@ -43,7 +49,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge-list", {method: \GET}, { type: \json }
       .then ~>
         @prjs = it
-        j = @grpinfo.{}judge{}[@type]
+        j = @grpinfo.{}judge{}[@type] or {}
         filter-name = []
         if j["filter-criteria"] => filter-name.push \criteria
         if j["filter-primary"] => filter-name.push \shortlist
@@ -87,7 +93,8 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     #if @user => id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/user/#{@user.key}"
     #else id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/"
     id = "brd/#{@brd}/grp/#{@grp}/judge/#{@type}/"
-    if @round => id = "#id/#{@round}"
+    if @slug => id = "#id/slug/#{@slug}"
+    if @round => id = "#id/round/#{@round}"
     (doc) <~ @sdb.get({
       id: id
       watch: (ops,source) ~> @hub.fire \change, {ops,source}

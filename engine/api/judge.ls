@@ -25,6 +25,21 @@ permission-check = ({req, res, brd, grp}) ->
             .then (r={}) ->
               if !(r.[]rows.length) => return Promise.reject 403
 
+app.get \/brd/:brd/grp/:grp/judge/custom/:slug/:lv, (req, res) ->
+  lc = {}
+  {brd,grp,slug,lv,round} = req.params
+  org = req.scope.org
+  permission-check {req, res, brd, grp}
+    .then ->
+      io.query """select (detail->'group') as group from brd where slug = $1 and deleted is not true""", [brd]
+    .then (r={}) ->
+      if !(lc.g = (((r.[]rows.0) or {}).group or []).filter(-> it.key == grp).0) => return aux.reject 404
+      if (!lc.j = lc.g.{}judge.{}custom.[]entries.filter(-> it.slug == slug).0) => return aux.reject 404
+      view = "users/org/#org/brd/#brd/view/judge/#{lc.j.view}-#{lv}.pug"
+      if !fs.exists-sync(view) => return aux.reject 404
+      res.render path.join('../..', view)
+    .catch aux.error-handler res
+
 # judge doc use username to keep track of result. we use this to get user displayname
 api.put \/usermap/, (req, res) ->
   if !((keys = req.body.userkeys) and Array.isArray(keys)) => return aux.r400 res
