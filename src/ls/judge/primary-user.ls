@@ -17,7 +17,6 @@ clsset = (node, val) ->
 
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
-  @type = \primary
   @data = {prj: {}}
   @active = null
 

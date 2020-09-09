@@ -115,9 +115,9 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
           return node.classList.toggle('d-none', v === '1' && type === '2way' ? true : false);
         },
         "show-budget": function(arg$){
-          var node, ref$;
+          var node, ref$, ref1$;
           node = arg$.node;
-          return node.classList.toggle('d-none', !((ref$ = this$.grpinfo.form).purpose || (ref$.purpose = {})).budget);
+          return node.classList.toggle('d-none', !((ref$ = (ref1$ = this$.grpinfo).form || (ref1$.form = {})).purpose || (ref$.purpose = {})).budget);
         },
         "comment-name": function(arg$){
           var node;
@@ -199,7 +199,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                 budget: function(arg$){
                   var context, b, total;
                   context = arg$.context;
-                  if (!(b = context.info.budget)) {
+                  if (!(b = (context.info || (context.info = {})).budget)) {
                     return '';
                   }
                   total = (b.self || 0) + (b.subsidy || 0);
@@ -208,7 +208,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                 subsidy: function(arg$){
                   var context, b, total;
                   context = arg$.context;
-                  if (!(b = context.info.budget)) {
+                  if (!(b = (context.info || (context.info = {})).budget)) {
                     return '';
                   }
                   total = b.subsidy || 0;
@@ -222,7 +222,7 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                 ownername: function(arg$){
                   var context;
                   context = arg$.context;
-                  return context.info.teamname || context.ownername || '';
+                  return (context.info || (context.info = {})).teamname || context.ownername || '';
                 },
                 key: function(arg$){
                   var context;
@@ -246,9 +246,9 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
                   return node.classList.toggle('d-none', v === '1' && type === '2way' ? true : false);
                 },
                 "show-budget": function(arg$){
-                  var node, ref$;
+                  var node, ref$, ref1$;
                   node = arg$.node;
-                  return node.classList.toggle('d-none', !((ref$ = this$.grpinfo.form).purpose || (ref$.purpose = {})).budget);
+                  return node.classList.toggle('d-none', !((ref$ = (ref1$ = this$.grpinfo).form || (ref1$.form = {})).purpose || (ref$.purpose = {})).budget);
                 },
                 pick: function(arg$){
                   var node, context, cls, obj, ref$, key$, ref1$, cl, icon;
@@ -359,8 +359,8 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
           total: len
         };
         this$.judge.map(function(j){
-          var u, v, ref$, key$;
-          if (!(u = this$.data.user[j.key])) {
+          var u, ref$, v, key$;
+          if (!(u = ((ref$ = this$.data).user || (ref$.user = {}))[j.key])) {
             return;
           }
           if ((v = ((ref$ = u.prj)[key$ = p.key] || (ref$[key$] = {})).v) != null) {
