@@ -4431,7 +4431,7 @@ pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
 ;pug_debug_line = 355;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Clabel class=\"mb-0\"\u003E";
 ;pug_debug_line = 355;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
-pug_html = pug_html + "執行期程 ( 200 字以內 )\u003C\u002Flabel\u003E";
+pug_html = pug_html + "執行期程\u003C\u002Flabel\u003E";
 ;pug_debug_line = 357;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"py-1\"\u003E";
 ;pug_debug_line = 357;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
