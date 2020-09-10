@@ -144,7 +144,7 @@
         return res.status(302).redirect(it[0]);
       })['catch'](aux.errorHandler(res));
     });
-    api.post('/flagship/prj/', throttle.count.user, grecaptcha, function(req, res){
+    api.post('/flagship/prj/', grecaptcha, function(req, res){
       var lc, ref$, name, description, detail, key, submit, brd;
       if (!(req.user && req.user.key)) {
         return aux.r403(res);

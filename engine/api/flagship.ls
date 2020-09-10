@@ -78,7 +78,7 @@ app.get \/flagship/upload/:id, aux.signed, (req, res) ->
     .then -> return res.status(302).redirect(it.0)
     .catch aux.error-handler res
 
-api.post \/flagship/prj/, throttle.count.user, grecaptcha, (req, res) ->
+api.post \/flagship/prj/, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
   {name,description,detail,key,submit} = req.body
