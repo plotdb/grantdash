@@ -130,17 +130,23 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
       get: debounce(function(){
         var _;
         _ = function(){
-          var k, ref$, vs, i$, len$, v, n;
+          var k, ref$, vs, namemap, i$, len$, v, n;
           for (k in ref$ = ldforms) {
             vs = ref$[k];
             ldforms[k] = vs.filter(fn$);
           }
+          namemap = {
+            "past-sub": "has-sub",
+            perform: "has-perform"
+          };
           for (k in ref$ = ldforms) {
             vs = ref$[k];
-            for (i$ = 0, len$ = vs.length; i$ < len$; ++i$) {
-              v = vs[i$];
-              if (!v.ready()) {
-                return false;
+            if (!(namemap[k] != null) || payload.form[namemap[k]] === '1') {
+              for (i$ = 0, len$ = vs.length; i$ < len$; ++i$) {
+                v = vs[i$];
+                if (!v.ready()) {
+                  return false;
+                }
               }
             }
           }
@@ -642,13 +648,14 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
         ['has-perform', 'has-other-sub', 'has-sub', 'group'].map(function(n){
           return s[n] = values[n] != null ? 0 : 2;
         });
-        return ['other-sub-amount', 'other-sub-name'].map(function(n){
+        ['other-sub-amount', 'other-sub-name'].map(function(n){
           if (values["has-other-sub"] === "1" && !values[n]) {
             return s[n] = 2;
           } else {
             return s[n] = 0;
           }
         });
+        return isReady.get();
       },
       verify: function(name, value, element){
         var v, ret, groupFor, groupName, enabled;

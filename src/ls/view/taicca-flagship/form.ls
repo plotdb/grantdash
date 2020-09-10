@@ -77,7 +77,9 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
       get: debounce ->
         _ = ->
           for k,vs of ldforms => ldforms[k] = vs.filter -> it.root.parentNode
-          for k,vs of ldforms => for v in vs => if !(v.ready!) => return false
+          namemap = {"past-sub": "has-sub", perform: "has-perform"}
+          for k,vs of ldforms =>
+            if !(namemap[k]?) or payload.form[namemap[k]] == \1 => for v in vs => if !(v.ready!) => return false
           if !(ldform.ready!) => return false
           budget-calc!
           if !payload.budget.ready => return false
@@ -373,6 +375,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
         <[other-sub-amount other-sub-name]>.map (n) ->
           if values["has-other-sub"] == "1" and !values[n] => s[n] = 2
           else s[n] = 0
+        is-ready.get!
       verify: (name, value, element) ->
         v = value or ''
         if name == \group1-category => ldform.check n: \group1-category-other

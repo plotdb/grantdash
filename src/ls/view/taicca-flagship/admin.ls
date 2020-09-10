@@ -20,7 +20,7 @@ window.admin-extension = do
         (budget.total or 0),
         (budget.subsidy or 0),
         "#{Math.floor(budget.percent.subsidy * 10000) / 100}%"
-        list["past-sub"]
+        if form["has-sub"] != \1 => '' else list["past-sub"]
           .filter -> it.value
           .map ->
             v = it.value
