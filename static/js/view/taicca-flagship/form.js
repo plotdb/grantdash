@@ -559,7 +559,7 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
             }
           },
           init: function(arg$){
-            var node, data, local, n, get, ldform;
+            var node, data, local, n, get, getDebounce, ldform;
             node = arg$.node, data = arg$.data, local = arg$.local;
             n = node.getAttribute('data-name');
             get = function(){
@@ -569,6 +569,10 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
               });
               return saveLocally();
             };
+            getDebounce = debounce(100, function(){
+              get();
+              return updateViewForBudget();
+            });
             ld$.find(node, "input,textarea,select").map(function(n){
               n.addEventListener('input', function(){
                 return get();
@@ -594,6 +598,10 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
                     return 0;
                   }
                   values = ldform.values();
+                  if (!/^[0-9]+$/.exec(values["price"])) {
+                    values["price"] = ldform.fields["price"].value = values["price"].replace(/[^0-9]/g, '');
+                    getDebounce();
+                  }
                   total = +values["price"] * +values["count"];
                   subsidy = total - +values["self"];
                   ldform.fields["subsidy"].value = subsidy;

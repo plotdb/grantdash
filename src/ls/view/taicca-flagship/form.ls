@@ -330,6 +330,9 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
               data.{}value
               ld$.find(node, "[name]").map -> data.value[it.getAttribute(\name)] = it.value
               save-locally!
+            get-debounce = debounce 100, ->
+              get!
+              update-view-for-budget!
             ld$.find node, "input,textarea,select" .map (n) ->
               n.addEventListener \input, -> get!
               n.addEventListener \change, -> get!
@@ -342,6 +345,9 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
                 if n == \budget =>
                   if name == \comment => return 0
                   values = ldform.values!
+                  if !(/^[0-9]+$/.exec(values["price"])) =>
+                    values["price"] = ldform.fields["price"].value = values["price"].replace(/[^0-9]/g, '')
+                    get-debounce!
                   total = +values["price"] * +values["count"]
                   subsidy = total - +values["self"]
                   ldform.fields["subsidy"].value = subsidy
