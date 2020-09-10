@@ -4,6 +4,19 @@ block vars
   - ctrl.navtop.shown = !simple;
 block head
   style#flagship(type="text/css"): :stylus
+
+    input[type=radio]:checked:before, input[type=checkbox]:checked:before
+      content: "●"
+      color: #000
+      line-height: 1em
+      padding: .1em
+      font-size: .8em
+      background: #00f
+      display: block
+      width: 100%
+      height: 100%
+      border-radius: 50%
+
     .blform
       border-left:.25em solid #eee
       padding:0 0 0 1em
