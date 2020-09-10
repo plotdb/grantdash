@@ -238,7 +238,9 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
                 ldcvmgr.toggle("flagship-#{cover-name.1}", true)
               .finally ->
                 ldcvmgr.toggle("flagship-#{cover-name.0}",false)
-              .catch error!
+              .catch (e) ->
+                if ldError.id(e) == 1012 => ldcvmgr.toggle \closed
+                else error e
 
       text: do
         fill: ({node}) ->
@@ -417,8 +419,30 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
       if it.0 and it.0.isIntersecting => ldform.checkAll!
     ), {threshold: 1}).observe(ld$.find('#check-all',0))
 
+    countdown = ->
+      remains = ((new Date("2020-09-11T17:30:00+08:00")).getTime! - Date.now!)
+      if remains <= 0 and remains >= -1000 * 60 * 60 * 24 and !viewmode =>
+        viewmode := true
+        view.render!
+      if remains < 0 => remains = 0
+      ms = remains % 1000
+      s = Math.floor(remains / 1000)
+      [m,s] = [Math.floor(s / 60), (s % 60)]
+      [h,m] = [Math.floor(m / 60), (m % 60)]
+      str = [
+        (if h < 10 => "0" else ''), h, ':'
+        (if m < 10 => "0" else ''), m, ':'
+        (if s < 10 => "0" else ''), s, '.'
+        ms, ("0" * (3 - ("#ms".length)))
+      ].join('')
+
+      view.get("countdown").innerHTML = str + (if remains <= 0 => '<div class="text-lg">徵件已截止</div>' else '')
+      requestAnimationFrame -> countdown!
+    requestAnimationFrame -> countdown!
+
   auth.ensure!
     .then -> init {global: it}
     .catch error!
+
 
 ldc.app \flagship-form

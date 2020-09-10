@@ -32,7 +32,7 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
     });
   });
   init = function(arg$){
-    var global, ldforms, payload, localkey, saveLocally, clearLocaldata, loadLocally, getSignedUrl, uploadFile, isReady, budgetCalc, updateViewForBudget, view, ldform;
+    var global, ldforms, payload, localkey, saveLocally, clearLocaldata, loadLocally, getSignedUrl, uploadFile, isReady, budgetCalc, updateViewForBudget, view, ldform, countdown;
     global = arg$.global;
     ldforms = {};
     payload = {
@@ -397,7 +397,13 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
               return ldcvmgr.toggle("flagship-" + coverName[1], true);
             })['finally'](function(){
               return ldcvmgr.toggle("flagship-" + coverName[0], false);
-            })['catch'](error());
+            })['catch'](function(e){
+              if (ldError.id(e) === 1012) {
+                return ldcvmgr.toggle('closed');
+              } else {
+                return error(e);
+              }
+            });
           }
         }
       },
@@ -751,13 +757,36 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
     loadLocally();
     lockform();
     loader.off();
-    return new IntersectionObserver(function(it){
+    new IntersectionObserver(function(it){
       if (it[0] && it[0].isIntersecting) {
         return ldform.checkAll();
       }
     }, {
       threshold: 1
     }).observe(ld$.find('#check-all', 0));
+    countdown = function(){
+      var remains, ms, s, ref$, m, h, str;
+      remains = new Date("2020-09-11T17:30:00+08:00").getTime() - Date.now();
+      if (remains <= 0 && remains >= -1000 * 60 * 60 * 24 && !viewmode) {
+        viewmode = true;
+        view.render();
+      }
+      if (remains < 0) {
+        remains = 0;
+      }
+      ms = remains % 1000;
+      s = Math.floor(remains / 1000);
+      ref$ = [Math.floor(s / 60), s % 60], m = ref$[0], s = ref$[1];
+      ref$ = [Math.floor(m / 60), m % 60], h = ref$[0], m = ref$[1];
+      str = [h < 10 ? "0" : '', h, ':', m < 10 ? "0" : '', m, ':', s < 10 ? "0" : '', s, '.', ms, repeatString$("0", 3 - (ms + "").length)].join('');
+      view.get("countdown").innerHTML = str + (remains <= 0 ? '<div class="text-lg">徵件已截止</div>' : '');
+      return requestAnimationFrame(function(){
+        return countdown();
+      });
+    };
+    return requestAnimationFrame(function(){
+      return countdown();
+    });
   };
   return auth.ensure().then(function(it){
     return init({
