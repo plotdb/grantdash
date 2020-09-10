@@ -89,14 +89,20 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       }, {
         type: 'json'
       }).then(function(it){
-        var j, ref$, key$, ref1$, filterName;
+        var j, ref$, ref1$, ref2$, key$, filterName;
         this$.prjs = it;
-        j = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {}))[key$ = this$.type] || (ref$[key$] = {})) || {};
+        if (this$.type === 'custom') {
+          j = ((ref$ = (ref1$ = (ref2$ = this$.grpinfo).judge || (ref2$.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(it){
+            return it.slug === this$.slug;
+          })[0] || {};
+        } else {
+          j = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {}))[key$ = this$.type] || (ref$[key$] = {})) || {};
+        }
         filterName = [];
-        if (j["filter-criteria"]) {
+        if (j["filter-criteria"] || j.filter === 'criteria') {
           filterName.push('criteria');
         }
-        if (j["filter-primary"]) {
+        if (j["filter-primary"] || j.filter === 'primary') {
           filterName.push('shortlist');
         }
         if (filterName.length) {
