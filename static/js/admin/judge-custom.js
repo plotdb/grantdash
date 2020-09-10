@@ -21,8 +21,10 @@ ldc.register('adminJudgeCustom', ['ldcvmgr', 'auth', 'sdbAdapter', 'error', 'adm
         slug: suuid(),
         type: "score",
         view: 'default',
-        enabled: false,
-        anonymous: false,
+        config: {
+          enabled: false,
+          anonymous: false
+        },
         filter: '',
         key: key
       };

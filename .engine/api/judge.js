@@ -88,6 +88,11 @@
         })[0])) {
           return aux.reject(404);
         }
+        if (!((ref$ = lc.j).config || (ref$.config = {})).enabled) {
+          return Promise.reject(new lderror({
+            ldcv: "not-yet-available"
+          }, 1012));
+        }
         view = "users/org/" + org + "/brd/" + brd + "/view/judge/" + lc.j.view + "-" + lv + ".pug";
         if (!fs.existsSync(view)) {
           return aux.reject(404);
