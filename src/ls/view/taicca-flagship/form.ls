@@ -165,13 +165,14 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
                   else
                     if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
                 lockform false
+                local-css = ld$.find('style#flagship',0).innerText
                 style = """
                 <link rel="stylesheet" type="text/css"
                 href="https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css">
                 <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css">
                 <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/css/index.css">
                 <style type="text/css">
-                #{ld$.find(\style, 0).innerText}
+                #{local-css}
                 </style>
                 """
                 html = """
