@@ -11,7 +11,8 @@ Ctrl = (opt = {}) ->
   sample = ({key}) ->
     {
       name: "評選表", slug: suuid!, type: "score", view: \default
-      enabled: false, anonymous: false, filter: '', key
+      config: {enabled: false, anonymous: false}
+      filter: '', key
     }
   @entry = new admin-entry {root, sample}
   @entry.on \toggle, ~> @view.render!
