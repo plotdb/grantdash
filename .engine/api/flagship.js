@@ -168,6 +168,8 @@
           slug: brd,
           name: !lc.prj ? 'prj-new' : 'prj-edit'
         })['catch'](function(){
+          return Promise.reject(new lderror(1012));
+        })['catch'](function(){
           return cache.perm.check({
             io: io,
             user: req.user,

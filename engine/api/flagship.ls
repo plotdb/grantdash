@@ -94,6 +94,7 @@ api.post \/flagship/prj/, grecaptcha, (req, res) ->
       lc.prj = r.[]rows.0
       if lc.prj and lc.prj.state == \active => return aux.reject 403
       cache.stage.check {io, type: \brd, slug: brd, name: (if !lc.prj => \prj-new else \prj-edit)}
+        .catch -> return Promise.reject(new lderror(1012))
         .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \prj-edit-own}
     .then -> io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
