@@ -1,6 +1,6 @@
 window.admin-extension = do
   download-projects: ({prjs}) ->
-    head = <[編號 產業別 申請單位 計畫名稱 總經費 申請經費 申請經費佔比 107-109年文化部相關計畫補助情形 106-108年旗艦計畫補助情形 審查意見]>
+    head = <[編號 產業別 申請單位 計畫名稱 聯絡人 聯絡人職稱 聯絡專線 聯絡人手機 聯絡EMAIL 總經費 申請經費 申請經費佔比 107-109年文化部相關計畫補助情形 106-108年旗艦計畫補助情形 審查意見]>
     data = prjs.map (it) ->
       console.log it
       form = it.detail.custom.form
@@ -15,8 +15,13 @@ window.admin-extension = do
       data = [
         id
         (category or []).join('\r\n')
-        form["teamname"],
-        form["name"],
+        form["teamname"]
+        form["name"]
+        form["contact-name"]
+        form["contact-title"]
+        form["contact-phone"]
+        form["contact-mobile"]
+        form["contact-email"]
         (budget.total or 0),
         (budget.subsidy or 0),
         "#{Math.floor(budget.percent.subsidy * 10000) / 100}%"
