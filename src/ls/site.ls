@@ -3,6 +3,15 @@
     console.log "site general ldc"
     smoothScroll!
     auth.get!then (g) ->
+      if Sentry? =>
+        Sentry.init do
+          dsn: 'https://1ccb69d4cdb246ea846e0c64aac034da@o446556.ingest.sentry.io/5425256',
+          integrations: [
+            new Sentry.Integrations.BrowserTracing!
+          ],
+          tracesSampleRate: 1.0
+        if g.user => Sentry.setUser id: (g.user.key or 0)
+
       view = new ldView do
         global: true
         root: document.body
