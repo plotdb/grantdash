@@ -9,7 +9,7 @@
       var view;
       if (typeof Sentry != 'undefined' && Sentry !== null) {
         Sentry.init({
-          dsn: 'https://1ccb69d4cdb246ea846e0c64aac034da@o446556.ingest.sentry.io/5425256',
+          dsn: 'https://06428ddbefb64673a2001998db111f42@o446556.ingest.sentry.io/5425251',
           integrations: [new Sentry.Integrations.BrowserTracing()],
           tracesSampleRate: 1.0
         });
