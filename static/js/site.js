@@ -7,6 +7,18 @@
     smoothScroll();
     auth.get().then(function(g){
       var view;
+      if (typeof Sentry != 'undefined' && Sentry !== null) {
+        Sentry.init({
+          dsn: 'https://1ccb69d4cdb246ea846e0c64aac034da@o446556.ingest.sentry.io/5425256',
+          integrations: [new Sentry.Integrations.BrowserTracing()],
+          tracesSampleRate: 1.0
+        });
+        if (g.user) {
+          Sentry.setUser({
+            id: g.user.key || 0
+          });
+        }
+      }
       return view = new ldView({
         global: true,
         root: document.body,
