@@ -14,13 +14,13 @@ window.admin-extension = do
       else form["group2-category"]
       data = [
         id
-        category.join('\r\n')
+        (category or []).join('\r\n')
         form["teamname"],
         form["name"],
         (budget.total or 0),
         (budget.subsidy or 0),
         "#{Math.floor(budget.percent.subsidy * 10000) / 100}%"
-        if form["has-sub"] != \1 => '' else list["past-sub"]
+        (if form["has-sub"] != \1 => [{}] else list["past-sub"])
           .filter -> it.value
           .map ->
             v = it.value
