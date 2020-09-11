@@ -19,9 +19,9 @@ window.adminExtension = {
         ? form["group1-category"]
         : form["group2-category"];
       data = [
-        id, (category || []).join('\r\n'), form["teamname"], form["name"], form["contact-name"], form["contact-title"], '\t' + form["contact-phone"], '\t' + form["contact-mobile"], form["contact-email"], budget.total || 0, budget.subsidy || 0, Math.floor(budget.percent.subsidy * 10000) / 100 + "%", (form["has-sub"] !== '1'
+        id, (category || []).join('\r\n'), form["teamname"], form["name"], form["contact-name"], form["contact-title"], '\t' + form["contact-phone"], '\t' + form["contact-mobile"], form["contact-email"], budget.total || 0, budget.subsidy || 0, Math.floor(budget.percent.subsidy * 10000) / 100 + "%", ((form["has-sub"] !== '1'
           ? [{}]
-          : list["past-sub"]).filter(function(it){
+          : list["past-sub"]) || []).filter(function(it){
           return it.value;
         }).map(function(it){
           var v;

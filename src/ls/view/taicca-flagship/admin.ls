@@ -26,7 +26,7 @@ window.admin-extension = do
         (budget.total or 0),
         (budget.subsidy or 0),
         "#{Math.floor(budget.percent.subsidy * 10000) / 100}%"
-        (if form["has-sub"] != \1 => [{}] else list["past-sub"])
+        ((if form["has-sub"] != \1 => [{}] else list["past-sub"]) or [])
           .filter -> it.value
           .map ->
             v = it.value
@@ -37,7 +37,7 @@ window.admin-extension = do
         .map -> "#{it or ''}".replace '"', "'"
         .map -> "\"#it\""
         .join('\t')
-    result = head.map(->"\"#it\"").join('\t') + '\n' + data.join '\n'
+    result = head.map(->"\"#it\"").join('\t') + '\n' + data.join('\n')
 
     # according to https://stackoverflow.com/questions/155097
     # convert utf-8 csv to utf-16le with BOM (0xff 0xfe )
