@@ -5,7 +5,6 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
   loader.on();
   lc = {};
   vlc = viewLocals || {};
-  console.log(vlc);
   viewmode = /simple/.exec(window.location.search);
   lockform = debounce(100, function(lock){
     var form;
@@ -382,7 +381,8 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
                 detail: payload,
                 name: payload.form.name,
                 description: (payload.form["abs-item"] || "").substring(0, 200),
-                submit: isSubmit
+                submit: isSubmit,
+                slug: (vlc.prj || (vlc.prj = {})).slug
               };
               return ld$.fetch('/dash/api/flagship/prj', {
                 method: 'POST'
@@ -767,10 +767,6 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
     countdown = function(){
       var remains, ms, s, ref$, m, h, str;
       remains = new Date("2020-09-11T17:30:00+08:00").getTime() - Date.now();
-      if (remains <= 0 && remains >= -1000 * 60 * 60 * 24 && !viewmode) {
-        viewmode = true;
-        view.render();
-      }
       if (remains < 0) {
         remains = 0;
       }

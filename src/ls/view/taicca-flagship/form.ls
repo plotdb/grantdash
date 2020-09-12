@@ -2,7 +2,6 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
   loader.on!
   lc = {}
   vlc = viewLocals or {}
-  console.log vlc
   viewmode = /simple/.exec(window.location.search)
 
   lockform = debounce 100, (lock) ->
@@ -230,6 +229,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
                   name: payload.form.name
                   description: (payload.form["abs-item"] or "").substring(0,200)
                   submit: is-submit
+                  slug: vlc.{}prj.slug
                 ld$.fetch \/dash/api/flagship/prj, {method: \POST}, {json: json, type: \json}
               .then ->
                 clear-localdata!
@@ -421,9 +421,9 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
 
     countdown = ->
       remains = ((new Date("2020-09-11T17:30:00+08:00")).getTime! - Date.now!)
-      if remains <= 0 and remains >= -1000 * 60 * 60 * 24 and !viewmode =>
-        viewmode := true
-        view.render!
+      #if remains <= 0 and remains >= -1000 * 60 * 60 * 24 and !viewmode =>
+      #  viewmode := true
+      #  view.render!
       if remains < 0 => remains = 0
       ms = remains % 1000
       s = Math.floor(remains / 1000)

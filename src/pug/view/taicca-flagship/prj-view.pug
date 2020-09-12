@@ -602,7 +602,11 @@ block body
     .py-4
       p 請下載申請書 PDF 檔，印出紙本後用印寄回，以利後續作業。
       p 您隨時可以回到這個頁面重新下載 PDF 檔。若需要回到此頁，請由網頁右上角的下拉選單中點選「個人頁面」，即可找到您建立的案件。
-    .btn.btn-lg.btn-primary.btn-block.ld-ext-right(ld="download") 線上文件 PDF 下載  #[.ld.ld-spin.ld-spinner.ldld]
+    .row
+      .col-md-5
+        .btn.btn-lg.btn-outline-primary.btn-block(data-ldcv-set="") 關閉
+      .col-md-7
+        .btn.btn-lg.btn-primary.btn-block.ld-ext-right(ld="download") PDF 下載  #[.ld.ld-spin.ld-spinner.ldld]
 
   .ldcv.ldcvmgr(data-name="flagship-saving",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
     .text-center

@@ -145,23 +145,38 @@
       })['catch'](aux.errorHandler(res));
     });
     api.post('/flagship/prj/', grecaptcha, function(req, res){
-      var lc, ref$, name, description, detail, key, submit, brd;
+      var lc, ref$, name, description, detail, key, submit, slug, brd, p;
       if (!(req.user && req.user.key)) {
         return aux.r403(res);
       }
       lc = {};
-      ref$ = req.body, name = ref$.name, description = ref$.description, detail = ref$.detail, key = ref$.key, submit = ref$.submit;
+      ref$ = req.body, name = ref$.name, description = ref$.description, detail = ref$.detail, key = ref$.key, submit = ref$.submit, slug = ref$.slug;
       detail = {
         custom: detail
       };
       brd = 'flagship-2';
       lc.state = submit ? "active" : "pending";
-      return io.query("select * from prj\nwhere deleted is not true and brd = $1 and owner = $2", [brd, req.user.key]).then(function(r){
+      p = slug
+        ? io.query("select * from prj\nwhere deleted is not true and brd = $1 and slug = $2", [brd, slug])
+        : io.query("select * from prj\nwhere deleted is not true and brd = $1 and owner = $2", [brd, req.user.key]);
+      return p.then(function(r){
         r == null && (r = {});
         lc.prj = (r.rows || (r.rows = []))[0];
         if (lc.prj && lc.prj.state === 'active') {
           return aux.reject(403);
         }
+        if (lc.prj.owner !== req.user.key) {
+          return cache.perm.check({
+            io: io,
+            user: req.user,
+            type: 'brd',
+            slug: brd,
+            action: 'admin'
+          });
+        } else {
+          return Promise.resolve();
+        }
+      }).then(function(){
         return cache.stage.check({
           io: io,
           type: 'brd',

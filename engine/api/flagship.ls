@@ -81,18 +81,28 @@ app.get \/flagship/upload/:id, aux.signed, (req, res) ->
 api.post \/flagship/prj/, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
-  {name,description,detail,key,submit} = req.body
+  {name,description,detail,key,submit,slug} = req.body
   detail = {custom: detail}
   brd = \flagship-2
   lc.state = if submit => "active" else "pending"
-
-  io.query """
-  select * from prj
-  where deleted is not true and brd = $1 and owner = $2
-  """, [brd, req.user.key]
+  p = if slug =>
+    io.query """
+    select * from prj
+    where deleted is not true and brd = $1 and slug = $2
+    """, [brd, slug]
+  else
+    io.query """
+    select * from prj
+    where deleted is not true and brd = $1 and owner = $2
+    """, [brd, req.user.key]
+  p
     .then (r={}) ->
       lc.prj = r.[]rows.0
       if lc.prj and lc.prj.state == \active => return aux.reject 403
+      if lc.prj.owner != req.user.key =>
+        cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \admin}
+      else Promise.resolve!
+    .then ->
       cache.stage.check {io, type: \brd, slug: brd, name: (if !lc.prj => \prj-new else \prj-edit)}
         .catch -> return Promise.reject(new lderror(1012))
         .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \prj-edit-own}
