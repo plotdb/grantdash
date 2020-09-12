@@ -7,7 +7,7 @@ require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 api = engine.router.api
 app = engine.app
 
-permission-check = ({req, res, brd, grp}) ->
+permission-check = ({req, res, brd, grp, type}) ->
   Promise.resolve!
     .then ->
       if !(req.user and req.user.key) => return aux.reject 403
@@ -15,15 +15,18 @@ permission-check = ({req, res, brd, grp}) ->
       cache.stage.check {io, type: \brd, slug: brd}
     .then (c = {}) ->
       cfg = c.config
-      if !(cfg["judge-criteria"] or cfg["judge-primary"] or cfg["judge-final"]) =>
-        return Promise.reject new lderror(1016)
-      cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
-        .catch ->
-          io.query """
-          select owner from perm_judge where brd = $1 and grp = $2 and owner = $3
-          """, [brd, grp, req.user.key]
-            .then (r={}) ->
-              if !(r.[]rows.length) => return Promise.reject 403
+      if type and (type != 'custom') and !(cfg["judge-#type"]) => return Promise.reject new lderror(1016)
+      p = if type == \criteria =>
+        cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[reviewer owner]>}
+          .catch -> return Promise.reject new lderror(1016)
+      else
+        cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
+          .catch ->
+            io.query """
+            select owner from perm_judge where brd = $1 and grp = $2 and owner = $3
+            """, [brd, grp, req.user.key]
+              .then (r={}) ->
+                if !(r.[]rows.length) => return Promise.reject new lderror(1016)
 
 app.get \/brd/:brd/grp/:grp/judge/custom/:slug/:lv, (req, res) ->
   lc = {}
@@ -68,7 +71,7 @@ api.post \/brd/:brd/grp/:grp/judge/:type/publish, (req, res) ->
 
 api.get \/brd/:brd/grp/:grp/judge/:type/result, (req, res) ->
   {brd,grp,type} = req.params{brd,grp,type}
-  permission-check {req, res, brd, grp}
+  permission-check {req, res, brd, grp, type}
     .then ->
       io.query "select data from snapshots where doc_id = $1", ["brd/#{brd}/grp/#{grp}/judge/#{type}/"]
     .then (r={}) ->
@@ -148,12 +151,13 @@ api.get \/brd/:brd/grp/:grp/judge/:type/:scope, (req, res) ->
           res.send {data: lc.data, users: lc.users, prjs}
     .catch aux.error-handler res
 
-api.get \/brd/:brd/grp/:grp/judge-list, (req, res) ->
-  {brd, grp} = req.params{brd, grp}
-  permission-check {req, res, brd, grp}
+api.get \/brd/:brd/grp/:grp/judge-list/:type, (req, res) ->
+  {brd, grp, type} = req.params{brd, grp,type}
+  permission-check {req, res, brd, grp, type}
     .then ->
       io.query """
-      select p.key, p.name, p.slug, p.detail, p.detail->'info' as info, p.system, u.displayname as ownername from prj as p
+      select p.key, p.name, p.slug, p.detail, p.detail->'info' as info, p.system, u.displayname as ownername
+      from prj as p
       left join users as u on u.key = p.owner
       where
         p.detail is not null and
