@@ -84,7 +84,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
     fetchPrjs: function(){
       var this$ = this;
       console.log("fetch prjs ... ");
-      return ld$.fetch("/dash/api/brd/" + this.brd + "/grp/" + this.grp + "/judge-list", {
+      return ld$.fetch("/dash/api/brd/" + this.brd + "/grp/" + this.grp + "/judge-list/" + this.type, {
         method: 'GET'
       }, {
         type: 'json'

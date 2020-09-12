@@ -45,7 +45,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
     console.log "fetch prjs ... "
     # TODO unify prj list with general list api
     # Always fetch full list, but filter it in client
-    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge-list", {method: \GET}, { type: \json }
+    ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge-list/#{@type}", {method: \GET}, { type: \json }
       .then ~>
         @prjs = it
         if @type == \custom =>

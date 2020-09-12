@@ -26,8 +26,8 @@
     api = engine.router.api;
     app = engine.app;
     permissionCheck = function(arg$){
-      var req, res, brd, grp;
-      req = arg$.req, res = arg$.res, brd = arg$.brd, grp = arg$.grp;
+      var req, res, brd, grp, type;
+      req = arg$.req, res = arg$.res, brd = arg$.brd, grp = arg$.grp, type = arg$.type;
       return Promise.resolve().then(function(){
         if (!(req.user && req.user.key)) {
           return aux.reject(403);
@@ -41,26 +41,36 @@
           slug: brd
         });
       }).then(function(c){
-        var cfg;
+        var cfg, p;
         c == null && (c = {});
         cfg = c.config;
-        if (!(cfg["judge-criteria"] || cfg["judge-primary"] || cfg["judge-final"])) {
+        if (type && type !== 'custom' && !cfg["judge-" + type]) {
           return Promise.reject(new lderror(1016));
         }
-        return cache.perm.check({
-          io: io,
-          user: req.user,
-          type: 'brd',
-          slug: brd,
-          action: ['judge', 'owner']
-        })['catch'](function(){
-          return io.query("select owner from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, req.user.key]).then(function(r){
-            r == null && (r = {});
-            if (!(r.rows || (r.rows = [])).length) {
-              return Promise.reject(403);
-            }
+        return p = type === 'criteria'
+          ? cache.perm.check({
+            io: io,
+            user: req.user,
+            type: 'brd',
+            slug: brd,
+            action: ['reviewer', 'owner']
+          })['catch'](function(){
+            return Promise.reject(new lderror(1016));
+          })
+          : cache.perm.check({
+            io: io,
+            user: req.user,
+            type: 'brd',
+            slug: brd,
+            action: ['judge', 'owner']
+          })['catch'](function(){
+            return io.query("select owner from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, req.user.key]).then(function(r){
+              r == null && (r = {});
+              if (!(r.rows || (r.rows = [])).length) {
+                return Promise.reject(new lderror(1016));
+              }
+            });
           });
-        });
       });
     };
     app.get('/brd/:brd/grp/:grp/judge/custom/:slug/:lv', function(req, res){
@@ -163,7 +173,8 @@
         req: req,
         res: res,
         brd: brd,
-        grp: grp
+        grp: grp,
+        type: type
       }).then(function(){
         return io.query("select data from snapshots where doc_id = $1", ["brd/" + brd + "/grp/" + grp + "/judge/" + type + "/"]);
       }).then(function(r){
@@ -309,19 +320,21 @@
         });
       })['catch'](aux.errorHandler(res));
     });
-    return api.get('/brd/:brd/grp/:grp/judge-list', function(req, res){
-      var ref$, brd, grp;
+    return api.get('/brd/:brd/grp/:grp/judge-list/:type', function(req, res){
+      var ref$, brd, grp, type;
       ref$ = {
         brd: (ref$ = req.params).brd,
-        grp: ref$.grp
-      }, brd = ref$.brd, grp = ref$.grp;
+        grp: ref$.grp,
+        type: ref$.type
+      }, brd = ref$.brd, grp = ref$.grp, type = ref$.type;
       return permissionCheck({
         req: req,
         res: res,
         brd: brd,
-        grp: grp
+        grp: grp,
+        type: type
       }).then(function(){
-        return io.query("select p.key, p.name, p.slug, p.detail, p.detail->'info' as info, p.system, u.displayname as ownername from prj as p\nleft join users as u on u.key = p.owner\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true and\n  p.state = 'active'", [brd, grp]);
+        return io.query("select p.key, p.name, p.slug, p.detail, p.detail->'info' as info, p.system, u.displayname as ownername\nfrom prj as p\nleft join users as u on u.key = p.owner\nwhere\n  p.detail is not null and\n  p.brd = $1 and\n  p.grp = $2 and\n  p.deleted is not true and\n  p.state = 'active'", [brd, grp]);
       }).then(function(r){
         r == null && (r = {});
         return res.send(r.rows || (r.rows = []));
