@@ -108,11 +108,11 @@ perm = do
                 permcheck payload
               .then (cfg) -> if !cfg or !(action.filter(->cfg[it]).length) => return Promise.reject!
 
-    .then ~> @cache{}[type]{}[slug][user.key] = true
-    .catch (e) ~>
-      if user and user.key => @cache{}[type]{}[slug][user.key] = false
-      if e and e.id != 1012 => console.log "[sharedb access error]", e
-      return Promise.reject(e or (new lderror 1012))
+      .then ~> @cache{}[type]{}[slug][user.key] = true
+      .catch (e) ~>
+        if user and user.key and !e => @cache{}[type]{}[slug][user.key] = false
+        if e and e.id != 1012 => console.log "[sharedb access error]", e
+        return Promise.reject(e or (new lderror 1012))
 
   check-judge: ({io, brd, grp, user}) ->
     v = @cache-judge.brd{}[brd].{}[grp][user.key]
