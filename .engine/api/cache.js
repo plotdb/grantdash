@@ -191,7 +191,7 @@
         return ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = true;
       })['catch'](function(e){
         var ref$, ref1$;
-        if (user && user.key) {
+        if (user && user.key && !e) {
           ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = false;
         }
         if (e && e.id !== 1012) {
