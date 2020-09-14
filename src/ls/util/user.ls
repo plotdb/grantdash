@@ -95,7 +95,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
           render: ({local, data}) ->
             local.view.setContext data
             local.view.render!
-  get: -> return JSON.parse(JSON.stringify(@picked))
+  get: -> return if @picked => JSON.parse(JSON.stringify(@picked)) else null
   clear: ->
     @ <<< picked: null, users: []
     @view.get('input').value = ''

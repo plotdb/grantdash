@@ -150,7 +150,7 @@ ldc.register('userSearch', ['auth', 'error'], function(arg$){
       });
     },
     get: function(){
-      return JSON.parse(JSON.stringify(this.picked));
+      return this.picked ? JSON.parse(JSON.stringify(this.picked)) : null;
     },
     clear: function(){
       this.picked = null;
