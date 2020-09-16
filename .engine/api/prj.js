@@ -157,7 +157,7 @@
           user: req.user,
           type: 'brd',
           slug: req.scope.brd,
-          action: ['owner', 'judge']
+          action: ['owner', 'judge', 'reviewer']
         });
       })['catch'](function(){
         if (!(req.user && req.user.key)) {
