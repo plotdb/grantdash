@@ -27,7 +27,7 @@ app.get \/flagship/, aux.signed, (req, res) ->
           .then -> return res.render \view/taicca-flagship/prj-view.pug
       else
         cache.stage.check {io, type: \brd, slug: brd, name: \prj-edit}
-          .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \prj-edit-own}
+          .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[prj-edit-own owner]>}
           .catch -> Promise.reject new lderror({ldcv: "closed"}, 1012)
           .then -> return res.render \view/taicca-flagship/prj-view.pug, {exports: {prj: ret}}
     .catch aux.error-handler res
@@ -99,13 +99,13 @@ api.post \/flagship/prj/, grecaptcha, (req, res) ->
     .then (r={}) ->
       lc.prj = r.[]rows.0
       if lc.prj and lc.prj.state == \active => return aux.reject 403
-      if lc.prj.owner != req.user.key =>
-        cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \admin}
+      if lc.prj and lc.prj.owner != req.user.key =>
+        cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \owner}
       else Promise.resolve!
     .then ->
       cache.stage.check {io, type: \brd, slug: brd, name: (if !lc.prj => \prj-new else \prj-edit)}
         .catch -> return Promise.reject(new lderror(1012))
-        .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \prj-edit-own}
+        .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[prj-edit-own owner]>}
     .then -> io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404

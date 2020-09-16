@@ -59,7 +59,7 @@
               user: req.user,
               type: 'brd',
               slug: brd,
-              action: 'prj-edit-own'
+              action: ['prj-edit-own', 'owner']
             });
           })['catch'](function(){
             return Promise.reject(new lderror({
@@ -165,13 +165,13 @@
         if (lc.prj && lc.prj.state === 'active') {
           return aux.reject(403);
         }
-        if (lc.prj.owner !== req.user.key) {
+        if (lc.prj && lc.prj.owner !== req.user.key) {
           return cache.perm.check({
             io: io,
             user: req.user,
             type: 'brd',
             slug: brd,
-            action: 'admin'
+            action: 'owner'
           });
         } else {
           return Promise.resolve();
@@ -190,7 +190,7 @@
             user: req.user,
             type: 'brd',
             slug: brd,
-            action: 'prj-edit-own'
+            action: ['prj-edit-own', 'owner']
           });
         });
       }).then(function(){

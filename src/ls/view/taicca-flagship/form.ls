@@ -240,7 +240,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
                 ldcvmgr.toggle("flagship-#{cover-name.0}",false)
               .catch (e) ->
                 if ldError.id(e) == 1012 => ldcvmgr.toggle \closed
-                else error e
+                else error! e
 
       text: do
         fill: ({node}) ->

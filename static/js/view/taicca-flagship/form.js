@@ -401,7 +401,7 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
               if (ldError.id(e) === 1012) {
                 return ldcvmgr.toggle('closed');
               } else {
-                return error(e);
+                return error()(e);
               }
             });
           }
