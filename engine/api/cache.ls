@@ -79,39 +79,36 @@ perm = do
   check: ({io, user, type, slug, action}) ->
     action = if Array.isArray(action) => action else [action]
     payload = {role: {}, perm: {}}
+    lc = {}
     Promise.resolve!
       .then ~>
         if !(user and user.key and slug and (type in @supported-types)) => return Promise.reject!
-        if user.staff == 1 => return true
         # NOTE instead of obj.perm, we also use an external table 'perm' for providing token for users.
         #      and for now we don't have strategy to invalidate caches for perm type update.
         # TODO better way for invalidating cache based on perm table change?
-        if @cache{}[type]{}[slug][user.key]? =>
-          return if @cache[type][slug][user.key] => true else Promise.reject!
-        p = if @perm{}[type][slug] =>
-          Promise.resolve(that)
+        p = if @perm{}[type][slug] => Promise.resolve(that)
         else
           io.query "select owner, detail->'perm' as perm from #type where slug = $1", [slug]
             .then (r={}) ~>
               if !(ret = r.[]rows.0) => return Promise.reject!
               @perm{}[type][slug] = ret
-        p
-          .then (ret) ~>
-            if user.key == ret.owner => return
-            payload.perm = ret.{}perm.[]roles
-            io.query """
-            select ref from perm where owner = $1 and objtype = $2 and objslug = $3 and type = 'token'
-            """, [user.key, type, slug]
-              .then (r={}) ->
-                token = r.[]rows.map -> it.ref
-                payload.role = {user: [user.key], email: [user.username], token}
-                permcheck payload
-              .then (cfg) -> if !cfg or !(action.filter(->cfg[it]).length) => return Promise.reject!
-
-      .then ~> @cache{}[type]{}[slug][user.key] = true
+      .then (ret) ~>
+        lc.perm-brd = ret
+        payload.perm = ret.{}perm.[]roles
+        if @cache{}[type]{}[slug][user.key]? => Promise.resolve that
+        else
+          io.query """
+          select ref from perm where owner = $1 and objtype = $2 and objslug = $3 and type = 'token'
+          """, [user.key, type, slug]
+            .then (r={}) ~>
+              @cache{}[type]{}[slug][user.key] = r.[]rows.map -> it.ref
+      .then (ret) ~>
+        if user.staff == 1 or user.key == lc.perm-brd.owner => return true
+        lc.perm-user = ret
+        payload.role = {user: [user.key], email: [user.username], token: ret}
+        permcheck payload
+          .then (cfg) -> if !cfg or !(action.filter(->cfg[it]).length) => return Promise.reject!
       .catch (e) ~>
-        if e => console.log "perm.check failed with exception: ", e
-        if user and user.key and !e => @cache{}[type]{}[slug][user.key] = false
         if e and e.id != 1012 => console.log "[sharedb access error]", e
         return Promise.reject(e or (new lderror 1012))
 
@@ -141,7 +138,8 @@ perm = do
               @check {io, user, type: \brd, slug: prj.brd, action: <[owner]>}
           return ret
         if !(type == \brd and ids.2 == \grp and ids.4 == \judge) => return Promise.reject it
-        @check-judge {io, brd: ids.1, grp: ids.3, user}
+        if ids.5 == \criteria => @check({io, user, type, slug, action: \reviewer})
+        else @check-judge {io, brd: ids.1, grp: ids.3, user}
 
 
 stage = do
