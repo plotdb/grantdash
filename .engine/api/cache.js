@@ -128,7 +128,7 @@
       return ((ref$ = this.cacheJudge)[type] || (ref$[type] = {}))[slug] = {};
     },
     check: function(arg$){
-      var io, user, type, slug, action, payload, this$ = this;
+      var io, user, type, slug, action, payload, lc, this$ = this;
       io = arg$.io, user = arg$.user, type = arg$.type, slug = arg$.slug, action = arg$.action;
       action = Array.isArray(action)
         ? action
@@ -137,20 +137,13 @@
         role: {},
         perm: {}
       };
+      lc = {};
       return Promise.resolve().then(function(){
-        var ref$, ref1$, p, that;
+        var p, that, ref$;
         if (!(user && user.key && slug && in$(type, this$.supportedTypes))) {
           return Promise.reject();
         }
-        if (user.staff === 1) {
-          return true;
-        }
-        if (((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] != null) {
-          return this$.cache[type][slug][user.key]
-            ? true
-            : Promise.reject();
-        }
-        p = (that = ((ref$ = this$.perm)[type] || (ref$[type] = {}))[slug])
+        return p = (that = ((ref$ = this$.perm)[type] || (ref$[type] = {}))[slug])
           ? Promise.resolve(that)
           : io.query("select owner, detail->'perm' as perm from " + type + " where slug = $1", [slug]).then(function(r){
             var ret, ref$;
@@ -160,43 +153,39 @@
             }
             return ((ref$ = this$.perm)[type] || (ref$[type] = {}))[slug] = ret;
           });
-        return p.then(function(ret){
-          var ref$;
-          if (user.key === ret.owner) {
-            return;
-          }
-          payload.perm = (ref$ = ret.perm || (ret.perm = {})).roles || (ref$.roles = []);
+      }).then(function(ret){
+        var ref$, that, ref1$;
+        lc.permBrd = ret;
+        payload.perm = (ref$ = ret.perm || (ret.perm = {})).roles || (ref$.roles = []);
+        if ((that = ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key]) != null) {
+          return Promise.resolve(that);
+        } else {
           return io.query("select ref from perm where owner = $1 and objtype = $2 and objslug = $3 and type = 'token'", [user.key, type, slug]).then(function(r){
-            var token;
+            var ref$, ref1$;
             r == null && (r = {});
-            token = (r.rows || (r.rows = [])).map(function(it){
+            return ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = (r.rows || (r.rows = [])).map(function(it){
               return it.ref;
             });
-            payload.role = {
-              user: [user.key],
-              email: [user.username],
-              token: token
-            };
-            return permcheck(payload);
-          }).then(function(cfg){
-            if (!cfg || !action.filter(function(it){
-              return cfg[it];
-            }).length) {
-              return Promise.reject();
-            }
           });
+        }
+      }).then(function(ret){
+        if (user.staff === 1 || user.key === lc.permBrd.owner) {
+          return true;
+        }
+        lc.permUser = ret;
+        payload.role = {
+          user: [user.key],
+          email: [user.username],
+          token: ret
+        };
+        return permcheck(payload).then(function(cfg){
+          if (!cfg || !action.filter(function(it){
+            return cfg[it];
+          }).length) {
+            return Promise.reject();
+          }
         });
-      }).then(function(){
-        var ref$, ref1$;
-        return ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = true;
       })['catch'](function(e){
-        var ref$, ref1$;
-        if (e) {
-          console.log("perm.check failed with exception: ", e);
-        }
-        if (user && user.key && !e) {
-          ((ref$ = (ref1$ = this$.cache)[type] || (ref1$[type] = {}))[slug] || (ref$[slug] = {}))[user.key] = false;
-        }
         if (e && e.id !== 1012) {
           console.log("[sharedb access error]", e);
         }
@@ -262,12 +251,22 @@
         if (!(type === 'brd' && ids[2] === 'grp' && ids[4] === 'judge')) {
           return Promise.reject(it);
         }
-        return this$.checkJudge({
-          io: io,
-          brd: ids[1],
-          grp: ids[3],
-          user: user
-        });
+        if (ids[5] === 'criteria') {
+          return this$.check({
+            io: io,
+            user: user,
+            type: type,
+            slug: slug,
+            action: 'reviewer'
+          });
+        } else {
+          return this$.checkJudge({
+            io: io,
+            brd: ids[1],
+            grp: ids[3],
+            user: user
+          });
+        }
       });
     }
   };
