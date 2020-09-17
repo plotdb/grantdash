@@ -416,18 +416,6 @@
         type: type,
         slug: slug,
         action: 'owner'
-      })['catch'](function(e){
-        if (type === 'prj') {
-          return cache.perm.check({
-            io: io,
-            user: req.user,
-            type: 'brd',
-            slug: req.scope.brd,
-            action: 'owner'
-          });
-        } else {
-          return Promise.reject(e);
-        }
       }).then(function(){
         if (type === 'prj') {
           return cache.stage.check({
@@ -446,6 +434,18 @@
           });
         } else {
           return Promise.resolve();
+        }
+      })['catch'](function(e){
+        if (type === 'prj') {
+          return cache.perm.check({
+            io: io,
+            user: req.user,
+            type: 'brd',
+            slug: req.scope.brd,
+            action: 'owner'
+          });
+        } else {
+          return Promise.reject(e);
         }
       }).then(function(){
         return io.query("update " + type + " set detail = $1 where slug = $2 and deleted is not true", [JSON.stringify(payload), slug]);

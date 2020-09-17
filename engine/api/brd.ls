@@ -231,14 +231,14 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
   info = payload.info or {}
   [name, description] = ["#{info.name or info.title or ''}".substring(0,128), "#{info.description or ''}".substring(0,500)]
   cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
-    .catch (e) ->
-      if type == \prj => cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
-      else return Promise.reject e
     .then ->
       if type == \prj =>
         cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
           .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \prj-edit-own}
       else Promise.resolve!
+    .catch (e) ->
+      if type == \prj => cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
+      else return Promise.reject e
     .then ->
       io.query """
       update #type set detail = $1 where slug = $2 and deleted is not true
