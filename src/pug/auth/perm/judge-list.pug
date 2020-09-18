@@ -4,20 +4,26 @@ block vars
  - ctrl.navtop.placeholder = false
 block body
   include cover.pug
-  .ldcvmgr.ldcv(data-name="judge-list",data-lock="true"): .base.w-480: .inner
-    .typeset.heading-contast.vertical-center.my-0: .w-100.p-4: .p-4
+  .ldcvmgr.ldcv.scroll(data-name="judge-list",data-lock="true"): .base.w-480: .inner.card
+    .typeset.heading-contast.vertical-center.my-0: .w-100.p-4: .p-3
       h3.text-center 評選表
       p 您可點擊以下連結進入您所擔任評審的活動之評選表：
-      .pb-4.d-flex.flex-column
-        each item in exports
-          - sheetname = item.sheetname || (item.type == 'primary' ? '篩選表' : '評分表')
-          - name = `${item.name} / ${sheetname}`
-          .pb-2
-            .ml-2
-              if item.type == "custom"
-                div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/custom/${item.slug}/user`) #{name}
-              else
-                div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/${item.type}/user`) #{name}
+      each key in (exports.key || [])
+        - host = exports.map[key] || {}
+        .mb-4
+          h6
+            if host.groupName
+              | #{host.name} / #{host.groupName}
+            else
+              | #{host.name}
+          .list-group
+            each item in (host.list || [])
+              .list-group-item
+                - name = item.sheetname || (item.type == 'primary' ? '篩選表' : '評分表')
+                if item.type == "custom"
+                  div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/custom/${item.slug}/user`) #{name}
+                else
+                  div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/${item.type}/user`) #{name}
 
       a.btn.btn-lg.btn-block.btn-primary(href="/") 回首頁
 
