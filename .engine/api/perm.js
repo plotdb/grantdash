@@ -192,25 +192,32 @@
           return res.render("auth/perm/judge-fail.pug");
         }
         return io.query("select b.name,b.detail->'stage' as stage,b.detail->'group' as group, p.brd,p.grp from perm_judge as p\nleft join brd as b on b.slug = p.brd\nwhere p.owner = $1", [req.user.key]).then(function(r){
-          var ret, list;
+          var ret, list, k;
           r == null && (r = {});
-          ret = [];
+          ret = {};
           list = (r.rows || (r.rows = [])).map(function(p){
-            var cfgs, ref$, stage, key$;
-            p.group.filter(function(g){
+            var ref$, brd, grp, group, groupName, ref1$, cfgs, stage, key$;
+            ref$ = {
+              brd: p.brd,
+              grp: p.grp
+            }, brd = ref$.brd, grp = ref$.grp;
+            if (!(group = p.group.filter(function(g){
               return g.key === p.grp;
-            }).map(function(g){
-              var ref$, ref1$;
-              return ((ref$ = (ref1$ = g.judge || (g.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(e){
-                return (e.config || (e.config = {})).enabled;
-              }).map(function(e){
-                var ref$;
-                return ret.push((ref$ = {
-                  name: p.name,
-                  grp: p.grp,
-                  brd: p.brd
-                }, ref$.type = 'custom', ref$.slug = e.slug, ref$.sheetname = e.name, ref$));
-              });
+            })[0])) {
+              return;
+            }
+            groupName = p.group.length > 1 ? (group.info || (group.info = {})).name : null;
+            console.log(p.group.length, group.info || (group.info = {}));
+            ((ref$ = (ref1$ = group.judge || (group.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(e){
+              return (e.config || (e.config = {})).enabled;
+            }).map(function(e){
+              var ref$, key$;
+              (ref$ = ret[key$ = brd + "/" + grp] || (ret[key$] = {}), ref$.name = p.name, ref$.grp = p.grp, ref$.brd = p.brd, ref$).groupName = groupName;
+              return ((ref$ = ret[brd + "/" + grp]).list || (ref$.list = [])).push((ref$ = {
+                name: p.name,
+                grp: p.grp,
+                brd: p.brd
+              }, ref$.type = 'custom', ref$.slug = e.slug, ref$.sheetname = e.name, ref$));
             });
             cfgs = ((ref$ = p.stage || (p.stage = {})).list || (ref$.list = [])).filter(function(s){
               if (s.start && Date.now() < new Date(s.start).getTime()) {
@@ -222,26 +229,39 @@
               return true;
             });
             stage = (cfgs[key$ = cfgs.length - 1] || (cfgs[key$] = {})).config || {};
-            if (stage["judge-final"]) {
-              ret.push((ref$ = {
+            return ['final', 'primary'].map(function(type){
+              var ref$, key$;
+              if (!stage["judge-" + type]) {
+                return;
+              }
+              (ref$ = ret[key$ = brd + "/" + grp] || (ret[key$] = {}), ref$.name = p.name, ref$.grp = p.grp, ref$.brd = p.brd, ref$).groupName = groupName;
+              return ((ref$ = ret[brd + "/" + grp]).list || (ref$.list = [])).push((ref$ = {
                 name: p.name,
-                brd: p.brd,
-                grp: p.grp
-              }, ref$.type = "final", ref$));
-            }
-            if (stage["judge-primary"]) {
-              return ret.push((ref$ = {
-                name: p.name,
-                brd: p.brd,
-                grp: p.grp
-              }, ref$.type = "primary", ref$));
-            }
+                grp: p.grp,
+                brd: p.brd
+              }, ref$.type = type, ref$));
+            });
           });
-          if (!ret.length) {
+          if (!(function(){
+            var results$ = [];
+            for (k in ret) {
+              results$.push(k);
+            }
+            return results$;
+          }()).length) {
             return res.render("auth/perm/judge-fail.pug");
           }
           return res.render("auth/perm/judge-list.pug", {
-            exports: ret
+            exports: {
+              key: (function(){
+                var results$ = [];
+                for (k in ret) {
+                  results$.push(k);
+                }
+                return results$;
+              }()),
+              map: ret
+            }
           });
         });
       })['catch'](aux.errorHandler(res));

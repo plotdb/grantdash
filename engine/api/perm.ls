@@ -110,25 +110,32 @@ app.get \/judgetoken/:token, (req, res) ->
       left join brd as b on b.slug = p.brd
       where p.owner = $1""", [req.user.key]
         .then (r={}) ->
-          ret = []
+          ret = {}
           list = r.[]rows
             .map (p) ->
-              p.group
-                .filter (g) -> g.key == p.grp
-                .map (g) ->
-                  g.{}judge.{}custom.[]entries
-                    .filter (e) -> e.{}config.enabled
-                    .map (e) ->
-                      ret.push(p{name,grp,brd} <<< {type: 'custom', slug: e.slug, sheetname: e.name})
+              {brd,grp} = p{brd,grp}
+              if !(group = p.group.filter((g) -> g.key == p.grp).0) => return
+              group-name = if p.group.length > 1 => group.{}info.name else null
+              console.log p.group.length, group.{}info
+              group.{}judge.{}custom.[]entries
+                .filter (e) -> e.{}config.enabled
+                .map (e) ->
+                  ret{}["#brd/#grp"] <<< p{name, grp, brd} <<< {group-name}
+                  ret["#brd/#grp"][]list.push(
+                    p{name,grp,brd} <<< {type: 'custom', slug: e.slug, sheetname: e.name}
+                  )
+
               cfgs = p.{}stage.[]list.filter (s) ->
                 if s.start and Date.now! < new Date(s.start).getTime! => return false
                 if s.end and Date.now! > new Date(s.end).getTime! => return false
                 return true
               stage = cfgs{}[* - 1].config or {}
-              if stage["judge-final"] => ret.push p{name,brd,grp} <<< {type: "final"}
-              if stage["judge-primary"] => ret.push p{name,brd,grp} <<< {type: "primary"}
-          if !(ret.length) => return res.render "auth/perm/judge-fail.pug"
-          return res.render "auth/perm/judge-list.pug", {exports: ret}
+              <[final primary]>.map (type) ->
+                if !stage["judge-#type"] => return
+                ret{}["#brd/#grp"] <<< p{name, grp, brd} <<< {group-name}
+                ret["#brd/#grp"][]list.push(p{name,grp,brd} <<< {type})
+          if !([k for k of ret].length) => return res.render "auth/perm/judge-fail.pug"
+          return res.render "auth/perm/judge-list.pug", {exports: {key: [k for k of ret], map: ret}}
     .catch aux.error-handler res
 
 api.put \/judgetoken, aux.signed, grecaptcha, (req, res) ->
