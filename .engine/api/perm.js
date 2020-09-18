@@ -191,12 +191,28 @@
         if (!(req.user && req.user.key)) {
           return res.render("auth/perm/judge-fail.pug");
         }
-        return io.query("select b.name,b.detail->'stage' as stage,p.brd,p.grp from perm_judge as p\nleft join brd as b on b.slug = p.brd\nwhere p.owner = $1", [req.user.key]).then(function(r){
-          var list;
+        return io.query("select b.name,b.detail->'stage' as stage,b.detail->'group' as group, p.brd,p.grp from perm_judge as p\nleft join brd as b on b.slug = p.brd\nwhere p.owner = $1", [req.user.key]).then(function(r){
+          var ret, list;
           r == null && (r = {});
-          list = (r.rows || (r.rows = [])).map(function(it){
-            var cfgs, ref$, key$;
-            cfgs = ((ref$ = it.stage || (it.stage = {})).list || (ref$.list = [])).filter(function(s){
+          ret = [];
+          list = (r.rows || (r.rows = [])).map(function(p){
+            var cfgs, ref$, stage, key$;
+            p.group.filter(function(g){
+              return g.key === p.grp;
+            }).map(function(g){
+              var ref$, ref1$;
+              return ((ref$ = (ref1$ = g.judge || (g.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(e){
+                return (e.config || (e.config = {})).enabled;
+              }).map(function(e){
+                var ref$;
+                return ret.push((ref$ = {
+                  name: p.name,
+                  grp: p.grp,
+                  brd: p.brd
+                }, ref$.type = 'custom', ref$.slug = e.slug, ref$.sheetname = e.name, ref$));
+              });
+            });
+            cfgs = ((ref$ = p.stage || (p.stage = {})).list || (ref$.list = [])).filter(function(s){
               if (s.start && Date.now() < new Date(s.start).getTime()) {
                 return false;
               }
@@ -205,16 +221,27 @@
               }
               return true;
             });
-            it.stage = (cfgs[key$ = cfgs.length - 1] || (cfgs[key$] = {})).config || {};
-            return it;
-          }).filter(function(it){
-            return it.stage["judge-final"] || it.stage["judge-primary"];
+            stage = (cfgs[key$ = cfgs.length - 1] || (cfgs[key$] = {})).config || {};
+            if (stage["judge-final"]) {
+              ret.push((ref$ = {
+                name: it.name,
+                brd: it.brd,
+                grp: it.grp
+              }, ref$.type = "final", ref$));
+            }
+            if (stage["judge-primary"]) {
+              return ret.push((ref$ = {
+                name: it.name,
+                brd: it.brd,
+                grp: it.grp
+              }, ref$.type = "primary", ref$));
+            }
           });
-          if (!list.length) {
+          if (!ret.length) {
             return res.render("auth/perm/judge-fail.pug");
           }
           return res.render("auth/perm/judge-list.pug", {
-            exports: list
+            exports: ret
           });
         });
       })['catch'](aux.errorHandler(res));
