@@ -207,7 +207,6 @@
               return;
             }
             groupName = p.group.length > 1 ? (group.info || (group.info = {})).name : null;
-            console.log(p.group.length, group.info || (group.info = {}));
             ((ref$ = (ref1$ = group.judge || (group.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(e){
               return (e.config || (e.config = {})).enabled;
             }).map(function(e){
