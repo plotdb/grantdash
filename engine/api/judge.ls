@@ -18,9 +18,9 @@ permission-check = ({req, res, brd, grp, type}) ->
       if type and (type != 'custom') and !(cfg["judge-#type"]) => return Promise.reject new lderror(1016)
       p = if type == \criteria =>
         cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[reviewer owner]>}
-          .catch -> return Promise.reject new lderror(1016)
-      else
-        cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge owner]>}
+      else Promise.reject!
+      p.catch ->
+        cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge]>}
           .catch ->
             io.query """
             select owner from perm_judge where brd = $1 and grp = $2 and owner = $3
