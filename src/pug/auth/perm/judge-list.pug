@@ -10,14 +10,14 @@ block body
       p 您可點擊以下連結進入您所擔任評審的活動之評選表：
       .pb-4.d-flex.flex-column
         each item in exports
-          - stage = item.stage || {}
-          .pb-4
-            .mr-4 #{item.name} /
+          - sheetname = item.sheetname || (item.type == 'primary' ? '篩選表' : '評分表')
+          - name = `${item.name} / ${sheetname}`
+          .pb-2
             .ml-2
-              if item.stage["judge-primary"]
-                div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/primary/user`) 篩選表
-              if item.stage["judge-final"]
-                div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/final/user`) 評分表
+              if item.type == "custom"
+                div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/custom/${item.slug}/user`) #{name}
+              else
+                div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/${item.type}/user`) #{name}
 
       a.btn.btn-lg.btn-block.btn-primary(href="/") 回首頁
 

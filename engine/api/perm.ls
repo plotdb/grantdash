@@ -106,21 +106,29 @@ app.get \/judgetoken/:token, (req, res) ->
         return res.render "auth/perm/judge-claim.pug", {exports: {token, email: ret.email}}
       if !(req.user and req.user.key) => return res.render "auth/perm/judge-fail.pug"
       io.query """
-      select b.name,b.detail->'stage' as stage,p.brd,p.grp from perm_judge as p
+      select b.name,b.detail->'stage' as stage,b.detail->'group' as group, p.brd,p.grp from perm_judge as p
       left join brd as b on b.slug = p.brd
       where p.owner = $1""", [req.user.key]
         .then (r={}) ->
+          ret = []
           list = r.[]rows
-            .map ->
-              cfgs = it.{}stage.[]list.filter (s) ->
+            .map (p) ->
+              p.group
+                .filter (g) -> g.key == p.grp
+                .map (g) ->
+                  g.{}judge.{}custom.[]entries
+                    .filter (e) -> e.{}config.enabled
+                    .map (e) ->
+                      ret.push(p{name,grp,brd} <<< {type: 'custom', slug: e.slug, sheetname: e.name})
+              cfgs = p.{}stage.[]list.filter (s) ->
                 if s.start and Date.now! < new Date(s.start).getTime! => return false
                 if s.end and Date.now! > new Date(s.end).getTime! => return false
                 return true
-              it.stage = cfgs{}[* - 1].config or {}
-              it
-            .filter -> it.stage["judge-final"] or it.stage["judge-primary"]
-          if !(list.length) => return res.render "auth/perm/judge-fail.pug"
-          return res.render "auth/perm/judge-list.pug", {exports: list}
+              stage = cfgs{}[* - 1].config or {}
+              if stage["judge-final"] => ret.push it{name,brd,grp} <<< {type: "final"}
+              if stage["judge-primary"] => ret.push it{name,brd,grp} <<< {type: "primary"}
+          if !(ret.length) => return res.render "auth/perm/judge-fail.pug"
+          return res.render "auth/perm/judge-list.pug", {exports: ret}
     .catch aux.error-handler res
 
 api.put \/judgetoken, aux.signed, grecaptcha, (req, res) ->
