@@ -116,7 +116,6 @@ app.get \/judgetoken/:token, (req, res) ->
               {brd,grp} = p{brd,grp}
               if !(group = p.group.filter((g) -> g.key == p.grp).0) => return
               group-name = if p.group.length > 1 => group.{}info.name else null
-              console.log p.group.length, group.{}info
               group.{}judge.{}custom.[]entries
                 .filter (e) -> e.{}config.enabled
                 .map (e) ->
