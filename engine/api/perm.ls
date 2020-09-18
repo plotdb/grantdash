@@ -125,8 +125,8 @@ app.get \/judgetoken/:token, (req, res) ->
                 if s.end and Date.now! > new Date(s.end).getTime! => return false
                 return true
               stage = cfgs{}[* - 1].config or {}
-              if stage["judge-final"] => ret.push it{name,brd,grp} <<< {type: "final"}
-              if stage["judge-primary"] => ret.push it{name,brd,grp} <<< {type: "primary"}
+              if stage["judge-final"] => ret.push p{name,brd,grp} <<< {type: "final"}
+              if stage["judge-primary"] => ret.push p{name,brd,grp} <<< {type: "primary"}
           if !(ret.length) => return res.render "auth/perm/judge-fail.pug"
           return res.render "auth/perm/judge-list.pug", {exports: ret}
     .catch aux.error-handler res

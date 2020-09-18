@@ -224,16 +224,16 @@
             stage = (cfgs[key$ = cfgs.length - 1] || (cfgs[key$] = {})).config || {};
             if (stage["judge-final"]) {
               ret.push((ref$ = {
-                name: it.name,
-                brd: it.brd,
-                grp: it.grp
+                name: p.name,
+                brd: p.brd,
+                grp: p.grp
               }, ref$.type = "final", ref$));
             }
             if (stage["judge-primary"]) {
               return ret.push((ref$ = {
-                name: it.name,
-                brd: it.brd,
-                grp: it.grp
+                name: p.name,
+                brd: p.brd,
+                grp: p.grp
               }, ref$.type = "primary", ref$));
             }
           });
