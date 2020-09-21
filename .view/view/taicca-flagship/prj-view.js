@@ -3761,7 +3761,7 @@ block && block();
 pug_html = pug_html + "\u003C\u002Flabel\u003E\u003C\u002Fdiv\u003E";
 };
 ;pug_debug_line = 151;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
-pug_html = pug_html + "\u003Cdiv class=\"position-fixed no-print border shadow z-fixed m-auto p-2 bg-danger text-white text-center rounded\" ld=\"countdown-panel\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"position-fixed no-print border shadow z-fixed m-auto p-2 bg-danger text-white text-center rounded d-none\" ld=\"countdown-panel\"\u003E";
 ;pug_debug_line = 151;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
 pug_html = pug_html + "徵件截止倒數: ";
 ;pug_debug_line = 151;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-view.pug";
