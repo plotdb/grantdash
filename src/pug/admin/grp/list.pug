@@ -36,6 +36,9 @@
         .px-1(style="width:48px") 編號
         .px-1.mr-3(style="width:4em") 狀態
         div(style="flex:1000 0 0") 專案名稱 / 單位
+        .pr-1.pl-4.text-right(style="width:8em") 提案者帳號
+        .text-center(style="width:10em") 功能
+
         //-.px-1.text-center(style="width:200px") 預算概況
         //-.px-1.text-center(style="width:100px") 階段
       div(ld="prjs")
@@ -53,14 +56,14 @@
           div(style="flex:1000 0 0")
             .clickable.text-underline(ld="name")
             //-.text-muted.text-sm(ld="ownername")
-          .px-1.text-right(style="width:10em",ld="username")
-          .px-1.rounded-circle.bg-cover.bg-portrait.bg-dark.mr-2(ld="avatar",style="width:1.5em;height:1.5em")
+          .pr-1.pl-4.text-right(style="width:8em;word-break:break-all",ld="username")
+          //-.px-1.rounded-circle.bg-cover.bg-portrait.bg-dark.mr-2(ld="avatar",style="width:1.5em;height:1.5em")
           //-.px-1.text-center(style="width:70px")
             //-div 已核銷 #[span(ld="budget-consume")]
             //-.text-sm(ld="budget-detail")
           //-.px-1.text-center(ld="stage",style="width:70px")
-          .px-1.text-center(style="width:100px")
+          .text-center(style="width:5em")
             a.btn.btn-outline-dark.ld-ext-right(href="#",ld="edit",target="_blank",rel="noopener noreferrer") 編輯
-          .px-1.text-center(style="width:100px")
+          .text-center(style="width:5em")
             .btn.btn-outline-danger.ld-ext-right(ld="delete") 刪除 #[.ld.ld-spin.ld-spinner]
 
