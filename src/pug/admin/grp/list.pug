@@ -35,7 +35,7 @@
       .d-flex.border-bottom.border-top.p-2
         .px-1(style="width:48px") 編號
         .px-1.mr-3(style="width:4em") 狀態
-        .flex-grow-1 專案名稱 / 單位
+        div(style="flex:1000 0 0") 專案名稱 / 單位
         //-.px-1.text-center(style="width:200px") 預算概況
         //-.px-1.text-center(style="width:100px") 階段
       div(ld="prjs")
@@ -50,10 +50,10 @@
                 .dropdown-divider
                 .dropdown-item(ld="set-state",data-name="pending") 編輯中
                 .dropdown-item(ld="set-state",data-name="active") 已送件
-          .flex-grow-1
+          div(style="flex:1000 0 0")
             .clickable.text-underline(ld="name")
             //-.text-muted.text-sm(ld="ownername")
-          .px-1(ld="username")
+          .px-1.text-right(style="width:10em",ld="username")
           .px-1.rounded-circle.bg-cover.bg-portrait.bg-dark.mr-2(ld="avatar",style="width:1.5em;height:1.5em")
           //-.px-1.text-center(style="width:70px")
             //-div 已核銷 #[span(ld="budget-consume")]
