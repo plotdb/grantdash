@@ -47,22 +47,22 @@
         if (type && type !== 'custom' && !cfg["judge-" + type]) {
           return Promise.reject(new lderror(1016));
         }
-        return p = type === 'criteria'
+        p = type === 'criteria'
           ? cache.perm.check({
             io: io,
             user: req.user,
             type: 'brd',
             slug: brd,
             action: ['reviewer', 'owner']
-          })['catch'](function(){
-            return Promise.reject(new lderror(1016));
           })
-          : cache.perm.check({
+          : Promise.reject();
+        return p['catch'](function(){
+          return cache.perm.check({
             io: io,
             user: req.user,
             type: 'brd',
             slug: brd,
-            action: ['judge', 'owner']
+            action: ['judge']
           })['catch'](function(){
             return io.query("select owner from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, req.user.key]).then(function(r){
               r == null && (r = {});
@@ -71,6 +71,7 @@
               }
             });
           });
+        });
       });
     };
     app.get('/brd/:brd/grp/:grp/judge/custom/:slug/:lv', function(req, res){

@@ -397,7 +397,13 @@ ldc.register('judgeFinalAll', ['notify', 'judgeBase', 'error', 'loader', 'auth',
         return this$.sharedb();
       }).then(function(){
         return this$.reconnect();
-      })['catch'](error());
+      })['catch'](function(e){
+        if (ldError.id(e) === 1012 || e.message === 'forbidden') {
+          return ldcvmgr.toggle('access-denied');
+        } else {
+          return error()(e);
+        }
+      });
     },
     fetchCriteriaResult: function(){
       var this$ = this;

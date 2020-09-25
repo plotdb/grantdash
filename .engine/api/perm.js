@@ -192,10 +192,10 @@
           return res.render("auth/perm/judge-fail.pug");
         }
         return io.query("select b.name,b.detail->'stage' as stage,b.detail->'group' as group, p.brd,p.grp from perm_judge as p\nleft join brd as b on b.slug = p.brd\nwhere p.owner = $1", [req.user.key]).then(function(r){
-          var ret, list, k;
+          var ret, k;
           r == null && (r = {});
           ret = {};
-          list = (r.rows || (r.rows = [])).map(function(p){
+          (r.rows || (r.rows = [])).map(function(p){
             var ref$, brd, grp, group, groupName, ref1$, cfgs, stage, key$;
             ref$ = {
               brd: p.brd,
@@ -207,6 +207,11 @@
               return;
             }
             groupName = p.group.length > 1 ? (group.info || (group.info = {})).name : null;
+            if (!((ref$ = group.judgePerm || (group.judgePerm = {})).list || (ref$.list = [])).filter(function(it){
+              return it.email === req.user.username;
+            }).length) {
+              return;
+            }
             ((ref$ = (ref1$ = group.judge || (group.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(e){
               return (e.config || (e.config = {})).enabled;
             }).map(function(e){

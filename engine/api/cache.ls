@@ -79,7 +79,6 @@ perm = do
   check: ({io, user, type, slug, action}) ->
     action = if Array.isArray(action) => action else [action]
     payload = {role: {}, perm: {}}
-    lc = {}
     Promise.resolve!
       .then ~>
         if !(user and user.key and slug and (type in @supported-types)) => return Promise.reject!
@@ -113,12 +112,19 @@ perm = do
         return Promise.reject(e or (new lderror 1012))
 
   check-judge: ({io, brd, grp, user}) ->
-    v = @cache-judge.brd{}[brd].{}[grp][user.key]
+    v = @cache-judge.{}brd{}[brd].{}[grp][user.key]
     if v? => return (if v => Promise.resolve(true) else Promise.reject(new lderror(1012)))
+    lc = {}
     io.query "select key from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, user.key]
       .then (r={}) ~>
         if !(r.[]rows.length) =>
           @cache-judge.brd{}[brd].{}[grp][user.key] = false
+          return Promise.reject(new lderror(1012))
+        io.query """select detail->'group' as group from brd where slug = $1""", [brd]
+      .then (r={}) ~>
+        if !(ret = r.[]rows.0) => return Promise.reject(new lderror(1012))
+        if !(g = ret.group.filter(-> it.key == grp).0) => return Promise.reject(new lderror(1012))
+        if !(g.{}judgePerm.[]list.filter(-> user.username == it.email).length) =>
           return Promise.reject(new lderror(1012))
         @cache-judge.brd{}[brd].{}[grp][user.key] = true
 

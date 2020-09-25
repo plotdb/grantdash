@@ -128,7 +128,7 @@
       return ((ref$ = this.cacheJudge)[type] || (ref$[type] = {}))[slug] = {};
     },
     check: function(arg$){
-      var io, user, type, slug, action, payload, lc, this$ = this;
+      var io, user, type, slug, action, payload, this$ = this;
       io = arg$.io, user = arg$.user, type = arg$.type, slug = arg$.slug, action = arg$.action;
       action = Array.isArray(action)
         ? action
@@ -137,7 +137,6 @@
         role: {},
         perm: {}
       };
-      lc = {};
       return Promise.resolve().then(function(){
         var p, that, ref$;
         if (!(user && user.key && slug && in$(type, this$.supportedTypes))) {
@@ -193,19 +192,37 @@
       });
     },
     checkJudge: function(arg$){
-      var io, brd, grp, user, v, ref$, ref1$, this$ = this;
+      var io, brd, grp, user, v, ref$, ref1$, ref2$, lc, this$ = this;
       io = arg$.io, brd = arg$.brd, grp = arg$.grp, user = arg$.user;
-      v = ((ref$ = (ref1$ = this.cacheJudge.brd)[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key];
+      v = ((ref$ = (ref1$ = (ref2$ = this.cacheJudge).brd || (ref2$.brd = {}))[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key];
       if (v != null) {
         return v
           ? Promise.resolve(true)
           : Promise.reject(new lderror(1012));
       }
+      lc = {};
       return io.query("select key from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, user.key]).then(function(r){
         var ref$, ref1$;
         r == null && (r = {});
         if (!(r.rows || (r.rows = [])).length) {
           ((ref$ = (ref1$ = this$.cacheJudge.brd)[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key] = false;
+          return Promise.reject(new lderror(1012));
+        }
+        return io.query("select detail->'group' as group from brd where slug = $1", [brd]);
+      }).then(function(r){
+        var ret, g, ref$, ref1$;
+        r == null && (r = {});
+        if (!(ret = (r.rows || (r.rows = []))[0])) {
+          return Promise.reject(new lderror(1012));
+        }
+        if (!(g = ret.group.filter(function(it){
+          return it.key === grp;
+        })[0])) {
+          return Promise.reject(new lderror(1012));
+        }
+        if (!((ref$ = g.judgePerm || (g.judgePerm = {})).list || (ref$.list = [])).filter(function(it){
+          return user.username === it.email;
+        }).length) {
           return Promise.reject(new lderror(1012));
         }
         return ((ref$ = (ref1$ = this$.cacheJudge.brd)[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key] = true;
