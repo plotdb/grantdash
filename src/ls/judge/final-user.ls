@@ -206,7 +206,9 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @fetch-criteria-result!
       .then ~> @sharedb!
       .then ~> @reconnect!
-      .catch error!
+      .catch (e) ->
+        if ldError.id(e) == 1012 or e.message == \forbidden => ldcvmgr.toggle \access-denied
+        else error! e
 
   fetch-criteria-result: ->
     ld$.fetch "/dash/api/brd/#{@brd}/grp/#{@grp}/judge/criteria/result", {method: \GET}, {type: \json}

@@ -345,7 +345,13 @@ ldc.register('judgePrimaryAll', ['notify', 'judgeBase', 'error', 'loader', 'auth
         return this$.sharedb();
       }).then(function(){
         return this$.reconnect();
-      })['catch'](error());
+      })['catch'](function(e){
+        if (ldError.id(e) === 1012 || e.message === 'forbidden') {
+          return ldcvmgr.toggle('access-denied');
+        } else {
+          return error()(e);
+        }
+      });
     },
     getCount: function(){
       var len, this$ = this;

@@ -149,7 +149,9 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .then ~> @fetch-prjs!
       .then ~> @sharedb!
       .then ~> @reconnect!
-      .catch error!
+      .catch (e) ->
+        if ldError.id(e) == 1012 or e.message == \forbidden => ldcvmgr.toggle \access-denied
+        else error! e
 
   get-progress: ->
     @progress = ret = {done: 0, accept: 0, pending: 0, reject: 0, total: (@prjs.length or 1)}

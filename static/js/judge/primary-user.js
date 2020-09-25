@@ -306,7 +306,13 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
         return this$.sharedb();
       }).then(function(){
         return this$.reconnect();
-      })['catch'](error());
+      })['catch'](function(e){
+        if (ldError.id(e) === 1012 || e.message === 'forbidden') {
+          return ldcvmgr.toggle('access-denied');
+        } else {
+          return error()(e);
+        }
+      });
     },
     getProgress: function(){
       var ret, this$ = this;
