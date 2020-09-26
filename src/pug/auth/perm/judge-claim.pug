@@ -18,5 +18,14 @@ block script
             .then -> ldcvmgr.toggle \judge-claimed
         .catch (e) ->
           if ldError.id(e) == 1013 => return ldcvmgr.toggle \perm-fail
-          error! e
+
+          ldcvmgr.getdom \denied
+            .then (dom) ->
+              view = new ldView do
+                root: dom
+                handler:
+                  email: ({node}) -> node.innerText = viewLocals.email
+                  reauth: ({node}) -> node.setAttribute \href, "/dash/me/reauth/?nexturl=#{window.location.href}"
+            .then -> ldcvmgr.toggle \denied
+          #error! e
   +register-locals()

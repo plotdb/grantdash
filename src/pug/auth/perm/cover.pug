@@ -12,11 +12,20 @@
 
 .ldcvmgr.ldcv(data-name="perm-fail",data-lock="true"): .base.w-480: .inner
   .typeset.heading-contast.vertical-center.my-0: .w-100.p-4: .p-4
-    h3.text-center 無法設定權限。
+    h1.text-center 無法設定權限。
     .py-4
       p 您所使用的這個連結已經過期或者失效，所以您無法再透過這個連結設定權限了。若您先前有成功設定過，您可以試著重新登入後嘗試再次載入頁面。
     br
     .row
       .col-md: a.btn.btn-lg.btn-block.btn-outline-primary(href="/") 回首頁
       .col-md: a.btn.btn-lg.btn-block.btn-primary(href="/dash/me/reauth") 重新登入
+
+.ldcvmgr.ldcv(data-name="denied",data-lock="true"): .base.w-480: .inner
+  .typeset.heading-contast.vertical-center.my-0: .w-100.p-4: .p-4
+    h1.text-center 無法設定權限
+    .text-center 請登入這個帳號 ( #[span(ld="email")] ) 來設定權限。
+    .py-4
+      p 您可能尚未登入、或已透過未獲權限的帳號登入，但是這個連結僅提供給特定帳號使用，所以請您切換帳號後，再試一次看看。
+    br
+    a.btn.btn-lg.btn-block.btn-primary(ld="reauth",href="/dash/me/reauth") 重新登入
 
