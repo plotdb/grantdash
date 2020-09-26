@@ -17,10 +17,11 @@ mixin authpanel
 
         .d-none(data-info="failed")
           h2.mb-4.font-weight-bold 登入失敗。
-          p 您之前可能用的是別組帳號或密碼，或者使用不同的登入方式。您可以試著：
+          p 您之前可能用的是別組帳號或密碼、使用不同的登入方式、甚至尚未註冊過。您可以試著：
           ul
             li 換一組帳號、密碼或登入方式
             li 確認您的 email 或密碼沒有打錯
+            li 切換至註冊模式後再試一次
             li #[a(href="/dash/auth/reset/",style="color:#0ff",target="_blank",rel="noopener noreferrer") 重設密碼]
             li #[a(href="#",onclick="lda.ldcvmgr.toggle('contact');",style="color:#0ff") 與我們聯絡]
 
