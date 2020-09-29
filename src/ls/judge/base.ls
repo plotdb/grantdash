@@ -3,7 +3,14 @@
 
 Ctrl = (opt) ->
   @loader = loader
-  @ <<< opt{brd, grp, user}
+  @ <<< opt{brd, grp, slug, lv, round, type, user}
+  brd = opt.brd
+  grp = opt.grp
+  slug = opt.slug
+  lv = opt.lv
+  round = opt.round
+  type = opt.type
+  user = opt.user
 
   ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/custom\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href)
   if ret =>
@@ -11,8 +18,7 @@ Ctrl = (opt) ->
     type = \custom
   else
     ret = /brd\/([^/]+)\/grp\/([^/]+)\/judge\/([^/]+)\/([^/]+)(?:\/round\/([^/]+))?$/.exec(window.location.href)
-    if !ret => throw new ldError(1015)
-    [brd,grp,type,lv,round] = ret.slice 1
+    if ret => [brd,grp,type,lv,round] = ret.slice 1
   if !((type in <[custom criteria primary final]>) and (lv in <[user all]>)) => throw new ldError(1015)
   @ <<< { brd, grp, type, lv, round, slug }
 
