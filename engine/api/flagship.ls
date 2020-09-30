@@ -36,8 +36,13 @@ app.get \/flagship/, aux.signed, (req, res) ->
 api.post \/flagship/upload, (req, res) ->
   lc = {}
   if !(req.user and req.user.key) => return
+  owner = req.body.owner or req.user.key
   brd = \flagship-2
-  io.query "select id from perm_gcs where owner = $1", [req.user.key]
+  p = if owner != req.user.key => cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[ owner]>}
+  else Promise.resolve!
+  p
+    .then ->
+      io.query "select id from perm_gcs where owner = $1", [owner]
     .then (r={}) ->
       if (lc.perm = r.[]rows.0) => lc.id = lc.perm.id
       else lc.id = suuid!
@@ -51,7 +56,7 @@ api.post \/flagship/upload, (req, res) ->
       if !lc.perm =>
         io.query """
         insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)
-        """, [lc.id, req.user.key, (brd or null), null]
+        """, [lc.id, owner, (brd or null), null]
     .then ->
       res.send {signed-url: lc.url, id: lc.id}
     .catch aux.error-handler res

@@ -76,13 +76,25 @@
       })['catch'](aux.errorHandler(res));
     });
     api.post('/flagship/upload', function(req, res){
-      var lc, brd;
+      var lc, owner, brd, p;
       lc = {};
       if (!(req.user && req.user.key)) {
         return;
       }
+      owner = req.body.owner || req.user.key;
       brd = 'flagship-2';
-      return io.query("select id from perm_gcs where owner = $1", [req.user.key]).then(function(r){
+      p = owner !== req.user.key
+        ? cache.perm.check({
+          io: io,
+          type: 'brd',
+          slug: brd,
+          user: req.user,
+          action: ['owner']
+        })
+        : Promise.resolve();
+      return p.then(function(){
+        return io.query("select id from perm_gcs where owner = $1", [owner]);
+      }).then(function(r){
         r == null && (r = {});
         if (lc.perm = (r.rows || (r.rows = []))[0]) {
           return lc.id = lc.perm.id;
@@ -98,7 +110,7 @@
       }).then(function(it){
         lc.url = it[0];
         if (!lc.perm) {
-          return io.query("insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)", [lc.id, req.user.key, brd || null, null]);
+          return io.query("insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)", [lc.id, owner, brd || null, null]);
         }
       }).then(function(){
         return res.send({

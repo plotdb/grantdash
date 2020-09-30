@@ -95,7 +95,8 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
       }
       return getSignedUrl({
         filename: file.name,
-        size: file.size
+        size: file.size,
+        owner: vlc.prj.owner || global.user.key
       }).then(function(arg$){
         var signedUrl, id;
         signedUrl = arg$.signedUrl, id = arg$.id;

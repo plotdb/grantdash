@@ -55,7 +55,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
     upload-file = ({file, info-node}) ->
       if vlc.{}prj.state == \active => return Promise.reject new ldError(1012)
       if file.type != 'application/pdf' => return Promise.reject new ldError(1020)
-      get-signed-url {filename: file.name, size: file.size}
+      get-signed-url {filename: file.name, size: file.size, owner: vlc.prj.owner or global.user.key }
         .then ({signed-url, id}) ->
           ld$.xhr(
             signed-url,
