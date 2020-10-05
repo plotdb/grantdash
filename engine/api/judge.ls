@@ -120,6 +120,7 @@ api.get \/brd/:brd/grp/:grp/judge/custom/:slug, (req, res) ->
       lc.brd = r.[]rows.0
       grps = lc.brd.{}detail.[]group
       if !(lc.grp = lc.brd.{}detail.[]group.filter(-> it.key == grp).0) => return aux.reject 404
+      if !(lc.custom = lc.grp.{}judge.{}custom.[]entries.filter(-> it.slug == slug).0) => return aux.reject 404
       lc.judges = lc.grp.{}judgePerm.[]list
     .then ->
       io.query "select data from snapshots where doc_id = $1", ["brd/#{brd}/grp/#{grp}/judge/custom/slug/#{slug}"]
@@ -147,6 +148,7 @@ api.get \/brd/:brd/grp/:grp/judge/custom/:slug, (req, res) ->
           """, [brd, grp]
         .then (r={}) ->
           prjs = r.[]rows
+          if lc.custom.filter => prjs = prjs.filter -> it.{}system.{}badge[lc.custom.filter]
           res.send {data: lc.data, users: lc.users, prjs}
     .catch aux.error-handler res
 
