@@ -270,12 +270,17 @@
       }).then(function(){
         return io.query("select detail from brd where slug = $1", [brd]);
       }).then(function(r){
-        var grps, ref$, ref1$;
+        var grps, ref$, ref1$, ref2$;
         r == null && (r = {});
         lc.brd = (r.rows || (r.rows = []))[0];
         grps = (ref$ = (ref1$ = lc.brd).detail || (ref1$.detail = {})).group || (ref$.group = []);
         if (!(lc.grp = ((ref$ = (ref1$ = lc.brd).detail || (ref1$.detail = {})).group || (ref$.group = [])).filter(function(it){
           return it.key === grp;
+        })[0])) {
+          return aux.reject(404);
+        }
+        if (!(lc.custom = ((ref$ = (ref1$ = (ref2$ = lc.grp).judge || (ref2$.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(it){
+          return it.slug === slug;
         })[0])) {
           return aux.reject(404);
         }
@@ -309,6 +314,12 @@
           var prjs;
           r == null && (r = {});
           prjs = r.rows || (r.rows = []);
+          if (lc.custom.filter) {
+            prjs = prjs.filter(function(it){
+              var ref$;
+              return ((ref$ = it.system || (it.system = {})).badge || (ref$.badge = {}))[lc.custom.filter];
+            });
+          }
           return res.send({
             data: lc.data,
             users: lc.users,
