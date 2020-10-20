@@ -62,9 +62,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         if j["filter-primary"] or j.filter == 'primary' => filter-name.push \shortlist
         if filter-name.length =>
           @prjs = (@prjs or []).filter((p)~> filter-name.reduce(((a,b) -> a and p.{}system.{}badge[b]),true))
-        @prjs.map ~>
-          @prjkeymap[it.key] = it
-          if it.name.length > 25 => it.name = it.name.substring(0,25) + "..."
+        @prjs.map ~> @prjkeymap[it.key] = it
         @prjs.sort (a,b) -> a.key - b.key
 
   fetch-info: ->

@@ -124,10 +124,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
           });
         }
         this$.prjs.map(function(it){
-          this$.prjkeymap[it.key] = it;
-          if (it.name.length > 25) {
-            return it.name = it.name.substring(0, 25) + "...";
-          }
+          return this$.prjkeymap[it.key] = it;
         });
         return this$.prjs.sort(function(a, b){
           return a.key - b.key;
