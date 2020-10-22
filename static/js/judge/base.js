@@ -112,7 +112,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         if (j["filter-criteria"] || j.filter === 'criteria') {
           filterName.push('criteria');
         }
-        if (j["filter-primary"] || j.filter === 'primary') {
+        if (j["filter-primary"] || ((ref$ = j.filter) === 'primary' || ref$ === 'shortlist')) {
           filterName.push('shortlist');
         }
         if (filterName.length) {
