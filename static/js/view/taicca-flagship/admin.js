@@ -3,7 +3,7 @@ window.adminExtension = {
   downloadProjects: function(arg$){
     var prjs, head, data, result, ba, i$, to$, i, blob, name;
     prjs = arg$.prjs;
-    head = ['編號', '產業別', '申請單位', '計畫名稱', '聯絡人', '聯絡人職稱', '=""聯絡專線""', '=""聯絡人手機""', '聯絡EMAIL', '總經費', '申請經費', '申請經費佔比', '107-109年文化部相關計畫補助情形', '106-108年旗艦計畫補助情形', '審查意見'];
+    head = ['編號', '產業別', '申請單位', '計畫名稱', '聯絡人', '聯絡人職稱', '登記地址', '聯絡地址', '=""聯絡專線""', '=""聯絡人手機""', '聯絡EMAIL', '總經費', '申請經費', '申請經費佔比', '107-109年文化部相關計畫補助情形', '106-108年旗艦計畫補助情形', '審查意見'];
     data = prjs.map(function(it){
       var form, list, budget, gid, idx, id, category, data;
       form = it.detail.custom.form;
@@ -19,7 +19,7 @@ window.adminExtension = {
         ? form["group1-category"]
         : form["group2-category"];
       data = [
-        id, (category || []).join('\r\n'), form["teamname"], form["name"], form["contact-name"], form["contact-title"], '\t' + form["contact-phone"], '\t' + form["contact-mobile"], form["contact-email"], budget.total || 0, budget.subsidy || 0, Math.floor(budget.percent.subsidy * 10000) / 100 + "%", ((form["has-sub"] !== '1'
+        id, (category || []).join('\r\n'), form["teamname"], form["name"], form["contact-name"], form["contact-title"], form["business-addr"], form["contact-addr"], '\t' + form["contact-phone"], '\t' + form["contact-mobile"], form["contact-email"], budget.total || 0, budget.subsidy || 0, Math.floor(budget.percent.subsidy * 10000) / 100 + "%", ((form["has-sub"] !== '1'
           ? [{}]
           : list["past-sub"]) || []).filter(function(it){
           return it.value;

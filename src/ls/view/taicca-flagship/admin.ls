@@ -1,6 +1,6 @@
 window.admin-extension = do
   download-projects: ({prjs}) ->
-    head = <[編號 產業別 申請單位 計畫名稱 聯絡人 聯絡人職稱 =""聯絡專線"" =""聯絡人手機"" 聯絡EMAIL 總經費 申請經費 申請經費佔比 107-109年文化部相關計畫補助情形 106-108年旗艦計畫補助情形 審查意見]>
+    head = <[編號 產業別 申請單位 計畫名稱 聯絡人 聯絡人職稱 登記地址 聯絡地址 =""聯絡專線"" =""聯絡人手機"" 聯絡EMAIL 總經費 申請經費 申請經費佔比 107-109年文化部相關計畫補助情形 106-108年旗艦計畫補助情形 審查意見]>
     data = prjs.map (it) ->
       form = it.detail.custom.form
       list = it.detail.custom.list
@@ -20,6 +20,8 @@ window.admin-extension = do
         form["name"]
         form["contact-name"]
         form["contact-title"]
+        form["business-addr"]
+        form["contact-addr"]
         (\\t + form["contact-phone"])
         (\\t + form["contact-mobile"])
         form["contact-email"]
