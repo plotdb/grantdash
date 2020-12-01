@@ -97,7 +97,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                     return res(fallback());
                   }
                   script = document.createElement('script');
-                  script.src = "/dash/js/view/" + custom.view + "/admin.js";
+                  script.src = ("/dash/js/view/" + custom.view + "/admin.js?v=") + Math.random().toString(36).substring(2);
                   script.onload = function(){
                     var func;
                     func = (adminExtension || {}).downloadProjects;
