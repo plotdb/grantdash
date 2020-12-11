@@ -28,13 +28,15 @@ Ctrl = (opt) ->
         search: ~> @view.render!
         download: ({node}) ~>
           n = node.getAttribute(\data-name)
-          type = node.getAttribute(\data-type)
+          type = node.getAttribute(\data-type) or \active
           ld$.fetch "/dash/api/brd/#{@toc.brd.slug}/grp/#{@grp.key}/prjs", {method: \GET}, {type: \json}
             .then (prjs = {}) ~>
               if type and type != \all =>
-                prjs = prjs.filter ->
-                  if type == \active => it.state == \active
-                  else it.{}system.{}badge[type]
+                prjs = prjs
+                  .filter -> !it.deleted
+                  .filter ->
+                    if type == \active => it.state == \active
+                    else it.{}system.{}badge[type]
               if n == \custom =>
                 window.admin-extension = null
                 custom = @hubs.brd.doc.data.custom
@@ -57,13 +59,16 @@ Ctrl = (opt) ->
                   head = @grp.form.list.map -> it.title
                   # we need a form-block toString function, instead of manually construct its content here.
                   rows = prjs.map (p) ~>
-                    @grp.form.list.map ->
-                      answer = p.detail.answer[it.key]
-                      if !answer => return ''
-                      if answer.content => return answer.content
-                      if answer.list =>
-                        return ((answer.list or []) ++ (if answer.other => [answer.other-value] else [])).join(',') 
-                      return ''
+                    @grp.form.list
+                      .filter (f) -> !(f.name in <[form-file]>)
+                      .map (f,i) ->
+                        answer = p.detail.answer[f.key]
+                        if !answer => return ''
+                        if answer.content => return answer.content
+                        if answer.list =>
+                          return ((answer.list or []) ++ (if answer.other => [answer.other-value] else [])).join(',')
+                        return ''
+
                   blob = csv4xls.to-blob([head] ++ rows)
                   name = "#{@toc.brd.name}-#{@grp.info.name}.csv"
                   return {blob, name}

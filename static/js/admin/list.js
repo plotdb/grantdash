@@ -59,7 +59,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
             var node, n, type;
             node = arg$.node;
             n = node.getAttribute('data-name');
-            type = node.getAttribute('data-type');
+            type = node.getAttribute('data-type') || 'active';
             return ld$.fetch("/dash/api/brd/" + this$.toc.brd.slug + "/grp/" + this$.grp.key + "/prjs", {
               method: 'GET'
             }, {
@@ -69,6 +69,8 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
               prjs == null && (prjs = {});
               if (type && type !== 'all') {
                 prjs = prjs.filter(function(it){
+                  return !it.deleted;
+                }).filter(function(it){
                   var ref$;
                   if (type === 'active') {
                     return it.state === 'active';
@@ -120,9 +122,11 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                     return it.title;
                   });
                   rows = prjs.map(function(p){
-                    return this$.grp.form.list.map(function(it){
+                    return this$.grp.form.list.filter(function(f){
+                      return !in$(f.name, ['form-file']);
+                    }).map(function(f, i){
                       var answer;
-                      answer = p.detail.answer[it.key];
+                      answer = p.detail.answer[f.key];
                       if (!answer) {
                         return '';
                       }
@@ -384,6 +388,11 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
   });
   return Ctrl;
 });
+function in$(x, xs){
+  var i = -1, l = xs.length >>> 0;
+  while (++i < l) if (x === xs[i]) return true;
+  return false;
+}
 function import$(obj, src){
   var own = {}.hasOwnProperty;
   for (var key in src) if (own.call(src, key)) obj[key] = src[key];

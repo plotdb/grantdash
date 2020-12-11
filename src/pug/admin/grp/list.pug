@@ -20,11 +20,11 @@
       div
         .btn.btn-sm.btn-text 匯出：
         .btn-group.mr-2
-          .btn.btn-sm.btn-outline-secondary(ld="download",data-name="mail") #[i.i-mail]
-          .btn.btn-sm.btn-outline-secondary(ld="download",data-name="csv") #[i.i-doc]
-          .btn.btn-sm.btn-outline-secondary(ld="download",data-name="full") #[i.i-html]
+          .btn.btn-sm.btn-outline-secondary(ld="download",data-name="mail") 信箱 #[i.i-mail]
+          .btn.btn-sm.btn-outline-secondary(ld="download",data-name="csv") CSV #[i.i-doc]
+          .btn.btn-sm.btn-outline-secondary(ld="download",data-name="full") JSON #[i.i-html]
         .d-inline-block: .dropdown(ld="download-dropdown")
-          .btn.btn-sm.btn-outline-secondary 下載資料 #[i.i-search]
+          .btn.btn-sm.btn-outline-secondary 進階下載 #[i.i-search]
           .dropdown-menu.dropdown-menu-right
             .dropdown-item(ld="download",data-name="custom",data-type="all") 全部資料
             .dropdown-item(ld="download",data-name="custom",data-type="active") 已送件
