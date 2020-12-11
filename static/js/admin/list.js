@@ -65,7 +65,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
             }, {
               type: 'json'
             }).then(function(prjs){
-              var custom, blob, name;
+              var custom, head, rows, blob, name;
               prjs == null && (prjs = {});
               if (type && type !== 'all') {
                 prjs = prjs.filter(function(it){
@@ -115,22 +115,52 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                   return document.body.appendChild(script);
                 });
               } else {
-                if (n === 'mail') {
-                  prjs = prjs.map(function(it){
-                    return {
-                      username: it.username,
-                      name: it.name
-                    };
+                if (n === 'csv') {
+                  head = this$.grp.form.list.map(function(it){
+                    return it.title;
                   });
+                  rows = prjs.map(function(p){
+                    return this$.grp.form.list.map(function(it){
+                      var answer;
+                      answer = p.detail.answer[it.key];
+                      if (!answer) {
+                        return '';
+                      }
+                      if (answer.content) {
+                        return answer.content;
+                      }
+                      if (answer.list) {
+                        return ((answer.list || []).concat(answer.other
+                          ? [answer.otherValue]
+                          : [])).join(',');
+                      }
+                      return '';
+                    });
+                  });
+                  blob = csv4xls.toBlob([head].concat(rows));
+                  name = this$.toc.brd.name + "-" + this$.grp.info.name + ".csv";
+                  return {
+                    blob: blob,
+                    name: name
+                  };
+                } else {
+                  if (n === 'mail') {
+                    prjs = prjs.map(function(it){
+                      return {
+                        username: it.username,
+                        name: it.name
+                      };
+                    });
+                  }
+                  blob = new Blob([JSON.stringify(prjs)], {
+                    type: "application/json"
+                  });
+                  name = "projects-" + n + ".json";
+                  return {
+                    blob: blob,
+                    name: name
+                  };
                 }
-                blob = new Blob([JSON.stringify(prjs)], {
-                  type: "application/json"
-                });
-                name = "projects-" + n + ".json";
-                return {
-                  blob: blob,
-                  name: name
-                };
               }
             }).then(function(arg$){
               var blob, name, url, a;

@@ -53,10 +53,25 @@ Ctrl = (opt) ->
                   script.onerror = -> res fallback!
                   document.body.appendChild script
               else
-                if n == \mail => prjs = prjs.map -> it{username, name}
-                blob = new Blob([JSON.stringify(prjs)], {type: "application/json"})
-                name = "projects-#{n}.json"
-                return {blob, name}
+                if n == \csv =>
+                  head = @grp.form.list.map -> it.title
+                  # we need a form-block toString function, instead of manually construct its content here.
+                  rows = prjs.map (p) ~>
+                    @grp.form.list.map ->
+                      answer = p.detail.answer[it.key]
+                      if !answer => return ''
+                      if answer.content => return answer.content
+                      if answer.list =>
+                        return ((answer.list or []) ++ (if answer.other => [answer.other-value] else [])).join(',') 
+                      return ''
+                  blob = csv4xls.to-blob([head] ++ rows)
+                  name = "#{@toc.brd.name}-#{@grp.info.name}.csv"
+                  return {blob, name}
+                else
+                  if n == \mail => prjs = prjs.map -> it{username, name}
+                  blob = new Blob([JSON.stringify(prjs)], {type: "application/json"})
+                  name = "projects-#{n}.json"
+                  return {blob, name}
 
             .then ({blob, name}) ->
               url = URL.createObjectURL(blob)
