@@ -56,7 +56,9 @@ Ctrl = (opt) ->
                   document.body.appendChild script
               else
                 if n == \csv =>
-                  head = @grp.form.list.map -> it.title
+                  head = @grp.form.list
+                    .filter (f) -> !(f.name in <[form-file]>)
+                    .map -> it.title
                   # we need a form-block toString function, instead of manually construct its content here.
                   rows = prjs.map (p) ~>
                     @grp.form.list

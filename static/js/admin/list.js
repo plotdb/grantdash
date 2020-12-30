@@ -118,7 +118,9 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                 });
               } else {
                 if (n === 'csv') {
-                  head = this$.grp.form.list.map(function(it){
+                  head = this$.grp.form.list.filter(function(f){
+                    return !in$(f.name, ['form-file']);
+                  }).map(function(it){
                     return it.title;
                   });
                   rows = prjs.map(function(p){
