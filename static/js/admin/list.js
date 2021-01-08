@@ -8,6 +8,9 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
     this.toc = opt.toc;
     this.evtHandler = {};
     this.data = [];
+    this.filter = {
+      badge: ""
+    };
     adminPanel.on('active', function(arg$){
       var nav, name, panel;
       nav = arg$.nav, name = arg$.name, panel = arg$.panel;
@@ -53,6 +56,12 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
         },
         click: {
           search: function(){
+            return this$.view.render();
+          },
+          "search-filter": function(arg$){
+            var node;
+            node = arg$.node;
+            this$.filter.badge = node.getAttribute('data-name');
             return this$.view.render();
           },
           download: function(arg$){
@@ -195,6 +204,11 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
         }
       },
       handler: {
+        "search-filter": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.classList.toggle('active', node.getAttribute('data-name') === this$.filter.badge || "");
+        },
         empty: function(arg$){
           var node;
           node = arg$.node;
@@ -205,7 +219,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
         prj: {
           list: function(){
             return this$.data.filter(function(it){
-              return it.slug && (!lc.keyword || ~[it.name, (it.info || (it.info = {})).teamname, it.username, it.ownername].filter(function(it){
+              return (!this$.filter.badge || it.system.badge[this$.filter.badge]) && it.slug && (!lc.keyword || ~[it.name, (it.info || (it.info = {})).teamname, it.username, it.ownername].filter(function(it){
                 return it;
               }).join(' ').indexOf(lc.keyword));
             });

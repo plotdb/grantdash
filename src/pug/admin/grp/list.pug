@@ -5,15 +5,13 @@
     .p-4
       .d-flex
         .input-group
-          input.form-control(ld="search-input",placeholder="提案名稱或團隊名稱 ...")
+          input.form-control.border-secondary(ld="search-input",placeholder="提案名稱或團隊名稱 ...")
           .input-group-append: .btn.btn-outline-secondary(ld="search") 搜尋
-      //-.d-flex.mt-2
-        each n in ["所有專案","初選名單","決選名單","獲選名單"]
-          .d-flex.align-items-center.mr-4
-            input.mr-1(type="radio",style="margin-top:-4px")
-            div #{n}
-        .flex-grow-1.text-right
-          a(href="#") 進階搜尋 ...
+      .d-flex.mt-2
+        .btn-group
+          each n in [["所有專案",""],["初選名單","criteria"],["決選名單","shortlist"],["獲選名單","winner"]]
+            .btn.btn-sm.btn-outline-secondary(ld="search-filter",data-name=n[1])= n[0]
+
   .px-4
     .d-flex.mb-2
       .flex-grow-1: b 專案列表

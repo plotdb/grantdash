@@ -4,6 +4,7 @@ Ctrl = (opt) ->
   @toc = opt.toc
   @evt-handler = {}
   @data = []
+  @filter = {badge:""}
   admin-panel.on \active, ({nav, name, panel}) ~>
     if name == \grp-list =>
       ld$.fetch "/dash/api/brd/#{@toc.brd.slug}/list", {method: \GET}, {params: {grp: @grp.key}, type: \json}
@@ -26,6 +27,10 @@ Ctrl = (opt) ->
         "search-input": ({node, evt}) ~> if evt.keyCode == 13 => @view.render!
       click: do
         search: ~> @view.render!
+        "search-filter": ({node}) ~>
+          @filter.badge = node.getAttribute \data-name
+          @view.render!
+
         download: ({node}) ~>
           n = node.getAttribute(\data-name)
           type = node.getAttribute(\data-type) or \active
@@ -92,10 +97,13 @@ Ctrl = (opt) ->
     init: do
       "download-dropdown": ({node}) -> new Dropdown(node)
     handler: do
+      "search-filter": ({node}) ~>
+        node.classList.toggle \active, (node.getAttribute(\data-name) == @filter.badge or "")
       empty: ({node}) ~> node.classList.toggle \d-none, @data.filter(->it.slug).length
       prj: do
         list: ~>
-          @data.filter ->
+          @data.filter ~>
+            (!@filter.badge or it.system.badge[@filter.badge]) and
             it.slug and ( !lc.keyword or ~(
               [it.name,it.{}info.teamname,it.username,it.ownername].filter(->it).join(' ').indexOf(lc.keyword)
             ))
