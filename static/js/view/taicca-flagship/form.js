@@ -216,6 +216,9 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
       view.getAll("download").map(function(it){
         return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.add('running');
       });
+      view.getAll("merge-download").map(function(it){
+        return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.add('running');
+      });
       return isReady.get().then(function(v){
         var localCss, style, html;
         if (!v) {
@@ -295,7 +298,10 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
           }
         });
       }).then(function(v){
-        return view.getAll("download").map(function(it){
+        view.getAll("download").map(function(it){
+          return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.remove('running');
+        });
+        return view.getAll("merge-download").map(function(it){
           return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.remove('running');
         });
       });

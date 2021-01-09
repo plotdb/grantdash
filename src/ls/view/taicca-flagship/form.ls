@@ -113,6 +113,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
     download = (opt = {}) ->
       is-merge = opt.is-merge
       view.getAll("download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.add \running
+      view.getAll("merge-download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.add \running
       is-ready.get!
         .then (v) ~>
           if !v => return
@@ -177,6 +178,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
               else error! it
         .then (v) ~>
           view.getAll("download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.remove \running
+          view.getAll("merge-download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.remove \running
 
 
 
