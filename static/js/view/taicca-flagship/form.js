@@ -15,6 +15,9 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
         : (vlc.prj || (vlc.prj = {})).state === 'active';
     form = ld$.find('#flagship-form', 0);
     ld$.find(form, ".btn").map(function(n, i){
+      if (n.getAttribute('ld') === 'merge-download') {
+        return;
+      }
       return n.classList.toggle('disabled', lock);
     });
     return ld$.find(form, "textarea,input,select").map(function(n, i){
@@ -31,7 +34,7 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
     });
   });
   init = function(arg$){
-    var global, ldforms, payload, localkey, saveLocally, clearLocaldata, loadLocally, getSignedUrl, uploadFile, isReady, budgetCalc, updateViewForBudget, view, ldform, countdown;
+    var global, ldforms, payload, localkey, saveLocally, clearLocaldata, loadLocally, getSignedUrl, uploadFile, isReady, budgetCalc, updateViewForBudget, download, view, ldform, countdown;
     global = arg$.global;
     ldforms = {};
     payload = {
@@ -206,6 +209,97 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
       view.render('fill');
       return view.render('budget-limit');
     });
+    download = function(opt){
+      var isMerge, this$ = this;
+      opt == null && (opt = {});
+      isMerge = opt.isMerge;
+      view.getAll("download").map(function(it){
+        return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.add('running');
+      });
+      return isReady.get().then(function(v){
+        var localCss, style, html;
+        if (!v) {
+          return;
+        }
+        if (lc.downloading) {
+          return;
+        }
+        lc.downloading = true;
+        ld$.find(document.body, '._preview').map(function(it){
+          return it.parentNode.removeChild(it);
+        });
+        ld$.find(ld$.find('#flagship-form', 0), 'select,textarea,input').map(function(f){
+          var type, nodeName, classes, n;
+          type = f.getAttribute('type');
+          nodeName = f.nodeName.toLowerCase();
+          if (!type) {
+            classes = Array.from(f.classList).filter(function(it){
+              return !(it === 'is-valid' || it === 'is-invalid');
+            }).concat(['_preview']);
+            f.setAttribute('value', f.value);
+            n = ld$.create({
+              name: 'div',
+              className: classes
+            });
+            n.setAttribute('style', f.getAttribute('style'));
+            if (nodeName === 'textarea') {
+              n.style.height = 'auto';
+            }
+            n.innerText = f.value;
+            return f.parentNode.insertBefore(n, f);
+          } else {
+            if (f.checked) {
+              return f.setAttribute('checked', '');
+            } else {
+              return f.removeAttribute('checked');
+            }
+          }
+        });
+        lockform(false);
+        localCss = ld$.find('style#flagship', 0).innerText;
+        style = "<link rel=\"stylesheet\" type=\"text/css\"\nhref=\"https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/css/index.css\">\n<style type=\"text/css\">\n" + localCss + "\n</style>";
+        html = "<html>\n<head>\n<meta charset=\"utf-8\">\n" + style + "\n</head>\n<body><div class=\"typeset heading-contrast\"><form id=\"flagship-form\">\n" + ld$.find('#flagship-form', 0).innerHTML + "\n</form></div></body>\n</html>";
+        lockform();
+        return auth.recaptcha.get().then(function(recaptcha){
+          return ld$.fetch(isMerge ? "/dash/api/flagship/merge/" + vlc.prj.slug : '/dash/api/flagship/download', {
+            method: 'POST'
+          }, {
+            json: {
+              html: html,
+              recaptcha: recaptcha
+            },
+            type: 'blob',
+            timeout: 60 * 1000
+          });
+        }).then(function(blob){
+          var url, a;
+          url = URL.createObjectURL(blob);
+          a = ld$.create({
+            name: 'a',
+            attr: {
+              href: url,
+              download: 'form.pdf'
+            }
+          });
+          document.body.appendChild(a);
+          a.click();
+          return document.body.removeChild(a);
+        })['finally'](function(){
+          ldcvmgr.toggle('flagship-submitted', false);
+          return lc.downloading = false;
+        })['catch'](function(it){
+          if (ldError.id(it) === 1006) {
+            return ldcvmgr.toggle('flagship-print-timeout');
+          } else {
+            return error()(it);
+          }
+        });
+      }).then(function(v){
+        return view.getAll("download").map(function(it){
+          return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.remove('running');
+        });
+      });
+    };
     view = new ldView({
       initRender: false,
       root: document.body,
@@ -264,94 +358,13 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
             isReady.get();
             return saveLocally();
           },
+          "merge-download": function(){
+            return download({
+              isMerge: true
+            });
+          },
           download: function(){
-            var this$ = this;
-            view.getAll("download").map(function(it){
-              return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.add('running');
-            });
-            return isReady.get().then(function(v){
-              var localCss, style, html;
-              if (!v) {
-                return;
-              }
-              if (lc.downloading) {
-                return;
-              }
-              lc.downloading = true;
-              ld$.find(document.body, '._preview').map(function(it){
-                return it.parentNode.removeChild(it);
-              });
-              ld$.find(ld$.find('#flagship-form', 0), 'select,textarea,input').map(function(f){
-                var type, nodeName, classes, n;
-                type = f.getAttribute('type');
-                nodeName = f.nodeName.toLowerCase();
-                if (!type) {
-                  classes = Array.from(f.classList).filter(function(it){
-                    return !(it === 'is-valid' || it === 'is-invalid');
-                  }).concat(['_preview']);
-                  f.setAttribute('value', f.value);
-                  n = ld$.create({
-                    name: 'div',
-                    className: classes
-                  });
-                  n.setAttribute('style', f.getAttribute('style'));
-                  if (nodeName === 'textarea') {
-                    n.style.height = 'auto';
-                  }
-                  n.innerText = f.value;
-                  return f.parentNode.insertBefore(n, f);
-                } else {
-                  if (f.checked) {
-                    return f.setAttribute('checked', '');
-                  } else {
-                    return f.removeAttribute('checked');
-                  }
-                }
-              });
-              lockform(false);
-              localCss = ld$.find('style#flagship', 0).innerText;
-              style = "<link rel=\"stylesheet\" type=\"text/css\"\nhref=\"https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://dash.taicca.tw/dash/css/index.css\">\n<style type=\"text/css\">\n" + localCss + "\n</style>";
-              html = "<html>\n<head>\n<meta charset=\"utf-8\">\n" + style + "\n</head>\n<body><div class=\"typeset heading-contrast\"><form id=\"flagship-form\">\n" + ld$.find('#flagship-form', 0).innerHTML + "\n</form></div></body>\n</html>";
-              lockform();
-              return auth.recaptcha.get().then(function(recaptcha){
-                return ld$.fetch('/dash/api/flagship/download', {
-                  method: 'POST'
-                }, {
-                  json: {
-                    html: html,
-                    recaptcha: recaptcha
-                  },
-                  type: 'blob',
-                  timeout: 60 * 1000
-                });
-              }).then(function(blob){
-                var url, a;
-                url = URL.createObjectURL(blob);
-                a = ld$.create({
-                  name: 'a',
-                  attr: {
-                    href: url,
-                    download: 'form.pdf'
-                  }
-                });
-                document.body.appendChild(a);
-                a.click();
-                return document.body.removeChild(a);
-              })['finally'](function(){
-                ldcvmgr.toggle('flagship-submitted', false);
-                return lc.downloading = false;
-              })['catch'](function(it){
-                if (ldError.id(it) === 1006) {
-                  return ldcvmgr.toggle('flagship-print-timeout');
-                } else {
-                  return error()(it);
-                }
-              });
-            }).then(function(v){
-              return view.getAll("download").map(function(it){
-                return ld$.find(it.parentNode, '.ld-ext-right', 0).classList.remove('running');
-              });
-            });
+            return download();
           },
           submit: function(arg$){
             var node, names, isSubmit, coverName, p;

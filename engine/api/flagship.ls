@@ -1,4 +1,4 @@
-require! <[fs fs-extra path crypto lderror suuid mime-types suuid puppeteer]>
+require! <[fs fs-extra path crypto lderror suuid mime-types suuid puppeteer tmp easy-pdf-merge request]>
 require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
 require! <[@google-cloud/storage]>
 require! <[../../secret]>
@@ -61,9 +61,21 @@ api.post \/flagship/upload, (req, res) ->
       res.send {signed-url: lc.url, id: lc.id}
     .catch aux.error-handler res
 
-app.get \/flagship/upload/:id, aux.signed, (req, res) ->
+get-gcs-id = ({slug, req, res}) ->
+  io.query "select detail from prj where slug = $1", [slug]
+    .then (r={}) ->
+      if !(prj = r.[]rows.0) => return Promise.reject(new lderror 404)
+      if !(id = prj.{}detail.{}custom.{}file.{}plan.id) => return Promise.reject(new lderror 404)
+      return id
+
+tmpfn = ->
+  (res, rej) <- new Promise _
+  tmp.file (err, path, fd, cb) ->
+    if err => return rej err
+    res {fn: path, clean: cb}
+
+file-url = ({id, req, res}) ->
   lc = {}
-  id = req.params.id
   io.query "select brd,grp,owner from perm_gcs where id = $1", [id]
     .then (r={}) ->
       if !(lc.ret = ret = r.[]rows.0) => return aux.reject 404
@@ -74,13 +86,40 @@ app.get \/flagship/upload/:id, aux.signed, (req, res) ->
       select owner from perm_judge where brd = $1 and owner = $2
       """, [lc.ret.brd, req.user.key]
         .then (r={}) ->
-          if !(r.[]rows.length) => return Promise.reject 403
+          if !(r.[]rows.length) => return aux.reject 403
     .then ->
       gcs
        .bucket secret.gcs.bucket
        .file id
        .getSignedUrl {action: \read, version: \v4, expires: (Date.now! + 60000)}
-    .then -> return res.status(302).redirect(it.0)
+    .then -> it.0
+
+app.get \/flagship/upload/:id, aux.signed, (req, res) ->
+  id = req.params.id
+  file-url({id, req, res})
+    .then -> return res.status(302).redirect(it)
+    .catch aux.error-handler res
+
+api.post \/flagship/merge/:slug, throttle.count.user, grecaptcha, (req, res) ->
+  lc = {}
+  slug = req.params.slug
+  get-gcs-id({slug, req, res})
+    .then (id) ->
+      file-url {id, req, res}
+    .then (url) ->
+      (res, rej) <- new Promise _
+      (e,r,b) <- request {url, method: \GET, encoding: null}, _
+      if e => return rej new Error(e)
+      tmpfn!
+        .then ({fn}) ->
+          (e) <- fs.write-file fn, b, _
+          if e => rej new Error(e)
+          res fn
+    .then (infile) ->
+      tmpfn!
+        .then ({fn}) ->
+          printer.merge {html: req.body.html, files: [infile], outfile: fn}
+            .then -> res.download fn
     .catch aux.error-handler res
 
 api.post \/flagship/prj/, grecaptcha, (req, res) ->
@@ -167,6 +206,23 @@ Printer.prototype = Object.create(Object.prototype) <<< do
         .then ~> @free lc.obj
         .then -> return lc.ret
     _!
+  merge: (payload = {}) ->
+    Promise.resolve!
+      .then ~>
+        if !payload.html => return null
+        @print {html: payload.html} .then (buf) ->
+          tmpfn!then ({fn}) ->
+            (res, rej) <- new Promise _
+            (e) <- fs.write-file fn, buf, _
+            if e => return rej new Error(e)
+            res fn
+      .then (form-fn) ->
+        if !payload.files or payload.files.length < 1 or (payload.files.length == 1 and !form-fn) =>
+          return Promise.reject(new lderror(400))
+        (res, rej) <- new Promise _
+        (e) <- easy-pdf-merge ((if form-fn => [form-fn] else []) ++ payload.files), payload.outfile, _
+        if e => return rej e
+        res payload.outfile
 
   print: (payload = {}) -> @exec (page) ->
     p = if payload.html => page.setContent payload.html, {waitUntil: "networkidle0"}

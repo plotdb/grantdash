@@ -7,7 +7,9 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
   lockform = debounce 100, (lock) ->
     lock = if lock? => !!lock else if viewmode => true else (vlc.{}prj.state == \active)
     form = ld$.find('#flagship-form', 0)
-    ld$.find form, ".btn" .map (n, i) -> n.classList.toggle \disabled, lock
+    ld$.find form, ".btn" .map (n, i) ->
+      if n.getAttribute(\ld) == \merge-download => return
+      n.classList.toggle \disabled, lock
     ld$.find form, "textarea,input,select" .map (n,i) ->
       if n.getAttribute(\tabindex) == "-1" => return
       if lock =>
@@ -108,6 +110,76 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
       view.render \fill
       view.render \budget-limit
 
+    download = (opt = {}) ->
+      is-merge = opt.is-merge
+      view.getAll("download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.add \running
+      is-ready.get!
+        .then (v) ~>
+          if !v => return
+          if lc.downloading => return
+          lc.downloading = true
+          ld$.find(document.body, '._preview').map -> it.parentNode.removeChild it
+          ld$.find ld$.find('#flagship-form',0), 'select,textarea,input' .map (f) ->
+            type = f.getAttribute(\type)
+            node-name = f.nodeName.toLowerCase!
+            if !type =>
+              classes = Array.from(f.classList).filter(->!(it in <[is-valid is-invalid]>)) ++ ['_preview']
+              f.setAttribute \value, f.value
+              n = ld$.create name: \div, className: classes
+              n.setAttribute \style, f.getAttribute(\style)
+              if node-name == \textarea => n.style.height = \auto
+              n.innerText = f.value
+              f.parentNode.insertBefore n, f
+            else
+              if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
+          lockform false
+          local-css = ld$.find('style#flagship',0).innerText
+          style = """
+          <link rel="stylesheet" type="text/css"
+          href="https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css">
+          <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css">
+          <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/css/index.css">
+          <style type="text/css">
+          #{local-css}
+          </style>
+          """
+          html = """
+          <html>
+          <head>
+          <meta charset="utf-8">
+          #style
+          </head>
+          <body><div class="typeset heading-contrast"><form id="flagship-form">
+          #{ld$.find(\#flagship-form, 0).innerHTML}
+          </form></div></body>
+          </html>
+          """
+          lockform!
+          auth.recaptcha.get!
+            .then (recaptcha) ->
+              ld$.fetch(
+                if is-merge => "/dash/api/flagship/merge/#{vlc.prj.slug}"
+                else \/dash/api/flagship/download
+                {method: \POST}
+                {json: {html, recaptcha}, type: \blob, timeout: 60 * 1000}
+              )
+            .then (blob) ->
+              url = URL.createObjectURL blob
+              a = ld$.create name: \a, attr: {href: url, download: \form.pdf}
+              document.body.appendChild a
+              a.click!
+              document.body.removeChild a
+            .finally ->
+              ldcvmgr.toggle \flagship-submitted, false
+              lc.downloading = false
+            .catch ->
+              if ldError.id(it) == 1006 => ldcvmgr.toggle \flagship-print-timeout
+              else error! it
+        .then (v) ~>
+          view.getAll("download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.remove \running
+
+
+
     view = new ldView do
       init-render: false
       root: document.body
@@ -143,73 +215,8 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
             view.render \column
             is-ready.get!
             save-locally!
-
-          download: ->
-            view.getAll("download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.add \running
-            is-ready.get!
-              .then (v) ~>
-                if !v => return
-                if lc.downloading => return
-                lc.downloading = true
-                ld$.find(document.body, '._preview').map -> it.parentNode.removeChild it
-                ld$.find ld$.find('#flagship-form',0), 'select,textarea,input' .map (f) ->
-                  type = f.getAttribute(\type)
-                  node-name = f.nodeName.toLowerCase!
-                  if !type =>
-                    classes = Array.from(f.classList).filter(->!(it in <[is-valid is-invalid]>)) ++ ['_preview']
-                    f.setAttribute \value, f.value
-                    n = ld$.create name: \div, className: classes
-                    n.setAttribute \style, f.getAttribute(\style)
-                    if node-name == \textarea => n.style.height = \auto
-                    n.innerText = f.value
-                    f.parentNode.insertBefore n, f
-                  else
-                    if f.checked => f.setAttribute(\checked,'') else f.removeAttribute \checked
-                lockform false
-                local-css = ld$.find('style#flagship',0).innerText
-                style = """
-                <link rel="stylesheet" type="text/css"
-                href="https://dash.taicca.tw/dash/assets/lib/bootstrap/4.3.1/css/bootstrap.min.css">
-                <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/assets/lib/ldui/ldui.min.css">
-                <link rel="stylesheet" type="text/css" href="https://dash.taicca.tw/dash/css/index.css">
-                <style type="text/css">
-                #{local-css}
-                </style>
-                """
-                html = """
-                <html>
-                <head>
-                <meta charset="utf-8">
-                #style
-                </head>
-                <body><div class="typeset heading-contrast"><form id="flagship-form">
-                #{ld$.find(\#flagship-form, 0).innerHTML}
-                </form></div></body>
-                </html>
-                """
-                lockform!
-                auth.recaptcha.get!
-                  .then (recaptcha) ->
-                    ld$.fetch(
-                      \/dash/api/flagship/download
-                      {method: \POST}
-                      {json: {html, recaptcha}, type: \blob, timeout: 60 * 1000}
-                    )
-                  .then (blob) ->
-                    url = URL.createObjectURL blob
-                    a = ld$.create name: \a, attr: {href: url, download: \form.pdf}
-                    document.body.appendChild a
-                    a.click!
-                    document.body.removeChild a
-                  .finally ->
-                    ldcvmgr.toggle \flagship-submitted, false
-                    lc.downloading = false
-                  .catch ->
-                    if ldError.id(it) == 1006 => ldcvmgr.toggle \flagship-print-timeout
-                    else error! it
-              .then (v) ~>
-                view.getAll("download").map -> ld$.find(it.parentNode, '.ld-ext-right',0).classList.remove \running
-
+          "merge-download": -> download {is-merge: true}
+          download: -> download!
           submit: ({node,names}) ->
             is-submit = !(\save in names)
             cover-name = if is-submit => <[submitting submitted]> else <[saving saved]>
