@@ -268,6 +268,31 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                       return notify.send('danger', '更新失敗');
                     });
                   },
+                  "set-badge": function(arg$){
+                    var node, context, badge, ref$, name;
+                    node = arg$.node, context = arg$.context;
+                    badge = (ref$ = context.system || (context.system = {})).badge || (ref$.badge = {});
+                    name = node.getAttribute('data-name');
+                    badge[name] = !badge[name];
+                    loader.on();
+                    return debounce(500).then(function(){
+                      return ld$.fetch("/dash/api/prj/" + context.slug + "/badge", {
+                        method: 'PUT'
+                      }, {
+                        type: 'json',
+                        json: badge
+                      });
+                    })['finally'](function(){
+                      return loader.off();
+                    }).then(function(){
+                      notify.send('success', '更新成功');
+                      return local.view.render('badge-state');
+                    })['catch'](function(){
+                      notify.send('danger', '更新失敗');
+                      badge[name] = !badge[name];
+                      return local.view.render('badge-state');
+                    });
+                  },
                   'delete': function(arg$){
                     var node, context;
                     node = arg$.node, context = arg$.context;
@@ -312,6 +337,11 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                   var node;
                   node = arg$.node;
                   return new Dropdown(node.parentNode);
+                },
+                "badge-chooser": function(arg$){
+                  var node;
+                  node = arg$.node;
+                  return new Dropdown(node.parentNode);
                 }
               },
               text: {
@@ -350,6 +380,13 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                   var node, context;
                   node = arg$.node, context = arg$.context;
                   return node.setAttribute('href', "/dash/prj/" + context.slug + "/edit");
+                },
+                "badge-state": function(arg$){
+                  var node, context, badge, name;
+                  node = arg$.node, context = arg$.context;
+                  badge = (context.system || (context.system = {})).badge || {};
+                  name = node.getAttribute('data-name');
+                  return node.classList.toggle('on', !!badge[name]);
                 },
                 state: function(arg$){
                   var node, context;

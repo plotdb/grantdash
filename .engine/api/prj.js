@@ -217,6 +217,36 @@
         }, ref1$.simple = (req.query || (req.query = {})).simple != null, ref1$), ref$.domain = req.scope.domain, ref$));
       })['catch'](aux.errorHandler(res));
     });
+    api.put('/prj/:slug/badge', aux.signed, function(req, res){
+      var slug, body, badge;
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      body = req.body || {};
+      badge = {};
+      ['criteria', 'shortlist', 'finalist', 'winner', 'special'].map(function(it){
+        return badge[it] = !!body[it];
+      });
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: req.scope.brd,
+        action: 'owner'
+      }).then(function(){
+        return io.query("select system from prj where slug = $1 and brd = $2", [slug, req.scope.brd]);
+      }).then(function(r){
+        var prj, ref$;
+        r == null && (r = {});
+        if (!(prj = (r.rows || (r.rows = []))[0])) {
+          return aux.reject(404);
+        }
+        import$((ref$ = prj.system || (prj.system = {})).badge || (ref$.badge = {}), badge);
+        return io.query("update prj set system = $2 where slug = $1", [slug, prj.system]);
+      }).then(function(){
+        return res.send({});
+      })['catch'](aux.errorHandler(res));
+    });
     api.put('/prj/:slug/state', aux.signed, function(req, res){
       var state, slug;
       state = req.body.value;
@@ -329,4 +359,9 @@
       })['catch'](aux.errorHandler(res));
     });
   });
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
 }).call(this);

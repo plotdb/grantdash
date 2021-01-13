@@ -91,6 +91,20 @@ app.get \/prj/:slug, (req, res) ->
       res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}, simple: (req.{}query.simple)?} <<< req.scope{domain}
     .catch aux.error-handler res
 
+api.put \/prj/:slug/badge, aux.signed, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  body = (req.body or {})
+  badge = {}
+  <[criteria shortlist finalist winner special]>.map -> badge[it] = !!body[it]
+  cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
+    .then -> io.query """select system from prj where slug = $1 and brd = $2""", [slug, req.scope.brd]
+    .then (r={}) ->
+      if !(prj = r.[]rows.0) => return aux.reject 404
+      prj.{}system.{}badge <<< badge
+      io.query """update prj set system = $2 where slug = $1""", [slug, prj.system]
+    .then -> res.send {}
+    .catch aux.error-handler res
+
 api.put \/prj/:slug/state, aux.signed, (req, res) ->
   state = req.body.value
   if !(state in <[pending active]>) => return aux.r400 res

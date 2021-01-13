@@ -131,6 +131,23 @@ Ctrl = (opt) ->
                     context.state = name
                     local.view.render \state
                   .catch -> notify.send \danger, '更新失敗'
+              "set-badge": ({node, context}) ->
+                badge = context.{}system.{}badge
+                name = node.getAttribute(\data-name)
+                badge[name] = !badge[name]
+                loader.on!
+                debounce 500
+                  .then ->
+                    ld$.fetch "/dash/api/prj/#{context.slug}/badge", {method: \PUT}, {type: \json, json: badge}
+                  .finally ->
+                    loader.off!
+                  .then ->
+                    notify.send \success, '更新成功'
+                    local.view.render \badge-state
+                  .catch ->
+                    notify.send \danger, '更新失敗'
+                    badge[name] = !badge[name]
+                    local.view.render \badge-state
               delete: ({node, context}) ~>
                 if node.classList.contains \running => return
                 ldcvmgr.get \confirm-deletion
@@ -151,6 +168,7 @@ Ctrl = (opt) ->
                 @set-prj context
             init: do
               state: ({node}) -> new Dropdown(node.parentNode)
+              "badge-chooser": ({node}) -> new Dropdown(node.parentNode)
             text: do
               name: ({context}) -> context.name or '(未命名的提案)'
               index: ({context}) -> context.key
@@ -159,6 +177,10 @@ Ctrl = (opt) ->
               username: ({context}) -> context.ownername or ''
             handler: do
               edit: ({node, context}) ~> node.setAttribute \href, "/dash/prj/#{context.slug}/edit"
+              "badge-state": ({node, context}) ->
+                badge = context.{}system.badge or {}
+                name = node.getAttribute(\data-name)
+                node.classList.toggle \on, !!(badge[name])
               state: ({node, context}) ->
                 node.classList.toggle \text-success, (context.state == 'active')
                 node.classList.toggle \text-warning, (context.state != 'active')
