@@ -17,6 +17,13 @@ Ctrl = (opt) ->
   lc = {}
   render-debounced = debounce ~> @view.render \prj
 
+  get-filtered-prj = ~>
+    @data.filter ~>
+      (!@filter.badge or it.system.badge[@filter.badge]) and
+      it.slug and ( !lc.keyword or ~(
+        [it.name,it.{}info.teamname,it.username,it.ownername].filter(->it).join(' ').indexOf(lc.keyword)
+      ))
+
   @view = view = new ldView do
     root: opt.root
     action: do
@@ -96,17 +103,14 @@ Ctrl = (opt) ->
             .catch error!
     init: do
       "download-dropdown": ({node}) -> new Dropdown(node)
+    text: do
+      "prj-count": ({node}) -> get-filtered-prj!length
     handler: do
       "search-filter": ({node}) ~>
         node.classList.toggle \active, (node.getAttribute(\data-name) == @filter.badge or "")
       empty: ({node}) ~> node.classList.toggle \d-none, @data.filter(->it.slug).length
       prj: do
-        list: ~>
-          @data.filter ~>
-            (!@filter.badge or it.system.badge[@filter.badge]) and
-            it.slug and ( !lc.keyword or ~(
-              [it.name,it.{}info.teamname,it.username,it.ownername].filter(->it).join(' ').indexOf(lc.keyword)
-            ))
+        list: ~> get-filtered-prj!
         handler: ({node, local, data}) ->
           local.view.set-context data
           local.view.render!

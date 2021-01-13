@@ -4,7 +4,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
   var error, loader, notify, ldcvmgr, auth, sdbAdapter, adminPanel, Ctrl;
   error = arg$.error, loader = arg$.loader, notify = arg$.notify, ldcvmgr = arg$.ldcvmgr, auth = arg$.auth, sdbAdapter = arg$.sdbAdapter, adminPanel = arg$.adminPanel;
   Ctrl = function(opt){
-    var lc, renderDebounced, view, this$ = this;
+    var lc, renderDebounced, getFilteredPrj, view, this$ = this;
     this.toc = opt.toc;
     this.evtHandler = {};
     this.data = [];
@@ -35,6 +35,13 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
     renderDebounced = debounce(function(){
       return this$.view.render('prj');
     });
+    getFilteredPrj = function(){
+      return this$.data.filter(function(it){
+        return (!this$.filter.badge || it.system.badge[this$.filter.badge]) && it.slug && (!lc.keyword || ~[it.name, (it.info || (it.info = {})).teamname, it.username, it.ownername].filter(function(it){
+          return it;
+        }).join(' ').indexOf(lc.keyword));
+      });
+    };
     this.view = view = new ldView({
       root: opt.root,
       action: {
@@ -203,6 +210,13 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
           return new Dropdown(node);
         }
       },
+      text: {
+        "prj-count": function(arg$){
+          var node;
+          node = arg$.node;
+          return getFilteredPrj().length;
+        }
+      },
       handler: {
         "search-filter": function(arg$){
           var node;
@@ -218,11 +232,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
         },
         prj: {
           list: function(){
-            return this$.data.filter(function(it){
-              return (!this$.filter.badge || it.system.badge[this$.filter.badge]) && it.slug && (!lc.keyword || ~[it.name, (it.info || (it.info = {})).teamname, it.username, it.ownername].filter(function(it){
-                return it;
-              }).join(' ').indexOf(lc.keyword));
-            });
+            return getFilteredPrj();
           },
           handler: function(arg$){
             var node, local, data, ref$;
