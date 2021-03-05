@@ -38,7 +38,7 @@ api.post \/flagship/upload, (req, res) ->
   if !(req.user and req.user.key) => return
   owner = req.body.owner or req.user.key
   brd = \flagship-2
-  p = if owner != req.user.key => cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[ owner]>}
+  p = if owner != req.user.key => cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[owner]>}
   else Promise.resolve!
   p
     .then ->
