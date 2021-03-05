@@ -32,20 +32,27 @@ app.get \/flagship/, aux.signed, (req, res) ->
           .then -> return res.render \view/taicca-flagship/prj-view.pug, {exports: {prj: ret}}
     .catch aux.error-handler res
 
-# TODO should accept only one file for each prj, and only if prj is pending
 api.post \/flagship/upload, (req, res) ->
   lc = {}
   if !(req.user and req.user.key) => return
   owner = req.body.owner or req.user.key
-  brd = \flagship-2
+  field = req.body.field or 'plan'
+  brd = req.body.brd or \flagship-2
   p = if owner != req.user.key => cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[owner]>}
   else Promise.resolve!
   p
     .then ->
-      io.query "select id from perm_gcs where owner = $1", [owner]
+      # always write to new file so we can keep track of old files
+      lc.id = suuid!
+
+      /*
+    .then ->
+      io.query "select id from perm_gcs where owner = $1 and field = $2", [owner, field]
     .then (r={}) ->
       if (lc.perm = r.[]rows.0) => lc.id = lc.perm.id
       else lc.id = suuid!
+      */
+
     .then ->
       gcs
        .bucket secret.gcs.bucket
@@ -55,8 +62,8 @@ api.post \/flagship/upload, (req, res) ->
       lc.url = it.0
       if !lc.perm =>
         io.query """
-        insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)
-        """, [lc.id, owner, (brd or null), null]
+        insert into perm_gcs (id, owner, brd, grp, field) values ($1, $2, $3, $4, $5)
+        """, [lc.id, owner, (brd or null), null, field]
     .then ->
       res.send {signed-url: lc.url, id: lc.id}
     .catch aux.error-handler res

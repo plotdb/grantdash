@@ -79,13 +79,14 @@
       })['catch'](aux.errorHandler(res));
     });
     api.post('/flagship/upload', function(req, res){
-      var lc, owner, brd, p;
+      var lc, owner, field, brd, p;
       lc = {};
       if (!(req.user && req.user.key)) {
         return;
       }
       owner = req.body.owner || req.user.key;
-      brd = 'flagship-2';
+      field = req.body.field || 'plan';
+      brd = req.body.brd || 'flagship-2';
       p = owner !== req.user.key
         ? cache.perm.check({
           io: io,
@@ -96,14 +97,7 @@
         })
         : Promise.resolve();
       return p.then(function(){
-        return io.query("select id from perm_gcs where owner = $1", [owner]);
-      }).then(function(r){
-        r == null && (r = {});
-        if (lc.perm = (r.rows || (r.rows = []))[0]) {
-          return lc.id = lc.perm.id;
-        } else {
-          return lc.id = suuid();
-        }
+        return lc.id = suuid();
       }).then(function(){
         return gcs.bucket(secret.gcs.bucket).file(lc.id).getSignedUrl({
           action: 'write',
@@ -113,7 +107,7 @@
       }).then(function(it){
         lc.url = it[0];
         if (!lc.perm) {
-          return io.query("insert into perm_gcs (id, owner, brd, grp) values ($1, $2, $3, $4)", [lc.id, owner, brd || null, null]);
+          return io.query("insert into perm_gcs (id, owner, brd, grp, field) values ($1, $2, $3, $4, $5)", [lc.id, owner, brd || null, null, field]);
         }
       }).then(function(){
         return res.send({
