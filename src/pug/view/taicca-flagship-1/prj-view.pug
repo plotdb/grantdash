@@ -23,18 +23,23 @@ mixin item(key,val)
 
 block body
   div(ld-scope="prj-detail")
-
+    - form = locals.prj.detail.custom
     - var info = ["計畫名稱","計畫摘要"]
     each key in info
-      - var val = locals.prj.detail.custom.raw[key]
+      - var val = form.raw[key]
       +item(key,val)
+
+    .m-4
+      .font-weight-bold.mb-1 計劃書
+      a(href=`/dash/flagship/upload/${form.file.plan.id}`,target="_blank",rel="noopener noreferrer") #{form.file.plan.filename} ( #{(form.file.plan.size / (1024 * 1024)).toFixed(2)}MB )
+
     .m-4
       .font-weight-bold.mb-1 註
       textarea.form-control.mb-1(ld="note",rows="10",disabled)
       .btn.btn-primary.d-none(ld="update-note") 更新
 
          
-    each val, key in locals.prj.detail.custom.raw || {}
+    each val, key in form.raw || {}
      if !~info.indexOf(key) 
        +item(key,val)
 
@@ -48,7 +53,6 @@ block script
       ldld = new ldLoader className: 'ldld full'
       auth.get!then (g) ->
         lc.global = g
-
         view = new ldView do
           root: '[ld-scope=prj-detail]'
           action:

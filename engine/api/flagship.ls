@@ -101,6 +101,12 @@ file-url = ({id, req, res}) ->
        .getSignedUrl {action: \read, version: \v4, expires: (Date.now! + 60000)}
     .then -> it.0
 
+app.get \/flagship/upload/flagship-1/:id, aux.signed, (req, res) ->
+  id = "flagship-1/#{req.params.id}"
+  file-url({id, req, res})
+    .then -> return res.status(302).redirect(it)
+    .catch aux.error-handler res
+
 app.get \/flagship/upload/:id, aux.signed, (req, res) ->
   id = req.params.id
   file-url({id, req, res})
