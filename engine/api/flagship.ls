@@ -129,6 +129,24 @@ api.post \/flagship/merge/:slug, throttle.count.user, grecaptcha, (req, res) ->
             .then -> res.download fn
     .catch aux.error-handler res
 
+api.post \/flagship-1/prj/, grecaptcha, (req, res) ->
+  if !(req.user and req.user.key) => return aux.r403 res
+  if !req.body => return aux.r403 res
+  {slug,note} = req.body
+  if !slug => return aux.r403 res
+  brd = \flagship-1
+  cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[owner]>}
+    .then ->
+      io.query "select detail from prj where brd = $1 and slug = $2", [brd, slug]
+    .then (r = {}) -> 
+      if !(r.[]rows.0 and (detail = r.rows.0.detail)) => return aux.reject 404
+      detail.{}custom.{}raw["註"] = note
+      io.query "update prj set detail = $3 where brd = $1 and slug = $2", [brd, slug, detail]
+    .then ->
+      res.send!
+    .catch aux.error-handler res
+
+
 api.post \/flagship/prj/, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}

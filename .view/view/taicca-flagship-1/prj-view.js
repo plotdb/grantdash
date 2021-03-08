@@ -3655,17 +3655,19 @@ pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner text-lg mt-4\"\u0
 pug_html = pug_html + "\u003Cdiv class=\"ldNotify\"\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 39;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 ;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+pug_html = pug_html + "\u003Cdiv ld-scope=\"prj-detail\"\u003E";
+;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 var info = ["計畫名稱","計畫摘要"]
-;pug_debug_line = 26;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 28;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 // iterate info
 ;(function(){
   var $$obj = info;
   if ('number' == typeof $$obj.length) {
       for (var pug_index39 = 0, $$l = $$obj.length; pug_index39 < $$l; pug_index39++) {
         var key = $$obj[pug_index39];
-;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 var val = locals.prj.detail.custom.raw[key]
-;pug_debug_line = 28;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 pug_mixins["item"](key,val);
       }
   } else {
@@ -3673,24 +3675,36 @@ pug_mixins["item"](key,val);
     for (var pug_index39 in $$obj) {
       $$l++;
       var key = $$obj[pug_index39];
-;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 var val = locals.prj.detail.custom.raw[key]
-;pug_debug_line = 28;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 pug_mixins["item"](key,val);
     }
   }
 }).call(this);
 
-;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
+;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+pug_html = pug_html + "\u003Cdiv class=\"font-weight-bold mb-1\"\u003E";
+;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+pug_html = pug_html + "註\u003C\u002Fdiv\u003E";
+;pug_debug_line = 33;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+pug_html = pug_html + "\u003Ctextarea" + (" class=\"form-control mb-1\""+" ld=\"note\" rows=\"10\""+pug_attr("disabled", true, true, true)) + "\u003E\u003C\u002Ftextarea\u003E";
+;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-primary d-none\" ld=\"update-note\"\u003E";
+;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+pug_html = pug_html + "更新\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 37;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 // iterate locals.prj.detail.custom.raw || {}
 ;(function(){
   var $$obj = locals.prj.detail.custom.raw || {};
   if ('number' == typeof $$obj.length) {
       for (var key = 0, $$l = $$obj.length; key < $$l; key++) {
         var val = $$obj[key];
-;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 38;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 if (!~info.indexOf(key)) {
-;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 39;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 pug_mixins["item"](key,val);
 }
       }
@@ -3699,15 +3713,16 @@ pug_mixins["item"](key,val);
     for (var key in $$obj) {
       $$l++;
       var val = $$obj[key];
-;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 38;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 if (!~info.indexOf(key)) {
-;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 39;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 pug_mixins["item"](key,val);
 }
     }
   }
 }).call(this);
 
+pug_html = pug_html + "\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 40;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 if (ctrl.cover.authpanel) {
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -4024,8 +4039,12 @@ pug_mixins["script"]("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js");
 ;pug_debug_line = 60;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_mixins["script"]("/dash/js/util/stage.js");
 ;pug_debug_line = 61;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
-;pug_debug_line = 35;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
 pug_mixins["register-locals"]();
+;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+pug_html = pug_html + "\u003Cscript\u003E";
+;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view.pug";
+pug_html = pug_html + "\u002F\u002F Generated by LiveScript 1.3.0\nldc.register(['viewLocals', 'auth', 'ldNotify', 'error', 'notify'], function(arg$){\n  var viewLocals, auth, error, notify, lc, raw, ref$, ref1$, ref2$, slug, ldld;\n  viewLocals = arg$.viewLocals, auth = arg$.auth, error = arg$.error, notify = arg$.notify;\n  lc = {};\n  raw = (ref$ = (ref1$ = (ref2$ = viewLocals.prj).detail || (ref2$.detail = {})).custom || (ref1$.custom = {})).raw || (ref$.raw = {});\n  slug = viewLocals.prj.slug;\n  ldld = new ldLoader({\n    className: 'ldld full'\n  });\n  return auth.get().then(function(g){\n    var view;\n    lc.global = g;\n    return view = new ldView({\n      root: '[ld-scope=prj-detail]',\n      action: {\n        click: {\n          \"update-note\": function(){\n            var json;\n            json = {\n              slug: slug,\n              note: raw[\"註\"]\n            };\n            ldld.on();\n            return debounce(1000).then(function(){\n              return ld$.fetch(\"\u002Fdash\u002Fapi\u002Fflagship-1\u002Fprj\", {\n                method: \"POST\"\n              }, {\n                json: json\n              });\n            })['finally'](function(){\n              return ldld.off();\n            }).then(function(){\n              return notify.send('success', \"已更新\");\n            })['catch'](function(it){\n              return error()(it);\n            });\n          }\n        },\n        input: {\n          note: function(arg$){\n            var node;\n            node = arg$.node;\n            return raw[\"註\"] = node.value || '';\n          }\n        }\n      },\n      handler: {\n        \"update-note\": function(arg$){\n          var node;\n          node = arg$.node;\n          return node.classList.remove('d-none');\n        },\n        note: function(arg$){\n          var node;\n          node = arg$.node;\n          node.value = raw[\"註\"] || '';\n          node.setAttribute('disabled', false);\n          return node.disabled = false;\n        }\n      }\n    });\n  });\n});\u003C\u002Fscript\u003E";
 ;pug_debug_line = 62;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_mixins["script"]("/dash/js/ldsite.js");
 ;pug_debug_line = 63;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
