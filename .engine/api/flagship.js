@@ -181,6 +181,17 @@
         return it[0];
       });
     };
+    app.get('/flagship/upload/flagship-1/:id', aux.signed, function(req, res){
+      var id;
+      id = "flagship-1/" + req.params.id;
+      return fileUrl({
+        id: id,
+        req: req,
+        res: res
+      }).then(function(it){
+        return res.status(302).redirect(it);
+      })['catch'](aux.errorHandler(res));
+    });
     app.get('/flagship/upload/:id', aux.signed, function(req, res){
       var id;
       id = req.params.id;
@@ -240,6 +251,39 @@
             return res.download(fn);
           });
         });
+      })['catch'](aux.errorHandler(res));
+    });
+    api.post('/flagship-1/prj/', grecaptcha, function(req, res){
+      var ref$, slug, note, brd;
+      if (!(req.user && req.user.key)) {
+        return aux.r403(res);
+      }
+      if (!req.body) {
+        return aux.r403(res);
+      }
+      ref$ = req.body, slug = ref$.slug, note = ref$.note;
+      if (!slug) {
+        return aux.r403(res);
+      }
+      brd = 'flagship-1';
+      return cache.perm.check({
+        io: io,
+        type: 'brd',
+        slug: brd,
+        user: req.user,
+        action: ['owner']
+      }).then(function(){
+        return io.query("select detail from prj where brd = $1 and slug = $2", [brd, slug]);
+      }).then(function(r){
+        var detail, ref$;
+        r == null && (r = {});
+        if (!((r.rows || (r.rows = []))[0] && (detail = r.rows[0].detail))) {
+          return aux.reject(404);
+        }
+        ((ref$ = detail.custom || (detail.custom = {})).raw || (ref$.raw = {}))["註"] = note;
+        return io.query("update prj set detail = $3 where brd = $1 and slug = $2", [brd, slug, detail]);
+      }).then(function(){
+        return res.send();
       })['catch'](aux.errorHandler(res));
     });
     api.post('/flagship/prj/', grecaptcha, function(req, res){
