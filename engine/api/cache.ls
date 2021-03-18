@@ -7,7 +7,7 @@ coded-domains = do
   "dev.gda.sh": {org: "grantdash-dev", orgname: "Grant Dash Dev"}
   "grantdash.io": {orgname: "Grant Dash"}
   "taicca.grantdash.io": {org: "taicca-tw", brd: "grantdash-test", orgname: "Taicca Dash"}
-  "sch001.g0v.tw": {org: "g0v-jothon", brd: "sch001", orgname: "零時小學校"}
+  "sch001.g0v.tw": {org: "g0v-jothon", orgname: "零時小學校"}
   "dash.taicca.tw": {org: "taicca-tw", orgname: "文化內容策進院"}
 
 # route.check: return

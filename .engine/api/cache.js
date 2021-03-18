@@ -27,7 +27,6 @@
     },
     "sch001.g0v.tw": {
       org: "g0v-jothon",
-      brd: "sch001",
       orgname: "零時小學校"
     },
     "dash.taicca.tw": {
