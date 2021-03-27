@@ -24,8 +24,18 @@ mixin item(key,val)
 block body
   div(ld-scope="prj-detail")
     - form = locals.prj.detail.custom
-    - var info = ["計畫名稱","計畫摘要"]
-    each key in info
+    -
+      var order = [
+        ["計畫名稱","計畫摘要"],
+        [
+          "註", "分組", "計畫總經費", "補助金額", "補助比例", "計畫最終產出KPI",
+          "期中查核點", "期中查核點(細節)",
+          "期末查核點", "期末查核點(細節)"
+        ]
+      ];
+    - order.push(order[0].concat(order[1]));
+
+    each key in order[0]
       - var val = form.raw[key]
       +item(key,val)
 
@@ -38,10 +48,14 @@ block body
       textarea.form-control.mb-1(ld="note",rows="10",disabled)
       .btn.btn-primary.d-none(ld="update-note") 更新
 
+    each key in order[1]
+      - var val = form.raw[key]
+      +item(key,val)
+
          
     each val, key in form.raw || {}
-     if !~info.indexOf(key) 
-       +item(key,val)
+      if !~order[2].indexOf(key) 
+        +item(key,val)
 
 block script
   +register-locals()
