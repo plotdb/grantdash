@@ -43,7 +43,7 @@ block body
       .font-weight-bold.mb-1 計劃書
       a(href=`/dash/flagship/upload/${form.file.plan.id}`,target="_blank",rel="noopener noreferrer") #{form.file.plan.filename} ( #{(form.file.plan.size / (1024 * 1024)).toFixed(2)}MB )
 
-    .m-4
+    .m-4.d-none(ld="note-widget")
       .font-weight-bold.mb-1 註
       textarea.form-control.mb-1(ld="note",rows="10",disabled)
       .btn.btn-primary.d-none(ld="update-note") 更新
@@ -72,6 +72,7 @@ block script
           action:
             click:
               "update-note": ->
+                if !(lc.global.user.key in [1,4]) => return
                 json = {slug: slug, note: raw["註"]}
                 ldld.on!
                 debounce 1000
@@ -83,6 +84,7 @@ block script
               note: ({node}) ->
                 raw["註"] = node.value or ''
           handler:
+            "note-widget": ({node}) -> node.classList.toggle \d-none, !(lc.global.user.key in [1,4])
             "update-note": ({node}) -> node.classList.remove \d-none
             note: ({node}) ->
               node.value = raw["註"] or ''
