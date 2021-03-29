@@ -98,6 +98,12 @@ api.post \/judgetoken, grecaptcha, (req, res) ->
     .then -> res.send {id, token}
     .catch aux.error-handler res
 
+app.get \/judge-portal, (req, res) ->
+  if !(req.user and req.user.key) => return res.redirect "/dash/auth/?auth-method=login&nexturl=/dash/judge-portal"
+  Promise.resolve!
+    .then -> judge-list req, res
+    .catch aux.error-handler res
+
 app.get \/judgetoken/:token, (req, res) ->
   if !(token = req.params.token) => return aux.r400 res
   io.query "select email from permtoken_judge where token = $1", [token]
@@ -105,38 +111,42 @@ app.get \/judgetoken/:token, (req, res) ->
       if (ret = r.[]rows.0) =>
         return res.render "auth/perm/judge-claim.pug", {exports: {token, email: ret.email}}
       if !(req.user and req.user.key) => return res.render "auth/perm/judge-fail.pug"
-      io.query """
-      select b.name,b.detail->'stage' as stage,b.detail->'group' as group, p.brd,p.grp from perm_judge as p
-      left join brd as b on b.slug = p.brd
-      where p.owner = $1""", [req.user.key]
-        .then (r={}) ->
-          ret = {}
-          r.[]rows
-            .map (p) ->
-              {brd,grp} = p{brd,grp}
-              if !(group = p.group.filter((g) -> g.key == p.grp).0) => return
-              group-name = if p.group.length > 1 => group.{}info.name else null
-              if !(group.{}judgePerm.[]list.filter(->it.email == req.user.username).length) => return
-              group.{}judge.{}custom.[]entries
-                .filter (e) -> e.{}config.enabled
-                .map (e) ->
-                  ret{}["#brd/#grp"] <<< p{name, grp, brd} <<< {group-name}
-                  ret["#brd/#grp"][]list.push(
-                    p{name,grp,brd} <<< {type: 'custom', slug: e.slug, sheetname: e.name}
-                  )
-
-              cfgs = p.{}stage.[]list.filter (s) ->
-                if s.start and Date.now! < new Date(s.start).getTime! => return false
-                if s.end and Date.now! > new Date(s.end).getTime! => return false
-                return true
-              stage = cfgs{}[* - 1].config or {}
-              <[final primary]>.map (type) ->
-                if !stage["judge-#type"] => return
-                ret{}["#brd/#grp"] <<< p{name, grp, brd} <<< {group-name}
-                ret["#brd/#grp"][]list.push(p{name,grp,brd} <<< {type})
-          if !([k for k of ret].length) => return res.render "auth/perm/judge-fail.pug"
-          return res.render "auth/perm/judge-list.pug", {exports: {key: [k for k of ret], map: ret}}
+      judge-list req, res
     .catch aux.error-handler res
+
+judge-list = (req, res) ->
+  io.query """
+  select b.name,b.detail->'stage' as stage,b.detail->'group' as group, p.brd,p.grp from perm_judge as p
+  left join brd as b on b.slug = p.brd
+  where p.owner = $1""", [req.user.key]
+    .then (r={}) ->
+      ret = {}
+      r.[]rows
+        .map (p) ->
+          {brd,grp} = p{brd,grp}
+          if !(group = p.group.filter((g) -> g.key == p.grp).0) => return
+          group-name = if p.group.length > 1 => group.{}info.name else null
+          if !(group.{}judgePerm.[]list.filter(->it.email == req.user.username).length) => return
+          group.{}judge.{}custom.[]entries
+            .filter (e) -> e.{}config.enabled
+            .map (e) ->
+              ret{}["#brd/#grp"] <<< p{name, grp, brd} <<< {group-name}
+              ret["#brd/#grp"][]list.push(
+                p{name,grp,brd} <<< {type: 'custom', slug: e.slug, sheetname: e.name}
+              )
+
+          cfgs = p.{}stage.[]list.filter (s) ->
+            if s.start and Date.now! < new Date(s.start).getTime! => return false
+            if s.end and Date.now! > new Date(s.end).getTime! => return false
+            return true
+          stage = cfgs{}[* - 1].config or {}
+          <[final primary]>.map (type) ->
+            if !stage["judge-#type"] => return
+            ret{}["#brd/#grp"] <<< p{name, grp, brd} <<< {group-name}
+            ret["#brd/#grp"][]list.push(p{name,grp,brd} <<< {type})
+      if !([k for k of ret].length) => return res.render "auth/perm/judge-fail.pug"
+      return res.render "auth/perm/judge-list.pug", {exports: {key: [k for k of ret], map: ret}}
+
 
 api.put \/judgetoken, aux.signed, grecaptcha, (req, res) ->
   lc = {}
