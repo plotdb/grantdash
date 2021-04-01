@@ -44,7 +44,7 @@ block body
       if form.file[pair[1]]
         .m-4
           .font-weight-bold.mb-1= pair[0]
-          a(href=`/dash/flagship/upload/${form.file[pair[1]].id}`,target="_blank",rel="noopener noreferrer") #{form.file[pair[1]].filename} ( #{(form.file[pair[1]].size / (1024 * 1024)).toFixed(2)}MB )
+          a(href=`/dash/flagship/upload/${form.file[pair[1]].id}`,target="_blank",rel="noopener noreferrer") #[b #{form.file[pair[1]].filename}] #[br] #[small ( #{(form.file[pair[1]].size / (1024 * 1024)).toFixed(2)}MB / 修改日期: #{new Date(form.file[pair[1]].modifiedtime).toLocaleString()} )]
 
     .m-4.d-none(ld="note-widget")
       .font-weight-bold.mb-1 註
