@@ -39,7 +39,7 @@ block body
       - var val = form.raw[key]
       +item(key,val)
 
-    - var reports = [["計劃書","plan"],["期中報告","midterm"],["期末報告","final"],["訪視紀錄","visit"]];
+    - var reports = [["計劃書","plan"],["計劃書變更內容","planfix"], ["期中報告","midterm"],["期末報告","final"],["訪視紀錄","visit"]];
     each pair in reports
       if form.file[pair[1]]
         .m-4

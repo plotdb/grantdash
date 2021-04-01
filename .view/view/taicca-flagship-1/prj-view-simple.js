@@ -3695,7 +3695,7 @@ pug_mixins["item"](key,val);
 }).call(this);
 
 ;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view-simple.pug";
-var reports = [["計劃書","plan"],["期中報告","midterm"],["期末報告","final"],["訪視紀錄","visit"]];
+var reports = [["計劃書","plan"],["計劃書變更內容","planfix"], ["期中報告","midterm"],["期末報告","final"],["訪視紀錄","visit"]];
 ;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship-1\u002Fprj-view-simple.pug";
 // iterate reports
 ;(function(){
