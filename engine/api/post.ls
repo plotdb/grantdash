@@ -6,6 +6,14 @@ require! <[../aux ../util/throttle ../util/grecaptcha]>
 api = engine.router.api
 app = engine.app
 
+api.get \/brd/:slug/post/, (req, res) ->
+  if !(slug = req.params.slug) => return aux.r400 res
+  io.query """
+  select title, slug, createdtime, modifiedtime from post
+  where brd = $1 and deleted is not true order by createdtime desc limit 10
+  """, [slug]
+    .then (r={}) -> res.send r.[]rows
+
 api.get \/post, aux.signed, (req, res) ->
   if !(slug = req.query.brd) => return aux.r400 res
   cache.perm.check {io, user: req.user, type: \brd, slug: slug, action: \owner}
