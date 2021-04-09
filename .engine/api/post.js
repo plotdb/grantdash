@@ -54,7 +54,8 @@
           io: io,
           user: req.user,
           type: 'brd',
-          slug: lc.post.brd
+          slug: lc.post.brd,
+          action: 'owner'
         });
       }).then(function(){
         return res.send(lc.post);

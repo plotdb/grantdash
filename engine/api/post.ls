@@ -30,7 +30,7 @@ api.get \/post/:slug, aux.signed, (req, res) ->
   """, [slug]
     .then (r={}) ->
       if !(lc.post = r.[]rows.0) => return aux.reject 404
-      cache.perm.check {io, user: req.user, type: \brd, slug: lc.post.brd}
+      cache.perm.check {io, user: req.user, type: \brd, slug: lc.post.brd, action: \owner}
     .then -> res.send lc.post
     .catch aux.error-handler res
 
