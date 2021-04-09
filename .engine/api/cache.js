@@ -109,6 +109,7 @@
   perm = {
     cache: {},
     cachePrj: {},
+    cachePost: {},
     cacheJudge: {
       brd: {}
     },
@@ -259,6 +260,27 @@
               user: user,
               type: 'brd',
               slug: prj.brd,
+              action: ['owner']
+            });
+          });
+          return ret;
+        } else if (type === 'post') {
+          p = (that = this$.cachePost[slug]) != null
+            ? Promise.resolve(that)
+            : io.query("select brd from post where slug = $1", [slug]).then(function(r){
+              r == null && (r = {});
+              return (r.rows || (r.rows = []))[0];
+            });
+          ret = p.then(function(post){
+            if (!post) {
+              return Promise.reject(new lderror(1012));
+            }
+            this$.cachePost[slug] = post;
+            return this$.check({
+              io: io,
+              user: user,
+              type: 'brd',
+              slug: post.brd,
               action: ['owner']
             });
           });

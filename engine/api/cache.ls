@@ -67,6 +67,7 @@ route = do
 perm = do
   cache: {}
   cache-prj: {}
+  cache-post: {}
   cache-judge: {brd: {}}
   perm: {}
   supported-types: <[org brd prj post form]>
@@ -134,6 +135,7 @@ perm = do
     [type,slug] = ids = id.split('/')
     @check({io, user, type, slug, action})
       .catch ~>
+
         if type == \prj =>
           p = if (@cache-prj[slug])? => Promise.resolve that
           else io.query("select brd from prj where slug = $1", [slug]).then((r={}) -> r.[]rows.0)
@@ -143,6 +145,17 @@ perm = do
               @cache-prj[slug] = prj
               @check {io, user, type: \brd, slug: prj.brd, action: <[owner]>}
           return ret
+
+        else if type == \post =>
+          p = if (@cache-post[slug])? => Promise.resolve that
+          else io.query("select brd from post where slug = $1", [slug]).then((r={}) -> r.[]rows.0)
+          ret = p
+            .then (post) ~>
+              if !post => return Promise.reject new lderror(1012)
+              @cache-post[slug] = post
+              @check {io, user, type: \brd, slug: post.brd, action: <[owner]>}
+          return ret
+
         if !(type == \brd and ids.2 == \grp and ids.4 == \judge) => return Promise.reject it
         if ids.5 == \criteria => @check({io, user, type, slug, action: \reviewer})
         else @check-judge {io, brd: ids.1, grp: ids.3, user}
