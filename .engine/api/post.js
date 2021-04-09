@@ -21,6 +21,16 @@
     var api, app;
     api = engine.router.api;
     app = engine.app;
+    api.get('/brd/:slug/post/', function(req, res){
+      var slug;
+      if (!(slug = req.params.slug)) {
+        return aux.r400(res);
+      }
+      return io.query("select title, slug, createdtime, modifiedtime from post\nwhere brd = $1 and deleted is not true order by createdtime desc limit 10", [slug]).then(function(r){
+        r == null && (r = {});
+        return res.send(r.rows || (r.rows = []));
+      });
+    });
     api.get('/post', aux.signed, function(req, res){
       var slug;
       if (!(slug = req.query.brd)) {
