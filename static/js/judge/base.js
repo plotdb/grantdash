@@ -61,6 +61,8 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
             node = arg$.node;
             if (this$.user) {
               return this$.user.displayname;
+            } else if (this$.userLocal) {
+              return this$.userLocal.displayname;
             }
           },
           "grp-name": function(arg$){

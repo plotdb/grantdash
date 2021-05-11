@@ -38,7 +38,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       init-render: false
       root: @root
       text: do
-        reviewer: ({node}) ~> if @user => @user.displayname
+        reviewer: ({node}) ~> if @user => @user.displayname else if @user-local => @user-local.displayname
         "grp-name": ({node}) ~> "#{@brdinfo.name} / #{@grpinfo.info.name}"
 
   update: (opt={}) ->
