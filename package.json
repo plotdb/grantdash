@@ -78,6 +78,6 @@
     "uglify-js": "=3.2.0",
     "uglifycss": "=0.0.29",
     "uploadr": "github:plotdb/uploadr",
-    "ws": "^7.3.0"
+    "ws": "^7.4.6"
   }
 }
