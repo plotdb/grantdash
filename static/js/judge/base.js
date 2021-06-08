@@ -80,6 +80,10 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         this._update = debounce(function(opt){
           if (opt.ops) {
             return this$.opsOut(opt.ops);
+          } else if (this$.dataAll) {
+            return this$.opsOut(function(){
+              return this$.dataAll;
+            });
           } else {
             return this$.opsOut(function(){
               return this$.data;
