@@ -44,6 +44,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   update: (opt={}) ->
     if !@_update => @_update = debounce (opt) ~>
       if opt.ops => @ops-out opt.ops
+      # data-all is set if we need all data but only update partial of it.
+      # in this case, we set data to the sub part and keep whole in data-all.
+      # thus we still have to update based on data-all
+      else if @data-all => @ops-out ~> @data-all
       else @ops-out ~> @data
     if !opt.debounced => @_update(opt)now!
     else @_update.delay(opt.debounced)(opt)
