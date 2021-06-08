@@ -59,8 +59,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         else j = @grpinfo.{}judge{}[@type] or {}
         filter-name = []
         if j["filter-criteria"] or j.filter == 'criteria' => filter-name.push \criteria
-        if j["filter-primary"] or j.filter == 'primary' => filter-name.push \shortlist
-        if j["filter-shortlist"] or j.filter == 'shortlist' => filter-name.push \shortlist
+        if j["filter-primary"] or j.filter in <[primary shortlist]> => filter-name.push \shortlist
         if j["filter-finalist"] or j.filter == 'finalist' => filter-name.push \finalist
         if j["filter-winner"] or j.filter == 'winner' => filter-name.push \winner
         if filter-name.length =>
