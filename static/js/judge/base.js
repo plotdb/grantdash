@@ -115,6 +115,15 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         if (j["filter-primary"] || j.filter === 'primary') {
           filterName.push('shortlist');
         }
+        if (j["filter-shortlist"] || j.filter === 'shortlist') {
+          filterName.push('shortlist');
+        }
+        if (j["filter-finalist"] || j.filter === 'finalist') {
+          filterName.push('finalist');
+        }
+        if (j["filter-winner"] || j.filter === 'winner') {
+          filterName.push('winner');
+        }
         if (filterName.length) {
           this$.prjs = (this$.prjs || []).filter(function(p){
             return filterName.reduce(function(a, b){
