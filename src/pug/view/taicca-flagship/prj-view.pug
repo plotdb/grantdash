@@ -183,6 +183,27 @@ block body
           h4 計畫名稱
           input.form-control(name="name")
           .invalid-feedback 不可留白
+
+        .form-group
+          label 計畫書
+          br
+          a(ld="file-link",data-name="newplan")
+
+        .form-group
+          label 期中報告
+          br
+          a(ld="file-link",data-name="midterm")
+
+        .form-group
+          label 訪視紀錄
+          br
+          a(ld="file-link",data-name="visit")
+
+        .form-group
+          label 財務查核報告
+          br
+          a(ld="file-link",data-name="finance")
+
         label 計畫類別（一與二為單選）：
         +radio("group", "文化內容開發組", true) 一、文化內容開發組
         .ml-4.mb-4
@@ -381,7 +402,8 @@ block body
         label.mb-0 執行效益 ( 200 字以內 )
         textarea.form-control(rows="6",name="abs-outcome")
         .invalid-feedback 字數不符
-
+  .d-none
+    .d-none
       .form-group.only-print
         label 上傳計畫書 PDF ( 計畫書內容含目錄、原著授權、立案證明文件、合作意向書 / 合約 )
         br

@@ -107,6 +107,12 @@ app.get \/flagship/upload/flagship-1/:id, aux.signed, (req, res) ->
     .then -> return res.status(302).redirect(it)
     .catch aux.error-handler res
 
+app.get \/flagship/upload/flagship-2/:id, aux.signed, (req, res) ->
+  id = "flagship-2/#{req.params.id}"
+  file-url({id, req, res})
+    .then -> return res.status(302).redirect(it)
+    .catch aux.error-handler res
+
 app.get \/flagship/upload/:id, aux.signed, (req, res) ->
   id = req.params.id
   file-url({id, req, res})

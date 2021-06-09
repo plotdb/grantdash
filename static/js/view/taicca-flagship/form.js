@@ -536,6 +536,20 @@ ldc.register('flagship-form', ['loader', 'auth', 'error', 'viewLocals', 'ldcvmgr
           node = arg$.node;
           return node.classList.toggle('d-none', isReady.state);
         },
+        "file-link": function(arg$){
+          var node, name, data, date;
+          node = arg$.node;
+          name = node.getAttribute('data-name');
+          node.removeAttribute('href');
+          node.classList.remove('text-danger');
+          if (!((data = payload.file[name]) && payload.file[name].id)) {
+            node.classList.add('text-danger');
+            return node.innerText = "尚未上傳檔案";
+          }
+          date = data.modifiedtime ? "/ 檔案修改時間: " + moment(data.modifiedtime).tz("Asia/Taipei").format("YYYY-MM-DD hh:mm:ss") : "";
+          node.innerText = data.filename + " / size: " + Math.round(data.size / 1024) + "KB " + date + " ( 點擊開啟文件 )";
+          return node.setAttribute('href', "/dash/flagship/upload/" + data.id);
+        },
         "file-uploaded": function(arg$){
           var node, name, data, date;
           node = arg$.node;

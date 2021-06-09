@@ -305,6 +305,19 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
         "ready-state": ({node}) ->
           node.classList.toggle \d-none, is-ready.state
 
+        "file-link": ({node}) ->
+          name = node.getAttribute(\data-name)
+          node.removeAttribute \href
+          node.classList.remove \text-danger
+          if !((data = payload.file[name]) and payload.file[name].id) =>
+            node.classList.add \text-danger
+            return node.innerText = "尚未上傳檔案"
+          date = if data.modifiedtime =>
+            "/ 檔案修改時間: " + moment(data.modifiedtime).tz("Asia/Taipei").format("YYYY-MM-DD hh:mm:ss")
+          else ""
+          node.innerText = "#{data.filename} / size: #{Math.round(data.size / 1024)}KB #date ( 點擊開啟文件 )"
+          node.setAttribute \href, "/dash/flagship/upload/#{data.id}"
+
         "file-uploaded": ({node}) ->
           name = node.getAttribute(\data-name)
           node.removeAttribute \href
@@ -320,6 +333,7 @@ ldc.register \flagship-form, <[loader auth error viewLocals ldcvmgr]>, ({loader,
           else
             node.innerText = "計畫書已上傳"
           node.setAttribute \href, "/dash/flagship/upload/#{data.id}"
+
         toggler: ({node}) ->
           if !ldform => return
           v = ldform.values!
