@@ -192,6 +192,17 @@
         return res.status(302).redirect(it);
       })['catch'](aux.errorHandler(res));
     });
+    app.get('/flagship/upload/flagship-2/:id', aux.signed, function(req, res){
+      var id;
+      id = "flagship-2/" + req.params.id;
+      return fileUrl({
+        id: id,
+        req: req,
+        res: res
+      }).then(function(it){
+        return res.status(302).redirect(it);
+      })['catch'](aux.errorHandler(res));
+    });
     app.get('/flagship/upload/:id', aux.signed, function(req, res){
       var id;
       id = req.params.id;
