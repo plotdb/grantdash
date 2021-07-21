@@ -3858,7 +3858,7 @@ pug_html = pug_html + "\u003Cspan ld=\"fill\" data-name=\"doc-day\"\u003E\u003C\
 ;pug_debug_line = 170;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-edit.pug";
 pug_html = pug_html + " 日\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 171;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-edit.pug";
-pug_html = pug_html + "\u003Cdiv class=\"position-fixed no-print z-fixed\" style=\"top:.5em\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"position-fixed no-print z-fixed d-none\" style=\"top:.5em\"\u003E";
 ;pug_debug_line = 172;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-edit.pug";
 pug_html = pug_html + "\u003Cdiv class=\"btn btn-primary\" ld=\"merge-download\"\u003E";
 ;pug_debug_line = 172;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-flagship\u002Fprj-edit.pug";
