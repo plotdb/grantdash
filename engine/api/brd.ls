@@ -40,7 +40,10 @@ landing = do
         if !(lc.brd = r.[]rows.0) => return aux.r404 res
         cache.stage.check {io, type: \brd, slug}
       .then (stage) ->
-        res.render \view/default/brd.pug, {brd: lc.brd, stage}
+        brd = lc.brd
+        if !(brd.detail.custom and brd.detail.custom.view) => view = \view/default/brd.pug
+        else view = "view/#{brd.detail.custom.view}/brd.pug"
+        res.render view, {brd: lc.brd, stage}
 
 # landing pages
 landing-page = (type, slug, req, res) ->
@@ -346,8 +349,11 @@ app.get \/brd/:slug/list, (req, res) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
       lc.grps = lc.brd.detail.group.map -> it{form,key}
       lc.page-info = lc.brd.detail.{}page.{}info.{}generic <<< lc.brd.detail.info
+      brd = lc.brd
+      if !(brd.detail.custom and brd.detail.custom.view) => view = \view/default/prj-list.pug
+      else view = "view/#{brd.detail.custom.view}/prj-list.pug"
       delete lc.brd.detail
-      res.render \view/default/prj-list.pug, lc
+      res.render view, lc
       return null
     .catch aux.error-handler res
 

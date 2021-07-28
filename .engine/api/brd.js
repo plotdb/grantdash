@@ -84,7 +84,14 @@
             slug: slug
           });
         }).then(function(stage){
-          return res.render('view/default/brd.pug', {
+          var brd, view;
+          brd = lc.brd;
+          if (!(brd.detail.custom && brd.detail.custom.view)) {
+            view = 'view/default/brd.pug';
+          } else {
+            view = "view/" + brd.detail.custom.view + "/brd.pug";
+          }
+          return res.render(view, {
             brd: lc.brd,
             stage: stage
           });
@@ -622,7 +629,7 @@
         lc.prjs = ret;
         return io.query("select b.name, b.description, b.slug, b.org, b.detail from brd as b\nwhere b.slug = $1 and b.deleted is not true", [slug]);
       }).then(function(r){
-        var ref$, ref1$, ref2$;
+        var ref$, ref1$, ref2$, brd, view;
         r == null && (r = {});
         if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(404);
@@ -634,8 +641,14 @@
           };
         });
         lc.pageInfo = import$((ref$ = (ref1$ = (ref2$ = lc.brd.detail).page || (ref2$.page = {})).info || (ref1$.info = {})).generic || (ref$.generic = {}), lc.brd.detail.info);
+        brd = lc.brd;
+        if (!(brd.detail.custom && brd.detail.custom.view)) {
+          view = 'view/default/prj-list.pug';
+        } else {
+          view = "view/" + brd.detail.custom.view + "/prj-list.pug";
+        }
         delete lc.brd.detail;
-        res.render('view/default/prj-list.pug', lc);
+        res.render(view, lc);
         return null;
       })['catch'](aux.errorHandler(res));
     });
