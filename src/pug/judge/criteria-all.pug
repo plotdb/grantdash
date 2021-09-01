@@ -24,6 +24,7 @@ block body
                 .mx-3 總計 #[span.text-danger(ld="count",data-name="total") 0]
                 .mx-3 通過 #[span.text-danger(ld="count",data-name="accept") 0]
                 .mx-3 待審 #[span.text-danger(ld="count",data-name="pending") 0]
+                .mx-3(ld="type-label",data-name="mend") 待補件 #[span.text-danger(ld="count",data-name="mend") 0]
                 .mx-3 退件 #[span.text-danger(ld="count",data-name="reject") 0]
             table.table.w-100.bg-light.border-bottom.mb-0.shadow-sm.text-center
               tr
@@ -36,6 +37,8 @@ block body
                     //-.text-primary.clickable(ld="criteria") #[i.i-question] 審核條件
                 td.clickable(ld="sort",data-name="count",data-value="accept",style="width:4em") 通過
                 //-td.clickable(ld="sort",data-name="count",data-value="pending",style="width:4em") 待審
+                td.clickable(ld="type-label",data-name="mend",style="width:5em")
+                  span(ld="sort",data-name="count",data-value="mend") 待補件
                 td.clickable(ld="sort",data-name="count",data-value="reject",style="width:4em") 不符
                 td(ld="sort",data-name="comments",style="width:4em") 細節
 
@@ -47,6 +50,8 @@ block body
               //-td(style="width:4em").text-right: span(ld="key")
               td.text-left: span.text-underline.clickable(ld="name")
               td(ld="count",data-name="accept",style="width:4em;line-height:1em")
+              td(ld="type-label",data-name="mend",style="width:5em;line-height:1em")
+                tspan(ld="count",data-name="mend")
               //-td(ld="count",data-name="pending",style="width:4em;line-height:1em")
               td.clickable(ld="count",data-name="reject",style="width:4em;line-height:1em")
               td.clickable(ld="detail",style="width:4em"): i.i-doc.text-primary
@@ -62,6 +67,9 @@ block body
               .d-flex.align-items-center.my-1(style="line-height:1rem")
                 .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                 span.mr-2 通過
+                span(ld="type-label",data-name="mend")
+                  .bg-warning.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                  span.mr-2 待補件
                 .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                 span 不符
             .mr-4.flex-grow-1
@@ -69,6 +77,8 @@ block body
               .progress.my-1(style="width:100%")
                 .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(
                 ld="progress progress-bar",data-name="accept")
+                .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(
+                ld="type-label progress progress-bar",data-name="mend")
                 .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
                 ld="progress progress-bar",data-name="reject")
             div: .btn.btn-outline-dark(ld="publish") 發布審查結果

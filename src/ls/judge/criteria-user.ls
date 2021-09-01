@@ -1,11 +1,13 @@
 ({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeCriteriaUser,
 <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
 
+use-mend = true
 
 clsmap = [
   <[i-check text-success]>
   <[i-circle text-secondary]>
   <[i-close text-danger]>
+  <[i-doc text-warning]>
 ]
 clsset = (node, val) ->
   newcls = clsmap[val]
@@ -48,6 +50,9 @@ Ctrl = (opt) ->
           node.style.width = "#{100 * p[n] / p.total }%"
         else if \progress-percent in names =>
           node.innerText = Math.round(100 * p.done / p.total )
+      "type-label": ({node}) ->
+        name = node.getAttribute \data-name
+        if name == \mend => node.classList.toggle \d-none, !use-mend
       "header-criteria": do
         list: ~> @criteria
         action: click: ({node, data}) ~> @sort \criteria, data
@@ -85,11 +90,14 @@ Ctrl = (opt) ->
                 icon = ld$.find(node, 'i',0)
                 state = context.state
                 icon.classList.remove.apply icon.classList, icon.classList
-                icon.classList.add <[i-check i-circle i-close]>[state]
+                icon.classList.add <[i-check i-circle i-close i-doc]>[state]
                 node.classList.remove.apply node.classList, node.classList
-                cls = [<[bg-success text-white]> <[bg-light text-secondary]> <[bg-danger text-white]>]
+                cls = [
+                  <[bg-success text-white]> <[bg-light text-secondary]>
+                  <[bg-danger text-white]> <[bg-warning text-dark]>
+                ]
                 node.classList.add.apply node.classList, (cls[state] ++ <[rounded]>)
-                span.innerText = <[通過 待查 不符]>[state]
+                span.innerText = <[通過 待查 不符 補件]>[state]
               name: ({node, context}) -> node.innerText = context.name or '(未命名)'
               key: ({node, context}) -> node.innerText = context.key or ''
               criteria: do
@@ -98,7 +106,8 @@ Ctrl = (opt) ->
                 action: click: ({node, data, context}) ~>
                   v = @data.prj{}[context.key].{}v[data.key]
                   v = if v? => v else 1
-                  v = ( v + 2 ) % 3
+                  if use-mend => v = ( v + 3 ) % 4
+                  else v = (v + 2) % 3
                   @data.prj{}[context.key].v[data.key] = v
                   @get-progress!
                   @view.local.render {name: 'project', key: context.slug}
@@ -153,7 +162,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
     )
 
   get-progress: ->
-    val = {0: 0, 1: 0, 2: 0}
+    val = {0: 0, 1: 0, 2: 0, 3: 0}
     @prjs.map (p) ~>
       v = @criteria.reduce(
         (a, b) ~>
@@ -166,6 +175,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       accept: val.0
       pending: val.1
       reject: val.2
+      mend: val.3
       done: val.0 + val.2
       total: (@prjs.length or 1)
 

@@ -25,6 +25,7 @@ block body
                 .mx-3 待審 #[span.text-danger(ld="count",data-name="pending") 0]
                 .mx-3 退件 #[span.text-danger(ld="count",data-name="reject") 0]
               .mx-3 #[i.i-circle] / 待驗證
+              .mx-3(ld="type-label",data-name="mend") #[i.i-doc.text-warning] / 待補件
               .mx-3 #[i.i-check.text-success] / 通過
               .mx-3 #[i.i-close.text-danger] / 不符合
               .mx-3 #[i.i-doc.text-primary] / 帶附註
@@ -63,6 +64,9 @@ block body
               .d-flex.align-items-center.my-1(style="line-height:1rem")
                 .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                 span.mr-2 通過
+                span(ld="type-label",data-name="mend")
+                  .bg-warning.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                  span.mr-2 待補件
                 .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
                 span 不符
             .mr-4.flex-grow-1
@@ -70,6 +74,8 @@ block body
               .progress.my-1(style="width:100%")
                 .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(
                 ld="progress progress-bar",data-name="accept")
+                .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(
+                ld="progress progress-bar",data-name="mend")
                 .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
                 ld="progress progress-bar",data-name="reject")
             //-div: .btn.btn-outline-dark 提交審查結果

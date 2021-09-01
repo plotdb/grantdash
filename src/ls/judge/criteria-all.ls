@@ -1,6 +1,8 @@
 ({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register \judgeCriteriaAll,
 <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
 
+use-mend = true
+
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
   @data = {prj: {}}
@@ -39,6 +41,9 @@ Ctrl = (opt) ->
     handler: do
       "comment-name": ({node}) ~>
         if @active => node.innerText = @active.name or ''
+      "type-label": ({node}) ->
+        name = node.getAttribute \data-name
+        if name == \mend => node.classList.toggle \d-none, !use-mend
       progress: ({node, names}) ~>
         p = @progress
         if \progress-bar in names =>
@@ -103,6 +108,9 @@ Ctrl = (opt) ->
                 @active-node = root
                 @active-node.classList.add \active
             handler: do
+              "type-label": ({node}) ->
+                name = node.getAttribute \data-name
+                if name == \mend => node.classList.toggle \d-none, !use-mend
               count: ({node, context}) ~>
                 n = node.getAttribute(\data-name)
                 html = ""
@@ -130,7 +138,7 @@ Ctrl = (opt) ->
                 node.classList.remove.apply node.classList, node.classList
                 cls = [<[bg-success text-white]> <[bg-light text-secondary]> <[bg-danger text-white]>]
                 node.classList.add.apply node.classList, ((cls[state] or []) ++ <[rounded]>)
-                span.innerText = <[通過 待查 不符]>[state]
+                span.innerText = <[通過 待查 不符 補件]>[state]
               name: ({node, context}) ->
                 node.innerText = context.name
               key: ({node, context}) -> node.innerText = context.key or ''
@@ -177,7 +185,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       .catch error!
 
   get-count: (context) ->
-    context.count = count = {accept: [], pending: [], reject: []}
+    context.count = count = {accept: [], pending: [], reject: [], mend: []}
     for k,user of @data.{}user =>
       val = @criteria.reduce(
         (a, b) ~>
@@ -185,11 +193,14 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
           Math.max(a, if v? => v else 1)
         0
       )
-      count[<[accept pending reject]>[val]].push k
-      context.state = if count.reject.length => 2 else if count.accept.length => 0 else 1
+      count[<[accept pending reject mend]>[val]].push k
+      context.state = if count.reject.length => 2
+      else if count.mend.length => 3
+      else if count.accept.length => 0
+      else 1
 
   get-progress: ->
-    val = {0: 0, 1: 0, 2: 0}
+    val = {0: 0, 1: 0, 2: 0, 3: 0}
     @prjs.map (p) ~>
       if !(p.state?) => @get-count(p)
       val[p.state]++
@@ -197,6 +208,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       accept: val.0
       pending: val.1
       reject: val.2
+      mend: val.3
       done: val.0 + val.2
       total: (@prjs.length or 1)
 
