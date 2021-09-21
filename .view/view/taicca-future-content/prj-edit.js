@@ -3678,7 +3678,7 @@ var order = [
     "已獲得補助列表",
     "負責人", "成立時間", "統一編號", "員工人數",
     "登記地址", "聯絡地址", "聯絡人",
-    "職稱", "專線電話", "手機", "電子郵件", "本院分類"
+    "職稱", "專線電話", "手機", "電子郵件"
   ]
 ];
 ;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-edit.pug";
