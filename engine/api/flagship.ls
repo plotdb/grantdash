@@ -101,7 +101,7 @@ file-url = ({id, req, res}) ->
        .getSignedUrl {action: \read, version: \v4, expires: (Date.now! + 60000)}
     .then -> it.0
 
-app.get \/flagship/upload/future-content/:id, aux.signed, (req, res) ->
+app.get \/gcs/upload/future-content/:id, aux.signed, (req, res) ->
   id = "future-content/#{req.params.id}"
   file-url({id, req, res})
     .then -> return res.status(302).redirect(it)

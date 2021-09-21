@@ -181,7 +181,7 @@
         return it[0];
       });
     };
-    app.get('/flagship/upload/future-content/:id', aux.signed, function(req, res){
+    app.get('/gcs/upload/future-content/:id', aux.signed, function(req, res){
       var id;
       id = "future-content/" + req.params.id;
       return fileUrl({
