@@ -29,7 +29,13 @@ block body
         ["案件編號", "計畫名稱", "提案簡介", "提案組成", "(代表)提案單位", "資本額(新臺幣/元)" ],
         [
           "註",
-          "計畫總經費(新臺幣/元)", "申請經費(新臺幣/元)", "自籌經費(新臺幣/元)"
+          "計畫總經費(新臺幣/元)", "申請經費(新臺幣/元)", "自籌經費(新臺幣/元)",
+          "內容產業類型", "本院輔導產業類別分類", "本案預計未來體驗之通路",
+          "本計畫是否申請或已獲其他機關(單位)經費補助",
+          "已獲得補助列表",
+          "負責人", "成立時間", "統一編號", "員工人數",
+          "登記地址", "聯絡地址", "聯絡人",
+          "職稱", "專線電話", "手機", "電子郵件", "本院分類"
         ]
       ];
     - order.push(order[0].concat(order[1]));
@@ -49,7 +55,7 @@ block body
       if form.file && form.file[pair[1]]
         .m-4
           .font-weight-bold.mb-1= pair[0]
-          a(href=`/dash/flagship/upload/${form.file[pair[1]].id}`,target="_blank",rel="noopener noreferrer") #[b #{form.file[pair[1]].filename}] #[br] #[small ( #{(form.file[pair[1]].size / (1024 * 1024)).toFixed(2)}MB / 修改日期: #{new Date(form.file[pair[1]].modifiedtime).toLocaleString()} )]
+          a(href=`/dash/future-content/upload/${form.file[pair[1]].id}`,target="_blank",rel="noopener noreferrer") #[b #{form.file[pair[1]].filename}] #[br] #[small ( #{(form.file[pair[1]].size / (1024 * 1024)).toFixed(2)}MB / 修改日期: #{new Date(form.file[pair[1]].modifiedtime).toLocaleString()} )]
 
     .m-4.d-none(ld="note-widget")
       .font-weight-bold.mb-1 註
@@ -84,7 +90,7 @@ block script
                 json = {slug: slug, note: raw["註"]}
                 ldld.on!
                 debounce 1000
-                  .then -> ld$.fetch "/dash/api/flagship-1/prj", {method: "POST"}, {json}
+                  .then -> ld$.fetch "/dash/api/future-content/prj", {method: "POST"}, {json}
                   .finally -> ldld.off!
                   .then -> notify.send \success, "已更新"
                   .catch -> error! it
