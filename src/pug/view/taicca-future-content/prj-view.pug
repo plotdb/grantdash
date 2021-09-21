@@ -19,7 +19,10 @@ mixin item(key,val)
         each v in val
           li.pre= v
       else
-        p.pre= val
+        if /資本額|新臺幣/.exec(key)
+          p.pre= (+val).toLocaleString()
+        else
+          p.pre= val
 
 block body
   div(ld-scope="prj-detail")
