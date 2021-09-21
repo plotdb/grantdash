@@ -3851,7 +3851,7 @@ pug_mixins["item"](key,val);
       for (var key = 0, $$l = $$obj.length; key < $$l; key++) {
         var val = $$obj[key];
 ;pug_debug_line = 74;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view-simple.pug";
-if (!~order[2].indexOf(key)) {
+if (!~order[2].indexOf(key) && key != "本院類別") {
 ;pug_debug_line = 75;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view-simple.pug";
 pug_mixins["item"](key,val);
 }
@@ -3862,7 +3862,7 @@ pug_mixins["item"](key,val);
       $$l++;
       var val = $$obj[key];
 ;pug_debug_line = 74;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view-simple.pug";
-if (!~order[2].indexOf(key)) {
+if (!~order[2].indexOf(key) && key != "本院類別") {
 ;pug_debug_line = 75;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view-simple.pug";
 pug_mixins["item"](key,val);
 }
