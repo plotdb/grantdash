@@ -2202,7 +2202,7 @@ attributes: {"class": "admin-menu bg-dark text-white text-left","style": "backgr
 ;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Findex.pug";
 pug_html = pug_html + "\u003Cdiv class=\"flex-grow-1 d-flex flex-column bg-white\"\u003E";
 ;pug_debug_line = 107;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Findex.pug";
-pug_html = pug_html + "\u003Cdiv class=\"p-4 d-none w-100 h-100 bg-white\" ld=\"nav-panel\" data-nav=\"main\" data-name=\"brd-post-list\" style=\"overflow-:scroll\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"p-4 d-none w-100 h-100 bg-white\" ld=\"nav-panel\" data-nav=\"main\" data-name=\"brd-post-list\" style=\"overflow-y:scroll\"\u003E";
 ;pug_debug_line = 2;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fpost-list.pug";
 pug_mixins["scope"].call({
 block: function(){
