@@ -58,6 +58,7 @@ landing-page = (type, slug, req, res) ->
   p
     .then (r={}) ->
       lc[type] = ret = r.[]rows.0
+      if !ret => return aux.reject 404
       info = ret.pageinfo
       if (info and (info.opt or \default) == \default and info.{}generic.landing-url) =>
         Promise.resolve(info.{}generic.landing-url)

@@ -101,6 +101,9 @@
         var ret, info, indexPath;
         r == null && (r = {});
         lc[type] = ret = (r.rows || (r.rows = []))[0];
+        if (!ret) {
+          return aux.reject(404);
+        }
         info = ret.pageinfo;
         if (info && (info.opt || 'default') === 'default' && (info.generic || (info.generic = {})).landingUrl) {
           return Promise.resolve((info.generic || (info.generic = {})).landingUrl);
