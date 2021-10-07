@@ -28,7 +28,7 @@ engine = (f, opt, cb) ->
       t1 = Date.now!
       (e, b) <- fs.read-file f, _
       if e => throw new Error(e)
-      ret = (pug.render(b, ({} <<< opt <<< {filename: f, cache: lc.cache, basedir}) <<< pug-extapi))
+      ret = (pug.render(b, ({} <<< opt <<< {filename: f, cache: false, basedir}) <<< pug-extapi))
       t2 = Date.now!
       if lc.dev => log f, opt, t2 - t1, 'from pug', lc.cache
       cb null, ret

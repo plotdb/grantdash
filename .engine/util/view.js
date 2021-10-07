@@ -57,7 +57,7 @@
           if (e) {
             throw new Error(e);
           }
-          ret = pug.render(b, import$((ref$ = import$({}, opt), ref$.filename = f, ref$.cache = lc.cache, ref$.basedir = basedir, ref$), pugExtapi));
+          ret = pug.render(b, import$((ref$ = import$({}, opt), ref$.filename = f, ref$.cache = false, ref$.basedir = basedir, ref$), pugExtapi));
           t2 = Date.now();
           if (lc.dev) {
             log(f, opt, t2 - t1, 'from pug', lc.cache);
