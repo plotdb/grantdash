@@ -235,8 +235,14 @@ api.put \/detail/, aux.signed, grecaptcha, (req, res) ->
   cache.perm.check {io, user: req.user, type: type, slug, action: \owner}
     .then ->
       if type == \prj =>
-        cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
-          .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \prj-edit-own}
+        io.query "select state from prj where slug = $1 and deleted is not true", [slug]
+          .then (r = {}) ->
+            if !(p = r.[]rows.0) => return Promise.resolve(new lderror(1012))
+            if p.state == \pending =>
+              cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-publish"}
+            else
+              cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
+                .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \prj-edit-own}
       else Promise.resolve!
     .catch (e) ->
       if type == \prj => cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: \owner}
