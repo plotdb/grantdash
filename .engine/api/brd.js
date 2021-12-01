@@ -428,19 +428,35 @@
         action: 'owner'
       }).then(function(){
         if (type === 'prj') {
-          return cache.stage.check({
-            io: io,
-            type: 'brd',
-            slug: req.scope.brd,
-            name: "prj-edit"
-          })['catch'](function(){
-            return cache.perm.check({
-              io: io,
-              user: req.user,
-              type: 'brd',
-              slug: req.scope.brd,
-              action: 'prj-edit-own'
-            });
+          return io.query("select state from prj where slug = $1 and deleted is not true", [slug]).then(function(r){
+            var p;
+            r == null && (r = {});
+            if (!(p = (r.rows || (r.rows = []))[0])) {
+              return Promise.resolve(new lderror(1012));
+            }
+            if (p.state === 'pending') {
+              return cache.stage.check({
+                io: io,
+                type: 'brd',
+                slug: req.scope.brd,
+                name: "prj-publish"
+              });
+            } else {
+              return cache.stage.check({
+                io: io,
+                type: 'brd',
+                slug: req.scope.brd,
+                name: "prj-edit"
+              })['catch'](function(){
+                return cache.perm.check({
+                  io: io,
+                  user: req.user,
+                  type: 'brd',
+                  slug: req.scope.brd,
+                  action: 'prj-edit-own'
+                });
+              });
+            }
           });
         } else {
           return Promise.resolve();
