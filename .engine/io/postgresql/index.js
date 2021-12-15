@@ -155,10 +155,37 @@
         }
       }
     };
+    this.config = config;
+    this.uri = this.config.ioPg.uri;
+    this.pool = new pg.Pool({
+      connectionString: this.uri,
+      max: 30,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000
+    });
+    this.pool.on('error', function(err, client){
+      return console.error("db pool error".red);
+    });
     return this;
   };
-  ret.prototype = {
-    query: function(a, b, c){
+  ret.prototype = import$(Object.create(Object.prototype), {
+    aux: aux,
+    query: function(q, p){
+      return this.pool.connect().then(function(client){
+        return client.query(q, p).then(function(ret){
+          client.release();
+          return ret;
+        });
+      })['catch'](function(it){
+        return Promise.reject(new lderror({
+          err: it,
+          id: 0,
+          query: q,
+          message: "database query error"
+        }));
+      });
+    },
+    oldQuery: function(a, b, c){
       var debug, ref$, client, q, params, _query, this$ = this;
       b == null && (b = null);
       c == null && (c = null);
@@ -194,9 +221,8 @@
           });
         });
       });
-    },
-    aux: aux
-  };
+    }
+  });
   module.exports = ret;
   function import$(obj, src){
     var own = {}.hasOwnProperty;

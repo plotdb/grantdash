@@ -103,10 +103,30 @@ ret = (config) ->
             return null
           .catch -> [console.error("session.destroy",it),cb!]
         return null
+
+  @config = config
+  @uri = @config.io-pg.uri
+
+  @pool = new pg.Pool do
+    connectionString: @uri
+    max: 30
+    idleTimeoutMillis: 30000
+    connectionTimeoutMillis: 2000
+
+  @pool.on \error, (err, client) -> console.error "db pool error".red
   @
 
-ret.prototype = do
-  query: (a,b=null,c=null) ->
+ret.prototype = Object.create(Object.prototype) <<< do
+  aux: aux
+  query: (q, p) ->
+    @pool.connect!
+      .then (client) ->
+        (ret) <- client.query q, p .then _
+        client.release!
+        return ret
+      .catch ->
+        Promise.reject new lderror {err: it, id: 0, query: q, message: "database query error"}
+  old-query: (a,b=null,c=null) ->
     debug = Math.random!toString(16).substring(2)
     if typeof(a) == \string => [client,q,params] = [null,a,b]
     else => [client,q,params] = [a,b,c]
@@ -123,7 +143,6 @@ ret.prototype = do
     _query client, q, params
       .then (r) -> [done!, res r]
       .catch -> [done!, rej it]
-  aux: aux
 
 module.exports = ret
 
