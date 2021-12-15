@@ -78,7 +78,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
         .then ~> @prj.detail = JSON.parse(JSON.stringify(answer))
         .then ~> @ctrl-form.render!
         .then -> ldcvmgr.toggle \prj-published, true
-        .catch error!
+        .catch (e) ->
+          if e.id == 1012 => ldcvmgr.toggle('not-yet-available')
+          else error e
     @adapt!
 
   render: -> @view.render!

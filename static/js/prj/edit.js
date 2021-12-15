@@ -152,7 +152,13 @@ ldc.register(['auth', 'prjForm', 'loader', 'ldcvmgr', 'error'], function(arg$){
           return this$.ctrlForm.render();
         }).then(function(){
           return ldcvmgr.toggle('prj-published', true);
-        })['catch'](error());
+        })['catch'](function(e){
+          if (e.id === 1012) {
+            return ldcvmgr.toggle('not-yet-available');
+          } else {
+            return error(e);
+          }
+        });
       });
       return this.adapt();
     },
