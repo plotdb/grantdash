@@ -2,7 +2,7 @@
 (function(){
   var fs, colors, jsYaml, nodemailer, nodemailerMailgunTransport, md, aux, secret, mailgun, mailQueue;
   fs = require('fs');
-  colors = require('colors');
+  colors = require('@plotdb/colors');
   jsYaml = require('js-yaml');
   nodemailer = require('nodemailer');
   nodemailerMailgunTransport = require('nodemailer-mailgun-transport');

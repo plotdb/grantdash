@@ -1,4 +1,4 @@
-require! <[fs fs-extra LiveScript path colors uglify-js ./aux]>
+require! <[fs fs-extra LiveScript path @plotdb/colors uglify-js ./aux]>
 
 cwd = path.resolve process.cwd!
 

@@ -4,7 +4,7 @@
   pg = require('pg');
   crypto = require('crypto');
   bcrypt = require('bcrypt');
-  colors = require('colors');
+  colors = require('@plotdb/colors');
   aux = require('./aux');
   pg.defaults.poolSize = 30;
   ret = function(config){

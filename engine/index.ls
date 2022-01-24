@@ -1,6 +1,6 @@
 start-time = Date.now!
 
-require! <[fs fs-extra path crypto LiveScript chokidar moment]>
+require! <[fs fs-extra path crypto LiveScript chokidar moment @plotdb/colors]>
 require! <[express body-parser express-session connect-multiparty csurf express-rate-limit]>
 require! <[passport passport-local passport-facebook passport-google-oauth20]>
 require! <[nodemailer]>
@@ -8,7 +8,6 @@ require! <[sharedb-wrapper lderror]>
 require! <[./io/postgresql ./api ./ext ./util/view ./api/cache]>
 require! <[./aux ./util/throttle ./util/grecaptcha ./util/action ./watch ../secret ./watch/build/mod]>
 require! 'uglify-js': uglify-js, LiveScript: lsc
-colors = require \colors/safe
 mod-builder = require "./watch/build/mod"
 custom-builder = require "./watch/custom/"
 
@@ -282,18 +281,18 @@ backend = do
           return res.status 400 .send!
         else if err.message.startsWith \TokenError =>
           console.error(
-            colors.red.underline("[#{moment!format 'YY/MM/DD HH:mm:ss'}]"),
+            colors.red("[#{moment!format 'YY/MM/DD HH:mm:ss'}]"),
             colors.yellow(err.message)
             "[", color.yellow(req.originalUrl.substring(0,15)), "]"
           )
         else if err.message.startsWith 'Failed to lookup view' =>
           console.error(
-            colors.red.underline("[#{moment!format 'YY/MM/DD HH:mm:ss'}]"),
+            colors.red("[#{moment!format 'YY/MM/DD HH:mm:ss'}]"),
             colors.yellow(err.message)
           )
         else
           console.error(
-            colors.red.underline("[#{moment!format 'YY/MM/DD HH:mm:ss'}]"),
+            colors.red("[#{moment!format 'YY/MM/DD HH:mm:ss'}]"),
             colors.yellow(err.toString!)
             "["
             colors.yellow(err.path or '')
@@ -301,7 +300,7 @@ backend = do
             colors.yellow(req.originalUrl)
             "]"
           )
-          console.error colors.grey(err.stack)
+          console.error colors.gray(err.stack)
         res.status 500 .send!
     if config.build and config.watch =>
       watch.init config.build
