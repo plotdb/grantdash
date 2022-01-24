@@ -5,7 +5,7 @@
   fsExtra = require('fs-extra');
   LiveScript = require('LiveScript');
   path = require('path');
-  colors = require('colors');
+  colors = require('@plotdb/colors');
   uglifyJs = require('uglify-js');
   aux = require('./aux');
   cwd = path.resolve(process.cwd());

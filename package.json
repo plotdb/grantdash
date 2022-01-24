@@ -21,12 +21,12 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^5.16.1",
+    "@plotdb/colors": "^0.0.2",
     "LiveScript": "=1.3.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "browserify": "^16.2.3",
     "chokidar": "=3.0.0",
-    "colors": "=1.3.3",
     "connect-multiparty": "^2.2.0",
     "css-spinner": "git+https://github.com/loadingio/css-spinner.git",
     "csurf": "=1.9.0",
@@ -73,9 +73,9 @@
     "stylus": "^0.55.0",
     "suuid": "github:plotdb/suuid",
     "tmp": "^0.2.1",
-    "uploadr": "github:plotdb/uploadr#71cffa90808b8ed48a09861405a33158df2f0ae5",
     "uglify-js": "^3.2.0",
     "uglifycss": "^0.0.29",
+    "uploadr": "github:plotdb/uploadr#71cffa90808b8ed48a09861405a33158df2f0ae5",
     "ws": "^7.5.6"
   }
 }
