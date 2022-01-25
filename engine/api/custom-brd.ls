@@ -85,6 +85,7 @@ api.post \/custom/print, throttle.count.user, grecaptcha, (req, res) ->
     .then -> res.send it
     .catch aux.error-handler res
 
+/*
 # update project for customized board
 api.post \/flagship/prj/, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
@@ -142,3 +143,4 @@ api.post \/flagship/prj/, grecaptcha, (req, res) ->
           .then (r={}) ->
             res.send (r.[]rows.0 or {}) <<< lc{slug, system, state}
     .catch aux.error-handler res
+*/
