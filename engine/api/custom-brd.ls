@@ -14,11 +14,15 @@ gcs = new storage.Storage secret.gcs
 api = engine.router.api
 app = engine.app
 
-# custom board APIs
+# custom board Endpoint APIs
 # POST /gcs/upload                {field, brd, owner}
 # GET  /gcs/upload/:brd/:id
 # POST /custom/prj                ......
 # POST /custom/print              {html}
+
+# Functional API
+# file-url({id, req, res}): get signed url from `id`.
+
 
 file-url = ({id, req, res}) ->
   lc = {}
