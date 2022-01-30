@@ -1,0 +1,79 @@
+{
+  "_from": "ldnotify@0.0.5",
+  "_id": "ldnotify@0.0.5",
+  "_inBundle": false,
+  "_integrity": "sha512-XMkkg9pLeNYSnvT2T5yDOrPk45oKn1+6Psu38o9AVhJnajd7JaaNPjQyicJvLW3JKedZ9q9IKv2ymqIRIUQhGw==",
+  "_location": "/ldnotify",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "ldnotify@0.0.5",
+    "name": "ldnotify",
+    "escapedName": "ldnotify",
+    "rawSpec": "0.0.5",
+    "saveSpec": null,
+    "fetchSpec": "0.0.5"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ldnotify/-/ldnotify-0.0.5.tgz",
+  "_shasum": "6efbd27a702104c2cc1aff01237f9cdb5a1c9310",
+  "_spec": "ldnotify@0.0.5",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/loadingio/ldnotify/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "simple notification widget",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/ldquery": "^3.0.1",
+    "@loadingio/loading.css": "^3.0.0",
+    "@loadingio/transition.css": "^3.0.0",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.2",
+    "bootstrap.native": "^3.0.13",
+    "fedep": "^1.1.0",
+    "ldview": "^1.0.0",
+    "stylus": "^0.55.0",
+    "uglify-js": "^3.13.1",
+    "uglifycss": "^0.0.29"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "bootstrap.native",
+      "@loadingio/bootstrap.ext",
+      "@loadingio/ldquery",
+      "@loadingio/debounce.js",
+      "@loadingio/loading.css",
+      "@loadingio/transition.css",
+      "ldview"
+    ]
+  },
+  "homepage": "https://github.com/loadingio/ldnotify",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "ldnotify",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/ldnotify.git"
+  },
+  "scripts": {
+    "start": "npx server -r web -o true"
+  },
+  "style": "index.min.css",
+  "version": "0.0.5"
+}

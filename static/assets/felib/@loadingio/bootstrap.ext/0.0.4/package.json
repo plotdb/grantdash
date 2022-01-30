@@ -1,0 +1,82 @@
+{
+  "_from": "@loadingio/bootstrap.ext@^0.0.4",
+  "_id": "@loadingio/bootstrap.ext@0.0.4",
+  "_inBundle": false,
+  "_integrity": "sha512-S8eZAkFztUh416KnjBpMk0JYyAofpFFcyx7H8+SCmuydKCLrVPhNeEZ+9WueyBQXhrwByug2yhZwmaS5RBtUDA==",
+  "_location": "/@loadingio/bootstrap.ext",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@loadingio/bootstrap.ext@^0.0.4",
+    "name": "@loadingio/bootstrap.ext",
+    "escapedName": "@loadingio%2fbootstrap.ext",
+    "scope": "@loadingio",
+    "rawSpec": "^0.0.4",
+    "saveSpec": null,
+    "fetchSpec": "^0.0.4"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@loadingio/bootstrap.ext/-/bootstrap.ext-0.0.4.tgz",
+  "_shasum": "d6fb7d8ffffdb35de57c0a69a76367ee0c16586e",
+  "_spec": "@loadingio/bootstrap.ext@^0.0.4",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "bugs": {
+    "url": "https://github.com/loadingio/bootstrap.ext/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "bootstrap extension used by loading.io",
+  "devDependencies": {
+    "@loadingio/ldc": "^0.0.2",
+    "@loadingio/ldquery": "^3.0.1",
+    "@zbryikt/deploy": "^0.0.1",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.3",
+    "bootstrap.native": "^3.0.15",
+    "fedep": "^1.1.0",
+    "ldcover": "^3.0.1",
+    "ldiconfont": "^0.1.7",
+    "ldnotify": "^0.0.1",
+    "ldslider": "^3.0.2",
+    "livescript": "^1.6.0",
+    "stylus": "^0.55.0",
+    "template-text": "^0.1.2",
+    "uglify-js": "^3.13.1",
+    "uglifycss": "^0.0.29"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "bootstrap.native",
+      "ldcover",
+      "ldnotify",
+      "ldslider",
+      "@loadingio/ldquery",
+      "@loadingio/ldc",
+      "ldiconfont"
+    ]
+  },
+  "homepage": "https://github.com/loadingio/bootstrap.ext",
+  "license": "MIT",
+  "name": "@loadingio/bootstrap.ext",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/bootstrap.ext.git"
+  },
+  "scripts": {
+    "start": "npx server -r web -o true"
+  },
+  "style": "index.min.css",
+  "version": "0.0.4"
+}

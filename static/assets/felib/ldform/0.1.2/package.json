@@ -1,0 +1,55 @@
+{
+  "_from": "ldform@^0.1.2",
+  "_id": "ldform@0.1.2",
+  "_inBundle": false,
+  "_integrity": "sha512-OMSXXCYRxXp6c+1x+Shrq+ZhedqAeYvuw/V1ViskeUz4PFcsDxxtZwE6I9ZqcHXHmJ4/1YegUk1stsCa8wE9hw==",
+  "_location": "/ldform",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "ldform@^0.1.2",
+    "name": "ldform",
+    "escapedName": "ldform",
+    "rawSpec": "^0.1.2",
+    "saveSpec": null,
+    "fetchSpec": "^0.1.2"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ldform/-/ldform-0.1.2.tgz",
+  "_shasum": "37ec5bfa9f922c544f6347e6102e2b18d10964d2",
+  "_spec": "ldform@^0.1.2",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/loadingio/ldform/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "form validation tool",
+  "devDependencies": {
+    "fedep": "^1.1.0",
+    "livescript": "^1.6.0",
+    "stylus": "^0.55.0",
+    "uglify-js": "^3.13.1",
+    "uglifycss": "0.0.29"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "homepage": "https://github.com/loadingio/ldform",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "ldform",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/ldform.git"
+  },
+  "version": "0.1.2"
+}

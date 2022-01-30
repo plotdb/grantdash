@@ -1,0 +1,84 @@
+{
+  "_from": "@plotdb/csscope@^4.0.0",
+  "_id": "@plotdb/csscope@4.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-ZR6cfp3vkkpGwa/LdiFSxe2b3No0LgaVooG7QAKJy0TBW3UrGeYihLWTe9RRwF2fAXAHV7te4QaB5d2ve0Ac6w==",
+  "_location": "/@plotdb/csscope",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@plotdb/csscope@^4.0.0",
+    "name": "@plotdb/csscope",
+    "escapedName": "@plotdb%2fcsscope",
+    "scope": "@plotdb",
+    "rawSpec": "^4.0.0",
+    "saveSpec": null,
+    "fetchSpec": "^4.0.0"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@plotdb/csscope/-/csscope-4.0.0.tgz",
+  "_shasum": "d763effa3eba47cbebd03942404e6b71fdd19d34",
+  "_spec": "@plotdb/csscope@^4.0.0",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/plotdb/csscope/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@plotdb/semver": "^0.0.2",
+    "node-fetch": "^3.2.0"
+  },
+  "deprecated": false,
+  "description": "add scope to any css code",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/debounce.js": "^1.0.1",
+    "@loadingio/ldquery": "^3.0.2",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.2",
+    "bootstrap.native": "^3.0.13",
+    "fedep": "^1.1.2",
+    "jsdom": "^19.0.0",
+    "ldcover": "^3.0.1",
+    "ldview": "^1.0.0",
+    "livescript": "^1.6.0",
+    "puppeteer-core": "^11.0.0",
+    "uglify-js": "^3.13.1"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "bootstrap.native",
+      "@loadingio/bootstrap.ext",
+      "@loadingio/ldquery",
+      "@loadingio/debounce.js",
+      "@plotdb/semver",
+      "ldview",
+      "ldcover"
+    ]
+  },
+  "homepage": "https://github.com/plotdb/csscope",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "@plotdb/csscope",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plotdb/csscope.git"
+  },
+  "scripts": {
+    "start": "npx server -r web -o true"
+  },
+  "version": "4.0.0"
+}

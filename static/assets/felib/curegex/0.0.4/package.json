@@ -1,0 +1,77 @@
+{
+  "_from": "curegex@^0.0.4",
+  "_id": "curegex@0.0.4",
+  "_inBundle": false,
+  "_integrity": "sha512-t9edbg39qyotqE1Sy1JQOR1wt2elh2jWCztORLwCyxnm1PSy3SLf2IiRclX6qKTP7piL81vzD9qPhsvNS5sNuQ==",
+  "_location": "/curegex",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "curegex@^0.0.4",
+    "name": "curegex",
+    "escapedName": "curegex",
+    "rawSpec": "^0.0.4",
+    "saveSpec": null,
+    "fetchSpec": "^0.0.4"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/curegex/-/curegex-0.0.4.tgz",
+  "_shasum": "32395289e6da5bb73bb39e0ac6e0ac04c8a8471b",
+  "_spec": "curegex@^0.0.4",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "bugs": {
+    "url": "https://github.com/plotdb/curegex/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Commonly Used REGular EXpressions",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/ldquery": "^3.0.2",
+    "@zbryikt/deploy": "^0.0.1",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.3",
+    "bootstrap.native": "^3.0.14",
+    "clipboard": "^2.0.6",
+    "fedep": "^1.1.2",
+    "js-yaml": "^3.14.1",
+    "ldview": "^1.0.0",
+    "livescript": "^1.6.0",
+    "re2": "^1.15.9",
+    "safe-regex": "^2.1.1",
+    "uglify-js": "^3.13.1"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "bootstrap.native",
+      "@loadingio/bootstrap.ext",
+      "@loadingio/ldquery",
+      "clipboard",
+      "ldview"
+    ]
+  },
+  "homepage": "https://github.com/plotdb/curegex",
+  "license": "MIT",
+  "main": "main.js",
+  "name": "curegex",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plotdb/curegex.git"
+  },
+  "scripts": {
+    "start": "npx server -r web -o true"
+  },
+  "version": "0.0.4"
+}

@@ -6,22 +6,27 @@ html
   block vars
   head
     block prehead
-    +css({name: "bootstrap", version: "4.6.1", path: "css/bootstrap.min.css"})
-    +css({name: "@loadingio/bootstrap.ext", version: "0.0.3", path: "index.min.css"})
-    +css({name: "ldcover", version: "2.1.0"})
-    +css({name: "ldloader", version: "2.1.0"})
+    +css([
+      {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
+      {name: "@loadingio/bootstrap.ext", path: "index.min.css"},
+      {name: "ldcover"},
+      {name: "ldloader"}
+    ])
     block head
   body
     block body
-    +script({name: "proxise", version: "0.1.6"})
-    +script({name: "@loadingio/debounce.js", version: "0.0.1", path: "debounce.min.js"})
-    +script({name: "@loadingio/ldquery", version: "2.2.1", path: "ldq.min.js"})
-    +script({name: "i18next", version: "21.6.0", path: "umd/i18next.min.js"})
-    +script({name: "i18next-browser-languagedetector", version: "6.1.2", path: "umd/i18nextBrowserLanguageDetector.min.js"})
-    +script({name: "ldview", version: "0.2.7"})
-    +script({name: "ldcover", version: "2.1.0"})
-    +script({name: "ldloader", version: "2.1.0"})
-    +script({name: "@plotdb/rescope", version: "4.0.2"})
-    +script({name: "@plotdb/csscope", version: "3.0.1"})
-    +script({name: "@plotdb/block", version: "3.0.2"})
+    +script([
+      {name: "proxise"},
+      {name: "@loadingio/debounce.js"},
+      {name: "@loadingio/ldquery"},
+      {name: "i18next", path: "dist/umd/i18next.min.js"},
+      {name: "i18next-browser-languagedetector", path: "dist/umd/i18nextBrowserLanguageDetector.min.js"},
+      {name: "ldview"},
+      {name: "ldcover"},
+      {name: "ldloader"},
+      {name: "@plotdb/semver"},
+      {name: "@plotdb/rescope"},
+      {name: "@plotdb/csscope"},
+      {name: "@plotdb/block"} 
+    ])
     block script

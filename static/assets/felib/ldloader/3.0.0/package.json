@@ -1,0 +1,81 @@
+{
+  "_from": "ldloader@^3.0.0",
+  "_id": "ldloader@3.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-GiCUn9Y20PPp02vEzBcaVuofVMGF66uCIqwL7szVAkaXDwQ68uP8X7Eu7OAy1bx8thvZKm5TCMb3wjVfusKPKg==",
+  "_location": "/ldloader",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "ldloader@^3.0.0",
+    "name": "ldloader",
+    "escapedName": "ldloader",
+    "rawSpec": "^3.0.0",
+    "saveSpec": null,
+    "fetchSpec": "^3.0.0"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ldloader/-/ldloader-3.0.0.tgz",
+  "_shasum": "4b383d206746c82c157369d9ef5b7f346d6bf23e",
+  "_spec": "ldloader@^3.0.0",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/loadingio/ldloader/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "loader manipulation library",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/debounce.js": "^1.0.1",
+    "@loadingio/ldquery": "^3.0.1",
+    "@loadingio/loading.css": "^3.0.0",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.3",
+    "fedep": "^1.1.0",
+    "ldbutton": "^1.0.2",
+    "ldcover": "^3.0.1",
+    "livescript": "^1.6.0",
+    "stylus": "^0.55.0",
+    "uglify-js": "^3.13.1",
+    "uglifycss": "^0.0.29",
+    "zmgr": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "@loadingio/ldquery",
+      "@loadingio/loading.css",
+      "@loadingio/debounce.js",
+      "ldbutton",
+      "ldcover",
+      "bootstrap",
+      "@loadingio/bootstrap.ext",
+      "zmgr"
+    ]
+  },
+  "homepage": "https://loading.io/lib/loader/",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "ldloader",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/ldloader.git"
+  },
+  "scripts": {
+    "start": "npx server -r web -o true"
+  },
+  "style": "index.min.css",
+  "version": "3.0.0"
+}
