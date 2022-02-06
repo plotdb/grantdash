@@ -36,8 +36,9 @@ app.get \/flagship/, aux.signed, (req, res) ->
     .catch aux.error-handler res
 
 api.post \/flagship/upload, (req, res) ->
+  return aux.r404 res
   lc = {}
-  if !(req.user and req.user.key) => return
+  if !(req.user and req.user.key) => return aux.r404 res
   owner = req.body.owner or req.user.key
   field = req.body.field or 'plan'
   brd = req.body.brd or \flagship-2

@@ -31,12 +31,12 @@ file-url = ({id, req, res}) ->
       if !(lc.ret = ret = r.[]rows.0) => return aux.reject 404
       if ret.owner == req.user.key => return true
       cache.perm.check {io, type: \brd, slug: ret.brd, user: req.user, action: <[judge owner]>}
-    .catch ->
-      io.query """
-      select owner from perm_judge where brd = $1 and owner = $2
-      """, [lc.ret.brd, req.user.key]
-        .then (r={}) ->
-          if !(r.[]rows.length) => return aux.reject 403
+        .catch ->
+          io.query """
+          select owner from perm_judge where brd = $1 and owner = $2
+          """, [lc.ret.brd, req.user.key]
+            .then (r={}) ->
+              if !(r.[]rows.length) => return aux.reject 403
     .then ->
       gcs
        .bucket secret.gcs.bucket
@@ -51,11 +51,13 @@ api.post \/gcs/upload, aux.signed, (req, res) ->
   owner = req.body.owner or req.user.key
   if !(field = req.body.field) => return aux.r400 res
   if !(brd = req.body.brd) => return aux.r404 res
-  p = if owner != req.user.key => cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[owner]>}
-  else Promise.resolve!
-  p
+  cache.stage.check {io, type: \brd, slug: brd, name: \prj-edit}
+    .then ->
+      if owner != req.user.key =>
+        return cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[owner]>}
+      else Promise.resolve!
     # always write to new file so we can keep track of old files
-    .then -> lc.id = suuid!
+    .then -> lc.id = "#brd/#{suuid!}"
     .then ->
       gcs
        .bucket secret.gcs.bucket

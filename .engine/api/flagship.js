@@ -82,9 +82,10 @@
     });
     api.post('/flagship/upload', function(req, res){
       var lc, owner, field, brd, p;
+      return aux.r404(res);
       lc = {};
       if (!(req.user && req.user.key)) {
-        return;
+        return aux.r404(res);
       }
       owner = req.body.owner || req.user.key;
       field = req.body.field || 'plan';
@@ -278,35 +279,69 @@
       })['catch'](aux.errorHandler(res));
     });
     api.post('/future-content/prj/', grecaptcha, function(req, res){
-      var ref$, slug, note, brd;
+      var ref$, slug, note, file, brd, p1, p2;
       if (!(req.user && req.user.key)) {
         return aux.r403(res);
       }
       if (!req.body) {
         return aux.r403(res);
       }
-      ref$ = req.body, slug = ref$.slug, note = ref$.note;
+      ref$ = req.body, slug = ref$.slug, note = ref$.note, file = ref$.file;
+      console.log('here', file);
       if (!slug) {
         return aux.r403(res);
       }
       brd = 'future-content';
-      return cache.perm.check({
-        io: io,
-        type: 'brd',
-        slug: brd,
-        user: req.user,
-        action: ['owner']
-      }).then(function(){
-        return io.query("select detail from prj where brd = $1 and slug = $2", [brd, slug]);
-      }).then(function(r){
-        var detail, ref$;
-        r == null && (r = {});
-        if (!((r.rows || (r.rows = []))[0] && (detail = r.rows[0].detail))) {
-          return aux.reject(404);
-        }
-        ((ref$ = detail.custom || (detail.custom = {})).raw || (ref$.raw = {}))["註"] = note;
-        return io.query("update prj set detail = $3 where brd = $1 and slug = $2", [brd, slug, detail]);
-      }).then(function(){
+      p1 = file
+        ? cache.perm.check({
+          io: io,
+          type: 'prj',
+          slug: slug,
+          user: req.user,
+          action: ['owner']
+        })['catch'](function(){
+          return cache.perm.check({
+            io: io,
+            type: 'brd',
+            slug: brd,
+            user: req.user,
+            action: ['owner']
+          });
+        }).then(function(){
+          return io.query("select detail from prj where brd = $1 and slug = $2", [brd, slug]);
+        }).then(function(r){
+          var detail, k, ref$, v, ref1$;
+          r == null && (r = {});
+          if (!((r.rows || (r.rows = []))[0] && (detail = r.rows[0].detail))) {
+            return aux.reject(404);
+          }
+          for (k in ref$ = file) {
+            v = ref$[k];
+            ((ref1$ = detail.custom || (detail.custom = {})).file || (ref1$.file = {}))[k] = v;
+          }
+          return io.query("update prj set detail = $3 where brd = $1 and slug = $2", [brd, slug, detail]);
+        })
+        : Promise.resolve();
+      p2 = note
+        ? cache.perm.check({
+          io: io,
+          type: 'brd',
+          slug: brd,
+          user: req.user,
+          action: ['owner']
+        }).then(function(){
+          return io.query("select detail from prj where brd = $1 and slug = $2", [brd, slug]);
+        }).then(function(r){
+          var detail, ref$;
+          r == null && (r = {});
+          if (!((r.rows || (r.rows = []))[0] && (detail = r.rows[0].detail))) {
+            return aux.reject(404);
+          }
+          ((ref$ = detail.custom || (detail.custom = {})).raw || (ref$.raw = {}))["註"] = note;
+          return io.query("update prj set detail = $3 where brd = $1 and slug = $2", [brd, slug, detail]);
+        })
+        : Promise.resolve();
+      return Promise.all([p1, p2]).then(function(){
         return res.send();
       })['catch'](aux.errorHandler(res));
     });

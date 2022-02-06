@@ -51,13 +51,13 @@
           slug: ret.brd,
           user: req.user,
           action: ['judge', 'owner']
-        });
-      })['catch'](function(){
-        return io.query("select owner from perm_judge where brd = $1 and owner = $2", [lc.ret.brd, req.user.key]).then(function(r){
-          r == null && (r = {});
-          if (!(r.rows || (r.rows = [])).length) {
-            return aux.reject(403);
-          }
+        })['catch'](function(){
+          return io.query("select owner from perm_judge where brd = $1 and owner = $2", [lc.ret.brd, req.user.key]).then(function(r){
+            r == null && (r = {});
+            if (!(r.rows || (r.rows = [])).length) {
+              return aux.reject(403);
+            }
+          });
         });
       }).then(function(){
         return gcs.bucket(secret.gcs.bucket).file(id).getSignedUrl({
@@ -70,7 +70,7 @@
       });
     };
     api.post('/gcs/upload', aux.signed, function(req, res){
-      var lc, owner, field, brd, p;
+      var lc, owner, field, brd;
       lc = {};
       if (!(req.user && req.user.key)) {
         return aux.r403(res);
@@ -82,17 +82,25 @@
       if (!(brd = req.body.brd)) {
         return aux.r404(res);
       }
-      p = owner !== req.user.key
-        ? cache.perm.check({
-          io: io,
-          type: 'brd',
-          slug: brd,
-          user: req.user,
-          action: ['owner']
-        })
-        : Promise.resolve();
-      return p.then(function(){
-        return lc.id = suuid();
+      return cache.stage.check({
+        io: io,
+        type: 'brd',
+        slug: brd,
+        name: 'prj-edit'
+      }).then(function(){
+        if (owner !== req.user.key) {
+          return cache.perm.check({
+            io: io,
+            type: 'brd',
+            slug: brd,
+            user: req.user,
+            action: ['owner']
+          });
+        } else {
+          return Promise.resolve();
+        }
+      }).then(function(){
+        return lc.id = brd + "/" + suuid();
       }).then(function(){
         return gcs.bucket(secret.gcs.bucket).file(lc.id).getSignedUrl({
           action: 'write',
@@ -122,98 +130,13 @@
         return res.status(302).redirect(it);
       })['catch'](aux.errorHandler(res));
     });
-    api.post('/custom/print', throttle.count.user, grecaptcha, function(req, res){
+    return api.post('/custom/print', throttle.count.user, grecaptcha, function(req, res){
       var lc;
       lc = {};
       return printer.print({
         html: req.body.html
       }).then(function(it){
         return res.send(it);
-      })['catch'](aux.errorHandler(res));
-    });
-    return api.post('/flagship/prj/', grecaptcha, function(req, res){
-      var lc, ref$, name, description, detail, key, submit, slug, brd, p;
-      if (!(req.user && req.user.key)) {
-        return aux.r403(res);
-      }
-      lc = {};
-      ref$ = req.body, name = ref$.name, description = ref$.description, detail = ref$.detail, key = ref$.key, submit = ref$.submit, slug = ref$.slug, brd = ref$.brd;
-      detail = {
-        custom: detail
-      };
-      lc.state = submit ? "active" : "pending";
-      p = slug
-        ? io.query("select * from prj\nwhere deleted is not true and brd = $1 and slug = $2", [brd, slug])
-        : io.query("select * from prj\nwhere deleted is not true and brd = $1 and owner = $2", [brd, req.user.key]);
-      return p.then(function(r){
-        r == null && (r = {});
-        lc.prj = (r.rows || (r.rows = []))[0];
-        if (lc.prj && lc.prj.state === 'active') {
-          return aux.reject(403);
-        }
-        if (lc.prj && lc.prj.owner !== req.user.key) {
-          return cache.perm.check({
-            io: io,
-            user: req.user,
-            type: 'brd',
-            slug: brd,
-            action: 'owner'
-          });
-        } else {
-          return Promise.resolve();
-        }
-      }).then(function(){
-        return cache.stage.check({
-          io: io,
-          type: 'brd',
-          slug: brd,
-          name: !lc.prj ? 'prj-new' : 'prj-edit'
-        })['catch'](function(){
-          return Promise.reject(new lderror(1012));
-        })['catch'](function(){
-          return cache.perm.check({
-            io: io,
-            user: req.user,
-            type: 'brd',
-            slug: brd,
-            action: ['prj-edit-own', 'owner']
-          });
-        });
-      }).then(function(){
-        return io.query("select org, slug, key, detail->'group' as group from brd where slug = $1", [brd]);
-      }).then(function(r){
-        var ref$;
-        r == null && (r = {});
-        if (!(lc.brd = (r.rows || (r.rows = []))[0])) {
-          return aux.reject(404);
-        }
-        if (!(lc.grp = ((ref$ = lc.brd).group || (ref$.group = [])).filter(function(it){
-          var ref$;
-          return (it.info || (it.info = {})).name === ((ref$ = detail.custom).form || (ref$.form = {})).group;
-        })[0])) {
-          return aux.reject(404);
-        }
-      }).then(function(){
-        if (lc.prj) {
-          return io.query("update prj set (name,description,detail,grp,state) = ($2,$3,$4,$5,$6)\nwhere key = $1", [lc.prj.key, name, description, JSON.stringify(detail), lc.grp.key, lc.state]).then(function(){
-            return res.send({
-              state: lc.state
-            });
-          });
-        } else {
-          return io.query("select count(key) as count from prj where\ndeleted is not true and brd = $1", [brd]).then(function(r){
-            r == null && (r = {});
-            lc.system = {
-              idx: +(((r.rows || (r.rows = []))[0] || {}).count || 0) + 1
-            };
-            lc.slug = suuid();
-            return io.query("insert into prj (name,description,brd,grp,slug,detail,owner,state,system)\nvalues ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning key", [name, description, brd, lc.grp.key, lc.slug, JSON.stringify(detail), req.user.key, lc.state, JSON.stringify(lc.system)]);
-          }).then(function(r){
-            var ref$;
-            r == null && (r = {});
-            return res.send((ref$ = (r.rows || (r.rows = []))[0] || {}, ref$.slug = lc.slug, ref$.system = lc.system, ref$.state = lc.state, ref$));
-          });
-        }
       })['catch'](aux.errorHandler(res));
     });
   });
