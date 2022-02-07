@@ -62,11 +62,12 @@ a block view should provide an interface with following members:
        - `prj`: project object ( `{slug, owner}` )
      - `upload({file, progress})`: upload a file to server.
        - `file`: blob to upload
-       - `progress({percent})`: cacllback for monitoring upload progress. ( optional )
+       - `progress({percent})`: callback for monitoring upload progress. ( optional )
      - `save({name,description,data,submit})`: save project.
        - `name`, `description`: name and description of this project.
        - `data`: self-customized JSON object to representing this project.
        - `submit`: true to change project state to `active` from `pending`. default false.
+     - `print({html, name})`: print given `html` and download it as a file named `name`.
  - `load(data)`: called to load data from server into view
    - `load` should only be called after `adapt` is called
    - Parameters:

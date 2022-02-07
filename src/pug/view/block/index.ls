@@ -8,9 +8,23 @@ ldc.register "blockbase",
     user = (global.user or {})
     owner = prj.owner or user.key or 0
     uploadr = new blockuploader {brd, owner}
+
     host =
       info: {prj: prj{slug}, user: user{key, username, displayname}}
       upload: (o) -> uploadr.upload o .catch error!
+      print: (opt = {}) ->
+        html = opt.html or ""
+        name = opt.name or "download.pdf"
+        ldld.on!
+        auth.recaptcha.get!then (recaptcha) ->
+          ld$.fetch(
+            "/dash/api/custom/print"
+            {method: "POST"}
+            {json: {html, recaptcha}, type: \blob, timeout: 60 * 1000}
+          )
+            .then (blob) -> ldfile.download {blob, mime: "application/pdf", name}
+            .finally -> ldld.off!
+
       save: ({name, description, data, submit}) ->
         ldcvmgr.toggle (if submit => \submitting else \saving), true
         debounce 1000
