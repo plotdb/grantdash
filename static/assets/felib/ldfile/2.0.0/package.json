@@ -1,0 +1,75 @@
+{
+  "_from": "ldfile",
+  "_id": "ldfile@2.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-7G+UqMDSCvRUMwJKM+Cbhp+4M1kLRjxMPDpURrSac71+RJTdsZk10v1j7JVI2MeqKb6PlWw6HcZXKjQ2gd+RxQ==",
+  "_location": "/ldfile",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "ldfile",
+    "name": "ldfile",
+    "escapedName": "ldfile",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ldfile/-/ldfile-2.0.0.tgz",
+  "_shasum": "3226b3edae4b41362a2de5e7cedbb58504daabf5",
+  "_spec": "ldfile",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/loadingio/ldfile/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "file loader helper in vanilla JS",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/ldquery": "^3.0.1",
+    "@zbryikt/deploy": "^0.0.1",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.3",
+    "bootstrap.native": "^3.0.13",
+    "fedep": "^1.1.0",
+    "ldcover": "^3.0.1",
+    "livescript": "^1.6.0",
+    "uglify-js": "^3.13.1"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "@loadingio/bootstrap.ext",
+      "bootstrap.native",
+      "@loadingio/ldquery",
+      "ldcover"
+    ]
+  },
+  "homepage": "https://github.com/loadingio/ldfile",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "ldfile",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/ldfile.git"
+  },
+  "scripts": {
+    "deploy": "npx deploy static/web",
+    "start": "npx server -r web -o true"
+  },
+  "version": "2.0.0"
+}
