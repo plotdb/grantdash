@@ -1,0 +1,35 @@
+//- module
+.ldcv.ldcvmgr(data-name="submitting",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+  .text-center
+    div 送件中 ...
+    .ld.ld-spin.ld-spinner.text-lg.mt-4
+
+.ldcv.ldcvmgr(data-name="submitted",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+  .text-center
+    h2 您的案件已送出
+    p 請下載申請書 PDF 檔，印出紙本後用印寄回，以利後續作業。
+    p 送件後無法繼續編輯。若您發現有任何問題需要修正，請洽承辦人員。
+    .btn.btn-lg.btn-outline-primary.btn-block(data-ldcv-set="") 關閉
+
+.ldcv.ldcvmgr(data-name="saving",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+  .text-center
+    div 暫存進度中 ...
+    .ld.ld-spin.ld-spinner.text-lg.mt-4
+
+.ldcv.ldcvmgr(data-name="saved",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+  .text-center
+    h2 您的編輯進度已儲存。
+  .py-4
+    p 您隨時可以回到這個頁面繼續編輯。若需要回到此頁，請由網頁右上角的下拉選單中點選「個人頁面」，即可找到您建立的案件。
+  .btn.btn-lg.btn-primary.btn-block.ld-ext-right(data-ldcv-set="") 關閉
+
+.ldcv.ldcvmgr(data-name="print-timeout",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
+  .text-center
+    h2 連線逾時
+  .py-4: p 主機沒有在一定的時間內產生 PDF 檔，可能是因為服務忙碌中。您可以稍候再重試一次，或者直接將此頁面列印成 PDF 檔做為您的申請書。
+  .row
+    .col-md
+      .btn.btn-lg.btn-block.btn-outline-primary.btn-block(
+      onclick="lda.ldcvmgr.toggle('flagship-print-timeout',false).then(function(){print()})") 列印此頁面
+    .col-md
+      .btn.btn-lg.btn-block.btn-primary(data-ldcv-set="") 稍候再試

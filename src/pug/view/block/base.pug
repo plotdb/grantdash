@@ -1,6 +1,7 @@
 //- module
 doctype html
 html
+  include /modules/common.pug
   include lib.pug
   - libLoader.root("/dash/assets/felib")
   block vars
@@ -9,11 +10,14 @@ html
     +css([
       {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
       {name: "@loadingio/bootstrap.ext", path: "index.min.css"},
+      {name: "@loadingio/loading.css", path: "loading.min.css"},
+      {name: "ldbutton"},
       {name: "ldcover"},
       {name: "ldloader"}
     ])
     block head
   body
+    include covers.pug
     block body
     script(src="https://browser.sentry-cdn.com/5.23.0/bundle.tracing.min.js"
     integrity="sha384-lSZkoLgJeNT+V/zBEZAchPik9VPNr9wvgAY6mwoMK5SO/cMsK/whVXKKdQOL1oiw"
@@ -41,6 +45,7 @@ html
       {name: "@plotdb/csscope"},
       {name: "@plotdb/block"} 
     ])
+    +register-locals("exports", true)
     script(type="module"): include:lsc index.ls
     script(type="module"): include:lsc upload.ls
     block script
