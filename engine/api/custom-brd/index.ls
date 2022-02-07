@@ -1,8 +1,7 @@
 require! <[fs fs-extra path crypto lderror suuid mime-types suuid puppeteer tmp easy-pdf-merge request]>
-require! <[../aux ./cache ./common ../util/grecaptcha ../util/throttle]>
+require! <[../../aux ../cache ../common ../printer ../../util/grecaptcha ../../util/throttle]>
 require! <[@google-cloud/storage]>
-require! <[../../secret]>
-require! <[./printer]>
+require! <[../../../secret]>
 
 printer = printer.get!
 
@@ -13,16 +12,6 @@ gcs = new storage.Storage secret.gcs
 
 api = engine.router.api
 app = engine.app
-
-# custom board Endpoint APIs
-# POST /gcs/upload                {field, brd, owner}
-# GET  /gcs/upload/:brd/:id
-# POST /custom/prj                ......
-# POST /custom/print              {html}
-
-# Functional API
-# file-url({id, req, res}): get signed url from `id`.
-
 
 file-url = ({id, req, res}) ->
   lc = {}
@@ -80,20 +69,12 @@ app.get \/gcs/upload/:brd/:id, aux.signed, (req, res) ->
     .then -> return res.status(302).redirect(it)
     .catch aux.error-handler res
 
-# download project as pdf
-api.post \/custom/print, throttle.count.user, grecaptcha, (req, res) ->
-  lc = {}
-  printer.print {html: req.body.html}
-    .then -> res.send it
-    .catch aux.error-handler res
-
-/*
 # update project for customized board
-api.post \/flagship/prj/, grecaptcha, (req, res) ->
+api.post \/custom/prj/, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
-  {name,description,detail,key,submit,slug,brd} = req.body
-  detail = {custom: detail}
+  {name,description,custom,submit,slug,brd} = req.body
+  detail = {custom}
   lc.state = if submit => "active" else "pending"
   p = if slug =>
     io.query """
@@ -119,7 +100,10 @@ api.post \/flagship/prj/, grecaptcha, (req, res) ->
     .then -> io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]
     .then (r={}) ->
       if !(lc.brd = r.[]rows.0) => return aux.reject 404
-      if !(lc.grp = lc.brd.[]group.filter(->it.{}info.name == detail.custom.{}form.group).0) => return aux.reject 404
+      # only if we let users choose their group
+      # if !(lc.grp = lc.brd.[]group.filter(->it.{}info.name == detail.custom.{}form.group).0) =>
+      #   return aux.reject 404
+      if !(lc.grp = lc.brd.[]group.0) => return aux.reject 404
     .then ->
       if lc.prj =>
         io.query """
@@ -145,4 +129,10 @@ api.post \/flagship/prj/, grecaptcha, (req, res) ->
           .then (r={}) ->
             res.send (r.[]rows.0 or {}) <<< lc{slug, system, state}
     .catch aux.error-handler res
-*/
+
+# download project as pdf
+api.post \/custom/print, throttle.count.user, grecaptcha, (req, res) ->
+  lc = {}
+  printer.print {html: req.body.html}
+    .then -> res.send it
+    .catch aux.error-handler res
