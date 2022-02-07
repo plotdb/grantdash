@@ -2,6 +2,10 @@ require! <[fs fs-extra path crypto lderror suuid mime-types suuid puppeteer tmp 
 require! <[../../aux ../cache ../common ../printer ../../util/grecaptcha ../../util/throttle]>
 require! <[@google-cloud/storage]>
 require! <[../../../secret]>
+require! <[jsdom dompurify]>
+
+{ window } = new jsdom.JSDOM "<!DOCTYPE html>"
+purify = dompurify window
 
 printer = printer.get!
 
@@ -133,6 +137,7 @@ api.post \/custom/prj/, grecaptcha, (req, res) ->
 # download project as pdf
 api.post \/custom/print, throttle.count.user, grecaptcha, (req, res) ->
   lc = {}
-  printer.print {html: req.body.html}
+  html = purify.sanitize req.body.html or ""
+  printer.print {html: html}
     .then -> res.send it
     .catch aux.error-handler res
