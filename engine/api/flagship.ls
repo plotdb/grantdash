@@ -130,6 +130,7 @@ app.get \/flagship/upload/:id, aux.signed, (req, res) ->
     .catch aux.error-handler res
 
 api.post \/flagship/merge/:slug, throttle.count.user, grecaptcha, (req, res) ->
+  return res.send!
   lc = {}
   slug = req.params.slug
   get-gcs-id({slug, req, res})
@@ -151,11 +152,11 @@ api.post \/flagship/merge/:slug, throttle.count.user, grecaptcha, (req, res) ->
             .then -> res.download fn
     .catch aux.error-handler res
 
+/*
 api.post \/future-content/prj/, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   if !req.body => return aux.r403 res
   {slug,note,file} = req.body
-  console.log \here, file
   if !slug => return aux.r403 res
   brd = \future-content
   p1 = if file =>
@@ -182,6 +183,7 @@ api.post \/future-content/prj/, grecaptcha, (req, res) ->
   Promise.all([p1, p2])
     .then -> res.send!
     .catch aux.error-handler res
+*/
 
 api.post \/flagship-1/prj/, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
@@ -260,6 +262,7 @@ api.post \/flagship/prj/, grecaptcha, (req, res) ->
     .catch aux.error-handler res
 
 api.post \/flagship/download, throttle.count.user, grecaptcha, (req, res) ->
+  return res.send!
   lc = {}
   printer.print {html: req.body.html}
     .then -> res.send it

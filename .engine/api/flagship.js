@@ -230,6 +230,7 @@
     });
     api.post('/flagship/merge/:slug', throttle.count.user, grecaptcha, function(req, res){
       var lc, slug;
+      return res.send();
       lc = {};
       slug = req.params.slug;
       return getGcsId({
@@ -278,73 +279,38 @@
         });
       })['catch'](aux.errorHandler(res));
     });
-    api.post('/future-content/prj/', grecaptcha, function(req, res){
-      var ref$, slug, note, file, brd, p1, p2;
-      if (!(req.user && req.user.key)) {
-        return aux.r403(res);
-      }
-      if (!req.body) {
-        return aux.r403(res);
-      }
-      ref$ = req.body, slug = ref$.slug, note = ref$.note, file = ref$.file;
-      console.log('here', file);
-      if (!slug) {
-        return aux.r403(res);
-      }
-      brd = 'future-content';
-      p1 = file
-        ? cache.perm.check({
-          io: io,
-          type: 'prj',
-          slug: slug,
-          user: req.user,
-          action: ['owner']
-        })['catch'](function(){
-          return cache.perm.check({
-            io: io,
-            type: 'brd',
-            slug: brd,
-            user: req.user,
-            action: ['owner']
-          });
-        }).then(function(){
-          return io.query("select detail from prj where brd = $1 and slug = $2", [brd, slug]);
-        }).then(function(r){
-          var detail, k, ref$, v, ref1$;
-          r == null && (r = {});
-          if (!((r.rows || (r.rows = []))[0] && (detail = r.rows[0].detail))) {
-            return aux.reject(404);
-          }
-          for (k in ref$ = file) {
-            v = ref$[k];
-            ((ref1$ = detail.custom || (detail.custom = {})).file || (ref1$.file = {}))[k] = v;
-          }
-          return io.query("update prj set detail = $3 where brd = $1 and slug = $2", [brd, slug, detail]);
-        })
-        : Promise.resolve();
-      p2 = note
-        ? cache.perm.check({
-          io: io,
-          type: 'brd',
-          slug: brd,
-          user: req.user,
-          action: ['owner']
-        }).then(function(){
-          return io.query("select detail from prj where brd = $1 and slug = $2", [brd, slug]);
-        }).then(function(r){
-          var detail, ref$;
-          r == null && (r = {});
-          if (!((r.rows || (r.rows = []))[0] && (detail = r.rows[0].detail))) {
-            return aux.reject(404);
-          }
-          ((ref$ = detail.custom || (detail.custom = {})).raw || (ref$.raw = {}))["註"] = note;
-          return io.query("update prj set detail = $3 where brd = $1 and slug = $2", [brd, slug, detail]);
-        })
-        : Promise.resolve();
-      return Promise.all([p1, p2]).then(function(){
-        return res.send();
-      })['catch'](aux.errorHandler(res));
-    });
+    /*
+    api.post \/future-content/prj/, grecaptcha, (req, res) ->
+      if !(req.user and req.user.key) => return aux.r403 res
+      if !req.body => return aux.r403 res
+      {slug,note,file} = req.body
+      if !slug => return aux.r403 res
+      brd = \future-content
+      p1 = if file =>
+        cache.perm.check {io, type: \prj, slug: slug, user: req.user, action: <[owner]>}
+          .catch ->
+            cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[owner]>}
+          .then ->
+            io.query "select detail from prj where brd = $1 and slug = $2", [brd, slug]
+          .then (r = {}) -> 
+            if !(r.[]rows.0 and (detail = r.rows.0.detail)) => return aux.reject 404
+            for k,v of file => detail.{}custom.{}file[k] = v
+            io.query "update prj set detail = $3 where brd = $1 and slug = $2", [brd, slug, detail]
+      else Promise.resolve!
+    
+      p2 = if note =>
+        cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[owner]>}
+          .then ->
+            io.query "select detail from prj where brd = $1 and slug = $2", [brd, slug]
+          .then (r = {}) -> 
+            if !(r.[]rows.0 and (detail = r.rows.0.detail)) => return aux.reject 404
+            detail.{}custom.{}raw["註"] = note
+            io.query "update prj set detail = $3 where brd = $1 and slug = $2", [brd, slug, detail]
+      else Promise.resolve!
+      Promise.all([p1, p2])
+        .then -> res.send!
+        .catch aux.error-handler res
+    */
     api.post('/flagship-1/prj/', grecaptcha, function(req, res){
       var ref$, slug, note, brd;
       if (!(req.user && req.user.key)) {
@@ -466,6 +432,7 @@
     });
     return api.post('/flagship/download', throttle.count.user, grecaptcha, function(req, res){
       var lc;
+      return res.send();
       lc = {};
       return printer.print({
         html: req.body.html
