@@ -1,0 +1,55 @@
+{
+  "_from": "ldbutton",
+  "_id": "ldbutton@2.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-3fFgr13kqBXEEY6722wQY0t5WA0nlUfdubX1tS9VDmJmSWaSubwUEaDu0dZCTE1LO3MgPWkSNwwprYPry3TxiQ==",
+  "_location": "/ldbutton",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "ldbutton",
+    "name": "ldbutton",
+    "escapedName": "ldbutton",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ldbutton/-/ldbutton-2.0.0.tgz",
+  "_shasum": "d0541844fc14dbccad5ebc691e8f56048e513d90",
+  "_spec": "ldbutton",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "bugs": {
+    "url": "https://github.com/loadingio/ldButton/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "fedep": "^1.1.0"
+  },
+  "deprecated": false,
+  "description": "css for buttons that load",
+  "devDependencies": {
+    "stylus": "^0.55.0",
+    "uglifycss": "0.0.29"
+  },
+  "engines": {
+    "node": ">=0.12.6",
+    "npm": ">=1.2.2"
+  },
+  "homepage": "https://loading.io/button/",
+  "license": "MIT",
+  "name": "ldbutton",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/ldButton.git"
+  },
+  "style": "index.min.css",
+  "version": "2.0.0"
+}

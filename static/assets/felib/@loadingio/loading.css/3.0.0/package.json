@@ -1,0 +1,57 @@
+{
+  "_from": "@loadingio/loading.css",
+  "_id": "@loadingio/loading.css@3.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-/hNhLxBuUmZpoYSKWL6L9RpolsYE5+W8TBewH7oYTiF9+hqcrumnA9anZmsm0toig6t3rMvj+e6UQRRS9nOlYw==",
+  "_location": "/@loadingio/loading.css",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@loadingio/loading.css",
+    "name": "@loadingio/loading.css",
+    "escapedName": "@loadingio%2floading.css",
+    "scope": "@loadingio",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@loadingio/loading.css/-/loading.css-3.0.0.tgz",
+  "_shasum": "211c18a7cf991d81ae17c1e572bbbb541ce38a3a",
+  "_spec": "@loadingio/loading.css",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "bugs": {
+    "url": "https://github.com/loadingio/loading.css/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "60+ handcrafted css animation dedicated for repeatable, infinitely playing.",
+  "devDependencies": {
+    "anikit": "git+https://github.com/loadingio/anikit.git",
+    "fedep": "^1.1.0",
+    "livescript": "^1.6.0",
+    "stylus": "^0.54.5",
+    "uglifycss": "0.0.29"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "homepage": "https://loading.io/animation/",
+  "license": "MIT",
+  "name": "@loadingio/loading.css",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/loading.css.git"
+  },
+  "scripts": {},
+  "style": "loading.min.css",
+  "version": "3.0.0"
+}
