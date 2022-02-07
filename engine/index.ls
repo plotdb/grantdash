@@ -273,7 +273,7 @@ backend = do
         # otherwise redirect user to login.
         else res.redirect "/auth/?nexturl=#{req.originalUrl}"
       else
-        if err.name == \ldError =>
+        if err.name == \ldError or err.name == \lderror =>
           if err.id == 1000 => return res.render "err/custom.pug", {err: err{id,message}}
           return res.status 500 .send err
         # ignore some errors that we don't need to take care.

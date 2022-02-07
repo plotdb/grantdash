@@ -53,7 +53,7 @@ Printer.prototype = Object.create(Object.prototype) <<< do
   print: (payload = {}) -> @exec (page) ->
     p = if payload.html => page.setContent payload.html, {waitUntil: "networkidle0"}
     else if payload.url => page.goto payload.url
-    else Promise.reject(new ldError(1015))
+    else Promise.reject(new lderror(1015))
     p.then -> page.pdf format: \A4
 
   get: -> new Promise (res, rej) ~>

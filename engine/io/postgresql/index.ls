@@ -1,4 +1,4 @@
-require! <[pg crypto bcrypt @plotdb/colors ./aux]>
+require! <[pg crypto bcrypt @plotdb/colors lderror ./aux]>
 
 pg.defaults.poolSize = 30
 
