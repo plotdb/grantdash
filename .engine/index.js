@@ -400,7 +400,7 @@
                 return res.redirect("/auth/?nexturl=" + req.originalUrl);
               }
             } else {
-              if (err.name === 'ldError') {
+              if (err.name === 'ldError' || err.name === 'lderror') {
                 if (err.id === 1000) {
                   return res.render("err/custom.pug", {
                     err: {

@@ -116,7 +116,7 @@
           })
           : payload.url
             ? page.goto(payload.url)
-            : Promise.reject(new ldError(1015));
+            : Promise.reject(new lderror(1015));
         return p.then(function(){
           return page.pdf({
             format: 'A4'
