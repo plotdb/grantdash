@@ -56,6 +56,7 @@ html
       {name: "@plotdb/block"} 
     ])
     +register-locals("exports", true)
-    script(type="module"): include:lsc index.ls
-    script(type="module"): include:lsc upload.ls
+    script(type="module")
+      include:lsc index.ls
+      include:lsc upload.ls
     block script
