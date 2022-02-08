@@ -13,10 +13,17 @@ html
       {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
       {name: "@loadingio/bootstrap.ext", path: "index.min.css"},
       {name: "@loadingio/loading.css", path: "loading.min.css"},
+      {name: "ldiconfont", path: "ldif.min.css"},
       {name: "ldbutton"},
       {name: "ldcover"},
       {name: "ldloader"}
     ])
+    style(type="text/css"): :stylus
+      @font-face
+        font-family: 'ldi'
+        font-weight: normal
+        font-style: normal
+        src: url('/dash/assets/felib/ldiconfont/main/ldif.ttf') format('truetype')
     block head
   body
     include covers.pug
