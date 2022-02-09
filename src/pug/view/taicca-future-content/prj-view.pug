@@ -59,7 +59,7 @@ block body
         ]
       ];
     - order.push(order[0].concat(order[1]));
-    .card.m-4.shadow: .card-body: .p-4
+    //-.card.m-4.shadow: .card-body: .p-4
 
       //-+item("案件編號",form.raw["案件編號"])
       //-+item("計畫名稱",form.raw["計畫名稱"])
@@ -76,6 +76,10 @@ block body
         .col-md.my-4: +uploader("訪視紀錄 PDF", "review")
 
     .bg-light.pt-4.border-top
+      .m-4
+        span 案件編號 #[span= form.raw["案件編號"]]
+        h3= form.raw["計畫名稱"]
+      hr
       .m-4: h3 計劃資訊
 
       each key in order[0]
