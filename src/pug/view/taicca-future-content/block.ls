@@ -1,6 +1,6 @@
 ldc.register <[blockbase viewLocals auth ldNotify error notify]>, ({blockbase, viewLocals, auth, error, notify}) ->
 
-  blockdef = name: '@taicca/future-content', version: 'dev'
+  blockdef = name: '@taiccadash/future-content', version: 'main'
   brd = "future-content"
   blockbase.init {blockdef, brd}
     .catch ->
