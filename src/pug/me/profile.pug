@@ -7,17 +7,19 @@ block vars
 block body
   include /modules/mixins/index.pug
   +scope("profile").profile-view.w-1024.rwd.typeset.heading-contrast
-    .card-panel: .sticky(style="height:100vh;top:0"): .vertical-center: .w-100.text-center
-      .card.mx-auto.shadow(style="width:300px")
+    .card-panel(style="margin-right:3em"): .sticky(style="height:100vh;top:0"): .vertical-center: .w-100.text-center
+      .card.mx-auto.shadow(style="width:260px")
         .card-body.p-4
-          .mx-auto.mb-4(style="margin-top:-25%;width:140px"): .rounded-circle.bg-secondary.aspect-ratio.ratio-1by1.ldlz.shadow.ldlz(data-src=`/dash/s/avatar/${user.key}.png`)
+          .mx-auto.mb-4(style="margin-top:-25%;width:64px"): .rounded-circle.bg-secondary.aspect-ratio.ratio-1by1.ldlz.shadow.ldlz(data-src=`/dash/s/avatar/${user.key}.png`)
           .text-center
             .text-lg.text-center: b #{user.displayname}
             .text-muted.mb-4
-              .my-2 #{user.title || '尚無抬頭'}
-              .text-sm #[span(ld="prettydate",data-value=user.createdtime)] 加入這裡
-              hr
-              p.text-sm.text-center #{user.description || '尚未準備自我介紹...'}
+              if user.title
+                .my-2 #{user.title || '尚無抬頭'}
+              .text-sm 註冊於 #[span(ld="prettydate",data-value=user.createdtime)]
+              if user.description
+                hr
+                p.text-sm.text-center #{user.description || '尚未準備自我介紹...'}
               hr
               .tags
                 each tag in (user.tags || '').split(',')
@@ -39,26 +41,22 @@ block body
             .text-lg 您的提案
           each prj in prjs
             if !prj.deleted
-              .prj
+              .prj.align-items-start.mx-2.border-bottom.pb-4
                 if prj.state == 'active'
-                  .m-4.state.text-center
-                    .text-lg: i.i-radio.text-success
+                  .mr-4.state.text-center.btn.mx-0(style="cursor:default")
                     .badge.badge-success 已發布
 
                 else
-                  .m-4.state.text-center
-                    .text-lg: i.i-radio.text-warning
-                    .badge.badge-warning 未完成
-                .flex-grow-1.text.text-truncate(style=`opacity:${prj.deleted ? 0.2 : 1}`)
-                  .d-flex.align-items-end.mb-1
-                    if prj.detail
-                      h4.mb-0.text-truncate: a.text-dark.text-truncate(href=`/dash/prj/${prj.slug}`) #{prj.name}
-                    else
-                      h4.mb-0.text-truncate: .text-dark.text-truncate #{prj.name}
-                    .d-none.d-md-block
-                      span.text-sm.mx-2 / 
-                      span.text-sm.text-muted(ld="prettydate",data-value=prj.createdtime)
-                  p.text-muted.mb-1 #{(prj.description || '').substring(0,22)} ...
+                  .mr-4.state.text-center.btn.mx-0(style="cursor:default"): .badge.badge-warning 編輯中
+                .flex-grow-1.text.text-truncate.mr-4(style=`opacity:${prj.deleted ? 0.2 : 1}`)
+                  .btn.mb-0.text-truncate.px-0(style="cursor:default")
+                    .text-dark.text-truncate(style="max-width:450px") #{prj.name}
+                  .d-none.d-md-block.text-sm.text-muted
+                    span.mr-2 建立日期:
+                    span(ld="prettydate",data-value=prj.createdtime)
+                    if prj.description
+                      p.text-muted.mb-1.text-truncate(
+                      style="max-width:450px") #{prj.description.substring(0,50)}
                   //-.d-flex.align-items-center.text-muted.text-sm
                     .bg-light.px-1.rounded 資格審查
                     i.i-dart-right.mx-2
@@ -67,12 +65,12 @@ block body
                     .bg-light.px-1.rounded 決選
                 .action
                   if !prj.deleted
-                    div
-                      a.btn.text-nowrap(
+                    .btn-group.mt-1
+                      a.btn.btn-sm.text-nowrap(
                       class=(prj.detail?"btn-outline-primary":"disabled btn-light"),
                       href=(prj.detail?`/dash/prj/${prj.slug}`:'#')) 檢視
-                    .ml-2: a.btn.btn-outline-primary.text-nowrap(href=`/dash/prj/${prj.slug}/edit`) 編輯
-                    .ml-2: .btn.btn-outline-danger.text-nowrap(ld="delete",data-slug=prj.slug) 刪除
+                      a.btn.btn-sm.btn-outline-primary.text-nowrap(href=`/dash/prj/${prj.slug}/edit`) 編輯
+                      //-.btn.btn-sm.btn-outline-danger.text-nowrap(ld="delete",data-slug=prj.slug) 刪除
                   else
                     div: a.btn.btn-light.text-nowrap.disabled 已刪除
 
