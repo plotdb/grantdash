@@ -10,7 +10,7 @@ ldc.register "blockbase",
     uploadr = new blockuploader {brd, owner}
 
     host =
-      info: {prj: prj{slug}, user: user{key, username, displayname}}
+      info: {prj: prj{slug,state}, user: user{key, username, displayname}}
       upload: (o) -> uploadr.upload o .catch error!
       print: (opt = {}) ->
         html = opt.html or ""
@@ -42,6 +42,7 @@ ldc.register "blockbase",
           .then ->
             console.log "saved return value: ", it
             ldcvmgr.toggle if submit => \submitted else \saved
+            return it
           .finally -> ldcvmgr.toggle (if submit => \submitting else \saving), false
           .catch (e) ->
             error! e
