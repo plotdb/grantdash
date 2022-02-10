@@ -52,8 +52,12 @@ block body
                   .btn.mb-0.text-truncate.px-0(style="cursor:default")
                     .text-dark.text-truncate(style="max-width:450px") #{prj.name}
                   .d-none.d-md-block.text-sm.text-muted
-                    span.mr-2 建立日期:
-                    span(ld="prettydate",data-value=prj.createdtime)
+                    div
+                      span.mr-2 所屬計劃：
+                      span #[span #{prj.brdname || '未命名'}]
+                    div
+                      span.mr-2 建立日期：
+                      span(ld="prettydate",data-value=prj.createdtime)
                     if prj.description
                       p.text-muted.mb-1.text-truncate(
                       style="max-width:450px") #{prj.description.substring(0,50)}
