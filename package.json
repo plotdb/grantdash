@@ -77,6 +77,7 @@
     "uglify-js": "^3.2.0",
     "uglifycss": "^0.0.29",
     "uploadr": "github:plotdb/uploadr#71cffa90808b8ed48a09861405a33158df2f0ae5",
-    "ws": "^7.5.6"
+    "ws": "^7.5.6",
+    "yargs": "^17.3.1"
   }
 }
