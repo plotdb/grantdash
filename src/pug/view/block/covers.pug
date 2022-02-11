@@ -7,7 +7,21 @@
 .ldcv.ldcvmgr(data-name="submitted",data-lock="true"): .base.w-480.rwd: .inner.card: .card-body: .p-4
   h2.text-center 您的案件已送出
   br
-  p 請下載申請書 PDF 檔，印出紙本後用印寄回，以利後續作業。送件後無法繼續編輯，若您發現有任何問題需要修正，請洽承辦人員。
+  //-
+     此處文案為未來內容客製版本
+     我們應該要把此處的 covers 移進 @taiccadash/base, 以 subblock 來處理, 如:
+
+      - {name: "@taiccadash/base", path: "covers/submitted.html"}
+
+     接著讓 child block 可以客製 block name.
+
+     這牽扯到區塊客製化的問題, 另一種可能是讓 block def + registry 可以被攔截 + 修改
+     但整件事要做可能會花一些時間, 我們先用最簡單的方式處理 ( 改公版 )
+  ol
+    li 送件後無法繼續編輯，若您發現有任何問題需要修正，請洽承辦人員。
+    li 所送資料將交由計畫委員進行審查，若委員要求貴單位補充文件內容或資料，將另行通知。
+    li 請先製作簡報，後續將另行通知簡報上傳時間。
+    li 若貴單位通過審查，請於審查會議後下載表單PDF檔，印出紙本後用印寄回，以辦理結案作業。
   br
   .btn.btn-lg.btn-outline-primary.btn-block(data-ldcv-set="") 關閉
 
