@@ -27,6 +27,7 @@ html
         font-style: normal
         src: url('/dash/assets/felib/ldiconfont/main/ldif.ttf') format('truetype')
     block head
+    script if(/MSIE|Trident/.exec(navigator.userAgent)) { window.location.href = "/err/ie/" };
   body
     include covers.pug
     block body
