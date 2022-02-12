@@ -68,6 +68,7 @@ a block view should provide an interface with following members:
        - `data`: self-customized JSON object to representing this project.
        - `submit`: true to change project state to `active` from `pending`. default false.
      - `print({html, name})`: print given `html` and download it as a file named `name`.
+     - `changeLanguage(lng)`: change current language.
  - `load(data)`: called to load data from server into view
    - `load` should only be called after `adapt` is called
    - Parameters:
