@@ -74,5 +74,5 @@ ldc.register "blockbase",
                 binfo <<< {interface: itf, instance: bi}
                 itf.adapt host
                 itf.load custom-data
-          .then -> console.log \ok
+          .then -> console.log "block #{name} loaded."
 
