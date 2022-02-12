@@ -4,12 +4,16 @@ ldc.register "blockbase",
   init: ({blockdef, brd}) ->
     ldld = new ldloader className: 'ldld full z-fixed'
     (global) <- auth.get!then _
+    binfo = {}
     prj = (viewLocals or {}).prj or {}
     user = (global.user or {})
     owner = prj.owner or user.key or 0
     uploadr = new blockuploader {brd, owner}
 
     host =
+      change-language: (lng) ->
+        i18next.changeLanguage lng
+        binfo.instance.transform \i18n
       info: {prj: prj{slug,state}, user: user{key, username, displayname}}
       upload: (o) -> uploadr.upload o .catch error!
       print: (opt = {}) ->
@@ -67,10 +71,8 @@ ldc.register "blockbase",
             bi.attach {root: document.body}
               .then ~> bi.interface!
               .then (itf) ~>
+                binfo <<< {interface: itf, instance: bi}
                 itf.adapt host
                 itf.load custom-data
-                itf.pubsub.on \change-language, ->
-                  i18next.changeLanguage it
-                  bi.transform \i18n
           .then -> console.log \ok
 
