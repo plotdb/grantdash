@@ -3,6 +3,7 @@ ldc.register "blockbase",
 ({blockuploader, viewLocals, auth, error, notify, ldcvmgr}) ->
   init: ({blockdef, brd}) ->
     ldld = new ldloader className: 'ldld full z-fixed'
+    (global) <- auth.ensure!then _
     (global) <- auth.get!then _
     binfo = {}
     prj = (viewLocals or {}).prj or {}
