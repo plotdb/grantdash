@@ -63,8 +63,8 @@ ldc.register "blockbase",
       .then ~>
         lc.manager = mgr = new block.manager registry: ({name,version,path,type}) ->
           return if type == \block =>
-            "/dash/assets/felib/#name/#{version or 'main'}/#{path or 'index.html'}"
-          else "/dash/assets/felib/#name/#{version or 'main'}/#{path or ('index.min.js')}"
+            "/dash/assets/felib/#name/#{version or 'main'}/#{path or 'index.html'}?dec=#{global.version or ''}"
+          else "/dash/assets/felib/#name/#{version or 'main'}/#{path or ('index.min.js')}?dec=#{global.version or ''}"
         mgr.get blockdef
           .then (bc) -> bc.create!
           .then (bi) ~>

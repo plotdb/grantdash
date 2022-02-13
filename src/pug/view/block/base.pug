@@ -2,8 +2,11 @@
 doctype html
 html
   include /modules/common.pug
+  include /modules/version.pug
   include lib.pug
-  - libLoader.root("/dash/assets/felib")
+  -
+    libLoader.root("/dash/assets/felib");
+    libLoader.version(version);
   block vars
   head
     meta(charset="utf-8")

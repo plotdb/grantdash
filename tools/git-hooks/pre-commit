@@ -7,10 +7,12 @@ then
   versionfilename=".version"
 fi
 
-# Version number
-echo -n $(git rev-parse --abbrev-ref HEAD) > $versionfilename
-echo -n "-" >> $versionfilename
-echo -n $(git describe --always) >> $versionfilename
+# with branch name
+#echo -n $(git rev-parse --abbrev-ref HEAD) > $versionfilename
+#echo -n "-" >> $versionfilename
+#echo -n $(git describe --always) >> $versionfilename
+# without branch name
+echo -n $(git describe --always) > $versionfilename
 #exec git add $versionfilename
 
 echo "//- module" > $versionpug
