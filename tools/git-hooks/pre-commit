@@ -1,0 +1,21 @@
+#!/bin/bash
+
+versionfilename=$(git config hooks.versionfilename)
+versionpug="src/pug/modules/version.pug"
+if [[ -z $versionfilename ]]
+then
+  versionfilename=".version"
+fi
+
+# Version number
+echo -n $(git rev-parse --abbrev-ref HEAD) > $versionfilename
+echo -n "-" >> $versionfilename
+echo $(git describe --always) >> $versionfilename
+#exec git add $versionfilename
+
+echo "//- module" > $versionpug
+echo -n "- var version = \"" >> $versionpug
+echo -n $(git describe --always) >> $versionpug
+echo "\";" >> $versionpug
+exec git add $versionfilename $versionpug
+

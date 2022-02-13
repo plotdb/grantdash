@@ -14,6 +14,7 @@
     "npm": ">=6.14.8"
   },
   "scripts": {
+    "setup": "git config core.hooksPath tools/git-hooks",
     "dev": "while [ 1 ]; do node_modules/.bin/lsc engine; sleep 1; done",
     "start": "while [ 1 ]; do NODE_ENV=production node .engine 2>&1 | tee -a server.log; sleep 1; done",
     "prebuild": "node_modules/.bin/lsc -co .engine engine",
