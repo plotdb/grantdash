@@ -1,1 +1,91 @@
-{"author":"zbryikt","name":"@plotdb/csscope","license":"MIT","description":"add scope to any css code","version":"4.0.3","homepage":"https://github.com/plotdb/csscope","browser":"index.min.js","main":"index.min.js","repository":{"type":"git","url":"https://github.com/plotdb/csscope"},"engines":{"node":">=10.14.1","npm":">=6.4.1"},"scripts":{"start":"npx server -r web -o true"},"devDependencies":{"@loadingio/bootstrap.ext":"^0.0.4","@loadingio/debounce.js":"^1.0.1","@loadingio/ldquery":"^3.0.2","@zbryikt/template":"^2.3.33","bootstrap":"^4.5.2","bootstrap.native":"^3.0.13","fedep":"^1.1.5","jsdom":"^19.0.0","ldcover":"^3.0.1","ldview":"^1.0.0","livescript":"^1.6.0","puppeteer-core":"^13.2.0","uglify-js":"^3.13.1"},"frontendDependencies":{"root":"web/static/assets/lib","modules":["bootstrap","bootstrap.native","@loadingio/bootstrap.ext","@loadingio/ldquery","@loadingio/debounce.js","@plotdb/semver","ldview","ldcover"]},"dependencies":{"@plotdb/semver":"^0.0.2","node-fetch":"^2.6.7"}}
+{
+  "_args": [
+    [
+      "@plotdb/csscope@4.0.3",
+      "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "@plotdb/csscope@4.0.3",
+  "_id": "@plotdb/csscope@4.0.3",
+  "_inBundle": false,
+  "_integrity": "sha512-vcROPt1zrO6960wxY+bNEdQsXaR49umgLWF0tjLpo6n863TZw4fDuUpulov/SjnppN574zlg7aoJWXCIDlkugA==",
+  "_location": "/@plotdb/csscope",
+  "_phantomChildren": {
+    "whatwg-url": "5.0.0"
+  },
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "@plotdb/csscope@4.0.3",
+    "name": "@plotdb/csscope",
+    "escapedName": "@plotdb%2fcsscope",
+    "scope": "@plotdb",
+    "rawSpec": "4.0.3",
+    "saveSpec": null,
+    "fetchSpec": "4.0.3"
+  },
+  "_requiredBy": [
+    "/",
+    "/@plotdb/form",
+    "/@plotdb/konfig"
+  ],
+  "_resolved": "https://registry.npmjs.org/@plotdb/csscope/-/csscope-4.0.3.tgz",
+  "_spec": "4.0.3",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/plotdb/csscope/issues"
+  },
+  "dependencies": {
+    "@plotdb/semver": "^0.0.2",
+    "node-fetch": "^2.6.7"
+  },
+  "description": "add scope to any css code",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/debounce.js": "^1.0.1",
+    "@loadingio/ldquery": "^3.0.2",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.2",
+    "bootstrap.native": "^3.0.13",
+    "fedep": "^1.1.5",
+    "jsdom": "^19.0.0",
+    "ldcover": "^3.0.1",
+    "ldview": "^1.0.0",
+    "livescript": "^1.6.0",
+    "puppeteer-core": "^13.2.0",
+    "uglify-js": "^3.13.1"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "bootstrap.native",
+      "@loadingio/bootstrap.ext",
+      "@loadingio/ldquery",
+      "@loadingio/debounce.js",
+      "@plotdb/semver",
+      "ldview",
+      "ldcover"
+    ]
+  },
+  "homepage": "https://github.com/plotdb/csscope",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "@plotdb/csscope",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plotdb/csscope.git"
+  },
+  "scripts": {
+    "start": "npx server -r web -o true"
+  },
+  "version": "4.0.3"
+}

@@ -1,1 +1,85 @@
-{"author":"zbryikt","name":"ldcvmgr","license":"MIT","description":"ldCover Manager","version":"0.0.7","browser":"index.min.js","main":"index.min.js","homepage":"https://github.com/loadingio/ldcvmgr","repository":{"type":"git","url":"https://github.com/loadingio/ldcvmgr"},"engines":{"node":">=10.14.1","npm":">=6.4.1"},"scripts":{"start":"npx server -r web -o true"},"peerDependencies":{"ldcover":"^3.0.1","ldloader":"^3.0.0","proxise":"^1.0.1"},"devDependencies":{"@loadingio/bootstrap.ext":"^0.0.4","@loadingio/ldquery":"^3.0.1","@zbryikt/template":"^2.3.33","bootstrap":"^4.5.3","bootstrap.native":"^3.0.14","fedep":"^1.1.0","ldloader":"^3.0.0","ldview":"^1.0.0","livescript":"^1.6.0","proxise":"^1.0.1","uglify-js":"^3.13.1"},"frontendDependencies":{"root":"web/static/assets/lib","modules":["bootstrap","@loadingio/bootstrap.ext","bootstrap.native","ldview","@loadingio/ldquery","ldloader","proxise","ldcover"]}}
+{
+  "_args": [
+    [
+      "ldcvmgr@0.0.7",
+      "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "ldcvmgr@0.0.7",
+  "_id": "ldcvmgr@0.0.7",
+  "_inBundle": false,
+  "_integrity": "sha512-6i0XTUhLe4H0RsmwvTXzav5BFkY/5sVhu9AcjtY/HWZ6QZGkmdLTh+yCQL1Pe6V6BvZu3ik38/y9uevfff6+AQ==",
+  "_location": "/ldcvmgr",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "ldcvmgr@0.0.7",
+    "name": "ldcvmgr",
+    "escapedName": "ldcvmgr",
+    "rawSpec": "0.0.7",
+    "saveSpec": null,
+    "fetchSpec": "0.0.7"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ldcvmgr/-/ldcvmgr-0.0.7.tgz",
+  "_spec": "0.0.7",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/loadingio/ldcvmgr/issues"
+  },
+  "description": "ldCover Manager",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/ldquery": "^3.0.1",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.3",
+    "bootstrap.native": "^3.0.14",
+    "fedep": "^1.1.0",
+    "ldloader": "^3.0.0",
+    "ldview": "^1.0.0",
+    "livescript": "^1.6.0",
+    "proxise": "^1.0.1",
+    "uglify-js": "^3.13.1"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "@loadingio/bootstrap.ext",
+      "bootstrap.native",
+      "ldview",
+      "@loadingio/ldquery",
+      "ldloader",
+      "proxise",
+      "ldcover"
+    ]
+  },
+  "homepage": "https://github.com/loadingio/ldcvmgr",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "ldcvmgr",
+  "peerDependencies": {
+    "ldcover": "^3.0.1",
+    "ldloader": "^3.0.0",
+    "proxise": "^1.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/ldcvmgr.git"
+  },
+  "scripts": {
+    "start": "npx server -r web -o true"
+  },
+  "version": "0.0.7"
+}
