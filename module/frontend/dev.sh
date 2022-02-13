@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-modules="@taiccadash/base @taiccadash/future-content @taiccadash/vr @makeform/base @makeform/input @makeform/textarea @makeform/choice @makeform/radio @makeform/table @makeform/upload @makeform/countdown"
+modules="@taiccadash/base @taiccadash/future-content @taiccadash/vr @taiccadash/future-content-111 @makeform/base @makeform/input @makeform/textarea @makeform/choice @makeform/radio @makeform/table @makeform/upload @makeform/countdown"
 base=~/workspace/zbryikt/grantdash/sites/block/static/block/
 
 param= 
