@@ -18,6 +18,11 @@ backend = do
     pgsql = new postgresql config
     authio = pgsql.authio
 
+    @version = 'na'
+    chokidar.watch <[.version]>
+      .on \add, (~> @version = (fs.read-file-sync it .toString!) )
+      .on \change, (~> @version = (fs.read-file-sync it .toString!) )
+
     [csp, cors, enable] = [(config.csp or []), config.cors, config.enable or {}]
 
     # =========== WEINRE for remote debugging
@@ -201,13 +206,14 @@ backend = do
     # * user could stil alter cookie's content, so it's necessary to force ajax call for important action
     #   there is no way to prevent user from altering client side content,
     #   so if we want to prevent user from editing our code, we have to go backend for the generation.
-    app.get \/api/global, backend.csrfProtection, (req, res) ->
+    app.get \/api/global, backend.csrfProtection, (req, res) ~>
       res.setHeader \content-type, \application/json
       payload = JSON.stringify({
         global: true, csrfToken: req.csrfToken!, production: config.is-production
         ip: aux.ip req
         user: if req.user => req.user{key, plan, config, displayname, verified, username} else {}
         recaptcha: secret.{}grecaptcha{sitekey, enabled}
+        version: @version
       } <<< ({scope: req.scope or {}}))
       res.cookie 'global', payload, { path: '/', secure: true }
       res.send payload

@@ -50,6 +50,12 @@
         config = secret;
         pgsql = new postgresql(config);
         authio = pgsql.authio;
+        this$.version = 'na';
+        chokidar.watch(['.version']).on('add', function(it){
+          return this$.version = fs.readFileSync(it).toString();
+        }).on('change', function(it){
+          return this$.version = fs.readFileSync(it).toString();
+        });
         ref$ = [config.csp || [], config.cors, config.enable || {}], csp = ref$[0], cors = ref$[1], enable = ref$[2];
         if (enable.weinre) {
           ip = aux.getIp()[0] || "127.0.0.1";
@@ -305,7 +311,8 @@
             recaptcha: {
               sitekey: (ref$ = secret.grecaptcha || (secret.grecaptcha = {})).sitekey,
               enabled: ref$.enabled
-            }
+            },
+            version: this$.version
           }, {
             scope: req.scope || {}
           }));
