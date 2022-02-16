@@ -34,7 +34,7 @@
     "ldiconfont": "^0.1.10",
     "ldloader": "^3.0.0",
     "ldnotify": "0.0.5",
-    "ldview": "^1.1.0",
+    "ldview": "^1.1.1",
     "marked": "^4.0.12",
     "proxise": "^1.0.1"
   },
