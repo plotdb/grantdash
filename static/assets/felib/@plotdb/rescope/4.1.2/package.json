@@ -1,1 +1,99 @@
-{"author":"zbryikt","name":"@plotdb/rescope","license":"MIT","description":"rescope your code with any JS libraries","version":"4.1.2","homepage":"https://github.com/plotdb/rescope","browser":"index.min.js","main":"index.min.js","repository":{"type":"git","url":"https://github.com/plotdb/rescope"},"engines":{"node":">=10.14.1","npm":">=6.4.1"},"scripts":{"start":"npx server -r web -o true","deploy":"npx deploy web/static"},"devDependencies":{"@loadingio/bootstrap.ext":"^0.0.4","@loadingio/debounce.js":"^1.0.1","@loadingio/ldquery":"^3.0.1","@plotdb/pdmap-world":"^0.0.5","@plotdb/semver":"^0.0.2","@zbryikt/deploy":"^0.0.1","@zbryikt/template":"^2.3.33","bootstrap":"^4.5.3","bootstrap.native":"^3.0.13","fedep":"^1.1.2","ldcover":"^3.0.1","ldfile":"^2.0.0","ldiconfont":"^0.1.10","ldview":"^1.0.0","livescript":"^1.6.0","proxise":"^1.0.1","yargs":"^16.1.0"},"frontendDependencies":{"root":"web/static/assets/lib","modules":["bootstrap","bootstrap.native","@loadingio/ldquery","@loadingio/debounce.js","@loadingio/bootstrap.ext","@plotdb/pdmap-world","@plotdb/semver","ldcover","ldfile","ldview","proxise","ldiconfont"]},"dependencies":{"node-fetch":"^2.6.7"}}
+{
+  "_args": [
+    [
+      "@plotdb/rescope@4.1.2",
+      "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "@plotdb/rescope@4.1.2",
+  "_id": "@plotdb/rescope@4.1.2",
+  "_inBundle": false,
+  "_integrity": "sha512-G0vxO2omo93Hg5BU1I7xm8xA+sMHuYPhKmh5oSH6zL5/Sk5hAKAv5Re1XZl2D76sfecQU3oZEYgJA8IEhxKH6w==",
+  "_location": "/@plotdb/rescope",
+  "_phantomChildren": {
+    "whatwg-url": "5.0.0"
+  },
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "@plotdb/rescope@4.1.2",
+    "name": "@plotdb/rescope",
+    "escapedName": "@plotdb%2frescope",
+    "scope": "@plotdb",
+    "rawSpec": "4.1.2",
+    "saveSpec": null,
+    "fetchSpec": "4.1.2"
+  },
+  "_requiredBy": [
+    "/",
+    "/@plotdb/form",
+    "/@plotdb/konfig"
+  ],
+  "_resolved": "https://registry.npmjs.org/@plotdb/rescope/-/rescope-4.1.2.tgz",
+  "_spec": "4.1.2",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/plotdb/rescope/issues"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "description": "rescope your code with any JS libraries",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/debounce.js": "^1.0.1",
+    "@loadingio/ldquery": "^3.0.1",
+    "@plotdb/pdmap-world": "^0.0.5",
+    "@plotdb/semver": "^0.0.2",
+    "@zbryikt/deploy": "^0.0.1",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.3",
+    "bootstrap.native": "^3.0.13",
+    "fedep": "^1.1.2",
+    "ldcover": "^3.0.1",
+    "ldfile": "^2.0.0",
+    "ldiconfont": "^0.1.10",
+    "ldview": "^1.0.0",
+    "livescript": "^1.6.0",
+    "proxise": "^1.0.1",
+    "yargs": "^16.1.0"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "bootstrap.native",
+      "@loadingio/ldquery",
+      "@loadingio/debounce.js",
+      "@loadingio/bootstrap.ext",
+      "@plotdb/pdmap-world",
+      "@plotdb/semver",
+      "ldcover",
+      "ldfile",
+      "ldview",
+      "proxise",
+      "ldiconfont"
+    ]
+  },
+  "homepage": "https://github.com/plotdb/rescope",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "@plotdb/rescope",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plotdb/rescope.git"
+  },
+  "scripts": {
+    "deploy": "npx deploy web/static",
+    "start": "npx server -r web -o true"
+  },
+  "version": "4.1.2"
+}
