@@ -1,0 +1,119 @@
+{
+  "_from": "@plotdb/form@^0.0.21",
+  "_id": "@plotdb/form@0.0.21",
+  "_inBundle": false,
+  "_integrity": "sha512-9dEpAy+rNYfvGpgLN9+SHMs8p4A1ti8UKHD4ILEI4GY2RCeQ6qqkgIVfczpXv447J7PkAYnq1FqMmGa7V+9utg==",
+  "_location": "/@plotdb/form",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@plotdb/form@^0.0.21",
+    "name": "@plotdb/form",
+    "escapedName": "@plotdb%2fform",
+    "scope": "@plotdb",
+    "rawSpec": "^0.0.21",
+    "saveSpec": null,
+    "fetchSpec": "^0.0.21"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@plotdb/form/-/form-0.0.21.tgz",
+  "_shasum": "40118093ecc0f3919104f43e15a515e04de433f0",
+  "_spec": "@plotdb/form@^0.0.21",
+  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/plotdb/form/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@loadingio/ldcolorpicker": "^3.0.0",
+    "@plotdb/block": "^4.1.0",
+    "@plotdb/csscope": "^4.0.0",
+    "@plotdb/datadom": "^0.2.0",
+    "@plotdb/konfig": "^4.0.1",
+    "@plotdb/rescope": "^4.1.0",
+    "@plotdb/sheet": "^0.2.0",
+    "@plotdb/suuid": "^0.5.0",
+    "curegex": "^0.0.4",
+    "dompurify": "^2.2.6",
+    "ldcolor": "^1.0.0",
+    "ldpalettepicker": "^4.0.0",
+    "ldslider": "^3.0.2",
+    "proxise": "^1.0.1"
+  },
+  "deprecated": false,
+  "description": "form blocks",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/debounce.js": "^1.0.1",
+    "@loadingio/ldquery": "^3.0.2",
+    "@plotdb/datadom": "^0.2.0",
+    "@plotdb/datahub": "^0.2.2",
+    "@plotdb/semver": "^0.0.2",
+    "@zbryikt/deploy": "^0.0.1",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.3",
+    "bootstrap.native": "^3.0.13",
+    "fedep": "^1.1.2",
+    "i18next": "^19.9.2",
+    "ldcover": "^3.0.1",
+    "ldiconfont": "^0.1.10",
+    "ldview": "^1.0.0",
+    "livescript": "^1.6.0",
+    "stylus": "^0.55.0",
+    "uglify-js": "^3.13.1",
+    "uglifycss": "^0.0.29"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "@loadingio/bootstrap.ext",
+      "bootstrap.native",
+      "ldcover",
+      "@loadingio/ldquery",
+      "@loadingio/debounce.js",
+      "@loadingio/ldcolorpicker",
+      "ldview",
+      "ldiconfont",
+      "ldslider",
+      "ldcolor",
+      "ldpalettepicker",
+      "curegex",
+      "dompurify",
+      "proxise",
+      "i18next",
+      "@plotdb/sheet",
+      "@plotdb/block",
+      "@plotdb/datadom",
+      "@plotdb/datahub",
+      "@plotdb/semver",
+      "@plotdb/rescope",
+      "@plotdb/suuid",
+      "@plotdb/konfig",
+      "@plotdb/csscope"
+    ]
+  },
+  "homepage": "https://github.com/plotdb/form",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "@plotdb/form",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plotdb/form.git"
+  },
+  "scripts": {
+    "start": "npx server -r web -o true"
+  },
+  "version": "0.0.21"
+}
