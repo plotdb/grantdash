@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+trap "kill 0" exit # killing all process on current group on exit
+trap "echo server loop stopped; exit" SIGINT SIGTERM # on ctrl-c, exit script.
+
+# see infrastructure.md -> daemon
+while [ 1 ]; do
+
+  if [[ $NODE_ENV == "production" ]]; then
+    # production - use prebuilt js files
+    CMD="node .engine 2>&1"
+  else
+    # dev - use livescript files
+    CMD="./node_modules/.bin/lsc engine"
+  fi
+
+  $CMD | \
+      tee -a server.log
+  echo "server down; try to auto restart after 1s."
+  sleep 1;
+
+done
+
+wait

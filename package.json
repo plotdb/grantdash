@@ -15,8 +15,8 @@
   },
   "scripts": {
     "setup": "git config core.hooksPath tools/git-hooks",
-    "dev": "while [ 1 ]; do node_modules/.bin/lsc engine; sleep 1; done",
-    "start": "while [ 1 ]; do NODE_ENV=production node .engine 2>&1 | tee -a server.log; sleep 1; done",
+    "dev": "./start",
+    "start": "NODE_ENV=production ./start",
     "prebuild": "node_modules/.bin/lsc -co .engine engine",
     "regen": "node_modules/.bin/lsc -co .engine engine; echo \"//- module\\n- var version = \\\"`git describe --always`\\\";\" > src/pug/modules/version.pug; find src/pug -type f | grep \".pug\" | xargs touch"
   },
