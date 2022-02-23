@@ -40,13 +40,12 @@ mixin upload-video(title,name)
       .btn.btn-upload.btn-primary.no-print.ld-ext-right 上傳影片 (MP4 格式) #[input(ld="file-upload",type="file",data-name=name)] #[span] #[.ld.ld-spin.ld-spinner]
       a.ml-4.no-print(ld="file-uploaded",data-name=name,target="_blank",rel="noopener noreferrer")
 
-
 block body
-  .m-3: h3 結案表單
-  #root.m-3
+  .w-1024.rwd.mx-auto.my-4: h3.mb-0 結案表單
+  .card.w-1024.rwd.mx-auto.shadow: #root.card-body.p-0
   .my-4: hr
-  .m-3: h3 提案表單
-  .card.m-3: .card-body
+  .w-1024.rwd.mx-auto: h3 提案表單
+  .card.w-1024.rwd.mx-auto.shadow: .card-body
     div(ld-scope="prj-detail")
       - form = locals.prj.detail.custom
       -
