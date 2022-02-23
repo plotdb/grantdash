@@ -1,7 +1,7 @@
 //- view
-extends /base.pug
+extends block/base.pug
 block vars
-  - ctrl.navtop.shown = !simple;
+  //-- ctrl.navtop.shown = !simple;
 block head
   style(type="text/css"): :stylus
     body { background: #f6f7f8 }
@@ -42,79 +42,86 @@ mixin upload-video(title,name)
 
 
 block body
-  div(ld-scope="prj-detail")
-    - form = locals.prj.detail.custom
-    -
-      var order = [
-        [ "提案簡介", "提案組成", "(代表)提案單位", "資本額(新臺幣/元)" ],
-        [
-          "註",
-          "計畫總經費(新臺幣/元)", "申請經費(新臺幣/元)", "自籌經費(新臺幣/元)",
-          "內容產業類型", "本院輔導產業類別分類", "本案預計未來體驗之通路",
-          "本計畫是否申請或已獲其他機關(單位)經費補助",
-          "已獲得補助列表",
-          "負責人", "成立時間", "統一編號", "員工人數",
-          "登記地址", "聯絡地址", "聯絡人",
-          "職稱", "專線電話", "手機", "電子郵件"
-        ]
-      ];
-    - order.push(order[0].concat(order[1]));
-    //-.card.m-4.shadow: .card-body: .p-4
+  .m-3: h3 結案表單
+  #root.m-3
+  .my-4: hr
+  .m-3: h3 提案表單
+  .card.m-3: .card-body
+    div(ld-scope="prj-detail")
+      - form = locals.prj.detail.custom
+      -
+        var order = [
+          [ "提案簡介", "提案組成", "(代表)提案單位", "資本額(新臺幣/元)" ],
+          [
+            "註",
+            "計畫總經費(新臺幣/元)", "申請經費(新臺幣/元)", "自籌經費(新臺幣/元)",
+            "內容產業類型", "本院輔導產業類別分類", "本案預計未來體驗之通路",
+            "本計畫是否申請或已獲其他機關(單位)經費補助",
+            "已獲得補助列表",
+            "負責人", "成立時間", "統一編號", "員工人數",
+            "登記地址", "聯絡地址", "聯絡人",
+            "職稱", "專線電話", "手機", "電子郵件"
+          ]
+        ];
+      - order.push(order[0].concat(order[1]));
+      //-.card.m-4.shadow: .card-body: .p-4
 
-      //-+item("案件編號",form.raw["案件編號"])
-      //-+item("計畫名稱",form.raw["計畫名稱"])
-      span 案件編號 #[span= form.raw["案件編號"]]
-      h3= form.raw["計畫名稱"]
-      hr
-      p 請上傳以下檔案:
-      .my-4: +uploader("上傳結案報告書 PDF", "report")
-      .my-4: +uploader("訪視紀錄 PDF", "review")
-      .my-4: +upload-video("上傳結案影片", "video")
-      //-.row
-        .col-md.my-4: +uploader("上傳結案報告書 PDF", "report")
-        .col-md.my-4: +uploader("上傳結案影片", "video")
-        .col-md.my-4: +uploader("訪視紀錄 PDF", "review")
-
-    .bg-light.pt-4.border-top
-      .m-4
+        //-+item("案件編號",form.raw["案件編號"])
+        //-+item("計畫名稱",form.raw["計畫名稱"])
         span 案件編號 #[span= form.raw["案件編號"]]
         h3= form.raw["計畫名稱"]
-      hr
-      .m-4: h3 計劃資訊
+        hr
+        p 請上傳以下檔案:
+        .my-4: +uploader("上傳結案報告書 PDF", "report")
+        .my-4: +uploader("訪視紀錄 PDF", "review")
+        .my-4: +upload-video("上傳結案影片", "video")
+        //-.row
+          .col-md.my-4: +uploader("上傳結案報告書 PDF", "report")
+          .col-md.my-4: +uploader("上傳結案影片", "video")
+          .col-md.my-4: +uploader("訪視紀錄 PDF", "review")
 
-      each key in order[0]
-        - var val = form.raw[key]
-        +item(key,val)
+      div
+        .m-4
+          span 案件編號 #[span= form.raw["案件編號"]]
+          h3= form.raw["計畫名稱"]
+        hr
+        .m-4: h3 計劃資訊
 
-      -
-        var reports = [
-          ["計劃書","plan"],
-          ["預算表","budget"],
-          ["立案證明","registration"],
-          ["相關附件","appendix"],
-          ["共同提案證明文件","copropose_reg"]
-        ];
-      each pair in reports
-        if form.file && form.file[pair[1]]
-          .m-4
-            .font-weight-bold.mb-1= pair[0]
-            a(href=`/dash/gcs/upload/${form.file[pair[1]].id}`,target="_blank",rel="noopener noreferrer") #[b #{form.file[pair[1]].filename}] #[br] #[small ( #{(form.file[pair[1]].size / (1024 * 1024)).toFixed(2)}MB / 修改日期: #{new Date(form.file[pair[1]].modifiedtime).toLocaleString()} )]
-
-      .m-4.d-none(ld="note-widget")
-        .font-weight-bold.mb-1 註
-        textarea.form-control.mb-1(ld="note",rows="10",disabled)
-        .btn.btn-primary.d-none(ld="update-note") 更新
-
-      each key in order[1]
-        - var val = form.raw[key]
-        +item(key,val)
-
-           
-      each val, key in form.raw || {}
-        if !~order[2].indexOf(key) && key != "本院分類"
+        each key in order[0]
+          - var val = form.raw[key]
           +item(key,val)
-      +nbr(3)
+
+        -
+          var reports = [
+            ["計劃書","plan"],
+            ["預算表","budget"],
+            ["立案證明","registration"],
+            ["相關附件","appendix"],
+            ["共同提案證明文件","copropose_reg"]
+          ];
+        each pair in reports
+          if form.file && form.file[pair[1]]
+            .m-4
+              .font-weight-bold.mb-1= pair[0]
+              a(href=`/dash/gcs/upload/${form.file[pair[1]].id}`,target="_blank",rel="noopener noreferrer") #[b #{form.file[pair[1]].filename}] #[br] #[small ( #{(form.file[pair[1]].size / (1024 * 1024)).toFixed(2)}MB / 修改日期: #{new Date(form.file[pair[1]].modifiedtime).toLocaleString()} )]
+
+        .m-4.d-none(ld="note-widget")
+          .font-weight-bold.mb-1 註
+          textarea.form-control.mb-1(ld="note",rows="10",disabled)
+          .btn.btn-primary.d-none(ld="update-note") 更新
+
+        each key in order[1]
+          - var val = form.raw[key]
+          +item(key,val)
+
+        each val, key in form.raw || {}
+          if !~order[2].indexOf(key) && key != "本院分類"
+            +item(key,val)
+        +nbr(3)
 
 block script
-  +register-locals()
-  script: include:lsc prj-view.ls
+  //-+register-locals()
+  script(type="module"): :lsc
+    ldc.register("viewmode",[], -> return "view")
+  script(type="module"): include:lsc prj-view.ls
+  script(type="module"): include:lsc block.ls

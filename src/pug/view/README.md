@@ -40,6 +40,13 @@ To load a specific block, use `blockbase.init`
       brd = "<brd-slug>"
       blockbase.init {blockdef, brd} .then -> ...
 
+blockbase.init accept an argument objects with following fields:
+
+ - `blockdef`: block definition object of the block to load
+ - `brd`: board slug
+ - `root`: container of the block to load. default `document.body`.
+ - `data`: data to pass to the block to load
+
 Currently block registry is hardcoded in `blockbase`, which points to `/dash/assets/felib/`. we may extend this behavior in the future.
 
 Following is a full example for project editing ( `prj-edit.pug` ):
@@ -48,7 +55,7 @@ Following is a full example for project editing ( `prj-edit.pug` ):
     block script
       script: :lsc
         ldc.register <[blockbase]>, ({blockbase}) ->
-          blockbase.init {blockdef: {name: "future-content"}, brd: "future-content"}
+          blockbase.init {blockdef: {name: "future-content"}, brd: "future-content", data: {}, root: null}
 
 
 ## Block View Interface

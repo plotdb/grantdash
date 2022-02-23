@@ -1,7 +1,8 @@
 ldc.register "blockbase",
 <[blockuploader viewLocals auth ldNotify error notify ldcvmgr]>,
 ({blockuploader, viewLocals, auth, error, notify, ldcvmgr}) ->
-  init: ({blockdef, brd}) ->
+  init: ({blockdef, brd, root, data}) ->
+    blockopt = data
     ldld = new ldloader className: 'ldld full z-fixed'
     (global) <- auth.ensure!then _
     (global) <- auth.get!then _
@@ -69,7 +70,7 @@ ldc.register "blockbase",
         mgr.get blockdef
           .then (bc) -> bc.create!
           .then (bi) ~>
-            bi.attach {root: document.body}
+            bi.attach {root: root or document.body, data: blockopt or {}}
               .then ~> bi.interface!
               .then (itf) ~>
                 binfo <<< {interface: itf, instance: bi}
