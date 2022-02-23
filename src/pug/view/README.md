@@ -60,7 +60,7 @@ Following is a full example for project editing ( `prj-edit.pug` ):
 
 ## Block View Interface
 
-a block view should provide an interface with following members:
+a block view block should provide an interface with following members:
 
  - `adapt(host)`
    - `host` is an object representing grantdash server API, including following methods:
@@ -87,3 +87,20 @@ a block view should provide an interface with following members:
      - `local`: true if caller want to save data locally ( in browser )
      - `opt`: an optionally object used to overwrite payload ( {name,description,data,submit} ).
 
+ - `ldcvmgr`: a ldcvmgr-like interface providing following methods:
+   - `get(name, opt)`: get a cover with the given name.
+     - return null if no such cover found, otherwise return Promise.
+   - `toggle(name, value, opt)`: toggle on a cover with the given name.
+     - return null if no such cover found, otherwise return a Promise.
+
+
+### Block Views Dialogs
+
+Basically, a blockview-based block controls dialogs manually. However for simplicity, block view itself provides and uses dialogs with following names:
+
+ - `submitting`: triggered when form data is being submitted
+ - `submitted`: triggered after submission is done.
+ - `saving`: triggered when form data is being saved.
+ - `saved`: triggered after saving is done.
+
+these names will be passed to the `ldcvmgr` interface a blockview-based block provided and is possible to be overwritten - otherwise a default cover will be used and shown.

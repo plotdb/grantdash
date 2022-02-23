@@ -12,7 +12,15 @@ ldc.register "blockbase",
     owner = prj.owner or user.key or 0
     uploadr = new blockuploader {brd, owner}
 
-    host =
+    host = (itf) ->
+      _ldcvmgr =
+        get: (n,o) ->
+          if itf.ldcvmgr and (ret = itf.ldcvmgr.get(n,o)) => return ret
+          else return ldcvmgr.get n, o
+        toggle: (n,v,o) ->
+          if itf.ldcvmgr and (ret = itf.ldcvmgr.toggle(n,v,o)) => return ret
+          else return ldcvmgr.toggle n, v, o
+
       change-language: (lng) ->
         i18next.changeLanguage lng
         binfo.instance.transform \i18n
@@ -32,7 +40,7 @@ ldc.register "blockbase",
             .finally -> ldld.off!
 
       save: ({name, description, data, submit}) ->
-        ldcvmgr.toggle (if submit => \submitting else \saving), true
+        _ldcvmgr.toggle (if submit => \submitting else \saving), true
         debounce 1000
           .then -> auth.recaptcha.get!
           .then (recaptcha) ->
@@ -47,9 +55,9 @@ ldc.register "blockbase",
             ld$.fetch "/dash/api/custom/prj", {method: "POST"}, {json: payload, type: \json}
           .then ->
             console.log "saved return value: ", it
-            ldcvmgr.toggle if submit => \submitted else \saved
+            _ldcvmgr.toggle if submit => \submitted else \saved
             return it
-          .finally -> ldcvmgr.toggle (if submit => \submitting else \saving), false
+          .finally -> _ldcvmgr.toggle (if submit => \submitting else \saving), false
           .catch (e) ->
             error! e
             return Promise.reject(e)
@@ -74,7 +82,7 @@ ldc.register "blockbase",
               .then ~> bi.interface!
               .then (itf) ~>
                 binfo <<< {interface: itf, instance: bi}
-                itf.adapt host
+                itf.adapt host(itf)
                 itf.load custom-data
           .then -> console.log "block #{name} loaded."
 
