@@ -797,7 +797,7 @@ pug_html = pug_html + "});\u003C\u002Fscript\u003E";
 };
 }
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fversion.pug";
-var version = "bda4c897";
+var version = "b8440e3a";
 ;pug_debug_line = 2;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Flib.pug";
 if(!libLoader) {
   libLoader = {
@@ -982,7 +982,7 @@ pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner text-lg mt-4\"\u0
 ;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ldcv ldcvmgr\" data-name=\"submitted\" data-lock=\"true\"\u003E";
 ;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "\u003Cdiv class=\"base w-640 rwd\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"base w-480 rwd\"\u003E";
 ;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"inner card\"\u003E";
 ;pug_debug_line = 7;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
@@ -995,113 +995,95 @@ pug_html = pug_html + "\u003Ch2 class=\"text-center\"\u003E";
 pug_html = pug_html + "您的案件已送出\u003C\u002Fh2\u003E";
 ;pug_debug_line = 9;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cbr\u003E";
-;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cp\u003E";
-;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "注意事項：\u003C\u002Fp\u003E";
-;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "\u003Col class=\"pl-4\"\u003E";
-;pug_debug_line = 22;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "\u003Cli\u003E";
-;pug_debug_line = 22;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "送件後無法繼續編輯，若您發現有任何問題需要修正，請洽承辦人員。\u003C\u002Fli\u003E";
-;pug_debug_line = 23;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "\u003Cli\u003E";
-;pug_debug_line = 23;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "所送資料將交由計畫委員進行審查，若委員要求貴單位補充文件內容或資料，將另行通知。\u003C\u002Fli\u003E";
-;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "\u003Cli\u003E";
-;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "請先製作簡報，後續將另行通知簡報上傳時間。\u003C\u002Fli\u003E";
-;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "\u003Cli\u003E";
-;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
-pug_html = pug_html + "若貴單位通過審查，請於審查會議後下載表單PDF檔，印出紙本後用印寄回，以辦理結案作業。\u003C\u002Fli\u003E\u003C\u002Fol\u003E";
-;pug_debug_line = 26;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 10;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+pug_html = pug_html + "送件後無法繼續編輯，若您發現有任何問題需要修正，請洽承辦人員。\u003C\u002Fp\u003E";
+;pug_debug_line = 11;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cbr\u003E";
-;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 12;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"btn btn-lg btn-primary btn-block\" data-ldcv-set=\"\"\u003E";
-;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 12;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "關閉\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ldcv ldcvmgr\" data-name=\"saving\" data-lock=\"true\"\u003E";
-;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"base w-480 rwd\"\u003E";
-;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"inner card\"\u003E";
-;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"card-body\"\u003E";
-;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"p-4\"\u003E";
-;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 15;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"text-center\"\u003E";
-;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv\u003E";
-;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "暫存進度中 ...\u003C\u002Fdiv\u003E";
-;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 17;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner text-lg mt-4\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ldcv ldcvmgr\" data-name=\"saved\" data-lock=\"true\"\u003E";
-;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"base w-480 rwd\"\u003E";
-;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"inner card\"\u003E";
-;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"card-body\"\u003E";
-;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"p-4\"\u003E";
-;pug_debug_line = 35;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"text-center\"\u003E";
-;pug_debug_line = 36;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Ch2\u003E";
-;pug_debug_line = 36;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "您的編輯進度已儲存。\u003C\u002Fh2\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 37;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 22;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"py-4\"\u003E";
-;pug_debug_line = 38;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 23;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cp\u003E";
-;pug_debug_line = 38;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 23;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "您隨時可以回到這個頁面繼續編輯。若需要回到此頁，請由網頁右上角的下拉選單中點選「個人頁面」，即可找到您建立的案件。\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 39;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"btn btn-lg btn-primary btn-block ld-ext-right\" data-ldcv-set=\"\"\u003E";
-;pug_debug_line = 39;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "關閉\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ldcv ldcvmgr\" data-name=\"print-timeout\" data-lock=\"true\"\u003E";
-;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"base w-480 rwd\"\u003E";
-;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"inner card\"\u003E";
-;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"card-body\"\u003E";
-;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"p-4\"\u003E";
-;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 28;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"text-center\"\u003E";
-;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Ch2\u003E";
-;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "連線逾時\u003C\u002Fh2\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"py-4\"\u003E";
-;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cp\u003E";
-;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "主機沒有在一定的時間內產生 PDF 檔，可能是因為服務忙碌中。您可以稍候再重試一次，或者直接將此頁面列印成 PDF 檔做為您的申請書。\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"row\"\u003E";
-;pug_debug_line = 46;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
-;pug_debug_line = 47;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 33;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"btn btn-lg btn-block btn-outline-primary btn-block\" onclick=\"lda.ldcvmgr.toggle('flagship-print-timeout',false).then(function(){print()})\"\u003E";
-;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "列印此頁面\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 35;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
-;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 36;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "\u003Cdiv class=\"btn btn-lg btn-block btn-primary\" data-ldcv-set=\"\"\u003E";
-;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
+;pug_debug_line = 36;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fcovers.pug";
 pug_html = pug_html + "稍候再試\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 38;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fbase.pug";
 ;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
@@ -1199,56 +1181,50 @@ pug_mixins["item"](key,val);
   }
 }).call(this);
 
-;pug_debug_line = 93;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
-var reports = [
-  ["計劃書","plan"],
-  ["預算表","budget"],
-  ["立案證明","registration"],
-  ["相關附件","appendix"],
-  ["共同提案證明文件","copropose_reg"]
-];
-;pug_debug_line = 101;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 102;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+var reports = ["計劃書","plan"];
+;pug_debug_line = 104;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 // iterate reports
 ;(function(){
   var $$obj = reports;
   if ('number' == typeof $$obj.length) {
       for (var pug_index13 = 0, $$l = $$obj.length; pug_index13 < $$l; pug_index13++) {
         var pair = $$obj[pug_index13];
-;pug_debug_line = 102;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 if (form.file && form.file[pair[1]]) {
-;pug_debug_line = 103;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 106;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
-;pug_debug_line = 104;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 107;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"font-weight-bold mb-1\"\u003E";
-;pug_debug_line = 104;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 107;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = pair[0]) ? "" : pug_interp)) + "\u003C\u002Fdiv\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Ca" + (pug_attr("href", `/dash/gcs/upload/${form.file[pair[1]].id}`, true, true)+" target=\"_blank\" rel=\"noopener noreferrer\"") + "\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cb\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = form.file[pair[1]].filename) ? "" : pug_interp)) + "\u003C\u002Fb\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + " ";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cbr\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + " ";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Csmall\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "( ";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = (form.file[pair[1]].size / (1024 * 1024)).toFixed(2)) ? "" : pug_interp));
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "MB \u002F 修改日期: ";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = new Date(form.file[pair[1]].modifiedtime).toLocaleString()) ? "" : pug_interp));
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + " )\u003C\u002Fsmall\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 }
       }
@@ -1257,69 +1233,69 @@ pug_html = pug_html + "\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
     for (var pug_index13 in $$obj) {
       $$l++;
       var pair = $$obj[pug_index13];
-;pug_debug_line = 102;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 if (form.file && form.file[pair[1]]) {
-;pug_debug_line = 103;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 106;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4\"\u003E";
-;pug_debug_line = 104;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 107;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"font-weight-bold mb-1\"\u003E";
-;pug_debug_line = 104;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 107;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = pair[0]) ? "" : pug_interp)) + "\u003C\u002Fdiv\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Ca" + (pug_attr("href", `/dash/gcs/upload/${form.file[pair[1]].id}`, true, true)+" target=\"_blank\" rel=\"noopener noreferrer\"") + "\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cb\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = form.file[pair[1]].filename) ? "" : pug_interp)) + "\u003C\u002Fb\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + " ";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cbr\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + " ";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Csmall\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "( ";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = (form.file[pair[1]].size / (1024 * 1024)).toFixed(2)) ? "" : pug_interp));
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "MB \u002F 修改日期: ";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + (pug_escape(null == (pug_interp = new Date(form.file[pair[1]].modifiedtime).toLocaleString()) ? "" : pug_interp));
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + " )\u003C\u002Fsmall\u003E";
-;pug_debug_line = 105;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 }
     }
   }
 }).call(this);
 
-;pug_debug_line = 107;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 110;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"m-4 d-none\" ld=\"note-widget\"\u003E";
-;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 111;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cdiv class=\"font-weight-bold mb-1\"\u003E";
-;pug_debug_line = 108;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 111;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "註\u003C\u002Fdiv\u003E";
-;pug_debug_line = 109;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
-pug_html = pug_html + "\u003Ctextarea" + (" class=\"form-control mb-1\""+" ld=\"note\" rows=\"10\""+pug_attr("disabled", true, true, true)) + "\u003E\u003C\u002Ftextarea\u003E";
-;pug_debug_line = 110;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
-pug_html = pug_html + "\u003Cdiv class=\"btn btn-primary d-none\" ld=\"update-note\"\u003E";
-;pug_debug_line = 110;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
-pug_html = pug_html + "更新\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 112;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+pug_html = pug_html + "\u003Ctextarea" + (" class=\"form-control mb-1\""+" ld=\"note\" rows=\"10\""+pug_attr("disabled", true, true, true)) + "\u003E\u003C\u002Ftextarea\u003E";
+;pug_debug_line = 113;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-primary d-none\" ld=\"update-note\"\u003E";
+;pug_debug_line = 113;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+pug_html = pug_html + "更新\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 115;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 // iterate order[1]
 ;(function(){
   var $$obj = order[1];
   if ('number' == typeof $$obj.length) {
       for (var pug_index14 = 0, $$l = $$obj.length; pug_index14 < $$l; pug_index14++) {
         var key = $$obj[pug_index14];
-;pug_debug_line = 113;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 116;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 var val = form.raw[key]
-;pug_debug_line = 114;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 117;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_mixins["item"](key,val);
       }
   } else {
@@ -1327,24 +1303,24 @@ pug_mixins["item"](key,val);
     for (var pug_index14 in $$obj) {
       $$l++;
       var key = $$obj[pug_index14];
-;pug_debug_line = 113;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 116;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 var val = form.raw[key]
-;pug_debug_line = 114;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 117;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_mixins["item"](key,val);
     }
   }
 }).call(this);
 
-;pug_debug_line = 116;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 119;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 // iterate form.raw || {}
 ;(function(){
   var $$obj = form.raw || {};
   if ('number' == typeof $$obj.length) {
       for (var key = 0, $$l = $$obj.length; key < $$l; key++) {
         var val = $$obj[key];
-;pug_debug_line = 117;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 120;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 if (!~order[2].indexOf(key) && key != "本院分類") {
-;pug_debug_line = 118;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 121;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_mixins["item"](key,val);
 }
       }
@@ -1353,16 +1329,16 @@ pug_mixins["item"](key,val);
     for (var key in $$obj) {
       $$l++;
       var val = $$obj[key];
-;pug_debug_line = 117;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 120;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 if (!~order[2].indexOf(key) && key != "本院分類") {
-;pug_debug_line = 118;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 121;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_mixins["item"](key,val);
 }
     }
   }
 }).call(this);
 
-;pug_debug_line = 119;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 122;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_mixins["nbr"](3);
 pug_html = pug_html + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fbase.pug";
@@ -1402,21 +1378,21 @@ pug_mixins["register-locals"]("exports", true);
 ;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fbase.pug";
 pug_html = pug_html + "\u003Cscript type=\"module\"\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fbase.pug";
-pug_html = pug_html + "\u002F\u002F Generated by LiveScript 1.3.0\nldc.register(\"blockbase\", ['blockuploader', 'viewLocals', 'auth', 'ldNotify', 'error', 'notify', 'ldcvmgr'], function(arg$){\n  var blockuploader, viewLocals, auth, error, notify, ldcvmgr;\n  blockuploader = arg$.blockuploader, viewLocals = arg$.viewLocals, auth = arg$.auth, error = arg$.error, notify = arg$.notify, ldcvmgr = arg$.ldcvmgr;\n  return {\n    init: function(arg$){\n      var blockdef, brd, root, data, blockopt, ldld;\n      blockdef = arg$.blockdef, brd = arg$.brd, root = arg$.root, data = arg$.data;\n      blockopt = data;\n      ldld = new ldloader({\n        className: 'ldld full z-fixed'\n      });\n      return auth.ensure().then(function(global){\n        return auth.get().then(function(global){\n          var binfo, prj, user, owner, uploadr, host, customData, ref$, lc, this$ = this;\n          binfo = {};\n          prj = (viewLocals || {}).prj || {};\n          user = global.user || {};\n          owner = prj.owner || user.key || 0;\n          uploadr = new blockuploader({\n            brd: brd,\n            owner: owner\n          });\n          host = {\n            changeLanguage: function(lng){\n              i18next.changeLanguage(lng);\n              return binfo.instance.transform('i18n');\n            },\n            info: {\n              prj: {\n                slug: prj.slug,\n                state: prj.state\n              },\n              user: {\n                key: user.key,\n                username: user.username,\n                displayname: user.displayname\n              }\n            },\n            upload: function(o){\n              return uploadr.upload(o)['catch'](error());\n            },\n            print: function(opt){\n              var html, name;\n              opt == null && (opt = {});\n              html = opt.html || \"\";\n              name = opt.name || \"download.pdf\";\n              ldld.on();\n              return auth.recaptcha.get().then(function(recaptcha){\n                return ld$.fetch(\"\u002Fdash\u002Fapi\u002Fcustom\u002Fprint\", {\n                  method: \"POST\"\n                }, {\n                  json: {\n                    html: html,\n                    recaptcha: recaptcha\n                  },\n                  type: 'blob',\n                  timeout: 60 * 1000\n                }).then(function(blob){\n                  return ldfile.download({\n                    blob: blob,\n                    mime: \"application\u002Fpdf\",\n                    name: name\n                  });\n                })['finally'](function(){\n                  return ldld.off();\n                });\n              });\n            },\n            save: function(arg$){\n              var name, description, data, submit;\n              name = arg$.name, description = arg$.description, data = arg$.data, submit = arg$.submit;\n              ldcvmgr.toggle(submit ? 'submitting' : 'saving', true);\n              return debounce(1000).then(function(){\n                return auth.recaptcha.get();\n              }).then(function(recaptcha){\n                var payload;\n                payload = {\n                  name: name,\n                  description: description,\n                  custom: data,\n                  submit: submit,\n                  recaptcha: recaptcha,\n                  slug: prj.slug,\n                  brd: brd\n                };\n                return ld$.fetch(\"\u002Fdash\u002Fapi\u002Fcustom\u002Fprj\", {\n                  method: \"POST\"\n                }, {\n                  json: payload,\n                  type: 'json'\n                });\n              }).then(function(it){\n                console.log(\"saved return value: \", it);\n                ldcvmgr.toggle(submit ? 'submitted' : 'saved');\n                return it;\n              })['finally'](function(){\n                return ldcvmgr.toggle(submit ? 'submitting' : 'saving', false);\n              })['catch'](function(e){\n                error()(e);\n                return Promise.reject(e);\n              });\n            }\n          };\n          customData = ((ref$ = (viewLocals || {}).prj || {}).detail || (ref$.detail = {})).custom || {};\n          lc = {};\n          return i18next.init({\n            supportedLng: ['en', 'zh-TW'],\n            fallbackLng: 'zh-TW',\n            fallbackNS: '',\n            defaultNS: ''\n          }).then(function(){\n            return i18next.use(i18nextBrowserLanguageDetector);\n          }).then(function(){\n            console.log(\"use language: \", navigator.language) || navigator.userLanguage;\n            return i18next.changeLanguage(navigator.language) || navigator.userLanguage;\n          }).then(function(){\n            return block.i18n.use(i18next);\n          }).then(function(){\n            var mgr;\n            lc.manager = mgr = new block.manager({\n              registry: function(arg$){\n                var name, version, path, type;\n                name = arg$.name, version = arg$.version, path = arg$.path, type = arg$.type;\n                return type === 'block'\n                  ? \"\u002Fdash\u002Fassets\u002Ffelib\u002F\" + name + \"\u002F\" + (version || 'main') + \"\u002F\" + (path || 'index.html') + \"?dec=\" + (global.version || '')\n                  : \"\u002Fdash\u002Fassets\u002Ffelib\u002F\" + name + \"\u002F\" + (version || 'main') + \"\u002F\" + (path || 'index.min.js') + \"?dec=\" + (global.version || '');\n              }\n            });\n            return mgr.get(blockdef).then(function(bc){\n              return bc.create();\n            }).then(function(bi){\n              return bi.attach({\n                root: root || document.body,\n                data: blockopt || {}\n              }).then(function(){\n                return bi['interface']();\n              }).then(function(itf){\n                binfo['interface'] = itf;\n                binfo.instance = bi;\n                itf.adapt(host);\n                return itf.load(customData);\n              });\n            }).then(function(){\n              return console.log(\"block \" + name + \" loaded.\");\n            });\n          });\n        });\n      });\n    }\n  };\n});";
+pug_html = pug_html + "\u002F\u002F Generated by LiveScript 1.3.0\nldc.register(\"blockbase\", ['blockuploader', 'viewLocals', 'auth', 'ldNotify', 'error', 'notify', 'ldcvmgr'], function(arg$){\n  var blockuploader, viewLocals, auth, error, notify, ldcvmgr;\n  blockuploader = arg$.blockuploader, viewLocals = arg$.viewLocals, auth = arg$.auth, error = arg$.error, notify = arg$.notify, ldcvmgr = arg$.ldcvmgr;\n  return {\n    init: function(arg$){\n      var blockdef, brd, root, data, blockopt, ldld;\n      blockdef = arg$.blockdef, brd = arg$.brd, root = arg$.root, data = arg$.data;\n      blockopt = data;\n      ldld = new ldloader({\n        className: 'ldld full z-fixed'\n      });\n      return auth.ensure().then(function(global){\n        return auth.get().then(function(global){\n          var binfo, prj, user, owner, uploadr, host, customData, ref$, lc, this$ = this;\n          binfo = {};\n          prj = (viewLocals || {}).prj || {};\n          user = global.user || {};\n          owner = prj.owner || user.key || 0;\n          uploadr = new blockuploader({\n            brd: brd,\n            owner: owner\n          });\n          host = function(itf){\n            var _ldcvmgr;\n            _ldcvmgr = {\n              get: function(n, o){\n                var ret;\n                if (itf.ldcvmgr && (ret = itf.ldcvmgr.get(n, o))) {\n                  return ret;\n                } else {\n                  return ldcvmgr.get(n, o);\n                }\n              },\n              toggle: function(n, v, o){\n                var ret;\n                if (itf.ldcvmgr && (ret = itf.ldcvmgr.toggle(n, v, o))) {\n                  return ret;\n                } else {\n                  return ldcvmgr.toggle(n, v, o);\n                }\n              }\n            };\n            return {\n              changeLanguage: function(lng){\n                i18next.changeLanguage(lng);\n                return binfo.instance.transform('i18n');\n              },\n              info: {\n                prj: {\n                  slug: prj.slug,\n                  state: prj.state\n                },\n                user: {\n                  key: user.key,\n                  username: user.username,\n                  displayname: user.displayname\n                }\n              },\n              upload: function(o){\n                return uploadr.upload(o)['catch'](error());\n              },\n              print: function(opt){\n                var html, name;\n                opt == null && (opt = {});\n                html = opt.html || \"\";\n                name = opt.name || \"download.pdf\";\n                ldld.on();\n                return auth.recaptcha.get().then(function(recaptcha){\n                  return ld$.fetch(\"\u002Fdash\u002Fapi\u002Fcustom\u002Fprint\", {\n                    method: \"POST\"\n                  }, {\n                    json: {\n                      html: html,\n                      recaptcha: recaptcha\n                    },\n                    type: 'blob',\n                    timeout: 60 * 1000\n                  }).then(function(blob){\n                    return ldfile.download({\n                      blob: blob,\n                      mime: \"application\u002Fpdf\",\n                      name: name\n                    });\n                  })['finally'](function(){\n                    return ldld.off();\n                  });\n                });\n              },\n              save: function(arg$){\n                var name, description, data, submit;\n                name = arg$.name, description = arg$.description, data = arg$.data, submit = arg$.submit;\n                _ldcvmgr.toggle(submit ? 'submitting' : 'saving', true);\n                return debounce(1000).then(function(){\n                  return auth.recaptcha.get();\n                }).then(function(recaptcha){\n                  var payload;\n                  payload = {\n                    name: name,\n                    description: description,\n                    custom: data,\n                    submit: submit,\n                    recaptcha: recaptcha,\n                    slug: prj.slug,\n                    brd: brd\n                  };\n                  return ld$.fetch(\"\u002Fdash\u002Fapi\u002Fcustom\u002Fprj\", {\n                    method: \"POST\"\n                  }, {\n                    json: payload,\n                    type: 'json'\n                  });\n                }).then(function(it){\n                  console.log(\"saved return value: \", it);\n                  _ldcvmgr.toggle(submit ? 'submitted' : 'saved');\n                  return it;\n                })['finally'](function(){\n                  return _ldcvmgr.toggle(submit ? 'submitting' : 'saving', false);\n                })['catch'](function(e){\n                  error()(e);\n                  return Promise.reject(e);\n                });\n              }\n            };\n          };\n          customData = ((ref$ = (viewLocals || {}).prj || {}).detail || (ref$.detail = {})).custom || {};\n          lc = {};\n          return i18next.init({\n            supportedLng: ['en', 'zh-TW'],\n            fallbackLng: 'zh-TW',\n            fallbackNS: '',\n            defaultNS: ''\n          }).then(function(){\n            return i18next.use(i18nextBrowserLanguageDetector);\n          }).then(function(){\n            console.log(\"use language: \", navigator.language) || navigator.userLanguage;\n            return i18next.changeLanguage(navigator.language) || navigator.userLanguage;\n          }).then(function(){\n            return block.i18n.use(i18next);\n          }).then(function(){\n            var mgr;\n            lc.manager = mgr = new block.manager({\n              registry: function(arg$){\n                var name, version, path, type;\n                name = arg$.name, version = arg$.version, path = arg$.path, type = arg$.type;\n                return type === 'block'\n                  ? \"\u002Fdash\u002Fassets\u002Ffelib\u002F\" + name + \"\u002F\" + (version || 'main') + \"\u002F\" + (path || 'index.html') + \"?dec=\" + (global.version || '')\n                  : \"\u002Fdash\u002Fassets\u002Ffelib\u002F\" + name + \"\u002F\" + (version || 'main') + \"\u002F\" + (path || 'index.min.js') + \"?dec=\" + (global.version || '');\n              }\n            });\n            return mgr.get(blockdef).then(function(bc){\n              return bc.create();\n            }).then(function(bi){\n              return bi.attach({\n                root: root || document.body,\n                data: blockopt || {}\n              }).then(function(){\n                return bi['interface']();\n              }).then(function(itf){\n                binfo['interface'] = itf;\n                binfo.instance = bi;\n                itf.adapt(host(itf));\n                return itf.load(customData);\n              });\n            }).then(function(){\n              return console.log(\"block \" + name + \" loaded.\");\n            });\n          });\n        });\n      });\n    }\n  };\n});";
 ;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fbase.pug";
 pug_html = pug_html + "\u002F\u002F Generated by LiveScript 1.3.0\nldc.register(\"blockuploader\", ['viewLocals', 'auth', 'ldNotify', 'error', 'notify'], function(arg$){\n  var viewLocals, auth, error, notify, uploader;\n  viewLocals = arg$.viewLocals, auth = arg$.auth, error = arg$.error, notify = arg$.notify;\n  uploader = function(opt){\n    opt == null && (opt = {});\n    this.brd = opt.brd;\n    this.owner = opt.owner;\n    return this;\n  };\n  uploader.prototype = import$(Object.create(Object.prototype), {\n    getSignedUrl: function(opt){\n      opt == null && (opt = {});\n      return ld$.fetch(\"\u002Fdash\u002Fapi\u002Fgcs\u002Fupload\", {\n        method: 'POST'\n      }, {\n        json: opt,\n        type: 'json'\n      });\n    },\n    upload: function(arg$){\n      var file, progress, field, opt, this$ = this;\n      file = arg$.file, progress = arg$.progress, field = arg$.field;\n      opt = {\n        filename: file.name,\n        size: file.size,\n        field: field,\n        owner: this.owner,\n        brd: this.brd\n      };\n      return this.getSignedUrl(opt).then(function(arg$){\n        var signedUrl, id;\n        signedUrl = arg$.signedUrl, id = arg$.id;\n        return ld$.xhr(signedUrl, {\n          method: 'PUT',\n          body: file,\n          headers: {\n            \"Content-Type\": file.type\n          }\n        }, {\n          noDefaultHeaders: true,\n          progress: function(it){\n            if (progress) {\n              return progress(it);\n            }\n          }\n        }).then(function(){\n          if (progress) {\n            progress({\n              percent: 1\n            });\n          }\n          console.log('done');\n          return {\n            filename: file.name,\n            size: file.size,\n            modifiedtime: file.lastModified,\n            url: \"\u002Fdash\u002Fgcs\u002Fupload\u002F\" + id\n          };\n        });\n      });\n    }\n  });\n  return uploader;\n});\nfunction import$(obj, src){\n  var own = {}.hasOwnProperty;\n  for (var key in src) if (own.call(src, key)) obj[key] = src[key];\n  return obj;\n}\u003C\u002Fscript\u003E";
 ;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Fbase.pug";
-;pug_debug_line = 123;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 126;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cscript type=\"module\"\u003E";
-;pug_debug_line = 123;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 126;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u002F\u002F Generated by LiveScript 1.3.0\nldc.register(\"viewmode\", [], function(){\n  return \"view\";\n});\u003C\u002Fscript\u003E";
-;pug_debug_line = 125;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 128;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cscript type=\"module\"\u003E";
-;pug_debug_line = 125;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 128;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u002F\u002F Generated by LiveScript 1.3.0\nldc.register(['viewLocals', 'auth', 'ldNotify', 'error', 'notify'], function(arg$){\n  var viewLocals, auth, error, notify, vlc, lc, payload, ref$, ref1$, ref2$, submit, getSignedUrl, uploadFile, raw, slug, ldld;\n  viewLocals = arg$.viewLocals, auth = arg$.auth, error = arg$.error, notify = arg$.notify;\n  vlc = viewLocals;\n  lc = {};\n  payload = {\n    file: (ref$ = (ref1$ = (ref2$ = vlc.prj).detail || (ref2$.detail = {})).custom || (ref1$.custom = {})).file || (ref$.file = {})\n  };\n  submit = function(){\n    return auth.recaptcha.get().then(function(recaptcha){\n      var json;\n      json = {\n        recaptcha: recaptcha,\n        file: payload.file,\n        slug: slug\n      };\n      return ld$.fetch('\u002Fdash\u002Fapi\u002Ffuture-content\u002Fprj', {\n        method: 'POST'\n      }, {\n        json: json\n      });\n    }).then(function(){\n      return alert('updated');\n    })['catch'](function(){\n      return alert(\"failed to upload\");\n    });\n  };\n  getSignedUrl = function(opt){\n    opt == null && (opt = {});\n    return ld$.fetch(\"\u002Fdash\u002Fapi\u002Fgcs\u002Fupload\", {\n      method: 'POST'\n    }, {\n      json: opt,\n      type: 'json'\n    });\n  };\n  uploadFile = function(arg$){\n    var file, infoNode, field, opt;\n    file = arg$.file, infoNode = arg$.infoNode, field = arg$.field;\n    if (!((field === 'video' && file.type === \"video\u002Fmp4\") || file.type === 'application\u002Fpdf')) {\n      return Promise.reject(new ldError(1020));\n    }\n    opt = {\n      filename: file.name,\n      size: file.size,\n      owner: vlc.prj.owner || lc.global.user.key,\n      brd: 'future-content',\n      field: field\n    };\n    return getSignedUrl(opt).then(function(arg$){\n      var signedUrl, id;\n      signedUrl = arg$.signedUrl, id = arg$.id;\n      return ld$.xhr(signedUrl, {\n        method: 'PUT',\n        body: file,\n        headers: {\n          \"Content-Type\": file.type\n        }\n      }, {\n        noDefaultHeaders: true,\n        progress: function(it){\n          if (!infoNode) {\n            return;\n          }\n          infoNode.innerText = \"上傳中 \u002F \" + Math.floor(it.percent * 10000) \u002F 100 + \"%\";\n          return infoNode.removeAttribute('href');\n        }\n      }).then(function(){\n        return {\n          filename: file.name,\n          size: file.size,\n          id: id,\n          modifiedtime: file.lastModified\n        };\n      });\n    });\n  };\n  raw = (ref$ = (ref1$ = (ref2$ = viewLocals.prj).detail || (ref2$.detail = {})).custom || (ref1$.custom = {})).raw || (ref$.raw = {});\n  slug = viewLocals.prj.slug;\n  ldld = new ldLoader({\n    className: 'ldld full'\n  });\n  return auth.get().then(function(g){\n    var view;\n    lc.global = g;\n    return view = new ldView({\n      root: '[ld-scope=prj-detail]',\n      action: {\n        change: {\n          \"file-upload\": function(arg$){\n            var node, evt, name, btn, infoNode, p;\n            node = arg$.node, evt = arg$.evt;\n            name = node.getAttribute('data-name');\n            btn = ld$.parent(node, '.btn');\n            if (btn) {\n              btn.classList.toggle('running', true);\n            }\n            infoNode = view.getAll(\"file-uploaded\").filter(function(it){\n              return it.classList.contains('no-print');\n            }).filter(function(it){\n              return it.getAttribute('data-name') === name;\n            })[0];\n            p = !(node.files && node.files.length)\n              ? Promise.resolve().then(function(){\n                return payload.file[name] = null;\n              })\n              : uploadFile({\n                file: node.files[0],\n                infoNode: infoNode,\n                field: name\n              }).then(function(it){\n                return payload.file[name] = it;\n              });\n            return p['finally'](function(){\n              if (btn) {\n                btn.classList.toggle('running', false);\n              }\n              node.value = null;\n              return view.render('file-uploaded');\n            }).then(function(it){\n              payload.file[name] = it;\n              return submit();\n            }).then(function(){\n              return alert('ok');\n            })['catch'](function(e){\n              if (ldError.id(e) === 1020) {\n                return alert(\"不支援此種檔案類型，請用 \" + (name === 'video' ? \"MP4\" : \"PDF\"));\n              } else {\n                return alert(\"上傳失敗。請晚點再試一次\");\n              }\n            });\n          }\n        },\n        click: {\n          submit: submit,\n          \"update-note\": function(){\n            var ref$, json;\n            if (!((ref$ = lc.global.user.key) === 1 || ref$ === 4)) {\n              return;\n            }\n            json = {\n              slug: slug,\n              note: raw[\"註\"]\n            };\n            ldld.on();\n            return auth.recaptcha.get().then(function(recaptcha){\n              return json.recaptcha = recaptcha;\n            }).then(function(){\n              return ld$.fetch(\"\u002Fdash\u002Fapi\u002Ffuture-content\u002Fprj\", {\n                method: \"POST\"\n              }, {\n                json: json\n              });\n            })['finally'](function(){\n              return ldld.off();\n            }).then(function(){\n              return notify.send('success', \"已更新\");\n            })['catch'](function(it){\n              return error()(it);\n            });\n          }\n        },\n        input: {\n          note: function(arg$){\n            var node;\n            node = arg$.node;\n            return raw[\"註\"] = node.value || '';\n          }\n        }\n      },\n      handler: {\n        \"note-widget\": function(arg$){\n          var node, ref$;\n          node = arg$.node;\n          return node.classList.toggle('d-none', !((ref$ = lc.global.user.key) === 1 || ref$ === 4));\n        },\n        \"update-note\": function(arg$){\n          var node;\n          node = arg$.node;\n          return node.classList.remove('d-none');\n        },\n        note: function(arg$){\n          var node;\n          node = arg$.node;\n          node.value = raw[\"註\"] || '';\n          node.setAttribute('disabled', false);\n          return node.disabled = false;\n        },\n        \"file-uploaded\": function(arg$){\n          var node, name, data, date;\n          node = arg$.node;\n          name = node.getAttribute('data-name');\n          node.removeAttribute('href');\n          node.classList.remove('text-danger');\n          if (!((data = payload.file[name]) && payload.file[name].id)) {\n            node.classList.add('text-danger');\n            return node.innerText = \"尚未上傳檔案\";\n          }\n          if (node.classList.contains('no-print')) {\n            date = data.modifiedtime ? \"\u002F 檔案修改時間: \" + moment(data.modifiedtime).tz(\"Asia\u002FTaipei\").format(\"YYYY-MM-DD hh:mm:ss\") : \"\";\n            node.innerText = data.filename + \" \u002F size: \" + Math.round(data.size \u002F 1024) + \"KB \" + date + \" ( 點擊開啟 )\";\n          } else {\n            node.innerText = \"已上傳\";\n          }\n          return node.setAttribute('href', \"\u002Fdash\u002Fflagship\u002Fupload\u002F\" + data.id);\n        }\n      }\n    });\n  });\n});\u003C\u002Fscript\u003E";
-;pug_debug_line = 126;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 129;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u003Cscript type=\"module\"\u003E";
-;pug_debug_line = 126;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
+;pug_debug_line = 129;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 pug_html = pug_html + "\u002F\u002F Generated by LiveScript 1.3.0\nldc.register(['blockbase', 'viewLocals', 'auth', 'ldNotify', 'error', 'notify', 'viewmode'], function(o){\n  var blockbase, viewLocals, auth, error, notify, viewmode, blockdef, brd, root, data;\n  blockbase = o.blockbase, viewLocals = o.viewLocals, auth = o.auth, error = o.error, notify = o.notify, viewmode = o.viewmode;\n  blockdef = {\n    name: '@taiccadash\u002Ffuture-content',\n    version: 'main'\n  };\n  brd = \"future-content\";\n  root = document.querySelector('#root');\n  data = {\n    isEmbedded: viewmode === 'view' ? true : false\n  };\n  return blockbase.init({\n    blockdef: blockdef,\n    brd: brd,\n    root: root,\n    data: data\n  })['catch'](function(it){\n    console.log('failed: ', it);\n    return Promise.reject(it);\n  });\n});\u003C\u002Fscript\u003E\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";
     }.call(this, "Array" in locals_for_with ?
         locals_for_with.Array :

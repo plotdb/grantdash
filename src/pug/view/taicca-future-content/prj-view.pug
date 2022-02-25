@@ -90,7 +90,7 @@ block body
           - var val = form.raw[key]
           +item(key,val)
 
-        -
+        //--
           var reports = [
             ["計劃書","plan"],
             ["預算表","budget"],
@@ -98,6 +98,9 @@ block body
             ["相關附件","appendix"],
             ["共同提案證明文件","copropose_reg"]
           ];
+        //- 結案只需要計劃書
+        -
+          var reports = ["計劃書","plan"];
         each pair in reports
           if form.file && form.file[pair[1]]
             .m-4
