@@ -797,7 +797,7 @@ pug_html = pug_html + "});\u003C\u002Fscript\u003E";
 };
 }
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fversion.pug";
-var version = "b8440e3a";
+var version = "46f83d95";
 ;pug_debug_line = 2;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fblock\u002Flib.pug";
 if(!libLoader) {
   libLoader = {
@@ -1182,7 +1182,7 @@ pug_mixins["item"](key,val);
 }).call(this);
 
 ;pug_debug_line = 102;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
-var reports = ["計劃書","plan"];
+var reports = [["計劃書","plan"]];
 ;pug_debug_line = 104;pug_debug_filename = "src\u002Fpug\u002Fview\u002Ftaicca-future-content\u002Fprj-view.pug";
 // iterate reports
 ;(function(){
