@@ -5,7 +5,7 @@ brd = "future-content"
 # block view simply use document.body as root if root we provided is null,
 # so it's not necessary for our html to have `#root` defined.
 root = document.querySelector '#root'
-data = {is-embedded: if viewmode == \view => true else false}
+data = {mode: viewmode, is-embedded: if viewmode == \view => true else false}
 blockbase.init {blockdef, brd, root, data}
   .catch ->
     console.log 'failed: ', it
