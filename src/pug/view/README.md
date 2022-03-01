@@ -40,7 +40,7 @@ To load a specific block, use `blockbase.init`
       brd = "<brd-slug>"
       blockbase.init {blockdef, brd} .then -> ...
 
-blockbase.init accept an argument objects with following fields:
+blockbase.init accept an argument object with following fields:
 
  - `blockdef`: block definition object of the block to load
  - `brd`: board slug
