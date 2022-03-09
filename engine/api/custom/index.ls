@@ -98,7 +98,11 @@ api.post \/custom/prj/, grecaptcha, (req, res) ->
         cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: \owner}
       else Promise.resolve!
     .then ->
-      cache.stage.check {io, type: \brd, slug: brd, name: (if !lc.prj => \prj-new else \prj-edit)}
+      p = if lc.state == \active =>
+        cache.stage.check {io, type: \brd, slug: brd, name: (\prj-publish)}
+      else
+        cache.stage.check {io, type: \brd, slug: brd, name: (if !lc.prj => \prj-new else \prj-edit)}
+      p
         .catch -> return Promise.reject(new lderror(1012))
         .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[prj-edit-own owner]>}
     .then -> io.query """select org, slug, key, detail->'group' as group from brd where slug = $1""", [brd]

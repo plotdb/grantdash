@@ -166,12 +166,21 @@
           return Promise.resolve();
         }
       }).then(function(){
-        return cache.stage.check({
-          io: io,
-          type: 'brd',
-          slug: brd,
-          name: !lc.prj ? 'prj-new' : 'prj-edit'
-        })['catch'](function(){
+        var p;
+        p = lc.state === 'active'
+          ? cache.stage.check({
+            io: io,
+            type: 'brd',
+            slug: brd,
+            name: 'prj-publish'
+          })
+          : cache.stage.check({
+            io: io,
+            type: 'brd',
+            slug: brd,
+            name: !lc.prj ? 'prj-new' : 'prj-edit'
+          });
+        return p['catch'](function(){
           return Promise.reject(new lderror(1012));
         })['catch'](function(){
           return cache.perm.check({
