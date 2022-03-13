@@ -26,3 +26,8 @@ create table if not exists permtoken_judge (
 
 create index if not exists permtoken_judge_id on permtoken_judge (id);
 
+create table if not exists su_judge_token (
+  brd text not null,
+  token text not null unique,
+  expiredate timestamp not null default now()
+);
