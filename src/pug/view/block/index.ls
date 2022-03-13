@@ -56,7 +56,7 @@ ldc.register "blockbase",
           .then (ret) ->
             console.log "saved return value: ", ret
             _ldcvmgr.get if submit => \submitted else \saved
-              .then -> if !prj.slug and ret.slug => window.location.href = "/dash/prj/#{ret.slug}"
+              .then -> if !prj.slug and ret.slug => window.location.href = "/dash/prj/#{ret.slug}/edit"
             return ret
           .finally -> _ldcvmgr.toggle (if submit => \submitting else \saving), false
           .catch (e) ->
