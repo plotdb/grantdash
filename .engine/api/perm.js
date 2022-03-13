@@ -172,6 +172,51 @@
         });
       })['catch'](aux.errorHandler(res));
     });
+    app.get('/access/:slug', function(req, res){
+      return res.render("admin/access.pug");
+    });
+    api.post('/judge_su/:slug', function(req, res){
+      var brdSlug, token;
+      brdSlug = req.params.slug;
+      token = req.body.token;
+      return io.query("select * from su_judge_token where token = $1 and expiredate > now()", [token]).then(function(r){
+        r == null && (r = {});
+        if (!(r.rows || (r.rows = [])).length) {
+          return aux.reject(403);
+        }
+        return io.query("select p.owner, u.displayname from perm_judge as p\nleft join users as u on u.key = p.owner\nwhere brd = $1", [brdSlug]);
+      }).then(function(r){
+        r == null && (r = {});
+        return res.send(r.rows);
+      })['catch'](aux.errorHandler(res));
+    });
+    api.post('/judge_su/:brd/:owner', function(req, res){
+      var brdSlug, owner, token;
+      brdSlug = req.params.brd;
+      +(owner = req.params.owner);
+      token = req.body.token;
+      return io.query("select * from su_judge_token where token = $1 and expiredate > now()", [token]).then(function(r){
+        r == null && (r = {});
+        if (!(r.rows || (r.rows = [])).length) {
+          return aux.reject(403);
+        }
+        return io.query("select p.*, u.displayname from perm_judge as p\nleft join users as u on u.key = p.owner\nwhere p.brd = $1 and p.owner = $2", [brdSlug, owner]);
+      }).then(function(r){
+        r == null && (r = {});
+        if (!(r.rows || (r.rows = [])).length) {
+          return aux.reject(403);
+        }
+        return io.query("select * from users where key = $1", [owner]);
+      }).then(function(r){
+        r == null && (r = {});
+        if (!r.rows || !r.rows[0]) {
+          return aux.reject(404);
+        }
+        return req.logIn(r.rows[0], function(){
+          return res.send({});
+        });
+      })['catch'](aux.errorHandler(res));
+    });
     app.get('/judge-portal', function(req, res){
       if (!(req.user && req.user.key)) {
         return res.redirect("/dash/auth/?auth-method=login&nexturl=/dash/judge-portal");

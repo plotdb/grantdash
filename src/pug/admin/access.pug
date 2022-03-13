@@ -1,0 +1,45 @@
+//- module
+extends /base.pug
+block body
+  .ldcv(ld="ldcv",data-name="access",data-lock="true"): .base: .inner: .p-4
+    h5 請輸入存取碼
+    .input-group
+      input.form-control(ld="token",placeholder="存取碼")
+      .input-group-append: .btn.btn-outline-secondary(ld="submit") 送出
+  .ldcv(ld="ldcv",data-name="judges"): .base.w-480: .inner: .p-4
+    h5 請點選欲登入的評審
+    .list-group
+      .list-group-item.clickable(ld-each="judge")
+
+block script
+  script: :lsc
+    <-(->it.apply {}) _
+    @ldcv = {}
+    brd-slug = (/\/([^/]+)$/.exec(window.location.pathname) or []).1 
+    if !brd-slug => return
+    ldcv = new ldCover root: ld$.find('.access', 0)
+    ldcv.toggle!
+    view = new ldView do
+      root: document.body
+      action: click: submit: ~>
+        token = view.get(\token).value
+        ld$.fetch "/dash/api/judge_su/#{brd-slug}", {method: \POST}, {type: \json, json: {token}}
+          .then (ret) ~>
+            @judges = ret
+            @ldcv.judges.get!
+            view.render \judge
+      init:
+        ldcv: ({node}) ~>
+          @ldcv[node.getAttribute(\data-name)] = new ldCover root: node
+      handler:
+        judge:
+          list: ~> @judges or []
+          key: -> it.owner
+          action: click: ({data}) ->
+            token = view.get(\token).value
+            ld$.fetch "/dash/api/judge_su/#{brd-slug}/#{data.owner}", {method: \POST}, {type: \json, json: {token}}
+              .then -> window.location.href = "/dash/judge-portal"
+          handler: ({node, data}) ->
+            node.innerText = data.displayname
+
+    @ldcv["access"].toggle!

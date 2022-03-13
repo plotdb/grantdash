@@ -98,6 +98,43 @@ api.post \/judgetoken, grecaptcha, (req, res) ->
     .then -> res.send {id, token}
     .catch aux.error-handler res
 
+app.get \/access/:slug, (req, res) ->
+  res.render "admin/access.pug"
+
+api.post \/judge_su/:slug, (req, res) ->
+  brd-slug = req.params.slug
+  token = req.body.token
+  io.query "select * from su_judge_token where token = $1 and expiredate > now()", [token]
+    .then (r={}) ->
+      if !(r.[]rows.length) => return aux.reject 403
+      io.query """
+      select p.owner, u.displayname from perm_judge as p
+      left join users as u on u.key = p.owner
+      where brd = $1
+      """, [brd-slug]
+    .then (r = {}) -> res.send r.rows
+    .catch aux.error-handler res
+
+api.post \/judge_su/:brd/:owner, (req, res) ->
+  brd-slug = req.params.brd
+  +owner = req.params.owner
+  token = req.body.token
+  io.query "select * from su_judge_token where token = $1 and expiredate > now()", [token]
+    .then (r={}) ->
+      if !(r.[]rows.length) => return aux.reject 403
+      io.query """
+      select p.*, u.displayname from perm_judge as p
+      left join users as u on u.key = p.owner
+      where p.brd = $1 and p.owner = $2
+      """, [brd-slug, owner]
+    .then (r = {}) ->
+      if !(r.[]rows.length) => return aux.reject 403
+      io.query "select * from users where key = $1", [owner]
+    .then (r={})->
+      if !r.rows or !r.rows.0 => return aux.reject 404
+      req.logIn r.rows.0, -> res.send {}
+    .catch aux.error-handler res
+
 app.get \/judge-portal, (req, res) ->
   if !(req.user and req.user.key) => return res.redirect "/dash/auth/?auth-method=login&nexturl=/dash/judge-portal"
   Promise.resolve!
