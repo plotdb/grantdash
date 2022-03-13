@@ -118,7 +118,8 @@ api.post \/custom/prj/, grecaptcha, (req, res) ->
         update prj set (name,description,detail,grp,state) = ($2,$3,$4,$5,$6)
         where key = $1
         """, [lc.prj.key, name, description, JSON.stringify(detail), lc.grp.key, lc.state]
-          .then -> res.send lc{state}
+          .then ->
+            res.send {slug: lc.prj.slug, state: lc.state, system: lc.prj.system}
       else
         io.query """
         select count(key) as count from prj where

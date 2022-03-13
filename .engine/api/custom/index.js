@@ -206,7 +206,9 @@
         if (lc.prj) {
           return io.query("update prj set (name,description,detail,grp,state) = ($2,$3,$4,$5,$6)\nwhere key = $1", [lc.prj.key, name, description, JSON.stringify(detail), lc.grp.key, lc.state]).then(function(){
             return res.send({
-              state: lc.state
+              slug: lc.prj.slug,
+              state: lc.state,
+              system: lc.prj.system
             });
           });
         } else {
