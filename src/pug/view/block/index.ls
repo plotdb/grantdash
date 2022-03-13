@@ -53,9 +53,10 @@ ldc.register "blockbase",
               slug: prj.slug
               brd: brd
             ld$.fetch "/dash/api/custom/prj", {method: "POST"}, {json: payload, type: \json}
-          .then ->
-            console.log "saved return value: ", it
-            _ldcvmgr.toggle if submit => \submitted else \saved
+          .then (ret) ->
+            console.log "saved return value: ", ret
+            _ldcvmgr.get if submit => \submitted else \saved
+              .then -> if !prj.slug and ret.slug => window.location.href = "/dash/prj/#{ret.slug}"
             return it
           .finally -> _ldcvmgr.toggle (if submit => \submitting else \saving), false
           .catch (e) ->
