@@ -52,7 +52,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
     render: function(){},
     initView: function(){
       var this$ = this;
-      return this.view.base = new ldView({
+      return (this.view || (this.view = {})).base = new ldView({
         initRender: false,
         root: this.root,
         text: {

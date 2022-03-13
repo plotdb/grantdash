@@ -34,7 +34,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
   init: ->
   render: ->
   init-view: ->
-    @view.base = new ldView do
+    @{}view.base = new ldView do
       init-render: false
       root: @root
       text: do
