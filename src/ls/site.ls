@@ -11,7 +11,6 @@
           ],
           tracesSampleRate: 1.0
         if g.user => Sentry.setUser id: (g.user.key or 0)
-
       view = new ldView do
         global: true
         root: document.body
@@ -24,6 +23,10 @@
             node.classList.toggle \d-none, !g.scope.brdname
             node.innerText = "/ " + (g.scope.brdname or '')
             node.setAttribute \href, "/brd/#{g.scope.brd}"
+          "authed": ({node}) ->
+            node.classList.toggle \d-none, !(g.user or {}).key
+          "not-authed": ({node}) -> node.classList.toggle \d-none, (g.user or {}).key
+      auth.on \auth.signin, view.render <[authed not-authed]>
 
     if moment? => moment.tz.add(["Asia/Taipei|CST JST CDT|-80 -90 -90|01020202020202020202020202020202020202020|-1iw80 joM0 1yo0 Tz0 1ip0 1jX0 1cN0 11b0 1oN0 11b0 1oN0 11b0 1oN0 11b0 10N0 1BX0 10p0 1pz0 10p0 1pz0 10p0 1db0 1dd0 1db0 1cN0 1db0 1cN0 1db0 1cN0 1db0 1BB0 ML0 1Bd0 ML0 uq10 1db0 1cN0 1db0 97B0 AL0|74e5"])
     ldc.action do

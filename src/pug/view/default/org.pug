@@ -6,20 +6,31 @@ block vars
   - ctrl.navtop.className="bg-none navbar-light"
   - ctrl.foot.shown = false
 block body
-  .w-768.rwd.mx-auto.typeset.heading-contrast
+  .w-100.h-100.typeset.heading-contrast.vertical-center
+    .w-100.h-50.rwd.text-center.mx-auto
+      h3 #{org.name}
+      p #{(org.description || '').substring(0,100)} ...
+      hr
+      div(pd="not-authed")
+        .btn.btn-lg.btn-outline-secondary.mr-2(onclick="lda.auth.show('signup')") 註冊
+        .btn.btn-lg.btn-outline-secondary.ml-2(onclick="lda.auth.show('login')") 登入
+      .d-none(pd="authed")
+        .btn.btn-lg.btn-outline-secondary.mr-2(onclick="lda.general.profile()") 我的案件
+  //-.w-768.rwd.mx-auto.typeset.heading-contrast
     h3 #{org.name}
     p #{(org.description || '').substring(0,100)} ...
     .py-2
       //-.btn.btn-sm.btn-outline-secondary.mr-2(onclick="lda.general.admin()") 主控台
-      .btn.btn-sm.btn-outline-secondary.mr-2(onclick="lda.general.profile()") 我的案件
+      .btn.btn-lg.btn-outline-secondary.mr-2(onclick="lda.general.profile()") 我的案件
     +nbr(1)
-    h4 最新動態
-    hr
-    each brd in brds
-      .d-flex.align-items-center
-        .flex-grow-1
-          h5.my-0 #{brd.name}
-          p.my-0 #{(brd.description || '').substring(0,32)} ...
-        .ml-2
-          a.btn.btn-outline-secondary.text-nowrap(href=`/brd/${brd.slug}`) 詳情
+    //-
+      h4 最新動態
       hr
+      each brd in brds
+        .d-flex.align-items-center
+          .flex-grow-1
+            h5.my-0 #{brd.name}
+            p.my-0 #{(brd.description || '').substring(0,32)} ...
+          .ml-2
+            a.btn.btn-outline-secondary.text-nowrap(href=`/brd/${brd.slug}`) 詳情
+        hr
