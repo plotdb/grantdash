@@ -9,7 +9,7 @@ block body
   .w-100.h-100.typeset.heading-contrast.vertical-center
     .w-100.h-50.rwd.text-center.mx-auto
       h3 #{org.name}
-      p #{(org.description || '').substring(0,100)} ...
+      p.w-1024.rwd.mx-auto.text-left #{(org.description || '').substring(0,200)} ...
       hr
       div(pd="not-authed")
         .btn.btn-lg.btn-outline-secondary.mr-2(onclick="lda.auth.show('signup')") 註冊
