@@ -208,8 +208,8 @@ api.get \/brd/:brd/grp/:grp/judge-list/:type, (req, res) ->
         p.detail is not null and
         p.brd = $1 and
         p.grp = $2 and
-        p.deleted is not true and
-        p.state = 'active'
+        p.deleted is not true
       """, [brd, grp]
+      #and p.state = 'active'
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res
