@@ -1,6 +1,14 @@
 (->
   ldc.register \general, <[auth navtop error ldcvmgr]>, ({auth, navtop, error, ldcvmgr}) ->
     console.log "site general ldc"
+
+    if i18next? =>
+      i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \zh-TW, fallbackNS: '', defaultNS: ''
+        .then -> i18next.use i18nextBrowserLanguageDetector
+        .then ->
+          console.log "use language: ", navigator.language or navigator.userLanguage
+          i18next.changeLanguage navigator.language or navigator.userLanguage
+
     smoothScroll!
     auth.get!then (g) ->
       if Sentry? =>

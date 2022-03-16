@@ -4,6 +4,19 @@
     var auth, navtop, error, ldcvmgr;
     auth = arg$.auth, navtop = arg$.navtop, error = arg$.error, ldcvmgr = arg$.ldcvmgr;
     console.log("site general ldc");
+    if (typeof i18next != 'undefined' && i18next !== null) {
+      i18next.init({
+        supportedLng: ['en', 'zh-TW'],
+        fallbackLng: 'zh-TW',
+        fallbackNS: '',
+        defaultNS: ''
+      }).then(function(){
+        return i18next.use(i18nextBrowserLanguageDetector);
+      }).then(function(){
+        console.log("use language: ", navigator.language) || navigator.userLanguage;
+        return i18next.changeLanguage(navigator.language) || navigator.userLanguage;
+      });
+    }
     smoothScroll();
     auth.get().then(function(g){
       var view;
