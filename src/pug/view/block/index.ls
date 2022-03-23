@@ -8,6 +8,10 @@ ldc.register "blockbase",
     (global) <- auth.get!then _
     binfo = {}
     prj = (viewLocals or {}).prj or {}
+    if /create/.exec(window.location.pathname) and prj.key =>
+      ldcvmgr.get \existed
+      debounce 1000 .then ->
+        window.location.href = "/dash/prj/#{prj.slug}/edit"
     user = (global.user or {})
     owner = prj.owner or user.key or 0
     uploadr = new blockuploader {brd, owner}
