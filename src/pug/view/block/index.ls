@@ -4,7 +4,12 @@ ldc.register "blockbase",
   init: ({blockdef, brd, root, data}) ->
     blockopt = data
     ldld = new ldloader className: 'ldld full z-fixed'
+    (global) <- auth.get!then _
+    u1 = global.user or {}
     (global) <- auth.ensure!then _
+    u2 = global.user or {}
+    # reload so we can try to fetch prj by user key
+    if u1.key != u2.key => window.location.reload!
     (global) <- auth.get!then _
     binfo = {}
     prj = (viewLocals or {}).prj or {}
@@ -15,6 +20,7 @@ ldc.register "blockbase",
     user = (global.user or {})
     owner = prj.owner or user.key or 0
     uploadr = new blockuploader {brd, owner}
+    ld$.find \.dropdown .map -> new BSN.Dropdown it
 
     host = (itf) ->
       _ldcvmgr =
