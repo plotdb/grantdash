@@ -618,6 +618,9 @@
         if (!(lc.brd = brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(400);
         }
+        if (!req.user || !req.user.key) {
+          return Promise.resolve();
+        }
         return io.query("select key,slug from prj where owner = $1 and brd = $2 and deleted is not true", [req.user.key, slug]);
       }).then(function(r){
         var view, ref$, ref1$;

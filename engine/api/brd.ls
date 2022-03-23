@@ -337,6 +337,7 @@ app.get \/brd/:slug/prj/create, (req, res) ->
     .then -> io.query """select name,slug,org,detail from brd where slug = $1 and deleted is not true""", [slug]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
+      if !req.user or !req.user.key => return Promise.resolve!
       io.query """
       select key,slug from prj where owner = $1 and brd = $2 and deleted is not true
       """, [req.user.key, slug]
