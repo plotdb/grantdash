@@ -613,21 +613,28 @@
       }).then(function(){
         return io.query("select name,slug,org,detail from brd where slug = $1 and deleted is not true", [slug]);
       }).then(function(r){
-        var brd, view, ref$, ref1$;
+        var brd;
         r == null && (r = {});
         if (!(lc.brd = brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(400);
         }
-        if (!(brd.detail.custom && brd.detail.custom.view)) {
+        return io.query("select key,slug from prj where owner = $1 and brd = $2 and deleted is not true", [req.user.key, slug]);
+      }).then(function(r){
+        var view, ref$, ref1$;
+        r == null && (r = {});
+        lc.prj = (r.rows || (r.rows = []))[0];
+        if (!(lc.brd.detail.custom && lc.brd.detail.custom.view)) {
           view = 'view/default/prj-create.pug';
         } else {
-          view = "view/" + brd.detail.custom.view + "/prj-create.pug";
+          view = "view/" + lc.brd.detail.custom.view + "/prj-create.pug";
         }
-        delete brd.detail;
+        delete lc.brd.detail;
         return res.render(view, (ref$ = (ref1$ = {
-          brd: lc.brd
+          brd: lc.brd,
+          prj: lc.prj
         }, ref1$.exports = {
-          brd: lc.brd
+          brd: lc.brd,
+          prj: lc.prj
         }, ref1$), ref$.domain = req.scope.domain, ref$));
       })['catch'](aux.errorHandler(res));
     });

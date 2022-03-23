@@ -337,10 +337,15 @@ app.get \/brd/:slug/prj/create, (req, res) ->
     .then -> io.query """select name,slug,org,detail from brd where slug = $1 and deleted is not true""", [slug]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
-      if !(brd.detail.custom and brd.detail.custom.view) => view = \view/default/prj-create.pug
-      else view = "view/#{brd.detail.custom.view}/prj-create.pug"
-      delete brd.detail
-      res.render view, lc{brd} <<< {exports: lc{brd}} <<< req.scope{domain}
+      io.query """
+      select key,slug from prj where owner = $1 and brd = $2 and deleted is not true
+      """, [req.user.key, slug]
+    .then (r={}) ->
+      lc.prj = r.[]rows.0
+      if !(lc.brd.detail.custom and lc.brd.detail.custom.view) => view = \view/default/prj-create.pug
+      else view = "view/#{lc.brd.detail.custom.view}/prj-create.pug"
+      delete lc.brd.detail
+      res.render view, lc{brd, prj} <<< {exports: lc{brd, prj}} <<< req.scope{domain}
     .catch aux.error-handler res
 
 app.get \/brd/:slug/list, (req, res) ->
