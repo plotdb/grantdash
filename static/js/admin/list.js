@@ -83,6 +83,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
             }).then(function(prjs){
               var custom, head, rows, blob, name;
               prjs == null && (prjs = {});
+              console.log(prjs);
               if (type && type !== 'all') {
                 prjs = prjs.filter(function(it){
                   return !it.deleted;
@@ -101,7 +102,52 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                 return new Promise(function(res, rej){
                   var fallback, script;
                   fallback = function(){
-                    var blob, name;
+                    var ref$, ref1$, heads, res$, k, head, rows, blob, name;
+                    if (prjs[0] && ((ref$ = (ref1$ = prjs[0]).detail || (ref1$.detail = {})).custom || (ref$.custom = {})).open) {
+                      heads = {};
+                      prjs.map(function(p){
+                        var k, ref$, ref1$, ref2$, v, results$ = [];
+                        for (k in ref$ = (ref1$ = (ref2$ = p.detail || (p.detail = {})).custom || (ref2$.custom = {})).open || (ref1$.open = {})) {
+                          v = ref$[k];
+                          results$.push(heads[k] = 1);
+                        }
+                        return results$;
+                      });
+                      res$ = [];
+                      for (k in heads) {
+                        res$.push(k);
+                      }
+                      heads = res$;
+                      head = heads.map(function(it){
+                        return '"' + ('' + it).replace(/"/g, "'") + '"';
+                      });
+                      rows = prjs.map(function(p){
+                        return heads.map(function(h){
+                          var ref$, ref1$;
+                          return ((ref$ = (ref1$ = p.detail || (p.detail = {})).custom || (ref1$.custom = {})).open || (ref$.open = {}))[h] || '';
+                        }).map(function(v){
+                          return typeof v !== 'object'
+                            ? v
+                            : !v
+                              ? ""
+                              : v.v != null
+                                ? v.v
+                                : v.list != null || (v.other != null && v.other.text != null)
+                                  ? ((v.list || []).concat([v.other && v.other.enabled ? v.other.text || '' : ''])).filter(function(it){
+                                    return it != null && it !== "";
+                                  })
+                                  : JSON.stringify(v);
+                        }).map(function(it){
+                          return '"' + ('' + it).replace(/"/g, "'") + '"';
+                        });
+                      });
+                      blob = csv4xls.toBlob([head].concat(rows));
+                      name = this$.toc.brd.name + "-" + this$.grp.info.name + ".csv";
+                      return {
+                        blob: blob,
+                        name: name
+                      };
+                    }
                     blob = new Blob([JSON.stringify(prjs)], {
                       type: "application/json"
                     });

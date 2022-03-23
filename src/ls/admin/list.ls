@@ -43,6 +43,7 @@ Ctrl = (opt) ->
           type = node.getAttribute(\data-type) or \active
           ld$.fetch "/dash/api/brd/#{@toc.brd.slug}/grp/#{@grp.key}/prjs", {method: \GET}, {type: \json}
             .then (prjs = {}) ~>
+              console.log prjs
               if type and type != \all =>
                 prjs = prjs
                   .filter -> !it.deleted
@@ -53,7 +54,34 @@ Ctrl = (opt) ->
                 window.admin-extension = null
                 custom = @hubs.brd.doc.data.custom
                 return new Promise (res, rej) ~>
-                  fallback = ->
+                  fallback = ~>
+                    # hardwired open and some fields. 
+                    if prjs.0 and prjs.0.{}detail.{}custom.open =>
+                      heads = {}
+                      prjs.map (p) -> for k,v of p.{}detail.{}custom.{}open => heads[k] = 1
+                      heads = [k for k of heads]
+                      head = heads
+                        .map -> '"' + ('' + it).replace(/"/g,"'") + '"'
+                      rows = prjs.map (p) ->
+                        heads
+                          .map (h) -> p.{}detail.{}custom.{}open[h] or ''
+                          .map (v) ->
+                            # TODO we need to parse format based on @makeform widgets
+                            # for now we simply return v.v, v.vlist + v.other.enabled 
+                            return if typeof(v) != \object => v
+                            else if !v => ""
+                            else if v.v? => v.v
+                            else if v.list? or (v.other? and v.other.text?)  =>
+                              (
+                                (v.list or []) ++
+                                [(if v.other and v.other.enabled => (v.other.text or '') else '')]
+                              ).filter(-> it? and it != "")
+                            else JSON.stringify(v)
+                          .map -> '"' + ('' + it).replace(/"/g,"'") + '"'
+                      blob = csv4xls.to-blob([head] ++ rows)
+                      name = "#{@toc.brd.name}-#{@grp.info.name}.csv"
+                      return {blob, name}
+
                     blob = new Blob([JSON.stringify(prjs)], {type: "application/json"})
                     name = "projects.json"
                     return res {blob, name}
