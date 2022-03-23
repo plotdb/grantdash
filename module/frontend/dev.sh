@@ -11,4 +11,3 @@ done
 param=${param:1}
 
 npx fedep -l $param -s false
-
