@@ -270,7 +270,7 @@
             return;
           }
           ((ref$ = (ref1$ = group.judge || (group.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(e){
-            return (e.config || (e.config = {})).enabled;
+            return (e.config || (e.config = {})).enabled && !e.config.staff;
           }).map(function(e){
             var ref$, key$;
             (ref$ = ret[key$ = brd + "/" + grp] || (ret[key$] = {}), ref$.name = p.name, ref$.grp = p.grp, ref$.brd = p.brd, ref$).groupName = groupName;

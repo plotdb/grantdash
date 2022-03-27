@@ -165,7 +165,7 @@ judge-list = (req, res) ->
           group-name = if p.group.length > 1 => group.{}info.name else null
           if !(group.{}judgePerm.[]list.filter(->it.email == req.user.username).length) => return
           group.{}judge.{}custom.[]entries
-            .filter (e) -> e.{}config.enabled
+            .filter (e) -> e.{}config.enabled and !e.config.staff
             .map (e) ->
               ret{}["#brd/#grp"] <<< p{name, grp, brd} <<< {group-name}
               ret["#brd/#grp"][]list.push(

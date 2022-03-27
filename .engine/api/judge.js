@@ -402,7 +402,7 @@
         });
       })['catch'](aux.errorHandler(res));
     });
-    return api.get('/brd/:brd/grp/:grp/judge-list/:type', function(req, res){
+    api.get('/brd/:brd/grp/:grp/judge-list/:type', function(req, res){
       var ref$, brd, grp, type;
       ref$ = {
         brd: (ref$ = req.params).brd,
@@ -420,6 +420,53 @@
       }).then(function(r){
         r == null && (r = {});
         return res.send(r.rows || (r.rows = []));
+      })['catch'](aux.errorHandler(res));
+    });
+    return api.post('/brd/:brd/system/badge', function(req, res){
+      var prjs, brd, badge;
+      prjs = req.body.prjs || [];
+      brd = req.params.brd;
+      badge = req.body.badge;
+      if (!(brd && prjs && badge)) {
+        return res.send();
+      }
+      return cache.perm.check({
+        io: io,
+        user: req.user,
+        type: 'brd',
+        slug: brd,
+        action: ['owner', 'admin']
+      }).then(function(){
+        return io.query("select key, system from prj where brd = $1 and key = ANY($2)", [
+          brd, prjs.map(function(p){
+            return p.key;
+          })
+        ]);
+      }).then(function(r){
+        var hash, k, v;
+        r == null && (r = {});
+        hash = {};
+        prjs.map(function(p){
+          return hash[p.key] = p;
+        });
+        r.rows.map(function(p){
+          var ref$;
+          if (!hash[p.key]) {
+            return;
+          }
+          hash[p.key].system = p.system;
+          return ((ref$ = p.system || (p.system = {})).badge || (ref$.badge = {}))[badge] = hash[p.key].badge;
+        });
+        return io.query("update prj set system = e.system\nfrom (select * from jsonb_to_recordset($1::jsonb) as e (key int, system jsonb)) as e\nwhere prj.key = e.key", [JSON.stringify((function(){
+          var ref$, results$ = [];
+          for (k in ref$ = hash) {
+            v = ref$[k];
+            results$.push(v);
+          }
+          return results$;
+        }()))]);
+      }).then(function(){
+        return res.send();
       })['catch'](aux.errorHandler(res));
     });
   });

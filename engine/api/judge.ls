@@ -215,3 +215,27 @@ api.get \/brd/:brd/grp/:grp/judge-list/:type, (req, res) ->
       #and p.state = 'active'
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res
+
+api.post \/brd/:brd/system/badge, (req, res) ->
+  prjs = req.body.prjs or []
+  brd = req.params.brd
+  badge = req.body.badge
+  if !(brd and prjs and badge) => return res.send!
+  cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[owner admin]>}
+    .then ->
+      io.query "select key, system from prj where brd = $1 and key = ANY($2)", [brd, prjs.map (p) -> p.key]
+    .then (r={}) ->
+      hash = {}
+      prjs.map (p) -> hash[p.key] = p
+      r.rows.map (p) ->
+        if !hash[p.key] => return
+        hash[p.key].system = p.system
+        p.{}system.{}badge[badge] = hash[p.key].badge
+      io.query """
+      update prj set system = e.system
+      from (select * from jsonb_to_recordset($1::jsonb) as e (key int, system jsonb)) as e
+      where prj.key = e.key
+      """, [JSON.stringify([v for k,v of hash])]
+    .then ->
+      res.send!
+    .catch aux.error-handler(res)
