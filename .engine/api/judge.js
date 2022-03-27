@@ -106,7 +106,10 @@
         }
         view = "users/org/" + org + "/brd/" + brd + "/view/judge/" + lc.j.view + "-" + lv + ".pug";
         if (!fs.existsSync(view)) {
-          return aux.reject(404);
+          view = "src/pug/judge/" + lc.j.view + "-" + lv + ".pug";
+          if (!fs.existsSync(view)) {
+            return aux.reject(404);
+          }
         }
         return res.render(path.join('../..', view));
       })['catch'](aux.errorHandler(res));

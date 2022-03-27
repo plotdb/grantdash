@@ -40,7 +40,9 @@ app.get \/brd/:brd/grp/:grp/judge/custom/:slug/:lv, (req, res) ->
       if (!lc.j = lc.g.{}judge.{}custom.[]entries.filter(-> it.slug == slug).0) => return aux.reject 404
       if !lc.j.{}config.enabled => return Promise.reject(new lderror({ldcv: "not-yet-available"}, 1012))
       view = "users/org/#org/brd/#brd/view/judge/#{lc.j.view}-#{lv}.pug"
-      if !fs.exists-sync(view) => return aux.reject 404
+      if !fs.exists-sync(view) =>
+        view = "src/pug/judge/#{lc.j.view}-#{lv}.pug"
+        if !fs.exists-sync(view) => return aux.reject 404
       res.render path.join('../..', view)
     .catch aux.error-handler res
 
