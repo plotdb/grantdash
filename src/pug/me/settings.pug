@@ -10,20 +10,20 @@ block body
         include sidepanel.pug
     div(style="flex:1 0 auto;padding-bottom:100px")
       .w-768.rwd(style="padding:30px")
-        h1.mt-4.mb-4 個人設定
+        h1.mt-4.mb-4(pd="t") 個人設定
         br
-        h3 基本資訊
+        h3(pd="t") 基本資訊
         hr
         .form(data-name="basic")
           .row.mb-3
             .col-md
               .form-group
-                label 顯示名稱 #[small.text-muted / 此為公開資訊]
-                input.form-control(name="displayname",placeholder="例如, 王小明",value=user.displayname)
-                .invalid-feedback 顯示名稱就像青春一樣不能留白
+                label #[span(pd="t") 顯示名稱] #[small.text-muted / #[span(pd="t") 此為公開資訊]]
+                input.form-control(name="displayname",placeholder="",value=user.displayname)
+                .invalid-feedback required
             .col-md
               .form-group
-                label 用戶代碼
+                label(pd="t") 用戶代碼
                 .input-group
                   input#uid-input.form-control.disabled(readonly,value=user.key)
                   .input-group-append.has-tips.manual(ld="copyUid",data-clipboard-target="#uid-input")
@@ -34,24 +34,24 @@ block body
             .col-md
               .form-group
                 if user.verified
-                  .float-right.text-success #[i.i-check] #[span 已認證]
+                  .float-right.text-success #[i.i-check] #[span(pd="t") 已認證]
                 else
-                  .float-right.text-warning #[i.i-question] #[small 未認證]
-                label 帳號名稱 #[small.text-muted / 你的電子郵件地址]
+                  .float-right.text-warning #[i.i-question] #[small(pd="t") 未認證]
+                label #[span(pd="t") 帳號名稱] #[small.text-muted / #[span(pd="t") 你的電子郵件地址]]
                 input.form-control(placeholder="e.g., yourname@yourhost.com",
                 disabled,value=user.username)
             .col-md
               .form-group
-                label 電子郵箱認證
+                label(pd="t") 電子郵箱認證
                 if user.verified
-                  .btn.btn-outline-secondary.btn-block.disabled(ld="mailVerify") 已認證
+                  .btn.btn-outline-secondary.btn-block.disabled(ld="mailVerify",pd="t") 已認證
                 else
                   .btn.btn-success.btn-block.ld.ld-ext-right(ld="mailVerify")
-                    | 寄發認證信 #[i.i-mail.ml-2] #[.ld.ld-spin.ld-ring]
-          .form-group.mb-4
+                    | #[span(pd="t") 寄發認證信] #[i.i-mail.ml-2] #[.ld.ld-spin.ld-ring]
+          //-.form-group.mb-4
             label 描述 #[small.text-muted / 會顯示在個人檔案中。上限 1024 字]
             textarea.form-control(name="description",rows="3",placeholder="談談關於你的事吧")= user.description
-          .row
+          //-.row
             .col-md
               .form-group.mb-4
                 label 職業 #[small.text-muted / 會顯示在個人檔案中]
@@ -70,28 +70,28 @@ block body
                     .ld.ld-spin.ld-spinner
 
           .form-group.mt-4
-            .btn.btn-primary.ld-ext-right(ld="updateBasicData") 更新基本資訊 #[.ld.ld-spin.ld-ring]
+            .btn.btn-primary.ld-ext-right(pd="t",ld="updateBasicData") 更新基本資訊 #[.ld.ld-spin.ld-ring]
         +nbr(2)
 
-        h3 變更密碼
+        h3(pd="t") 變更密碼
         hr
         .form(data-name="passwd")
           .row
             .col-md-8
               .form-group
-                label 舊的密碼
+                label(pd="t") 舊的密碼
                 input.form-control(name="oldpasswd",type="password")
                 .invalid-feedback Password not matched.
             .col-md-4
               .form-group
-                label 忘記密碼嗎？
-                .btn.btn-outline-dark.btn-block(ld="sendResetLink") #[i.i-mail] 寄發重設連結信
+                label(pd="t") 忘記密碼嗎？
+                .btn.btn-outline-dark.btn-block(ld="sendResetLink") #[i.i-mail] #[span(pd="t") 寄發重設連結信]
           .row
             .col-md-8
               .form-group
-                label 新密碼
+                label(pd="t") 新密碼
                 input.form-control(name="newpasswd1",type="password")
-                .invalid-feedback 新密碼太弱了，換一組吧
+                .invalid-feedback too weak
             .col-md-4
               .form-group(data-node="passwd-bar1")
                 label.text-capitalize &nbsp;
@@ -99,12 +99,12 @@ block body
           .row
             .col-md-8
               .form-group
-                label 再輸入一次新密碼
+                label(pd="t") 再輸入一次新密碼
                 input.form-control(name="newpasswd2",type="password")
-                .invalid-feedback 兩次輸入不符合
-              .btn.btn-primary.btn-block.mb-4.disabled.ld-ext-right(ld="update-password") 更新密碼 #[.ld.ldld.bare.em-1]
+                .invalid-feedback not matched
+              .btn.btn-primary.btn-block.mb-4.disabled.ld-ext-right(ld="update-password") #[span(pd="t") 更新密碼] #[.ld.ldld.bare.em-1]
 
-              .text-muted: small
+              //-.text-muted: small
                 p 好的密碼至少要夠長 ( 至少十個字 )。請不要用姓名、電話或生日當您的密碼。
                 p 你可以查閱 #[a(href="https://en.wikipedia.org/wiki/Password_strength",target="_blank",rel="noopener noreferrer") Password Strength] 這篇文章來了解怎樣算是一個好密碼。
 

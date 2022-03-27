@@ -15,11 +15,11 @@ block body
             .text-lg.text-center: b #{user.displayname}
             .text-muted.mb-4
               if user.title
-                .my-2 #{user.title || '尚無抬頭'}
-              .text-sm 註冊於 #[span(ld="prettydate",data-value=user.createdtime)]
+                .my-2 #{user.title || 'untitled'}
+              .text-sm #[span(pd="t") 註冊於] #[span(ld="prettydate",data-value=user.createdtime)]
               if user.description
                 hr
-                p.text-sm.text-center #{user.description || '尚未準備自我介紹...'}
+                p.text-sm.text-center #{user.description || 'no description ...'}
               hr
               .tags
                 each tag in (user.tags || '').split(',')
@@ -27,36 +27,36 @@ block body
               .mt-4
                 //-.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2 追蹤
                 if prjs
-                  a.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2(href="/dash/me/settings") 設定
+                  a.btn.btn-sm.btn-primary.rounded-pill.px-4.mx-2(href="/dash/me/settings",pd="t") 設定
     if prjs
       .info-panel.flex-grow-1
         if !prjs.length
           .w-100.vertical-center: .w-100.text-center.text-muted
-            .text-lg.mb-4 您目前沒有任何提案
-            div 當您開始提案以後，您可以在這裡瀏覽您所建立過的提案。
+            .text-lg.mb-4 您目前沒有任何案件
+            div 當您開始提案以後，您可以在這裡瀏覽您所建立過的案件。
             +nbr(2)
         else
           +nbr(2)
           .p-4.border-bottom
-            .text-lg 您的提案
+            .text-lg(pd="t") 案件列表
           each prj in prjs
             if !prj.deleted
               .prj.align-items-start.mx-2.border-bottom.pb-4
                 if prj.state == 'active'
                   .mr-4.state.text-center.btn.mx-0(style="cursor:default")
-                    .badge.badge-success 已發布
+                    .badge.badge-success(pd="t") 已發布
 
                 else
-                  .mr-4.state.text-center.btn.mx-0(style="cursor:default"): .badge.badge-warning 編輯中
+                  .mr-4.state.text-center.btn.mx-0(style="cursor:default"): .badge.badge-warning(pd="t") 編輯中
                 .flex-grow-1.text.text-truncate.mr-4(style=`opacity:${prj.deleted ? 0.2 : 1}`)
                   .btn.mb-0.text-truncate.px-0(style="cursor:default")
                     .text-dark.text-truncate(style="max-width:450px") #{prj.name}
                   .d-none.d-md-block.text-sm.text-muted
                     div
-                      span.mr-2 所屬計劃：
-                      span #[span #{prj.brdname || '未命名'}]
+                      span.mr-2 #[span(pd="t") 所屬計劃]：
+                      span #[span #{prj.brdname || 'unnamed'}]
                     div
-                      span.mr-2 建立日期：
+                      span.mr-2 #[span(pd="t") 建立日期]：
                       span(ld="prettydate",data-value=prj.createdtime)
                     if prj.description
                       p.text-muted.mb-1.text-truncate(
@@ -70,13 +70,13 @@ block body
                 .action
                   if !prj.deleted
                     .btn-group.mt-1
-                      a.btn.btn-sm.text-nowrap(
+                      a.btn.btn-sm.text-nowrap(pd="t"
                       class=(prj.detail?"btn-outline-primary":"disabled btn-light"),
                       href=(prj.detail?`/dash/prj/${prj.slug}`:'#')) 檢視
-                      a.btn.btn-sm.btn-outline-primary.text-nowrap(href=`/dash/prj/${prj.slug}/edit`) 編輯
+                      a.btn.btn-sm.btn-outline-primary.text-nowrap(pd="t",href=`/dash/prj/${prj.slug}/edit`) 編輯
                       //-.btn.btn-sm.btn-outline-danger.text-nowrap(ld="delete",data-slug=prj.slug) 刪除
                   else
-                    div: a.btn.btn-light.text-nowrap.disabled 已刪除
+                    div: a.btn.btn-light.text-nowrap.disabled(pd="t") 已刪除
 
 block script
   +script("/dash/js/me/profile.js")

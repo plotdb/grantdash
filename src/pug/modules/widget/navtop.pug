@@ -17,17 +17,17 @@ if ctrl.navtop.shown
       li.nav-item: a.nav-link(href="#") 常用功能
     +scope("nav-top")#nav-top-content.collapse.navbar-collapse
       ul.navbar-nav.ml-auto
-        li.nav-item.d-none(ld="signup"): a.nav-link 註冊
-        li.nav-item.d-none(ld="login"): a.nav-link 登入
+        li.nav-item.d-none(ld="signup"): a.nav-link(pd="t") 註冊
+        li.nav-item.d-none(ld="login"): a.nav-link(pd="t") 登入
         li.nav-item.dropdown(ld="profile")
           a.nav-link.dropdown-toggle.d-flex.align-items-center(href="#",data-toggle="dropdown")
             .avatar.mr-2(ld="avatar")
             span(ld="displayname")
           .dropdown-menu.dropdown-menu-right.shadow-sm
-            a.dropdown-item(href="/dash/me/") 個人頁面
-            a.dropdown-item(href="/dash/me/settings/") 帳號設定
+            a.dropdown-item(href="/dash/me/",pd="t") 個人頁面
+            a.dropdown-item(href="/dash/me/settings/",pd="t") 帳號設定
             .dropdown-divider
-            a.dropdown-item(href="#",onclick="lda.general.admin()") 主控台
+            a.dropdown-item(href="#",onclick="lda.general.admin()",pd="t") 主控台
             //-
               a.dropdown-item(href="/me/") 我的提案
               a.dropdown-item(href="/me/") 我的關注
@@ -37,6 +37,6 @@ if ctrl.navtop.shown
               a.dropdown-item(href="/me/") 提案評選
               .dropdown-divider
             .dropdown-divider
-            a.dropdown-item(ld="logout") 登出
+            a.dropdown-item(ld="logout",pd="t") 登出
   if ctrl.navtop.placeholder
     #nav-top-placeholder

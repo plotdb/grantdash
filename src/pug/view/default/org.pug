@@ -12,10 +12,10 @@ block body
       p.w-1024.rwd.mx-auto.text-left #{(org.description || '').substring(0,200)} ...
       hr
       div(pd="not-authed")
-        .btn.btn-lg.btn-outline-secondary.mr-2(onclick="lda.auth.show('signup')") 註冊
-        .btn.btn-lg.btn-outline-secondary.ml-2(onclick="lda.auth.show('login')") 登入
+        .btn.btn-lg.btn-outline-secondary.mr-2(onclick="lda.auth.show('signup')",pd="t") 註冊
+        .btn.btn-lg.btn-outline-secondary.ml-2(onclick="lda.auth.show('login')",pd="t") 登入
       .d-none(pd="authed")
-        .btn.btn-lg.btn-outline-secondary.mr-2(onclick="lda.general.profile()") 我的案件
+        .btn.btn-lg.btn-outline-secondary.mr-2(onclick="lda.general.profile()",pd="t") 我的案件
   //-.w-768.rwd.mx-auto.typeset.heading-contrast
     h3 #{org.name}
     p #{(org.description || '').substring(0,100)} ...
