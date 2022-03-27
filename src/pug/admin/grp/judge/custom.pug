@@ -24,11 +24,23 @@ p 依您的需求設定評選表。
         div 評選階段代碼
         .text-muted.text-sm.mb-2 自動生成的階段 ID
         input.form-control.rounded.border(ld="entry-data",data-name="slug",readonly,disabled) 
+  .row
     .col-md
       .form-group
         div 評選表樣板名稱
         .text-muted.text-sm.mb-2 若不清楚，請洽開發人員。
         input.form-control.rounded.border(ld="entry-data",data-name="view")
+    .col-md
+      .form-group
+        div 名單預篩
+        .text-muted.text-sm.mb-2 用其它次評選結果做名單過濾
+        select.form-control(ld="entry-data",data-name="filter")
+          option(value="") 無
+          option(value="criteria") 資格審查
+          option(value="shortlist") 初選
+          option(value="finalist") 決選
+          option(value="winner") 獲選
+
   .row
     .col-md
       .form-group
@@ -42,14 +54,10 @@ p 依您的需求設定評選表。
         .switch.switch-lg(ld="switch",data-name="anonymous")
     .col-md
       .form-group
-        div 名單預篩
-        .text-muted.text-sm.mb-2 用其它次評選結果做名單過濾
-        select.form-control(ld="entry-data",data-name="filter")
-          option(value="") 無
-          option(value="criteria") 資格審查
-          option(value="shortlist") 初選
-          option(value="finalist") 決選
-          option(value="winner") 獲選
+        div 工作人員用表
+        .text-muted.text-sm.mb-2 若啟用，則不會讓評審看到
+        .switch.switch-lg(ld="switch",data-name="staff")
+  hr
   .btn.btn-outline-danger(ld="delete-entry") 刪除
 
 

@@ -7,11 +7,15 @@ function pug_escape(e){var a=""+e,t=pug_match_html.exec(a);if(!t)return e;var r,
 var pug_has_own_property=Object.prototype.hasOwnProperty;
 var pug_match_html=/["&<>]/;
 function pug_merge(e,r){if(1===arguments.length){for(var t=e[0],g=1;g<e.length;g++)t=pug_merge(t,e[g]);return t}for(var l in r)if("class"===l){var n=e[l]||[];e[l]=(Array.isArray(n)?n:[n]).concat(r[l]||[])}else if("style"===l){var n=pug_style(e[l]);n=n&&";"!==n[n.length-1]?n+";":n;var a=pug_style(r[l]);a=a&&";"!==a[a.length-1]?a+";":a,e[l]=n+a}else e[l]=r[l];return e}
-function pug_rethrow(n,e,r,t){if(!(n instanceof Error))throw n;if(!("undefined"==typeof window&&e||t))throw n.message+=" on line "+r,n;try{t=t||require("fs").readFileSync(e,"utf8")}catch(e){pug_rethrow(n,null,r)}var i=3,a=t.split("\n"),o=Math.max(r-i,0),h=Math.min(a.length,r+i),i=a.slice(o,h).map(function(n,e){var t=e+o+1;return(t==r?"  > ":"    ")+t+"| "+n}).join("\n");throw n.path=e,n.message=(e||"Pug")+":"+r+"\n"+i+"\n\n"+n.message,n}
-function pug_style(r){if(!r)return"";if("object"==typeof r){var t="";for(var e in r)pug_has_own_property.call(r,e)&&(t=t+e+":"+r[e]+";");return t}return r+""}function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;var pug_debug_filename, pug_debug_line;try {;var locals_for_with = (locals || {});(function (Array, JSON, blockLoader, cssLoader, decache, escape, parentName, prefix, scriptLoader) {;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fadmin\u002Fbase.pug";
+function pug_rethrow(e,n,r,t){if(!(e instanceof Error))throw e;if(!("undefined"==typeof window&&n||t))throw e.message+=" on line "+r,e;var o,a,i,s;try{t=t||require("fs").readFileSync(n,{encoding:"utf8"}),o=3,a=t.split("\n"),i=Math.max(r-o,0),s=Math.min(a.length,r+o)}catch(t){return e.message+=" - could not read from "+n+" ("+t.message+")",void pug_rethrow(e,null,r)}o=a.slice(i,s).map(function(e,n){var t=n+i+1;return(t==r?"  > ":"    ")+t+"| "+e}).join("\n"),e.path=n;try{e.message=(n||"Pug")+":"+r+"\n"+o+"\n\n"+e.message}catch(e){}throw e}
+function pug_style(r){if(!r)return"";if("object"==typeof r){var t="";for(var e in r)pug_has_own_property.call(r,e)&&(t=t+e+":"+r[e]+";");return t}return r+""}function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;var pug_debug_filename, pug_debug_line;try {;
+    var locals_for_with = (locals || {});
+    
+    (function (Array, JSON, b64img, blockLoader, cssLoader, ctrl, decache, escape, parentName, prefix, scriptLoader, version) {
+      ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fadmin\u002Fbase.pug";
 pug_html = pug_html + "\u003C!DOCTYPE html\u003E";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fversion.pug";
-var version = "edaa8f19";
+var version = "d3a34fea";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
 if ((!blockLoader || !blockLoader["common"])) {
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fstatic\u002Fassets\u002Flib\u002Fldui\u002Fpug\u002Fldui.pug";
@@ -630,6 +634,27 @@ prefix.currentName = parentName;
 
 
 ;pug_debug_line = 4;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1621,7 +1646,7 @@ if (ctrl.cover.authpanel) {
 pug_mixins["authpanel"] = pug_interp = function(){
 var block = (this && this.block), attributes = (this && this.attributes) || {};
 ;pug_debug_line = 3;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cdiv class=\"inner card p-0 border-0 authpanel signup\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"inner card p-0 border-0 authpanel signup zh\"\u003E";
 ;pug_debug_line = 3;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"card-body p-0\"\u003E";
 ;pug_debug_line = 4;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1635,25 +1660,25 @@ pug_html = pug_html + "\u003Cdiv class=\"text-left position-relative z-float tex
 ;pug_debug_line = 9;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-none\" data-info=\"signup-failed\"\u003E";
 ;pug_debug_line = 10;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ch2 class=\"mb-4 font-weight-bold\"\u003E";
+pug_html = pug_html + "\u003Ch2" + (" class=\"mb-4 font-weight-bold\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 10;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "註冊失敗。\u003C\u002Fh2\u003E";
 ;pug_debug_line = 11;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cp\u003E";
+pug_html = pug_html + "\u003Cp" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 11;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "您可能先前已經註冊過了，或者您所填的資訊有問題。您可以試著：\u003C\u002Fp\u003E";
 ;pug_debug_line = 12;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cul\u003E";
 ;pug_debug_line = 13;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cli\u003E";
+pug_html = pug_html + "\u003Cli" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 13;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "切換至登入模式後再試一次\u003C\u002Fli\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cli\u003E";
+pug_html = pug_html + "\u003Cli" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "試著使用更複雜的密碼\u003C\u002Fli\u003E";
 ;pug_debug_line = 15;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cli\u003E";
+pug_html = pug_html + "\u003Cli" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 15;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "嘗試使用社群帳號登入\u003C\u002Fli\u003E";
 ;pug_debug_line = 16;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1661,7 +1686,7 @@ pug_html = pug_html + "\u003Cli\u003E";
 ;pug_debug_line = 16;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "";
 ;pug_debug_line = 16;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca href=\"#\" onclick=\"lda.ldcvmgr.toggle('contact');\" style=\"color:#0ff\"\u003E";
+pug_html = pug_html + "\u003Ca" + (" href=\"#\" onclick=\"lda.ldcvmgr.toggle('contact');\" style=\"color:#0ff\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 16;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "與我們聯絡\u003C\u002Fa\u003E";
 ;pug_debug_line = 16;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1669,25 +1694,25 @@ pug_html = pug_html + "\u003C\u002Fli\u003E\u003C\u002Ful\u003E\u003C\u002Fdiv\u
 ;pug_debug_line = 18;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-none\" data-info=\"failed\"\u003E";
 ;pug_debug_line = 19;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ch2 class=\"mb-4 font-weight-bold\"\u003E";
+pug_html = pug_html + "\u003Ch2" + (" class=\"mb-4 font-weight-bold\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 19;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "登入失敗。\u003C\u002Fh2\u003E";
 ;pug_debug_line = 20;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cp\u003E";
+pug_html = pug_html + "\u003Cp" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 20;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "您之前可能用的是別組帳號或密碼、使用不同的登入方式、甚至尚未註冊過。您可以試著：\u003C\u002Fp\u003E";
 ;pug_debug_line = 21;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cul\u003E";
 ;pug_debug_line = 22;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cli\u003E";
+pug_html = pug_html + "\u003Cli" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 22;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "換一組帳號、密碼或登入方式\u003C\u002Fli\u003E";
 ;pug_debug_line = 23;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cli\u003E";
+pug_html = pug_html + "\u003Cli" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 23;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "確認您的 email 或密碼沒有打錯\u003C\u002Fli\u003E";
 ;pug_debug_line = 24;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cli\u003E";
+pug_html = pug_html + "\u003Cli" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 24;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "切換至註冊模式後再試一次\u003C\u002Fli\u003E";
 ;pug_debug_line = 25;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1695,7 +1720,7 @@ pug_html = pug_html + "\u003Cli\u003E";
 ;pug_debug_line = 25;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "";
 ;pug_debug_line = 25;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca href=\"\u002Fdash\u002Fauth\u002Freset\u002F\" style=\"color:#0ff\" target=\"_blank\" rel=\"noopener noreferrer\"\u003E";
+pug_html = pug_html + "\u003Ca" + (" href=\"\u002Fdash\u002Fauth\u002Freset\u002F\" style=\"color:#0ff\" target=\"_blank\" rel=\"noopener noreferrer\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 25;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "重設密碼\u003C\u002Fa\u003E";
 ;pug_debug_line = 25;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1705,7 +1730,7 @@ pug_html = pug_html + "\u003Cli\u003E";
 ;pug_debug_line = 26;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "";
 ;pug_debug_line = 26;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca href=\"#\" onclick=\"lda.ldcvmgr.toggle('contact');\" style=\"color:#0ff\"\u003E";
+pug_html = pug_html + "\u003Ca" + (" href=\"#\" onclick=\"lda.ldcvmgr.toggle('contact');\" style=\"color:#0ff\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 26;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "與我們聯絡\u003C\u002Fa\u003E";
 ;pug_debug_line = 26;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1713,11 +1738,11 @@ pug_html = pug_html + "\u003C\u002Fli\u003E\u003C\u002Ful\u003E\u003C\u002Fdiv\u
 ;pug_debug_line = 28;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"d-none\" data-info=\"token\"\u003E";
 ;pug_debug_line = 29;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ch2 class=\"mb-4 font-weight-bold\"\u003E";
+pug_html = pug_html + "\u003Ch2" + (" class=\"mb-4 font-weight-bold\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 29;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "歡迎您！\u003C\u002Fh2\u003E";
 ;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cp\u003E";
+pug_html = pug_html + "\u003Cp" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "您受邀成為我們的一員。不過，在繼續之前您需要先登入系統。\u003C\u002Fp\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 31;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1733,27 +1758,15 @@ pug_html = pug_html + "\u003Cdiv class=\"text-sm mb-1\" pd=\"brand-org\"\u003E";
 ;pug_debug_line = 35;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + " \u003C\u002Fdiv\u003E";
 ;pug_debug_line = 36;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ch3 class=\"mb-3 font-weight-bold\" style=\"line-height:1em\"\u003E";
+pug_html = pug_html + "\u003Ch3" + (" class=\"mb-3 font-weight-bold\""+" style=\"line-height:1em\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 36;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "登入系統\u003C\u002Fh3\u003E";
 ;pug_debug_line = 37;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cp\u003E";
+pug_html = pug_html + "\u003Cp" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 37;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "";
-;pug_debug_line = 37;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cb\u003E";
-;pug_debug_line = 37;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "電子郵件\u003C\u002Fb\u003E";
-;pug_debug_line = 37;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "即為您的帳號。若您代表您的團隊註冊，建議您使用一個";
-;pug_debug_line = 37;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cb\u003E";
-;pug_debug_line = 37;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "團隊可共用\u003C\u002Fb\u003E";
-;pug_debug_line = 37;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "的電子郵件。\u003C\u002Fp\u003E";
+pug_html = pug_html + "電子郵件即為您的帳號。若您代表您的團隊註冊，建議您使用一個團隊可共用的電子郵件。\u003C\u002Fp\u003E";
 ;pug_debug_line = 38;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cp\u003E";
+pug_html = pug_html + "\u003Cp" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 38;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "登入之後即可進行提案、系統管理或評選工作。\u003C\u002Fp\u003E";
 }
@@ -1771,15 +1784,15 @@ pug_html = pug_html + "\u003Cul class=\"nav nav-tabs pt-2 bg-light\" onclick=\"t
 ;pug_debug_line = 46;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cli class=\"nav-item ml-2\"\u003E";
 ;pug_debug_line = 46;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca class=\"nav-link\" data-action=\"signup\"\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"nav-link\""+" data-action=\"signup\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 46;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "註冊\u003C\u002Fa\u003E\u003C\u002Fli\u003E";
 ;pug_debug_line = 47;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cli class=\"nav-item\"\u003E";
 ;pug_debug_line = 47;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca class=\"nav-link\" data-action=\"login\"\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"nav-link\""+" data-action=\"login\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 47;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "登入  \u003C\u002Fa\u003E\u003C\u002Fli\u003E\u003C\u002Ful\u003E";
+pug_html = pug_html + "登入\u003C\u002Fa\u003E\u003C\u002Fli\u003E\u003C\u002Ful\u003E";
 ;pug_debug_line = 48;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"px-3 pb-4 pt-3 text-left d-flex flex-column h-100\"\u003E";
 ;pug_debug_line = 49;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1791,37 +1804,37 @@ pug_html = pug_html + "\u003Cdiv class=\"w-100\"\u003E";
 ;pug_debug_line = 50;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
 ;pug_debug_line = 51;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Clabel\u003E";
+pug_html = pug_html + "\u003Clabel" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 51;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "電子郵件\u003C\u002Flabel\u003E";
 ;pug_debug_line = 52;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cinput class=\"form-control form-control-sm\" name=\"email\" placeholder=\"電子郵件即您的帳號名稱\"\u003E";
+pug_html = pug_html + "\u003Cinput" + (" class=\"form-control form-control-sm\""+" name=\"email\""+pug_attr("t", true, true, true)+" t-placeholder=\"電子郵件即您的帳號名稱\"") + "\u003E";
 ;pug_debug_line = 53;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cdiv class=\"invalid-feedback\" style=\"margin-bottom:-.75em\"\u003E";
+pug_html = pug_html + "\u003Cdiv" + (" class=\"invalid-feedback\""+" style=\"margin-bottom:-.75em\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 53;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "無效的電子郵件\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 54;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"form-group\" data-show=\"signup\"\u003E";
 ;pug_debug_line = 55;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Clabel\u003E";
+pug_html = pug_html + "\u003Clabel" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 55;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "顯示名稱\u003C\u002Flabel\u003E";
 ;pug_debug_line = 56;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cinput class=\"form-control form-control-sm\" name=\"displayname\" placeholder=\"例如：王小明\"\u003E";
+pug_html = pug_html + "\u003Cinput" + (" class=\"form-control form-control-sm\""+" name=\"displayname\""+pug_attr("t", true, true, true)+" t-placeholder=\"例如：王小明\"") + "\u003E";
 ;pug_debug_line = 57;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cdiv class=\"invalid-feedback\"\u003E";
+pug_html = pug_html + "\u003Cdiv" + (" class=\"invalid-feedback\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 57;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "不能留白\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 58;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
 ;pug_debug_line = 59;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Clabel\u003E";
+pug_html = pug_html + "\u003Clabel" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 59;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "密碼\u003C\u002Flabel\u003E";
 ;pug_debug_line = 60;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cinput class=\"form-control form-control-sm\" name=\"passwd\" placeholder=\"密碼，至少八個字元\" type=\"password\"\u003E";
+pug_html = pug_html + "\u003Cinput" + (" class=\"form-control form-control-sm\""+" name=\"passwd\""+pug_attr("t", true, true, true)+" t-placeholder=\"密碼，至少八個字元\" type=\"password\"") + "\u003E";
 ;pug_debug_line = 61;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cdiv class=\"invalid-feedback\" style=\"margin-bottom:-.75em\"\u003E";
+pug_html = pug_html + "\u003Cdiv" + (" class=\"invalid-feedback\""+" style=\"margin-bottom:-.75em\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 61;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "不合格的密碼\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 62;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1829,39 +1842,41 @@ pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
 ;pug_debug_line = 63;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"text-center form-text text-muted small\"\u003E";
 ;pug_debug_line = 64;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "登入即表示您同意我們的 ";
+pug_html = pug_html + "\u003Cspan" + (pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 64;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca href=\"\u002Fsys\u002Ftos\u002F\" target=\"_blank\" rel=\"noopener noreferrer\"\u003E";
-;pug_debug_line = 64;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "用戶條款\u003C\u002Fa\u003E";
-;pug_debug_line = 64;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + " 與 ";
-;pug_debug_line = 64;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca href=\"\u002Fsys\u002Fprivacy\u002F\" target=\"_blank\"\u003E";
-;pug_debug_line = 64;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "隱私權政策\u003C\u002Fa\u003E";
-;pug_debug_line = 64;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "登入即表示您同意我們的\u003C\u002Fspan\u003E";
 ;pug_debug_line = 65;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cdiv class=\"btn btn-success btn-block disabled ld-ext-right\" data-action=\"submit\"\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"mx-2\""+" href=\"\u002Fsys\u002Ftos\u002F\" target=\"_blank\" rel=\"noopener noreferrer\""+pug_attr("t", true, true, true)) + "\u003E";
+;pug_debug_line = 65;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
+pug_html = pug_html + "用戶條款\u003C\u002Fa\u003E";
 ;pug_debug_line = 66;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cspan data-show=\"login\"\u003E";
+pug_html = pug_html + "\u003Cspan" + (" class=\"mx-2\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 66;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "登入\u003C\u002Fspan\u003E";
+pug_html = pug_html + "與\u003C\u002Fspan\u003E";
 ;pug_debug_line = 67;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cspan data-show=\"signup\"\u003E";
+pug_html = pug_html + "\u003Ca" + (" class=\"mx-2\""+" href=\"\u002Fsys\u002Fprivacy\u002F\" target=\"_blank\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 67;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "註冊\u003C\u002Fspan\u003E";
+pug_html = pug_html + "隱私權政策\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 68;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cdiv class=\"ld ldld bare em-1\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-success btn-block disabled ld-ext-right\" data-action=\"submit\"\u003E";
 ;pug_debug_line = 69;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cdiv class=\"d-flex justify-content-between mt-1\"\u003E";
+pug_html = pug_html + "\u003Cspan" + (" data-show=\"login\""+pug_attr("t", true, true, true)) + "\u003E";
+;pug_debug_line = 69;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
+pug_html = pug_html + "登入\u003C\u002Fspan\u003E";
 ;pug_debug_line = 70;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
+pug_html = pug_html + "\u003Cspan" + (" data-show=\"signup\""+pug_attr("t", true, true, true)) + "\u003E";
+;pug_debug_line = 70;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
+pug_html = pug_html + "註冊\u003C\u002Fspan\u003E";
+;pug_debug_line = 71;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
+pug_html = pug_html + "\u003Cdiv class=\"ld ldld bare em-1\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 72;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
+pug_html = pug_html + "\u003Cdiv class=\"d-flex justify-content-between mt-1\"\u003E";
+;pug_debug_line = 73;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"small\"\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 74;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"small\"\u003E";
 ;pug_debug_line = 74;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Ca href=\"\u002Fdash\u002Fauth\u002Freset\u002F\"\u003E";
+pug_html = pug_html + "\u003Ca" + (" href=\"\u002Fdash\u002Fauth\u002Freset\u002F\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 74;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "忘記密碼？»\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 75;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -1869,7 +1884,7 @@ pug_html = pug_html + "\u003Cdiv\u003E";
 ;pug_debug_line = 76;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "\u003Cdiv class=\"sep sep-text my-4\"\u003E";
 ;pug_debug_line = 76;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
-pug_html = pug_html + "\u003Cspan class=\"text-sm\"\u003E";
+pug_html = pug_html + "\u003Cspan" + (" class=\"text-sm\""+pug_attr("t", true, true, true)) + "\u003E";
 ;pug_debug_line = 76;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
 pug_html = pug_html + "或者用下列登入\u003C\u002Fspan\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 77;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fauthpanel.pug";
@@ -5279,23 +5294,23 @@ pug_html = pug_html + "\u003Cdiv class=\"text-muted text-sm mb-2\"\u003E";
 ;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "自動生成的階段 ID\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 26;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cinput" + (" class=\"form-control rounded border\""+" ld=\"entry-data\" data-name=\"slug\""+pug_attr("readonly", true, true, true)+pug_attr("disabled", true, true, true)) + "\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cinput" + (" class=\"form-control rounded border\""+" ld=\"entry-data\" data-name=\"slug\""+pug_attr("readonly", true, true, true)+pug_attr("disabled", true, true, true)) + "\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 27;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
-;pug_debug_line = 28;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
-;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv\u003E";
-;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "評選表樣板名稱\u003C\u002Fdiv\u003E";
-;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-muted text-sm mb-2\"\u003E";
-;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "若不清楚，請洽開發人員。\u003C\u002Fdiv\u003E";
-;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cinput class=\"form-control rounded border\" ld=\"entry-data\" data-name=\"view\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Cdiv class=\"row\"\u003E";
+;pug_debug_line = 28;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
+;pug_debug_line = 29;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
+;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv\u003E";
+;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "評選表樣板名稱\u003C\u002Fdiv\u003E";
+;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"text-muted text-sm mb-2\"\u003E";
+;pug_debug_line = 31;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "若不清楚，請洽開發人員。\u003C\u002Fdiv\u003E";
+;pug_debug_line = 32;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cinput class=\"form-control rounded border\" ld=\"entry-data\" data-name=\"view\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 33;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
 ;pug_debug_line = 34;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
@@ -5303,76 +5318,94 @@ pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
 ;pug_debug_line = 35;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Cdiv\u003E";
 ;pug_debug_line = 35;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "啟用\u003C\u002Fdiv\u003E";
-;pug_debug_line = 36;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-muted text-sm mb-2\"\u003E";
-;pug_debug_line = 36;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "若啟用，評審將可進入評分\u003C\u002Fdiv\u003E";
-;pug_debug_line = 37;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"switch switch-lg\" ld=\"switch\" data-name=\"enabled\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 38;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
-;pug_debug_line = 39;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
-;pug_debug_line = 40;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv\u003E";
-;pug_debug_line = 40;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "評審匿名\u003C\u002Fdiv\u003E";
-;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"text-muted text-sm mb-2\"\u003E";
-;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "若啟用，總表將不會顯示評審名稱\u003C\u002Fdiv\u003E";
-;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"switch switch-lg\" ld=\"switch\" data-name=\"anonymous\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 43;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
-;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
-;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv\u003E";
-;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "名單預篩\u003C\u002Fdiv\u003E";
-;pug_debug_line = 46;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 36;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Cdiv class=\"text-muted text-sm mb-2\"\u003E";
-;pug_debug_line = 46;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 36;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "用其它次評選結果做名單過濾\u003C\u002Fdiv\u003E";
-;pug_debug_line = 47;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 37;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Cselect class=\"form-control\" ld=\"entry-data\" data-name=\"filter\"\u003E";
-;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 38;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Coption value=\"\"\u003E";
-;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 38;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "無\u003C\u002Foption\u003E";
-;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 39;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Coption value=\"criteria\"\u003E";
-;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 39;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "資格審查\u003C\u002Foption\u003E";
-;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 40;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Coption value=\"shortlist\"\u003E";
-;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 40;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "初選\u003C\u002Foption\u003E";
-;pug_debug_line = 51;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Coption value=\"finalist\"\u003E";
-;pug_debug_line = 51;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 41;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "決選\u003C\u002Foption\u003E";
-;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Coption value=\"winner\"\u003E";
-;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 42;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "獲選\u003C\u002Foption\u003E\u003C\u002Fselect\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 44;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"row\"\u003E";
+;pug_debug_line = 45;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
+;pug_debug_line = 46;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
+;pug_debug_line = 47;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv\u003E";
+;pug_debug_line = 47;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "啟用\u003C\u002Fdiv\u003E";
+;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"text-muted text-sm mb-2\"\u003E";
+;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "若啟用，評審將可進入評分\u003C\u002Fdiv\u003E";
+;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"switch switch-lg\" ld=\"switch\" data-name=\"enabled\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
+;pug_debug_line = 51;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
+;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv\u003E";
+;pug_debug_line = 52;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "評審匿名\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 53;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"btn btn-outline-danger\" ld=\"delete-entry\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"text-muted text-sm mb-2\"\u003E";
 ;pug_debug_line = 53;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "刪除\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "若啟用，總表將不會顯示評審名稱\u003C\u002Fdiv\u003E";
+;pug_debug_line = 54;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"switch switch-lg\" ld=\"switch\" data-name=\"anonymous\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 55;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
 ;pug_debug_line = 56;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
-pug_html = pug_html + "\u003Cdiv class=\"position-absolute w-100 h-100 vertical-center rounded bg-white\" style=\"top:0;left:0\" ld=\"empty\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
 ;pug_debug_line = 57;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv\u003E";
+;pug_debug_line = 57;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "工作人員用表\u003C\u002Fdiv\u003E";
+;pug_debug_line = 58;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"text-muted text-sm mb-2\"\u003E";
+;pug_debug_line = 58;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "若啟用，則不會讓評審看到\u003C\u002Fdiv\u003E";
+;pug_debug_line = 59;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"switch switch-lg\" ld=\"switch\" data-name=\"staff\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 60;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Chr\u003E";
+;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-outline-danger\" ld=\"delete-entry\"\u003E";
+;pug_debug_line = 61;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "刪除\u003C\u002Fdiv\u003E";
+;pug_debug_line = 64;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+pug_html = pug_html + "\u003Cdiv class=\"position-absolute w-100 h-100 vertical-center rounded bg-white\" style=\"top:0;left:0\" ld=\"empty\"\u003E";
+;pug_debug_line = 65;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Cdiv class=\"w-100 text-center\"\u003E";
-;pug_debug_line = 58;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 66;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Cdiv class=\"mb-4\"\u003E";
-;pug_debug_line = 58;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 66;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "您尚未建立任何項目. 要先建立一個嗎？\u003C\u002Fdiv\u003E";
-;pug_debug_line = 59;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 67;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "\u003Cdiv class=\"btn btn-outline-primary\" ld=\"new-entry\"\u003E";
-;pug_debug_line = 59;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
+;pug_debug_line = 67;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fgrp\u002Fjudge\u002Fcustom.pug";
 pug_html = pug_html + "建立項目\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 },
 attributes: {"class": "position-relative"}
@@ -5920,4 +5953,30 @@ pug_mixins["script"]("/dash/js/form/criteria.js");
 pug_mixins["script"]("/dash/js/form/validator.js");
 ;pug_debug_line = 204;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Findex.pug";
 pug_mixins["script"]("/dash/js/prj/view-simple.js");
-pug_html = pug_html + "\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";}.call(this,"Array" in locals_for_with?locals_for_with.Array:typeof Array!=="undefined"?Array:undefined,"JSON" in locals_for_with?locals_for_with.JSON:typeof JSON!=="undefined"?JSON:undefined,"blockLoader" in locals_for_with?locals_for_with.blockLoader:typeof blockLoader!=="undefined"?blockLoader:undefined,"cssLoader" in locals_for_with?locals_for_with.cssLoader:typeof cssLoader!=="undefined"?cssLoader:undefined,"decache" in locals_for_with?locals_for_with.decache:typeof decache!=="undefined"?decache:undefined,"escape" in locals_for_with?locals_for_with.escape:typeof escape!=="undefined"?escape:undefined,"parentName" in locals_for_with?locals_for_with.parentName:typeof parentName!=="undefined"?parentName:undefined,"prefix" in locals_for_with?locals_for_with.prefix:typeof prefix!=="undefined"?prefix:undefined,"scriptLoader" in locals_for_with?locals_for_with.scriptLoader:typeof scriptLoader!=="undefined"?scriptLoader:undefined));} catch (err) {pug_rethrow(err, pug_debug_filename, pug_debug_line);};return pug_html;}; module.exports = template; })() 
+pug_html = pug_html + "\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";
+    }.call(this, "Array" in locals_for_with ?
+        locals_for_with.Array :
+        typeof Array !== 'undefined' ? Array : undefined, "JSON" in locals_for_with ?
+        locals_for_with.JSON :
+        typeof JSON !== 'undefined' ? JSON : undefined, "b64img" in locals_for_with ?
+        locals_for_with.b64img :
+        typeof b64img !== 'undefined' ? b64img : undefined, "blockLoader" in locals_for_with ?
+        locals_for_with.blockLoader :
+        typeof blockLoader !== 'undefined' ? blockLoader : undefined, "cssLoader" in locals_for_with ?
+        locals_for_with.cssLoader :
+        typeof cssLoader !== 'undefined' ? cssLoader : undefined, "ctrl" in locals_for_with ?
+        locals_for_with.ctrl :
+        typeof ctrl !== 'undefined' ? ctrl : undefined, "decache" in locals_for_with ?
+        locals_for_with.decache :
+        typeof decache !== 'undefined' ? decache : undefined, "escape" in locals_for_with ?
+        locals_for_with.escape :
+        typeof escape !== 'undefined' ? escape : undefined, "parentName" in locals_for_with ?
+        locals_for_with.parentName :
+        typeof parentName !== 'undefined' ? parentName : undefined, "prefix" in locals_for_with ?
+        locals_for_with.prefix :
+        typeof prefix !== 'undefined' ? prefix : undefined, "scriptLoader" in locals_for_with ?
+        locals_for_with.scriptLoader :
+        typeof scriptLoader !== 'undefined' ? scriptLoader : undefined, "version" in locals_for_with ?
+        locals_for_with.version :
+        typeof version !== 'undefined' ? version : undefined));
+    ;} catch (err) {pug_rethrow(err, pug_debug_filename, pug_debug_line);};return pug_html;}; module.exports = template; })() 
