@@ -5,9 +5,9 @@ u1 = global.user or {}
 root = undefined
 
 # TODO let these be adjustable.
-blockopt = {}
-blockdef = name: '@taiccadash/qual', version: 'main'
 brd = 'future-content'
+blockdef = name: '@taiccadash/qual', version: 'main'
+blockopt = {brd}
 binfo = {}
 
 host = ->
@@ -69,7 +69,6 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
           return if type == \block =>
             "/dash/assets/felib/#name/#{version or 'main'}/#{path or 'index.html'}?dec=#{global.version or ''}"
           else "/dash/assets/felib/#name/#{version or 'main'}/#{path or ('index.min.js')}?dec=#{global.version or ''}"
-        console.log blockdef
         mgr.get blockdef
           .then (bc) -> bc.create!
           .then (bi) ~>
