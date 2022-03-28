@@ -170,7 +170,9 @@ stage = do
       .then ~>
         if !type in @supported-types => return aux.reject 400
         if !slug => return aux.reject 400
-        if @cache{}[type][slug] => return that
+        # we have to check date constantly since date may vary
+        # TODO any better way for caching?
+        #if @cache{}[type][slug] => return that
         io.query "select detail->'stage' as stage from brd where slug = $1 and deleted is not true", [slug]
           .then (r={}) ~>
             if !(ret = r.[]rows.0) => return aux.reject 404

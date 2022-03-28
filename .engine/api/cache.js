@@ -320,15 +320,11 @@
       var io, type, slug, name, this$ = this;
       io = arg$.io, type = arg$.type, slug = arg$.slug, name = arg$.name;
       return Promise.resolve().then(function(){
-        var that, ref$;
         if (in$(!type, this$.supportedTypes)) {
           return aux.reject(400);
         }
         if (!slug) {
           return aux.reject(400);
-        }
-        if (that = ((ref$ = this$.cache)[type] || (ref$[type] = {}))[slug]) {
-          return that;
         }
         return io.query("select detail->'stage' as stage from brd where slug = $1 and deleted is not true", [slug]).then(function(r){
           var ret, stage, cfgs, ref$, idx, value, i$, to$, i, v, that;
