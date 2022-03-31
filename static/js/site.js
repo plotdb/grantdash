@@ -13,50 +13,12 @@
       }).then(function(){
         return i18next.use(i18nextBrowserLanguageDetector);
       }).then(function(){
-        var res, k, ref$, v, results$ = [];
-        console.log("use language: ", navigator.language) || navigator.userLanguage;
-        i18next.changeLanguage(navigator.language) || navigator.userLanguage;
+        var lng, res, k, ref$, v;
+        lng = navigator.language || navigator.userLanguage;
+        console.log("use language: ", lng);
+        i18next.changeLanguage(lng);
         res = {
-          "en": {
-            "註冊": "Sign Up",
-            "登入": "Login",
-            "個人頁面": "Project List",
-            "帳號設定": "Settings",
-            "主控台": "Admin",
-            "登出": "Logout",
-            "我的案件": "My Projects",
-            "案件列表": "Projects",
-            "已發布": "Published",
-            "編輯中": "Draft",
-            "所屬計劃": "Belongs to",
-            "建立日期": "Created time",
-            "註冊於": "Sign Up Date",
-            "設定": "Settings",
-            "檢視": "View",
-            "編輯": "Edit",
-            "個人設定": "Settings",
-            "基本資訊": "Basic Info",
-            "顯示名稱": "Display Name",
-            "此為公開資訊": "will be public",
-            "用戶代碼": "User ID",
-            "帳號名稱": "Account Name",
-            "你的電子郵件地址": "Your email address",
-            "未認證": "Unverified",
-            "已認證": "Verified",
-            "電子郵箱認證": "Email Verification",
-            "寄發認證信": "Send verification mail",
-            "更新基本資訊": "Update basic info",
-            "變更密碼": "Change Password",
-            "舊的密碼": "Old password",
-            "新密碼": "New password",
-            "再輸入一次新密碼": "New password again",
-            "忘記密碼嗎？": "Forget password?",
-            "寄發重設連結信": "Send password reset mail",
-            "更新密碼": "Update password",
-            "您目前沒有任何案件": "No project available yet",
-            "當您開始提案以後，您可以在這裡瀏覽您所建立過的案件。": "You will see your projects here once you make some",
-            "已刪除": "deleted"
-          },
+          en: {},
           "zh-TW": {}
         };
         for (k in ref$ = res.en) {
@@ -65,9 +27,21 @@
         }
         for (k in res) {
           v = res[k];
-          results$.push(i18next.addResourceBundle(k, '', v, true, true));
+          i18next.addResourceBundle(k, '', v, true, true);
         }
-        return results$;
+        if (typeof i18nData != 'undefined' && i18nData !== null) {
+          for (k in ref$ = i18nData.en) {
+            v = ref$[k];
+            i18nData["zh-TW"][k] = k;
+          }
+          for (k in ref$ = i18nData) {
+            v = ref$[k];
+            i18next.addResourceBundle(k, '', v, true, true);
+          }
+        }
+        if (typeof i18nEngine != 'undefined' && i18nEngine !== null) {
+          return i18nEngine.transform('i18n');
+        }
       })
       : Promise.resolve();
     p.then(function(){

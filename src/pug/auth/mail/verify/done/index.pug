@@ -1,13 +1,13 @@
 extends /auth/base.pug
 block content
   h1
-    | 驗證完成
+    span(t) 驗證完成
     sup #[i.i-check.text-success]
-  p 我們已經確認您的電子郵件地址無誤。您亦可在 #[a(href="/me/settings/") 個人設定頁面] 確認您的電子郵件地址的認證狀態。
+  p(t) 我們已經確認您的電子郵件地址無誤。
   img(src="/dash/assets/img/p/auth/mail/verify/done/mail.svg")
   +nbr(3)
   p
-    a(href="/dash/me/settings") 查看個人設定
+    a(t,href="/dash/me/settings") 查看個人設定
 
   script: :lsc
     ldc.register <[auth ldcvmgr]>, ({auth, ldcvmgr}) ->

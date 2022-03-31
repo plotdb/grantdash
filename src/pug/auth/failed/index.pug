@@ -6,12 +6,11 @@ block vars
 include /modules/widget/authpanel.pug
 block content
   +authpanel()
-    h1.mb-4.font-weight-bold 登入失敗.
-    p 或許您打錯了帳號或密碼，又或者您之前用其他方式登入過。請再試試：
+    h1.mb-4.font-weight-bold(t) 登入失敗.
+    p(t) 您之前可能用的是別組帳號或密碼、使用不同的登入方式、甚至尚未註冊過。您可以試著：
     ul
-      li 換一個登入的方式
-      li 確認您輸入的資訊是否正確
-      li #[a(href="/dash/auth/reset/",style="color:#0ff",target="_blank",rel="noopener noreferrer") 重設密碼]
-      li 您也可以直接 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact');",style="color:#0ff") 與我們聯絡] ，讓我們協助您取回帳號。
+      li(t) 換一組帳號、密碼或登入方式
+      li(t) 確認您的 email 或密碼沒有打錯
+      li #[a(href="/dash/auth/reset/",style="color:#0ff",target="_blank",rel="noopener noreferrer",t) 重設密碼]
 block script
   +script("/dash/js/auth/index.js")

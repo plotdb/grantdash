@@ -3,15 +3,15 @@ block vars
   - ctrl.authpanel = true;
   - ctrl.navtop.placeholder = false;
 block content
-  h1 密碼重設完成。
-  p 那麼就 #[a(href="#",onclick="lda.auth.show('login')") 讓我們試試] 您是否可以使用新密碼成功登入吧。
+  h1(t) 密碼重設完成。
+  p #[a(href="#",onclick="lda.auth.show('login')",t) 讓我們試試] #[span(t) 您是否可以使用新密碼成功登入吧。]
   img(src="/dash/assets/img/p/auth/reset/key.svg")
   p 
-    div 還是不能登入嗎？
-    div 您可以 #[a(href="/dash/auth/reset/") 再重設一次]，或者 #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')") 直接聯絡我們]。
+    div(t) 還是不能登入嗎？
+    div #[a(href="/dash/auth/reset/",t) 您可以再重設一次] ， #[a(href="#",onclick="lda.ldcvmgr.toggle('contact')",t) 或直接聯絡我們]。
   .ldcv.ldcvmgr(data-name="logged-in",data-lock="true"): .base.w-640.rwd: .inner.card: .card-body.text-center: .p-4
-    h1 您已經登入。
-    p.mb-2 現在就將您重導至首頁...
+    h1(t) 您已經登入。
+    p.mb-2 #[span(t) 現在就將您重導至首頁]...
     br
     .ld.ldld.bare.running.em-1.m-auto
 block script
