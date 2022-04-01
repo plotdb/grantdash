@@ -7,6 +7,7 @@
         .then -> i18next.use i18nextBrowserLanguageDetector
         .then ->
           lng = navigator.language or navigator.userLanguage
+          lng = "en"
           console.log "use language: ", lng
           i18next.changeLanguage lng
           res = {en: {}, "zh-TW": {}}
@@ -15,7 +16,7 @@
           if i18n-data? =>
             for k,v of i18n-data.en => i18n-data["zh-TW"][k] = k
             for k,v of i18n-data => i18next.add-resource-bundle k, '', v, true, true
-          if i18n-engine? => i18n-engine.transform \i18n
+          if i18n-engine? => i18n-engine.transform document.body
     else Promise.resolve!
     p
       .then -> auth.get!

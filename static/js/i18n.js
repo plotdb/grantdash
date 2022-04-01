@@ -26,7 +26,7 @@
             }
             n.setAttribute(ret[1], func(value || ''));
           }
-          if (v = n.getAttribute(tag)) {
+          if ((v = n.getAttribute(tag)) && v !== 't') {
             return n.textContent = func(v);
           }
           for (i$ = 0, to$ = n.childNodes.length; i$ < to$; ++i$) {
@@ -42,12 +42,9 @@
       });
       return node;
     },
-    transform: function(n){
+    transform: function(root){
       var this$ = this;
-      if (!(n === 'i18n' || n === 'path')) {
-        return;
-      }
-      return this._transform(document.body, 't', function(it){
+      return this._transform(root, 't', function(it){
         return this$.i18n(it);
       });
     },
@@ -65,6 +62,7 @@
   }).then(function(){
     var lng, k, ref$, v;
     lng = navigator.language || navigator.userLanguage;
+    lng = "en";
     console.log("use language: ", lng);
     i18next.changeLanguage(lng);
     for (k in ref$ = i18nData.en) {
@@ -75,6 +73,6 @@
       v = ref$[k];
       i18next.addResourceBundle(k, '', v, true, true);
     }
-    return engine.transform('i18n');
+    return engine.transform(document.body);
   });
 });

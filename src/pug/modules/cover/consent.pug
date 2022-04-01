@@ -3,14 +3,14 @@ include /modules/common.pug
   .base.w-1024.rwd.h-100: .inner.card: .card-body.text-center.h-100
     .d-flex.flex-column.w-100.h-100
       .text-left
-        h4 在繼續之前...
-        p 請先確認您同意我們的使用條款
+        h4(t) 在繼續之前
+        p(t) 請先確認您同意我們的使用條款
       object.w-100.h-100.flex-grow-1.border.mb-2.d-none(data="about:blank",type="application/pdf")
         embed.w-100.h-100.border(src="about:blank",type="application/pdf")
       iframe.d-none.w-100.h-100.flex-grow-1.mb-2(src="about:blank")
       .d-flex.justify-content-between
         //-a.btn.btn-lg.btn-outline-primary(href="about:blank",download="consent.pdf") 下載此文件
-        .btn.btn-lg.btn-outline-primary(data-ldcv-set="") 我不同意
-        .btn.btn-lg.btn-primary(data-ldcv-set="true") 我已詳讀並同意此條款
+        .btn.btn-lg.btn-outline-primary(data-ldcv-set="",t) 我不同意
+        .btn.btn-lg.btn-primary(data-ldcv-set="true",t) 我已詳讀並同意此條款
       
 

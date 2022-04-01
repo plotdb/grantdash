@@ -15,6 +15,7 @@
       }).then(function(){
         var lng, res, k, ref$, v;
         lng = navigator.language || navigator.userLanguage;
+        lng = "en";
         console.log("use language: ", lng);
         i18next.changeLanguage(lng);
         res = {
@@ -40,7 +41,7 @@
           }
         }
         if (typeof i18nEngine != 'undefined' && i18nEngine !== null) {
-          return i18nEngine.transform('i18n');
+          return i18nEngine.transform(document.body);
         }
       })
       : Promise.resolve();

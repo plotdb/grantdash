@@ -1,5 +1,17 @@
 i18n-data =
   "en":
+    "這個功能尚未開放": "Not Yet Available"
+    "您想使用的這個功能目前還沒有開放使用": "This page is not yet ready and opened for use"
+    "很抱歉！這個功能尚未開放 ( 或者，已經結束了 ) 。您可能是不小心走進來的，但若想了解活動的時程表，請參考該活動的公開頁面或簡章。若您覺得這個狀況與主辦單位公告的資訊不符，請聯繫主辦單位，看看是否有任何可以改善的地方。": "Sorry but this page is not yet ready ( or, is already closed. ) If you find anything not as expected, please contact the organizer to see if there is anything we can fix."
+    "回上頁": "Back"
+    "您已登出": "Logged Out"
+    "請重新載入頁面以更新網頁至最新狀態。": "Please reload to update the webpage"
+    "網站中有些功能只有登入的使用者才能使用。若您繼續使用這些功能，網站將會彈出登入或者權限不足的提示。": "Some features are only available for logged-in users. You will see prompts if you keep on using these features."
+    "重新整理": "Reload"
+    "在繼續之前": "Before continuing"
+    "請先確認您同意我們的使用條款": "Please agree to the term of use"
+    "我不同意": "I do not agree"
+    "我已詳讀並同意此條款": "I have read and agree to the term of use"
     "登入失敗。": "Failed to login"
     "您之前可能用的是別組帳號或密碼、使用不同的登入方式、甚至尚未註冊過。您可以試著：": "If you did sign up before, you probably were using another account/password or different login method befre. You can try:"
     "換一組帳號、密碼或登入方式": "try with another account / password"
