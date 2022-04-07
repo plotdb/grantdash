@@ -109,7 +109,12 @@ i18nData = {
     "您亦可至": "you can also go to",
     "個人設定頁面": "personal settings",
     "查看您的電子郵件信箱認證狀態。": "to check the verification status of your email address.",
-    "有碰到任何關於帳號的問題嗎？": "any questions about account?"
+    "有碰到任何關於帳號的問題嗎？": "any questions about account?",
+    "需要登入": "Login Required",
+    "您需要登入才能使用這個功能": "You have to login before accessing this feature",
+    "您正要存取的這個頁面有關於用戶私人資料，設定等等的內容，如果沒有登入，我們無法識別哪些資料可以提供給您，有些功能也將無法正確使用。": "The page/function you are going to acess contains information about personal config or content, so you will have to login to correctly access it.",
+    "因此，若您想要使用，必須要請您先登入確認您的身份後，再重新嘗試一次。": "So, please try again after logging in.",
+    "現在就登入": "Login Now"
   },
   "zh-TW": {}
 };

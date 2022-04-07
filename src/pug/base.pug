@@ -42,6 +42,9 @@ html
       .w-640.mx-auto: +authpanel
     if ctrl.foot.shown
       include /modules/widget/foot.pug
+    .btn-group.position-fixed(style="bottom:1em;right:1em")
+      .btn.btn-sm.btn-outline-secondary(pd="set-lng",data-name="en") EN
+      .btn.btn-sm.btn-outline-secondary(pd="set-lng",data-name="zh-TW") 中文
 
     script(src="https://browser.sentry-cdn.com/5.23.0/bundle.tracing.min.js"
     integrity="sha384-lSZkoLgJeNT+V/zBEZAchPik9VPNr9wvgAY6mwoMK5SO/cMsK/whVXKKdQOL1oiw"

@@ -1,13 +1,11 @@
 (->
-  ldc.register \general, <[auth navtop error ldcvmgr]>, ({auth, navtop, error, ldcvmgr}) ->
+  ldc.register \general, <[auth navtop error ldcvmgr util]>, ({auth, navtop, error, ldcvmgr, util}) ->
     console.log "site general ldc"
-
     p = if i18next? =>
-      i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \zh-TW, fallbackNS: '', defaultNS: ''
+      i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \en, fallbackNS: '', defaultNS: ''
         .then -> i18next.use i18nextBrowserLanguageDetector
         .then ->
-          lng = navigator.language or navigator.userLanguage
-          lng = "en"
+          lng = util.cookie(\use-language) or navigator.language or navigator.userLanguage
           console.log "use language: ", lng
           i18next.changeLanguage lng
           res = {en: {}, "zh-TW": {}}
@@ -33,6 +31,10 @@
         view = new ldView do
           global: true
           root: document.body
+          action: click: "set-lng": ({node}) ->
+            lng = node.getAttribute \data-name
+            util.cookie \use-language, lng
+            window.location.reload!
           handler:
             "brand-org": ({node}) ->
               node.innerText = (g.scope.orgname or '')
