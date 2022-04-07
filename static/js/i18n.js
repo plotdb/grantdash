@@ -2,12 +2,27 @@
 (function(it){
   return it();
 })(function(){
-  var win, doc, engine;
+  var win, doc, cookie, engine;
   if (!(typeof i18next != 'undefined' && i18next !== null)) {
     return;
   }
   win = window;
   doc = document;
+  cookie = function(k, v, expire){
+    var hash;
+    if (v) {
+      return document.cookie = (k + "=" + v + ";path=/") + (expire ? ";expires=" + expire : "");
+    }
+    hash = {};
+    (document.cookie || '').split(';').map(function(it){
+      return it.split('=').map(function(it){
+        return it.trim();
+      });
+    }).map(function(it){
+      return hash[decodeURIComponent(it[0])] = decodeURIComponent(it[1]);
+    });
+    return hash[k];
+  };
   window.i18nEngine = engine = {
     _transform: function(node, tag, func){
       var regex, _, wk, this$ = this;
@@ -60,9 +75,8 @@
   }).then(function(){
     return i18next.use(i18nextBrowserLanguageDetector);
   }).then(function(){
-    var lng, k, ref$, v;
-    lng = navigator.language || navigator.userLanguage;
-    lng = "en";
+    var lng, k, ref$, v, view;
+    lng = cookie('use-language') || navigator.language || navigator.userLanguage;
     console.log("use language: ", lng);
     i18next.changeLanguage(lng);
     for (k in ref$ = i18nData.en) {
@@ -73,6 +87,21 @@
       v = ref$[k];
       i18next.addResourceBundle(k, '', v, true, true);
     }
-    return engine.transform(document.body);
+    engine.transform(document.body);
+    return view = new ldView({
+      global: true,
+      root: document.body,
+      action: {
+        click: {
+          "set-lng": function(arg$){
+            var node, lng;
+            node = arg$.node;
+            lng = node.getAttribute('data-name');
+            cookie('use-language', lng);
+            return window.location.reload();
+          }
+        }
+      }
+    });
   });
 });

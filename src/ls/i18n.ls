@@ -4,6 +4,16 @@ if !(i18next?) => return
 win = window
 doc = document
 
+cookie = (k,v,expire) ->
+  if v => return document.cookie = "#k=#v;path=/" + (if expire => ";expires=#expire" else "")
+  hash = {}
+  (document.cookie or '')
+    .split(\;)
+    .map -> it.split(\=).map(->it.trim!)
+    .map -> hash[decodeURIComponent(it.0)] = decodeURIComponent(it.1)
+  return hash[k]
+
+
 window.i18n-engine = engine =
   _transform: (node, tag, func) ->
     regex = new RegExp("^#{tag}-(.+)$")
@@ -28,10 +38,17 @@ window.i18n-engine = engine =
 i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \en, fallbackNS: '', defaultNS: ''
   .then -> i18next.use i18nextBrowserLanguageDetector
   .then ->
-    lng = navigator.language or navigator.userLanguage
-    lng = "en"
+    lng = cookie(\use-language) or navigator.language or navigator.userLanguage
     console.log "use language: ", lng
     i18next.changeLanguage lng
     for k,v of i18n-data.en => i18n-data{}["zh-TW"][k] = k
     for k,v of i18n-data => i18next.add-resource-bundle k, '', v, true, true
     engine.transform document.body
+
+    view = new ldView do
+      global: true
+      root: document.body
+      action: click: "set-lng": ({node}) ->
+        lng = node.getAttribute \data-name
+        cookie \use-language, lng
+        window.location.reload!

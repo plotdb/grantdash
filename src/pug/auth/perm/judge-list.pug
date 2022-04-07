@@ -6,8 +6,8 @@ block body
   include cover.pug
   .ldcvmgr.ldcv.scroll(data-name="judge-list",data-lock="true"): .base.w-480: .inner.card
     .typeset.heading-contast.vertical-center.my-0: .w-100.p-4: .p-3
-      h3.text-center 評選表
-      p 您可點擊以下連結進入您所擔任評審的活動之評選表：
+      h3.text-center(t) 評選表
+      p(t) 您可點擊以下連結進入您所擔任評審的活動之評選表：
       each key in (exports.key || [])
         - host = exports.map[key] || {}
         .mb-4
@@ -25,7 +25,7 @@ block body
                 else
                   div: a(href=`/dash/brd/${item.brd}/grp/${item.grp}/judge/${item.type}/user`) #{name}
 
-      a.btn.btn-lg.btn-block.btn-primary(href="/") 回首頁
+      a.btn.btn-lg.btn-block.btn-primary(t,href="/") 回首頁
 
 block script
   script: :lsc

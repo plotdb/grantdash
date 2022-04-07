@@ -42,7 +42,7 @@ html
       .w-640.mx-auto: +authpanel
     if ctrl.foot.shown
       include /modules/widget/foot.pug
-    .btn-group.position-fixed(style="bottom:1em;right:1em")
+    .btn-group.position-fixed.z-fixed(style="bottom:1em;right:1em")
       .btn.btn-sm.btn-outline-secondary(pd="set-lng",data-name="en") EN
       .btn.btn-sm.btn-outline-secondary(pd="set-lng",data-name="zh-TW") 中文
 

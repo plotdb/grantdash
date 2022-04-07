@@ -1,5 +1,8 @@
 i18n-data =
   "en":
+    "評選表": "Judging Form"
+    "您可點擊以下連結進入您所擔任評審的活動之評選表：": "click one of the following link(s) to open your judging form:"
+    "回首頁": "Back"
     "這個功能尚未開放": "Not Yet Available"
     "您想使用的這個功能目前還沒有開放使用": "This page is not yet ready and opened for use"
     "很抱歉！這個功能尚未開放 ( 或者，已經結束了 ) 。您可能是不小心走進來的，但若想了解活動的時程表，請參考該活動的公開頁面或簡章。若您覺得這個狀況與主辦單位公告的資訊不符，請聯繫主辦單位，看看是否有任何可以改善的地方。": "Sorry but this page is not yet ready ( or, is already closed. ) If you find anything not as expected, please contact the organizer to see if there is anything we can fix."

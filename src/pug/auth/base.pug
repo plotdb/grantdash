@@ -9,6 +9,9 @@ block body
   .w-100.h-100.text-center.vertical-center(
   style="background:center center;background-size:cover")
     .w-100: block content
+  .btn-group.position-fixed.z-fixed(style="bottom:1em;right:1em")
+    .btn.btn-sm.btn-outline-secondary(pd="set-lng",data-name="en") EN
+    .btn.btn-sm.btn-outline-secondary(pd="set-lng",data-name="zh-TW") 中文
 block script
   +script("/dash/assets/felib/i18next/main/dist/umd/i18next.min.js")
   +script("/dash/assets/felib/i18next-browser-languagedetector/main/dist/umd/i18nextBrowserLanguageDetector.min.js")
