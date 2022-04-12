@@ -189,7 +189,7 @@ stage = do
               if !value or (v <= value and v > 0) => [idx,value] = [i,v]
             ret = cfgs[idx] or {}
             if !ret.config => ret.config = {}
-            return (@cache[type][slug] = ret)
+            return (@cache{}[type][slug] = ret)
       .then (c) ->
         if !name => return c
         if !c.config[name] => return Promise.reject(new lderror 1012)

@@ -354,7 +354,7 @@
           if (!ret.config) {
             ret.config = {};
           }
-          return this$.cache[type][slug] = ret;
+          return ((ref$ = this$.cache)[type] || (ref$[type] = {}))[slug] = ret;
         });
       }).then(function(c){
         if (!name) {
