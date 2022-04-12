@@ -141,6 +141,9 @@
       }
       lc = {};
       ref$ = req.body, name = ref$.name, description = ref$.description, custom = ref$.custom, submit = ref$.submit, slug = ref$.slug, brd = ref$.brd;
+      if (!name) {
+        name = 'untitled';
+      }
       detail = {
         custom: custom
       };

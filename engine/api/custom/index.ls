@@ -78,6 +78,7 @@ api.post \/custom/prj/, grecaptcha, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
   {name,description,custom,submit,slug,brd} = req.body
+  if !name => name = 'untitled'
   detail = {custom}
   lc.state = if submit => "active" else "pending"
   p = if slug =>
