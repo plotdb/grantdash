@@ -19,7 +19,7 @@ Ctrl = (opt) ->
 
   get-filtered-prj = ~>
     @data.filter ~>
-      (!@filter.badge or it.system.badge[@filter.badge]) and
+      (!@filter.badge or (it.{}system.badge and it.system.badge[@filter.badge])) and
       it.slug and ( !lc.keyword or ~(
         [it.name,it.{}info.teamname,it.username,it.ownername].filter(->it).join(' ').indexOf(lc.keyword)
       ))

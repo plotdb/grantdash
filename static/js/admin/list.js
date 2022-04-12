@@ -37,7 +37,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
     });
     getFilteredPrj = function(){
       return this$.data.filter(function(it){
-        return (!this$.filter.badge || it.system.badge[this$.filter.badge]) && it.slug && (!lc.keyword || ~[it.name, (it.info || (it.info = {})).teamname, it.username, it.ownername].filter(function(it){
+        return (!this$.filter.badge || ((it.system || (it.system = {})).badge && it.system.badge[this$.filter.badge])) && it.slug && (!lc.keyword || ~[it.name, (it.info || (it.info = {})).teamname, it.username, it.ownername].filter(function(it){
           return it;
         }).join(' ').indexOf(lc.keyword));
       });
