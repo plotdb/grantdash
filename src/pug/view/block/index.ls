@@ -4,6 +4,7 @@ ldc.register "blockbase",
   init: ({blockdef, brd, root, data}) ->
     blockopt = data
     ldld = new ldloader className: 'ldld full z-fixed'
+    ldld.on!
     (global) <- auth.get!then _
     u1 = global.user or {}
     (global) <- auth.ensure!then _
@@ -92,6 +93,7 @@ ldc.register "blockbase",
             bi.attach {root: root or document.body, data: blockopt or {}}
               .then ~> bi.interface!
               .then (itf) ~>
+                ldld.off!
                 binfo <<< {interface: itf, instance: bi}
                 itf.adapt host(itf)
                 itf.load custom-data
