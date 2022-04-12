@@ -1,10 +1,10 @@
 //- view
-extends /base.pug
+extends block/base.pug
 block vars
   //-- ctrl.navtop.shown = !simple;
 block head
 block body
 block script
   script(type="module"): :lsc
-    ldc.register("viewmode",[], -> return "edit")
+    ldc.register("viewmode",[], -> return "view")
   script(type="module"): include:lsc block.ls
