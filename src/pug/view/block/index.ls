@@ -76,7 +76,7 @@ ldc.register "blockbase",
 
     custom-data = ((viewLocals or {}).prj or {}).{}detail.custom or {}
     lc = {}
-    i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \zh-TW, fallbackNS: '', defaultNS: ''
+    i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \en, fallbackNS: '', defaultNS: ''
       .then -> i18next.use i18nextBrowserLanguageDetector
       .then ->
         console.log "use language: ", navigator.language or navigator.userLanguage
