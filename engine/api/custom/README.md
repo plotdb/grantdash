@@ -6,7 +6,7 @@ Here defines a common API for boards with customized views.
 
 Project editing / rendering is driven by `prj.ls`.
 
-A custom board is a board with `detail.custom.view` field set to the name of view to use. brd and prj data will be passed to frontned through `viewLocals` components.
+A custom board is a board with `detail.info.view` field set to the name of view to use. brd and prj data will be passed to frontned through `viewLocals` components.
 
 Note that for custom board, the detail we post will be stored in `viewLocals.prj.detail.custom`. Following code depicts the save / load scenario:
 

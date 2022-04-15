@@ -41,8 +41,8 @@ landing = do
         cache.stage.check {io, type: \brd, slug}
       .then (stage) ->
         brd = lc.brd
-        if !(brd.detail.custom and brd.detail.custom.view) => view = \view/default/brd.pug
-        else view = "view/#{brd.detail.custom.view}/brd.pug"
+        if !(brd.detail.info and brd.detail.info.view) => view = \view/default/brd.pug
+        else view = "view/#{brd.detail.info.view}/brd.pug"
         res.render view, {brd: lc.brd, stage}
 
 # landing pages
@@ -343,8 +343,8 @@ app.get \/brd/:slug/prj/create, (req, res) ->
       """, [req.user.key, slug]
     .then (r={}) ->
       lc.prj = r.[]rows.0
-      if !(lc.brd.detail.custom and lc.brd.detail.custom.view) => view = \view/default/prj-create.pug
-      else view = "view/#{lc.brd.detail.custom.view}/prj-create.pug"
+      if !(lc.brd.detail.info and lc.brd.detail.info.view) => view = \view/default/prj-create.pug
+      else view = "view/#{lc.brd.detail.info.view}/prj-create.pug"
       delete lc.brd.detail
       res.render view, lc{brd, prj} <<< {exports: lc{brd, prj}} <<< req.scope{domain}
     .catch aux.error-handler res
@@ -365,8 +365,8 @@ app.get \/brd/:slug/list, (req, res) ->
       lc.grps = lc.brd.detail.group.map -> it{form,key}
       lc.page-info = lc.brd.detail.{}page.{}info.{}generic <<< lc.brd.detail.info
       brd = lc.brd
-      if !(brd.detail.custom and brd.detail.custom.view) => view = \view/default/prj-list.pug
-      else view = "view/#{brd.detail.custom.view}/prj-list.pug"
+      if !(brd.detail.info and brd.detail.info.view) => view = \view/default/prj-list.pug
+      else view = "view/#{brd.detail.info.view}/prj-list.pug"
       delete lc.brd.detail
       res.render view, lc
       return null

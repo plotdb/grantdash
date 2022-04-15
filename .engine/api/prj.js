@@ -123,10 +123,10 @@
         if (!(lc.brd = brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(400);
         }
-        if (!(brd.detail.custom && brd.detail.custom.view)) {
+        if (!(brd.detail.info && brd.detail.info.view)) {
           view = 'view/default/prj-edit.pug';
         } else {
-          view = "view/" + brd.detail.custom.view + "/prj-edit.pug";
+          view = "view/" + brd.detail.info.view + "/prj-edit.pug";
         }
         delete brd.detail;
         return res.render(view, (ref$ = (ref1$ = {
@@ -197,12 +197,12 @@
           form: grp.form,
           info: grp.info
         };
-        if (!(brd.detail.custom && brd.detail.custom.view)) {
+        if (!(brd.detail.info && brd.detail.info.view)) {
           view = (req.query || (req.query = {})).simple != null ? 'view/default/prj-view-simple.pug' : 'view/default/prj-view.pug';
         } else {
           view = (req.query || (req.query = {})).simple != null
-            ? "view/" + brd.detail.custom.view + "/prj-view-simple.pug"
-            : "view/" + brd.detail.custom.view + "/prj-view.pug";
+            ? "view/" + brd.detail.info.view + "/prj-view-simple.pug"
+            : "view/" + brd.detail.info.view + "/prj-view.pug";
         }
         delete brd.detail;
         return res.render(view, (ref$ = (ref1$ = {

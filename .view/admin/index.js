@@ -15,7 +15,7 @@ function pug_style(r){if(!r)return"";if("object"==typeof r){var t="";for(var e i
       ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fadmin\u002Fbase.pug";
 pug_html = pug_html + "\u003C!DOCTYPE html\u003E";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fversion.pug";
-var version = "d876fa2b";
+var version = "4809e3ca";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
 if ((!blockLoader || !blockLoader["common"])) {
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fstatic\u002Fassets\u002Flib\u002Fldui\u002Fpug\u002Fldui.pug";
@@ -2921,6 +2921,20 @@ pug_html = pug_html + "\u003Cinput ld=\"file\" data-name=\"banner\" type=\"file\
 pug_html = pug_html + "\u003Cinput type=\"hidden\" name=\"banner\"\u003E";
 ;pug_debug_line = 64;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Finfo.pug";
 pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 66;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Finfo.pug";
+pug_html = pug_html + "\u003Cdiv class=\"row align-items-center mb-4\"\u003E";
+;pug_debug_line = 67;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Finfo.pug";
+pug_html = pug_html + "\u003Cdiv class=\"col-md-3 text-right\"\u003E";
+;pug_debug_line = 67;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Finfo.pug";
+pug_html = pug_html + "模板套件\u003C\u002Fdiv\u003E";
+;pug_debug_line = 68;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Finfo.pug";
+pug_html = pug_html + "\u003Cdiv class=\"col-md\"\u003E";
+;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Finfo.pug";
+pug_html = pug_html + "\u003Cdiv class=\"form-group mb-0 ld-ext-right\"\u003E";
+;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Finfo.pug";
+pug_html = pug_html + "\u003Cdiv class=\"ld ld-spin ld-spinner text-primary\"\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Finfo.pug";
+pug_html = pug_html + "\u003Cinput class=\"form-control\" name=\"view\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 }
 }, "brd-info");
 pug_html = pug_html + "\u003C\u002Fdiv\u003E";

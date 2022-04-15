@@ -81,7 +81,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
             }, {
               type: 'json'
             }).then(function(prjs){
-              var custom, head, rows, blob, name;
+              var customView, head, rows, blob, name;
               prjs == null && (prjs = {});
               console.log(prjs);
               if (type && type !== 'all') {
@@ -98,7 +98,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
               }
               if (n === 'custom') {
                 window.adminExtension = null;
-                custom = this$.hubs.brd.doc.data.custom;
+                customView = this$.hubs.brd.doc.data.info.view;
                 return new Promise(function(res, rej){
                   var fallback, script;
                   fallback = function(){
@@ -157,11 +157,11 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                       name: name
                     });
                   };
-                  if (!(custom && custom.view)) {
+                  if (!customView) {
                     return res(fallback());
                   }
                   script = document.createElement('script');
-                  script.src = ("/dash/js/view/" + custom.view + "/admin.js?v=") + Math.random().toString(36).substring(2);
+                  script.src = ("/dash/js/view/" + customView + "/admin.js?v=") + Math.random().toString(36).substring(2);
                   script.onload = function(){
                     var func;
                     func = (adminExtension || {}).downloadProjects;

@@ -50,8 +50,8 @@ app.get \/prj/:slug/edit, (req, res) ->
       io.query """select name,slug,org,detail from brd where slug = $1 and deleted is not true""", [lc.prj.brd]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
-      if !(brd.detail.custom and brd.detail.custom.view) => view = \view/default/prj-edit.pug
-      else view = "view/#{brd.detail.custom.view}/prj-edit.pug"
+      if !(brd.detail.info and brd.detail.info.view) => view = \view/default/prj-edit.pug
+      else view = "view/#{brd.detail.info.view}/prj-edit.pug"
       delete brd.detail
       res.render view, lc{prj, brd} <<< {exports: lc{prj, brd}} <<< req.scope{domain}
     .catch aux.error-handler res
@@ -81,12 +81,12 @@ app.get \/prj/:slug, (req, res) ->
       lc.page-info = brd.{}detail.{}page.{}info.{}generic
       if !lc.grp => return aux.reject 400
       lc.grp = grp = grp{form,info}
-      if !(brd.detail.custom and brd.detail.custom.view) =>
+      if !(brd.detail.info and brd.detail.info.view) =>
         view = if (req.{}query.simple)? => \view/default/prj-view-simple.pug
         else \view/default/prj-view.pug
       else
-        view = if (req.{}query.simple)? => "view/#{brd.detail.custom.view}/prj-view-simple.pug"
-        else "view/#{brd.detail.custom.view}/prj-view.pug"
+        view = if (req.{}query.simple)? => "view/#{brd.detail.info.view}/prj-view-simple.pug"
+        else "view/#{brd.detail.info.view}/prj-view.pug"
       delete brd.detail
       res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}, simple: (req.{}query.simple)?} <<< req.scope{domain}
     .catch aux.error-handler res

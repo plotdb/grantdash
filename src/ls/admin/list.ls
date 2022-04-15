@@ -52,7 +52,7 @@ Ctrl = (opt) ->
                     else it.{}system.{}badge[type]
               if n == \custom =>
                 window.admin-extension = null
-                custom = @hubs.brd.doc.data.custom
+                custom-view = @hubs.brd.doc.data.info.view
                 return new Promise (res, rej) ~>
                   fallback = ~>
                     # hardwired open and some fields. 
@@ -85,9 +85,9 @@ Ctrl = (opt) ->
                     blob = new Blob([JSON.stringify(prjs)], {type: "application/json"})
                     name = "projects.json"
                     return res {blob, name}
-                  if !(custom and custom.view) => return res fallback!
+                  if !(custom-view) => return res fallback!
                   script = document.createElement \script
-                  script.src = "/dash/js/view/#{custom.view}/admin.js?v=" + Math.random!toString(36)substring(2)
+                  script.src = "/dash/js/view/#{custom-view}/admin.js?v=" + Math.random!toString(36)substring(2)
                   script.onload = ->
                     func = (admin-extension or {}).download-projects
                     if func => return res func {prjs}

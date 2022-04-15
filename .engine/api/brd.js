@@ -86,10 +86,10 @@
         }).then(function(stage){
           var brd, view;
           brd = lc.brd;
-          if (!(brd.detail.custom && brd.detail.custom.view)) {
+          if (!(brd.detail.info && brd.detail.info.view)) {
             view = 'view/default/brd.pug';
           } else {
-            view = "view/" + brd.detail.custom.view + "/brd.pug";
+            view = "view/" + brd.detail.info.view + "/brd.pug";
           }
           return res.render(view, {
             brd: lc.brd,
@@ -626,10 +626,10 @@
         var view, ref$, ref1$;
         r == null && (r = {});
         lc.prj = (r.rows || (r.rows = []))[0];
-        if (!(lc.brd.detail.custom && lc.brd.detail.custom.view)) {
+        if (!(lc.brd.detail.info && lc.brd.detail.info.view)) {
           view = 'view/default/prj-create.pug';
         } else {
-          view = "view/" + lc.brd.detail.custom.view + "/prj-create.pug";
+          view = "view/" + lc.brd.detail.info.view + "/prj-create.pug";
         }
         delete lc.brd.detail;
         return res.render(view, (ref$ = (ref1$ = {
@@ -671,10 +671,10 @@
         });
         lc.pageInfo = import$((ref$ = (ref1$ = (ref2$ = lc.brd.detail).page || (ref2$.page = {})).info || (ref1$.info = {})).generic || (ref$.generic = {}), lc.brd.detail.info);
         brd = lc.brd;
-        if (!(brd.detail.custom && brd.detail.custom.view)) {
+        if (!(brd.detail.info && brd.detail.info.view)) {
           view = 'view/default/prj-list.pug';
         } else {
-          view = "view/" + brd.detail.custom.view + "/prj-list.pug";
+          view = "view/" + brd.detail.info.view + "/prj-list.pug";
         }
         delete lc.brd.detail;
         res.render(view, lc);
