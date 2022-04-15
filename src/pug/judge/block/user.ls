@@ -6,9 +6,8 @@ u1 = global.user or {}
 root = undefined
 
 # TODO let these be adjustable.
-brd = 'future-content'
 blockdef = name: '@taiccadash/qual', version: 'main'
-blockopt = {brd}
+blockopt = {brd: null}
 binfo = {}
 
 host = ->
@@ -59,6 +58,7 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
 
   prepare: ->
     lc = {}
+    blockopt.brd = @brdinfo.slug
     i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \zh-TW, fallbackNS: '', defaultNS: ''
       .then -> i18next.use i18nextBrowserLanguageDetector
       .then ->
