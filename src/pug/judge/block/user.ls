@@ -33,8 +33,8 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
       #.then ~> @sort \name, null, false
       .then ~>
         @prjs.sort (a,b) ~>
-          a = +a.system.idx
-          b = +b.system.idx
+          a = +(a.{}system.idx or 0) or a.key
+          b = +(b.{}system.idx or 0) or b.key
           if b < a => 1 else if b > a => -1 else 0
         @render!
       .then ~> console.log "initied."
