@@ -203,7 +203,7 @@ api.get \/brd/:brd/grp/:grp/judge-list/:type, (req, res) ->
   permission-check {req, res, brd, grp, type}
     .then ->
       io.query """
-      select p.key, p.name, p.slug, p.detail, p.detail->'info' as info, p.system, u.displayname as ownername
+      select p.state, p.key, p.name, p.slug, p.detail, p.detail->'info' as info, p.system, u.displayname as ownername
       from prj as p
       left join users as u on u.key = p.owner
       where

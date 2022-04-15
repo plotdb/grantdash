@@ -114,6 +114,11 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         } else {
           j = ((ref$ = (ref1$ = this$.grpinfo).judge || (ref1$.judge = {}))[key$ = this$.type] || (ref$[key$] = {})) || {};
         }
+        if (!(j.config || (j.config = {}))["include-draft"]) {
+          this$.prjs = this$.prjs.filter(function(it){
+            return it.state === 'active';
+          });
+        }
         filterName = [];
         if (j["filter-criteria"] || j.filter === 'criteria') {
           filterName.push('criteria');

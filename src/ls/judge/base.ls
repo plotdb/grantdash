@@ -61,6 +61,7 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
         if @type == \custom =>
           j = @grpinfo.{}judge.{}custom.[]entries.filter(~> it.slug == @slug).0 or {}
         else j = @grpinfo.{}judge{}[@type] or {}
+        if !j.{}config["include-draft"] => @prjs = @prjs.filter(-> it.state == \active)
         filter-name = []
         if j["filter-criteria"] or j.filter == 'criteria' => filter-name.push \criteria
         if j["filter-primary"] or j.filter in <[primary shortlist]> => filter-name.push \shortlist

@@ -43,20 +43,31 @@ p 依您的需求設定評選表。
 
   .row
     .col-md
-      .form-group
-        div 啟用
-        .text-muted.text-sm.mb-2 若啟用，評審將可進入評分
+      .config-switch.d-flex.mb-2.pt-2.align-items-center
+        .flex-grow-1
+          div 啟用
+          .text-muted.text-sm 若啟用，評審將可進入評分
         .switch.switch-lg(ld="switch",data-name="enabled")
     .col-md
-      .form-group
-        div 評審匿名
-        .text-muted.text-sm.mb-2 若啟用，總表將不會顯示評審名稱
+      .config-switch.d-flex.mb-2.pt-2.align-items-center
+        .flex-grow-1
+          div 評審匿名
+          .text-muted.text-sm 若啟用，總表將不會顯示評審名稱
         .switch.switch-lg(ld="switch",data-name="anonymous")
+  .row
     .col-md
-      .form-group
-        div 工作人員用表
-        .text-muted.text-sm.mb-2 若啟用，則不會讓評審看到
+      .config-switch.d-flex.mb-2.pt-2.align-items-center
+        .flex-grow-1
+          div 工作人員用表
+          .text-muted.text-sm 若啟用，則不會讓評審看到
         .switch.switch-lg(ld="switch",data-name="staff")
+    .col-md
+      .config-switch.d-flex.mb-2.pt-2.align-items-center
+        .flex-grow-1
+          div 包含未送件
+          .text-sm.text-muted 即使未送件，也可以評比
+        .switch.switch-lg(ld="switch",data-name="include-draft")
+
   hr
   .btn.btn-outline-danger(ld="delete-entry") 刪除
 
