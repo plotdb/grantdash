@@ -1,6 +1,7 @@
-({notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter}) <- ldc.register <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
-
+(ctx) <- ldc.register \judgeblockbase, <[notify judgeBase error loader auth ldcvmgr sdbAdapter]>, _
+{notify, judge-base, error, loader, auth, ldcvmgr, sdbAdapter} = ctx
 (global) <- auth.get!then _
+
 u1 = global.user or {}
 root = undefined
 
