@@ -454,8 +454,8 @@
           if (!hash[p.key]) {
             return;
           }
-          hash[p.key].system = p.system;
-          return ((ref$ = p.system || (p.system = {})).badge || (ref$.badge = {}))[badge] = hash[p.key].badge;
+          hash[p.key].system = p.system || (p.system = {});
+          return ((ref$ = p.system).badge || (ref$.badge = {}))[badge] = hash[p.key].badge;
         });
         return io.query("update prj set system = e.system\nfrom (select * from jsonb_to_recordset($1::jsonb) as e (key int, system jsonb)) as e\nwhere prj.key = e.key", [JSON.stringify((function(){
           var ref$, results$ = [];

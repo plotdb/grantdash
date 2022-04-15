@@ -229,8 +229,8 @@ api.post \/brd/:brd/system/badge, (req, res) ->
       prjs.map (p) -> hash[p.key] = p
       r.rows.map (p) ->
         if !hash[p.key] => return
-        hash[p.key].system = p.system
-        p.{}system.{}badge[badge] = hash[p.key].badge
+        hash[p.key].system = p.{}system
+        p.system.{}badge[badge] = hash[p.key].badge
       io.query """
       update prj set system = e.system
       from (select * from jsonb_to_recordset($1::jsonb) as e (key int, system jsonb)) as e
