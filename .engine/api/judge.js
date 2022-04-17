@@ -185,7 +185,9 @@
         var ret;
         r == null && (r = {});
         if (!(ret = (r.rows || (r.rows = []))[0])) {
-          return aux.reject(404);
+          return {
+            data: {}
+          };
         }
         return res.send({
           data: ret
