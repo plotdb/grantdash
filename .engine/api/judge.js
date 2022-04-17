@@ -186,7 +186,9 @@
         r == null && (r = {});
         if (!(ret = (r.rows || (r.rows = []))[0])) {
           return res.send({
-            data: {}
+            data: {
+              data: {}
+            }
           });
         }
         return res.send({

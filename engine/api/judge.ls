@@ -77,7 +77,7 @@ api.get \/brd/:brd/grp/:grp/judge/:type/result, (req, res) ->
     .then ->
       io.query "select data from snapshots where doc_id = $1", ["brd/#{brd}/grp/#{grp}/judge/#{type}/"]
     .then (r={}) ->
-      if !(ret = r.[]rows.0) => return res.send {data: {}} #aux.reject 404
+      if !(ret = r.[]rows.0) => return res.send {data: {data: {}}} #aux.reject 404
       res.send {data: ret}
     .catch aux.error-handler res
 
