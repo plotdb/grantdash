@@ -212,7 +212,7 @@ api.get \/brd/:brd/grp/:grp/judge-list/:type, (req, res) ->
         p.grp = $2 and
         p.deleted is not true
       """, [brd, grp]
-      #and p.state = 'active'
+      #and p.state = 'active' # we have moved the filter into frontend, decided by `include-draft` flag.
     .then (r={}) -> res.send r.[]rows
     .catch aux.error-handler res
 
