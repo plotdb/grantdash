@@ -10,16 +10,26 @@ blockdef = name: '@taiccadash/qual', version: 'main'
 blockopt = {brd: null}
 binfo = {}
 
-host = ->
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
+  @evthdr = {}
+  @common-form = true
   @
 
 Ctrl.prototype = {} <<< judge-base.prototype <<< do
+  on: (n, cb) -> @evthdr.[][n].push cb
+  fire: (n, ...v) -> for cb in (@evthdr[n] or []) => cb.apply @, v
   ops-in: ({data,ops,source}) ->
     if source => return
-    @data = JSON.parse(JSON.stringify(data))
-    @data.{}prj
+    if !@_data-inited =>
+      @data = JSON.parse(JSON.stringify(data))
+      @data.{}prj
+      @_data-inited = true
+    if ops and ops.length =>
+      ops = JSON.parse(JSON.stringify(ops))
+      if @adapter.path.length => ops.map ~> it.p = it.p.slice(@adapter.path.length)
+      sharedb.types.defaultType.apply @data, ops
+    @fire \change, {data, ops, source}
     @render!
 
   render: ->

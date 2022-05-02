@@ -222,7 +222,7 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         this$.hub.doc = doc;
         return this$.adapt({
           hub: this$.hub,
-          path: this$.user
+          path: this$.user && !this$.commonForm
             ? ['user', this$.user.key]
             : []
         });
