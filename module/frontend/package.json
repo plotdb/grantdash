@@ -17,7 +17,7 @@
     "@loadingio/loading.css": "^3.0.0",
     "@plotdb/block": "^4.6.0",
     "@plotdb/csscope": "^4.0.3",
-    "@plotdb/form": "^0.0.27",
+    "@plotdb/form": "^0.0.28",
     "@plotdb/rescope": "^4.1.2",
     "@plotdb/semver": "^0.0.2",
     "bootstrap": "^4.6.1",
