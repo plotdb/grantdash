@@ -13,7 +13,9 @@ binfo = {}
 Ctrl = (opt) ->
   @ <<< (obj = new judge-base opt)
   @evthdr = {}
+  @info = {}
   @common-form = true
+
   @
 
 Ctrl.prototype = {} <<< judge-base.prototype <<< do
@@ -61,6 +63,11 @@ Ctrl.prototype = {} <<< judge-base.prototype <<< do
 
       .then ~> @sharedb!
       .then ~> @reconnect!
+      .then ~>
+         @info =
+           user: @user
+           brd: @brdinfo
+           prjs: @prjs
       .then ~> @prepare!
       .catch (e) ->
         if ldError.id(e) == 1012 or e.message == \forbidden => ldcvmgr.toggle \access-denied
