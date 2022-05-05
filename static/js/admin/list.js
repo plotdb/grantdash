@@ -167,7 +167,9 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                     func = (adminExtension || {}).downloadProjects;
                     if (func) {
                       return res(func({
-                        prjs: prjs
+                        prjs: prjs,
+                        toc: this$.toc,
+                        grp: this$.grp
                       }));
                     } else {
                       return res(fallback());

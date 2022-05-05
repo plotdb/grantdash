@@ -88,9 +88,9 @@ Ctrl = (opt) ->
                   if !(custom-view) => return res fallback!
                   script = document.createElement \script
                   script.src = "/dash/js/view/#{custom-view}/admin.js?v=" + Math.random!toString(36)substring(2)
-                  script.onload = ->
+                  script.onload = ~>
                     func = (admin-extension or {}).download-projects
-                    if func => return res func {prjs}
+                    if func => return res func {prjs, toc: @toc, grp: @grp}
                     else return res fallback!
                   script.onerror = -> res fallback!
                   document.body.appendChild script
