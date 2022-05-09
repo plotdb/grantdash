@@ -90,7 +90,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do
       url: {scheme: window.location.protocol.replace(':',''), domain: window.location.host}
       path: '/dash/ws'
     @hub = new Hub({sdb})
-    sdb.on \error, -> ldcvmgr.toggle \not-sync
+    sdb.on \error, ->
+      ldcvmgr.toggle \not-sync
+      throw it
     sdb.on \close, ~>
       ldcvmgr.toggle \offline-retry, true
       sdb.reconnect!

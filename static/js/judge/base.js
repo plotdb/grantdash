@@ -181,8 +181,9 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
       this.hub = new Hub({
         sdb: sdb
       });
-      sdb.on('error', function(){
-        return ldcvmgr.toggle('not-sync');
+      sdb.on('error', function(it){
+        ldcvmgr.toggle('not-sync');
+        throw it;
       });
       sdb.on('close', function(){
         ldcvmgr.toggle('offline-retry', true);
