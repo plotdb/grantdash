@@ -1,0 +1,43 @@
+.lddtp {
+  padding: 0.5em;
+}
+.lddtp-ds .dim {
+  opacity: 0.4;
+  background: none;
+}
+.lddtp-d {
+  font-weight: 400;
+}
+.lddtp-w {
+  opacity: 0.3;
+}
+.lddtp-ds {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.lddtp-d.selected {
+  background: none;
+  color: inherit;
+  position: relative;
+}
+.lddtp-d.selected:after {
+  display: block;
+  content: " ";
+  width: 80%;
+  height: 3px;
+  border-radius: 3px;
+  background: #0cf;
+  position: absolute;
+  bottom: 0.15em;
+  left: 10%;
+  right: 10%;
+}
+.lddtp-a:first-child:before {
+  content: "\00ab";
+}
+.lddtp-a:last-child:before {
+  content: "\00bb";
+}
+.lddtp-t {
+  padding: 0 0.5em;
+}
