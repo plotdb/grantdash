@@ -1,0 +1,6 @@
+extends block/base.pug
+block body
+block script
+  script(type="module"): :lsc
+    ldc.register("viewmode",[], -> return "edit")
+  script(type="module"): include:lsc block.ls

@@ -1,0 +1,14 @@
+//- view
+extends block/base.pug
+block vars
+  //-- ctrl.navtop.shown = !simple;
+block head
+  style(type="text/css"): :stylus
+    .application { max-width:960px; margin: auto!important }
+    img[path-src="index.jpg"] { display: none }
+
+block body
+block script
+  script(type="module"): :lsc
+    ldc.register("viewmode",[], -> return "view")
+  script(type="module"): include:lsc block.ls
