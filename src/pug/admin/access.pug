@@ -6,7 +6,7 @@ block body
     .input-group
       input.form-control(ld="token",placeholder="存取碼")
       .input-group-append: .btn.btn-outline-secondary(ld="submit") 送出
-  .ldcv(ld="ldcv",data-name="judges"): .base.w-480: .inner: .p-4
+  .ldcv.scroll(ld="ldcv",data-name="judges"): .base.w-480: .inner: .p-4
     h5 請點選欲登入的評審
     .list-group
       .list-group-item.clickable(ld-each="judge")
