@@ -31,6 +31,8 @@ html
         font-weight: normal
         font-style: normal
         src: url('/dash/assets/felib/ldiconfont/main/ldif.ttf') format('truetype')
+      @media (max-width: 960px)
+        #nav-top { display: none }
     block head
     script if(/MSIE|Trident/.exec(navigator.userAgent)) { window.location.href = "/err/ie/" };
   body
