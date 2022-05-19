@@ -35,7 +35,7 @@ ldc.register "blockbase",
       change-language: (lng) ->
         i18next.changeLanguage lng
         binfo.instance.transform \i18n
-      info: {prj: prj{slug,state}, user: user{key, username, displayname}}
+      info: {prj: prj{slug,state}, user: user{key, username, displayname}, role: viewLocals.role or []}
       upload: (o) -> uploadr.upload o .catch error!
       print: (opt = {}) ->
         html = opt.html or ""

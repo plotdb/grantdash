@@ -46,9 +46,9 @@ api.post \/gcs/upload, aux.signed, (req, res) ->
   if !(brd = req.body.brd) => return aux.r404 res
   cache.stage.check {io, type: \brd, slug: brd, name: \prj-edit}
     .then ->
-      if owner != req.user.key =>
-        return cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[owner]>}
-      else Promise.resolve!
+      if owner != req.user.key => return aux.reject 403
+    .catch ->
+      cache.perm.check {io, type: \brd, slug: brd, user: req.user, action: <[owner]>}
     # always write to new file so we can keep track of old files
     .then -> lc.id = "#brd/#{suuid!}"
     .then ->

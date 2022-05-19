@@ -78,7 +78,9 @@
     });
     app.get('/prj/:slug/edit', function(req, res){
       var lc;
-      lc = {};
+      lc = {
+        role: []
+      };
       return cache.stage.check({
         io: io,
         type: 'brd',
@@ -116,6 +118,16 @@
         return getPrj(req.params.slug);
       }).then(function(prj){
         lc.prj = prj;
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: req.scope.brd,
+          action: ['owner']
+        }).then(function(){
+          return lc.role.push("admin");
+        })['catch'](function(){});
+      }).then(function(){
         return io.query("select name,slug,org,detail from brd where slug = $1 and deleted is not true", [lc.prj.brd]);
       }).then(function(r){
         var brd, view, ref$, ref1$;
@@ -131,10 +143,12 @@
         delete brd.detail;
         return res.render(view, (ref$ = (ref1$ = {
           prj: lc.prj,
-          brd: lc.brd
+          brd: lc.brd,
+          role: lc.role
         }, ref1$.exports = {
           prj: lc.prj,
-          brd: lc.brd
+          brd: lc.brd,
+          role: lc.role
         }, ref1$), ref$.domain = req.scope.domain, ref$));
       })['catch'](aux.errorHandler(res));
     });

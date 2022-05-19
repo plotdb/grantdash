@@ -93,16 +93,16 @@
         name: 'prj-edit'
       }).then(function(){
         if (owner !== req.user.key) {
-          return cache.perm.check({
-            io: io,
-            type: 'brd',
-            slug: brd,
-            user: req.user,
-            action: ['owner']
-          });
-        } else {
-          return Promise.resolve();
+          return aux.reject(403);
         }
+      })['catch'](function(){
+        return cache.perm.check({
+          io: io,
+          type: 'brd',
+          slug: brd,
+          user: req.user,
+          action: ['owner']
+        });
       }).then(function(){
         return lc.id = brd + "/" + suuid();
       }).then(function(){

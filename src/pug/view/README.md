@@ -67,6 +67,7 @@ a block view block should provide an interface with following members:
      - `info`: object containing additional info from server, including:
        - `user`: user object ( `{key, username, displayname}` )
        - `prj`: project object ( `{slug, owner}` )
+       - `role`: a list of role for this user. currently only `admin` available
      - `upload({file, progress})`: upload a file to server.
        - `file`: blob to upload
        - `progress({percent})`: callback for monitoring upload progress. ( optional )

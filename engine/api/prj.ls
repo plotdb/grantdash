@@ -38,7 +38,7 @@ api.get "/prj/:slug/", (req, res) ->
     .catch aux.error-handler res
 
 app.get \/prj/:slug/edit, (req, res) ->
-  lc = {}
+  lc = {role: []}
   cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-edit"}
     .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[prj-edit-own]>}
     .then -> cache.perm.check {io, user: req.user, type: \prj, slug: req.params.slug, action: <[owner]>}
@@ -47,13 +47,17 @@ app.get \/prj/:slug/edit, (req, res) ->
     .then -> get-prj req.params.slug
     .then (prj) ->
       lc.prj = prj
+      cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner]>}
+        .then -> lc.role.push "admin" # temporarily use `admin` which grant all privileges
+        .catch -> # this is only for peek permission so failed is still ok to just pass.
+    .then ->
       io.query """select name,slug,org,detail from brd where slug = $1 and deleted is not true""", [lc.prj.brd]
     .then (r={}) ->
       if !(lc.brd = brd = r.[]rows.0) => return aux.reject 400
       if !(brd.detail.info and brd.detail.info.view) => view = \view/default/prj-edit.pug
       else view = "view/#{brd.detail.info.view}/prj-edit.pug"
       delete brd.detail
-      res.render view, lc{prj, brd} <<< {exports: lc{prj, brd}} <<< req.scope{domain}
+      res.render view, lc{prj, brd, role} <<< {exports: lc{prj, brd, role}} <<< req.scope{domain}
     .catch aux.error-handler res
 
 app.get \/prj/:slug, (req, res) ->
