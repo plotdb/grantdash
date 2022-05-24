@@ -99,7 +99,7 @@
           "not-authed": function(arg$){
             var node;
             node = arg$.node;
-            return node.classList.toggle('d-none', (g.user || {}).key);
+            return node.classList.toggle('d-none', !!(g.user || {}).key);
           },
           "t": function(arg$){
             var node;
@@ -108,7 +108,12 @@
           }
         }
       });
-      return auth.on('auth.signin', view.render(['authed', 'not-authed']));
+      return auth.on('auth.signin', function(){
+        return auth.get().then(function(global){
+          import$(g, global);
+          return view.render(['authed', 'not-authed']);
+        });
+      });
     });
     if (typeof moment != 'undefined' && moment !== null) {
       moment.tz.add(["Asia/Taipei|CST JST CDT|-80 -90 -90|01020202020202020202020202020202020202020|-1iw80 joM0 1yo0 Tz0 1ip0 1jX0 1cN0 11b0 1oN0 11b0 1oN0 11b0 1oN0 11b0 10N0 1BX0 10p0 1pz0 10p0 1pz0 10p0 1db0 1dd0 1db0 1cN0 1db0 1cN0 1db0 1cN0 1db0 1BB0 ML0 1Bd0 ML0 uq10 1db0 1cN0 1db0 97B0 AL0|74e5"]);
@@ -179,3 +184,8 @@
   });
   return ldc.app('general');
 })();
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
+}

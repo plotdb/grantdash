@@ -15,7 +15,7 @@ function pug_style(r){if(!r)return"";if("object"==typeof r){var t="";for(var e i
       ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 pug_html = pug_html + "\u003C!DOCTYPE html\u003E";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fversion.pug";
-var version = "55e71ba7";
+var version = "ea710406";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fstatic\u002Fassets\u002Flib\u002Fldui\u002Fpug\u002Fldui.pug";
 if(!ctrl) var ctrl = {};
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fstatic\u002Fassets\u002Flib\u002Fldui\u002Fpug\u002Fcore\u002Fchevron-down.pug";
@@ -2261,19 +2261,23 @@ pug_html = pug_html + "\u003Cdiv class=\"dropdown-divider\"\u003E\u003C\u002Fdiv
 pug_html = pug_html + "\u003Ca class=\"dropdown-item\" href=\"#\" onclick=\"lda.general.admin()\" pd=\"t\"\u003E";
 ;pug_debug_line = 30;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
 pug_html = pug_html + "主控台\u003C\u002Fa\u003E";
-;pug_debug_line = 39;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
+;pug_debug_line = 31;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
+pug_html = pug_html + "\u003Ca class=\"dropdown-item\" href=\"\u002Fdash\u002Fjudge-portal\" pd=\"t\"\u003E";
+;pug_debug_line = 31;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
+pug_html = pug_html + "評審頁面\u003C\u002Fa\u003E";
+;pug_debug_line = 40;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
 pug_html = pug_html + "\u003Cdiv class=\"dropdown-divider\"\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 40;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
+;pug_debug_line = 41;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
 pug_html = pug_html + "\u003Ca class=\"dropdown-item\" ld=\"logout\" pd=\"t\"\u003E";
-;pug_debug_line = 40;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
+;pug_debug_line = 41;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
 pug_html = pug_html + "登出\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E\u003C\u002Fli\u003E\u003C\u002Ful\u003E";
 },
 attributes: {"class": "collapse navbar-collapse","id": "nav-top-content"}
 }, "nav-top");
 pug_html = pug_html + "\u003C\u002Fnav\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 41;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
-if (ctrl.navtop.placeholder) {
 ;pug_debug_line = 42;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
+if (ctrl.navtop.placeholder) {
+;pug_debug_line = 43;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fwidget\u002Fnavtop.pug";
 pug_html = pug_html + "\u003Cdiv id=\"nav-top-placeholder\"\u003E\u003C\u002Fdiv\u003E";
 }
 }
@@ -3707,14 +3711,18 @@ pug_html = pug_html + "\u003Cdiv class=\"btn btn-lg btn-outline-secondary mr-2\"
 ;pug_debug_line = 18;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
 pug_html = pug_html + "我的案件\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
-pug_html = pug_html + "\u003Cdiv class=\"btn btn-lg btn-outline-secondary mr-2\" href=\"\u002Fdash\u002Fjudge-portal\" pd=\"t\"\u003E";
+pug_html = pug_html + "\u003Ca class=\"btn btn-lg btn-outline-secondary mr-2\" href=\"\u002Fdash\u002Fjudge-portal\" pd=\"t\"\u003E";
 ;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
-pug_html = pug_html + "評審頁面\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "評審頁面\u003C\u002Fa\u003E";
 ;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
+pug_html = pug_html + "\u003Cdiv class=\"btn btn-lg btn-outline-secondary mr-2\" onclick=\"lda.auth.logout()\" pd=\"t\"\u003E";
+;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
+pug_html = pug_html + "登出\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
 pug_html = pug_html + "\u003Cdiv class=\"position-fixed\" style=\"bottom:.5em;left:.5em\"\u003E";
-;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
+;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
 pug_html = pug_html + "\u003Ca" + (" href=\"\u002Fsys\u002Fprivacy\u002F\""+pug_attr("", true, true, true)+" pd=\"t\"") + "\u003E";
-;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
+;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Fview\u002Fdefault\u002Forg.pug";
 pug_html = pug_html + "隱私權政策與使用條款\u003C\u002Fa\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 40;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fzbryikt\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fbase.pug";
 if (ctrl.cover.authpanel) {
