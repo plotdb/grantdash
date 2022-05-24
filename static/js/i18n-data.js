@@ -77,6 +77,7 @@ i18nData = {
     "主控台": "Admin",
     "登出": "Logout",
     "我的案件": "My Projects",
+    "評審頁面": "For Judge",
     "案件列表": "Projects",
     "已發布": "Published",
     "編輯中": "Draft",
