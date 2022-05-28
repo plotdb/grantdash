@@ -68,7 +68,8 @@ app.get \/prj/:slug, (req, res) ->
       lc.prj = prj
       if !(req.user and req.user.key and prj.owner == req.user.key) =>
         return cache.stage.check {io, type: \brd, slug: req.scope.brd, name: "prj-view"}
-    .catch -> cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge reviewer]>}
+    .catch ->
+      cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge reviewer viewer]>}
     .catch ->
       if !(req.user and req.user.key) => return aux.reject 403
       io.query "select key,grp from perm_judge where brd = $1 and owner = $2", [req.scope.brd, req.user.key]

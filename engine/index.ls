@@ -138,7 +138,10 @@ backend = do
 
     # =========== Sharedb
     if config.{}sharedb.enabled =>
-      access = ({user, id, data, type}) -> cache.perm.sharedb {io: pgsql, user, id, data, type, action: \owner}
+      access = ({user, id, data, type}) ->
+        # for viewer to access judge board
+        action = if ((id or '').split('/') or []).4 == \judge => <[owner viewer reviewer]> else <[owner]>
+        cache.perm.sharedb {io: pgsql, user, id, data, type, action: action}
 
       @sharedb = {server, sdb, connect, wss} = sharedb-wrapper {
         app, io: config.io-pg, session, access, milestone-db: {interval: 200, enabled: true}

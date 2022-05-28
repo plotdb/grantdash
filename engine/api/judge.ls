@@ -20,7 +20,7 @@ permission-check = ({req, res, brd, grp, type}) ->
         cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[reviewer owner]>}
       else Promise.reject!
       p.catch ->
-        cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge]>}
+        cache.perm.check {io, user: req.user, type: \brd, slug: brd, action: <[judge viewer]>}
           .catch ->
             io.query """
             select owner from perm_judge where brd = $1 and grp = $2 and owner = $3

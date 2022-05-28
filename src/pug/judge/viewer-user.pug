@@ -1,0 +1,112 @@
+extends /base.pug
+block vars
+  - ctrl.navtop.shown = true
+  - ctrl.navtop.placeholder = false
+  - ctrl.navtop.className="bg-none"
+  - ctrl.foot.shown = false
+block navtop-item
+  ul.navbar-nav.mr-auto
+    li.nav-item: a.nav-link(href="#") #[i.i-radio.text-success] #[span(ld="reviewer")]
+block body
+  include cover.pug
+
+  .ldcv(ld="comment-ldcv"): .base.w-480: .inner.card.shadow-sm
+    .card-header.shadow-sm.position-relative.z-float
+      p.mb-0 審核附註
+      h4.mb-0(ld="comment-name")
+    textarea.form-control.border-0.rounded-0(ld="comment",
+    rows="5",placeholder="在這裡輸入您的附註 ... ")
+    .card-footer.text-right: .btn.btn-primary(data-ldcv-set="") 完成
+
+  .h-100.w-100.d-flex.flex-column
+    div(style="padding-top:60px")
+    .flex-grow-1.d-flex.w-100(style="overflow:hidden;margin-top:-.5em")
+      .d-flex.flex-column(style="flex:1 1 50%")
+
+        .flex-grow-1.bg-white.border-top.border-bottom.mt-3(style="overflow:scroll")
+          .w-100
+            .p-2.d-flex.align-items-center.border-bottom.border-secondary.bg-light.sticky.shadow-sm(style="top:0")
+              //-.mr-2.text-right.px-2(style="width:50px") 編號
+              //-.mr-2.text-right.px-2.clickable(ld="sort",data-name="comment",style="width:50px") 評論
+              .flex-grow-1.clickable.mr-2(ld="sort",data-name="name") 提案名稱
+              .mr-2.text-right.px-2.clickable.d-none(ld="show-budget sort",data-name="budget",style="width:50px") 預算
+              //-.mr-2.d-flex.text-muted.text-center
+                .mx-2.clickable(ld="option sort",data-name="primary",data-value="0"): span 推薦
+                .mx-2.clickable(ld="option sort",data-name="primary",data-value="1"): span 面議
+                .mx-2.clickable(ld="option sort",data-name="primary",data-value="2"): span 汰除
+                .mx-2 評論
+
+            .px-2.py-2.d-flex.align-items-center.border-bottom.border-light(ld-each="project")
+              //-.mr-2.text-right.px-2(ld="index",style="width:50px")
+              //-.mr-2.text-center.px-2(ld="has-comment",style="width:50px") #[i.i-doc]
+              //-.mr-2.text-center.px-2(style="width:50px"): i.i-doc.text-primary.invisible(ld="has-comment comment")
+              .flex-grow-1.text-truncate.mr-2(style="width:15em")
+                .text-underline.text-truncate.clickable(ld="name")
+                .text-sm.text-muted(ld="ownername")
+              .mr-2.text-right.text-nowrap.d-none(ld="show-budget",style="width:75px")
+                div
+                  span.text-sm.text-muted.mr-1 總數
+                  b.text-sm.text-nowrap(ld="budget")
+                div
+                  span.text-sm.text-muted.mr-1 補助
+                  b.text-sm.text-nowrap(ld="subsidy")
+
+
+              //-.mr-2.d-flex.text-muted.text-center.clickable(style="height:2em")
+                .mx-2.rounded.vertical-center(ld="option",data-name="0",style="width:2em"): i.i-check
+                .mx-2.rounded.vertical-center(ld="option",data-name="1",style="width:2em"): i.i-circle
+                .mx-2.rounded.vertical-center(ld="option",data-name="2",style="width:2em"): i.i-close
+                .mx-2.vertical-center(ld="has-comment comment",style="width:2em"): i.i-pen
+
+        .px-4.py-2.w-100
+          .d-flex.align-items-center
+            //-.mr-4
+              .text-muted.text-sm 距資格審查截止還有
+              .text-danger 2 天 15 小時 20 分
+            .mr-4.text-sm
+              //-
+                .text-muted 審查進度
+                .d-flex.align-items-center.my-1(style="line-height:1rem")
+                  span(ld="option",data-value="0"): .d-flex.align-items-center
+                    .bg-success.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                    span.mr-2 推薦
+                  span(ld="option",data-value="1"): .d-flex.align-items-center
+                    .bg-warning.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                    span.mr-2 面議
+                  span(ld="option",data-value="2"): .d-flex.align-items-center
+                    .bg-danger.d-inline-block.mr-1.rounded(style="width:1em;height:1em")
+                    span 汰除
+
+            .mr-4.flex-grow-1
+              //-
+                .text-muted.text-sm 完成度 / #[span.text-danger(ld="progress progress-percent") 0]%
+                .progress.my-1(style="width:100%")
+                  //- 0 - accept, 1 - pending, 2 - reject
+                  .progress-bar.bg-success.progress-bar-striped.progress-bar-animated(
+                  ld="progress progress-bar",data-name="0")
+                  .progress-bar.bg-warning.progress-bar-striped.progress-bar-animated(
+                  ld="progress progress-bar",data-name="1")
+                  .progress-bar.bg-danger.progress-bar-striped.progress-bar-animated(
+                  ld="progress progress-bar",data-name="2")
+            //-div: .btn.btn-outline-dark 提交審查結果
+
+      div(style="flex:1 1 50%")
+        .card.border.shadow.w-100.h-100(style="overflow:hidden;border-radius: .5em 0 0 .5em"): .card-body.p-0
+          iframe.border-0.w-100.h-100(ld="iframe")
+          .w-100.h-100.vertical-center.position-absolute.z-float.bg-light(
+          ld="iframe-placeholder",style="top:0;left:0")
+            .w-100.text-center.text-muted
+              .text-lg 提案瀏覽區
+              div 您可以點擊左方的提案名稱以在此瀏覽該提案內容
+          //-object.w-100.h-100(data="/assets/sample/simple-pdf.pdf",type="application/pdf")
+            embed(src="/assets/sample/simple-pdf.pdf",type="application/pdf")
+
+block script
+  +script("/dash/assets/lib/ldsite/0.0.2/ldsite.min.js")
+  +script("/dash/assets/lib/sharedb-wrapper/client.bundle.min.js")
+  +script("/dash/js/util/sdb-adapter.js")
+  +script("/dash/js/util/hub.js")
+  +script("/dash/js/judge/base.js")
+  +script("/dash/js/judge/primary-user.js")
+  script: :lsc
+    ldc.register <[judgePrimaryUser]>, ->

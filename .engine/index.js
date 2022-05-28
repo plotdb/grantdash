@@ -182,15 +182,18 @@
         app.use(passport.session());
         if ((config.sharedb || (config.sharedb = {})).enabled) {
           access = function(arg$){
-            var user, id, data, type;
+            var user, id, data, type, action;
             user = arg$.user, id = arg$.id, data = arg$.data, type = arg$.type;
+            action = ((id || '').split('/') || [])[4] === 'judge'
+              ? ['owner', 'viewer', 'reviewer']
+              : ['owner'];
             return cache.perm.sharedb({
               io: pgsql,
               user: user,
               id: id,
               data: data,
               type: type,
-              action: 'owner'
+              action: action
             });
           };
           this$.sharedb = (ref$ = sharedbWrapper({
