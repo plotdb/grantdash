@@ -56,6 +56,11 @@ ldc.register('judgeBase', ['notify', 'error', 'loader', 'auth', 'ldcvmgr', 'sdbA
         initRender: false,
         root: this.root,
         text: {
+          t: function(arg$){
+            var node;
+            node = arg$.node;
+            return i18next.t(node.innerText);
+          },
           reviewer: function(arg$){
             var node;
             node = arg$.node;
