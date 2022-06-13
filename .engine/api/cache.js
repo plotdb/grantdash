@@ -17,6 +17,10 @@
       org: "grantdash-dev",
       orgname: "Grant Dash Dev"
     },
+    "v1.gda.sh": {
+      org: "taicca-tw",
+      orgname: "文化內容策進院"
+    },
     "grantdash.io": {
       orgname: "Grant Dash"
     },

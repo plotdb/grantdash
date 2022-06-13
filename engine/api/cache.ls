@@ -5,6 +5,7 @@ coded-domains = do
   "grantdash.dev": {org: "grantdash-dev", orgname: "Grant Dash Dev"}
   "dev.grantdash.dev": {org: "grantdash-dev", orgname: "Grant Dash Dev"}
   "dev.gda.sh": {org: "grantdash-dev", orgname: "Grant Dash Dev"}
+  "v1.gda.sh": {org: "taicca-tw", orgname: "文化內容策進院"}
   "grantdash.io": {orgname: "Grant Dash"}
   "taicca.grantdash.io": {org: "taicca-tw", brd: "grantdash-test", orgname: "Taicca Dash"}
   "sch001.g0v.tw": {org: "g0v-jothon", orgname: "零時小學校"}
