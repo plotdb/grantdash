@@ -11,14 +11,21 @@ block body
     p #{(brd.description || '').substring(0,100)} ...
     hr
     .py-2.d-flex
+      div(pd="not-authed")
+        .btn.btn-outline-secondary.mr-2(onclick="lda.auth.show('signup')",pd="t") 註冊
+        .btn.btn-outline-secondary.ml-2(onclick="lda.auth.show('login')",pd="t") 登入
+      .d-none(pd="authed")
+        .btn.btn-outline-secondary.mr-2(onclick="lda.general.profile()",pd="t") 我的案件
+        a.btn.btn-outline-secondary.mr-2(href="/dash/judge-portal",pd="t") 評審頁面
+        .btn.btn-outline-secondary.mr-2(onclick="lda.auth.logout()",pd="t") 登出
       .flex-grow-1
         if stage.config["prj-list-view"]
-          a.btn.btn-sm.btn-outline-secondary.mr-2(href=`/dash/brd/${brd.slug}/list`) 提案列表
+          a.btn.btn-outline-secondary.mr-2(href=`/dash/brd/${brd.slug}/list`) 提案列表
         if stage.config["prj-new"]
-          a.btn.btn-sm.btn-outline-secondary.mr-2(href=`/dash/brd/${brd.slug}/prj/create`) 建立提案
+          a.btn.btn-outline-secondary.mr-2(href=`/dash/brd/${brd.slug}/prj/create`) 建立提案
         else
-          .btn.btn-sm.btn-text.text-muted 尚未開放提案
+          .btn.btn-text.text-muted 尚未開放提案
       div
-        a.btn.btn-sm.btn-outline-secondary(href="/") 回首頁
+        a.btn.btn-outline-secondary(href="/") 回首頁
 
     +nbr(1)

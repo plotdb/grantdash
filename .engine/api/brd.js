@@ -84,16 +84,23 @@
             slug: slug
           });
         }).then(function(stage){
-          var brd, view;
+          var brd, view, p;
           brd = lc.brd;
           if (!(brd.detail.info && brd.detail.info.view)) {
             view = 'view/default/brd.pug';
           } else {
             view = "view/" + brd.detail.info.view + "/brd.pug";
           }
-          return res.render(view, {
-            brd: lc.brd,
-            stage: stage
+          p = new Promise(function(res, rej){
+            return fs.exists(path.join('src/pug', view), function(r){
+              return res(r ? view : 'view/default/brd.pug');
+            });
+          });
+          return p.then(function(view){
+            return res.render(view, {
+              brd: lc.brd,
+              stage: stage
+            });
           });
         });
       }

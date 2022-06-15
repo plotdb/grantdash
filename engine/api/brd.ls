@@ -43,7 +43,10 @@ landing = do
         brd = lc.brd
         if !(brd.detail.info and brd.detail.info.view) => view = \view/default/brd.pug
         else view = "view/#{brd.detail.info.view}/brd.pug"
-        res.render view, {brd: lc.brd, stage}
+        p = new Promise (res, rej) ->
+          (r) <- fs.exists path.join(\src/pug, view), _
+          res if r => view else 'view/default/brd.pug'
+        p.then (view) -> res.render view, {brd: lc.brd, stage}
 
 # landing pages
 landing-page = (type, slug, req, res) ->
