@@ -1,27 +1,32 @@
 {
-  "_from": "ldiconfont@^0.1.10",
+  "_args": [
+    [
+      "ldiconfont@0.1.10",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "ldiconfont@0.1.10",
   "_id": "ldiconfont@0.1.10",
   "_inBundle": false,
   "_integrity": "sha512-YqPmuEjxXGoYHyKC+IoSXTrXtk2HvQjh/9XUN8dA5lUpeUeui6QBKFuQWJnX2kRUkl4AoxdEKP1vwxLTZNHKcw==",
   "_location": "/ldiconfont",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "ldiconfont@^0.1.10",
+    "raw": "ldiconfont@0.1.10",
     "name": "ldiconfont",
     "escapedName": "ldiconfont",
-    "rawSpec": "^0.1.10",
+    "rawSpec": "0.1.10",
     "saveSpec": null,
-    "fetchSpec": "^0.1.10"
+    "fetchSpec": "0.1.10"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/ldiconfont/-/ldiconfont-0.1.10.tgz",
-  "_shasum": "be72a516fbe18dc2e378961ebf388491cb67a05f",
-  "_spec": "ldiconfont@^0.1.10",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "0.1.10",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
@@ -32,8 +37,6 @@
   "bugs": {
     "url": "https://github.com/loadingio/ldiconfont/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "iconfont dedicated for loading.io",
   "devDependencies": {
     "@loadingio/bootstrap.ext": "^0.0.4",

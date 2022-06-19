@@ -1,27 +1,33 @@
 {
-  "_from": "ldcover@^3.0.1",
+  "_args": [
+    [
+      "ldcover@3.0.1",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "ldcover@3.0.1",
   "_id": "ldcover@3.0.1",
   "_inBundle": false,
   "_integrity": "sha512-q1Q64xzHWlrFYjvQctl5Bu1MOvQV5hKCNTuy2+pv35qa9SPPk788FD89iP9kr4iEIxZJ4PvtVqha/wfO2di4mg==",
   "_location": "/ldcover",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "ldcover@^3.0.1",
+    "raw": "ldcover@3.0.1",
     "name": "ldcover",
     "escapedName": "ldcover",
-    "rawSpec": "^3.0.1",
+    "rawSpec": "3.0.1",
     "saveSpec": null,
-    "fetchSpec": "^3.0.1"
+    "fetchSpec": "3.0.1"
   },
   "_requiredBy": [
-    "/"
+    "/",
+    "/@plotdb/konfig"
   ],
   "_resolved": "https://registry.npmjs.org/ldcover/-/ldcover-3.0.1.tgz",
-  "_shasum": "4be613d1aa232a67bb1bf2a2318fcdcdcb700b97",
-  "_spec": "ldcover@^3.0.1",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "3.0.1",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
@@ -29,8 +35,6 @@
   "bugs": {
     "url": "https://github.com/loadingio/ldcover/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "tiny popup / dialog library",
   "devDependencies": {
     "@loadingio/bootstrap.ext": "^0.0.3",

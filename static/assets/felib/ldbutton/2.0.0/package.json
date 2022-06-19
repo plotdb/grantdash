@@ -1,39 +1,41 @@
 {
-  "_from": "ldbutton",
+  "_args": [
+    [
+      "ldbutton@2.0.0",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "ldbutton@2.0.0",
   "_id": "ldbutton@2.0.0",
   "_inBundle": false,
   "_integrity": "sha512-3fFgr13kqBXEEY6722wQY0t5WA0nlUfdubX1tS9VDmJmSWaSubwUEaDu0dZCTE1LO3MgPWkSNwwprYPry3TxiQ==",
   "_location": "/ldbutton",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "version",
     "registry": true,
-    "raw": "ldbutton",
+    "raw": "ldbutton@2.0.0",
     "name": "ldbutton",
     "escapedName": "ldbutton",
-    "rawSpec": "",
+    "rawSpec": "2.0.0",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "2.0.0"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/ldbutton/-/ldbutton-2.0.0.tgz",
-  "_shasum": "d0541844fc14dbccad5ebc691e8f56048e513d90",
-  "_spec": "ldbutton",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "2.0.0",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
   "bugs": {
     "url": "https://github.com/loadingio/ldButton/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "fedep": "^1.1.0"
   },
-  "deprecated": false,
   "description": "css for buttons that load",
   "devDependencies": {
     "stylus": "^0.55.0",

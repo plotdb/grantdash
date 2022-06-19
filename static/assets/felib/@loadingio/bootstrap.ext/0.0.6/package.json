@@ -1,36 +1,39 @@
 {
-  "_from": "@loadingio/bootstrap.ext@^0.0.6",
+  "_args": [
+    [
+      "@loadingio/bootstrap.ext@0.0.6",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "@loadingio/bootstrap.ext@0.0.6",
   "_id": "@loadingio/bootstrap.ext@0.0.6",
   "_inBundle": false,
   "_integrity": "sha512-gppMu8DHpdus5bgvt5sgLJxxBdwetWg0sCUyH/bv5RKb59WIe0ouK1w94Y2l3riTpcUlJH3YnpR6IC6t2h7U3w==",
   "_location": "/@loadingio/bootstrap.ext",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "@loadingio/bootstrap.ext@^0.0.6",
+    "raw": "@loadingio/bootstrap.ext@0.0.6",
     "name": "@loadingio/bootstrap.ext",
     "escapedName": "@loadingio%2fbootstrap.ext",
     "scope": "@loadingio",
-    "rawSpec": "^0.0.6",
+    "rawSpec": "0.0.6",
     "saveSpec": null,
-    "fetchSpec": "^0.0.6"
+    "fetchSpec": "0.0.6"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/@loadingio/bootstrap.ext/-/bootstrap.ext-0.0.6.tgz",
-  "_shasum": "9601c8cdf960d0b09cc5d78fb9c4f4aed9e6d144",
-  "_spec": "@loadingio/bootstrap.ext@^0.0.6",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "0.0.6",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
   "bugs": {
     "url": "https://github.com/loadingio/bootstrap.ext/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "bootstrap extension used by loading.io",
   "devDependencies": {
     "@loadingio/ldc": "^0.0.2",

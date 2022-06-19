@@ -1,27 +1,32 @@
 {
-  "_from": "ldform@^0.1.2",
+  "_args": [
+    [
+      "ldform@0.1.2",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "ldform@0.1.2",
   "_id": "ldform@0.1.2",
   "_inBundle": false,
   "_integrity": "sha512-OMSXXCYRxXp6c+1x+Shrq+ZhedqAeYvuw/V1ViskeUz4PFcsDxxtZwE6I9ZqcHXHmJ4/1YegUk1stsCa8wE9hw==",
   "_location": "/ldform",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "ldform@^0.1.2",
+    "raw": "ldform@0.1.2",
     "name": "ldform",
     "escapedName": "ldform",
-    "rawSpec": "^0.1.2",
+    "rawSpec": "0.1.2",
     "saveSpec": null,
-    "fetchSpec": "^0.1.2"
+    "fetchSpec": "0.1.2"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/ldform/-/ldform-0.1.2.tgz",
-  "_shasum": "37ec5bfa9f922c544f6347e6102e2b18d10964d2",
-  "_spec": "ldform@^0.1.2",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "0.1.2",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
@@ -29,8 +34,6 @@
   "bugs": {
     "url": "https://github.com/loadingio/ldform/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "form validation tool",
   "devDependencies": {
     "fedep": "^1.1.0",

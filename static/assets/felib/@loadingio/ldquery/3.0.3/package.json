@@ -1,1 +1,61 @@
-{"author":"zbryikt","name":"@loadingio/ldquery","description":"lite jQuery-like HTMLElement shorthands","license":"MIT","version":"3.0.3","browser":"index.min.js","main":"index.min.js","homepage":"https://github.com/loadingio/ldquery","repository":{"type":"git","url":"https://github.com/loadingio/ldquery"},"engines":{"node":">=10.14.1","npm":">=6.4.1"},"devDependencies":{"fedep":"^1.1.0","livescript":"^1.6.0","uglify-js":"^3.13.1"},"dependencies":{"node-fetch":"^2.6.7"}}
+{
+  "_args": [
+    [
+      "@loadingio/ldquery@3.0.3",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "@loadingio/ldquery@3.0.3",
+  "_id": "@loadingio/ldquery@3.0.3",
+  "_inBundle": false,
+  "_integrity": "sha512-BH2jGbIM4QSIjTThaq/0oCMcQVMKZyU9Fss+VmGooLcm2eDZxiGdVGNhP3K2NSz7ZeHMoMYMtdldp0CBhPPvhw==",
+  "_location": "/@loadingio/ldquery",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "@loadingio/ldquery@3.0.3",
+    "name": "@loadingio/ldquery",
+    "escapedName": "@loadingio%2fldquery",
+    "scope": "@loadingio",
+    "rawSpec": "3.0.3",
+    "saveSpec": null,
+    "fetchSpec": "3.0.3"
+  },
+  "_requiredBy": [
+    "/",
+    "/lddatetimepicker"
+  ],
+  "_resolved": "https://registry.npmjs.org/@loadingio/ldquery/-/ldquery-3.0.3.tgz",
+  "_spec": "3.0.3",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/loadingio/ldquery/issues"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "description": "lite jQuery-like HTMLElement shorthands",
+  "devDependencies": {
+    "fedep": "^1.1.0",
+    "livescript": "^1.6.0",
+    "uglify-js": "^3.13.1"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "homepage": "https://github.com/loadingio/ldquery",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "@loadingio/ldquery",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/ldquery.git"
+  },
+  "version": "3.0.3"
+}

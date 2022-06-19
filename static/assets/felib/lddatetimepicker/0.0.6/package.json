@@ -1,1 +1,88 @@
-{"name":"lddatetimepicker","version":"0.0.6","description":"vanilla date/time picker","browser":"index.min.js","main":"index.js","scripts":{"start":"npx server -r web -o true"},"homepage":"https://github.com/loadingio/lddatetimepicker","repository":{"type":"git","url":"https://github.com/loadingio/lddatetimepicker"},"keywords":["date","time","datetime","datepicker","datetimepicker"],"author":"zbryikt","license":"MIT","devDependencies":{"@loadingio/bootstrap.ext":"^0.0.6","@loadingio/debounce.js":"^1.0.1","@zbryikt/template":"^2.3.34","bootstrap":"^4.6.1","dayjs":"^1.11.0","fedep":"^1.1.7","ldcover":"^3.0.1","ldview":"^1.1.1","livescript":"^1.6.0","proxise":"^1.0.1","stylus":"^0.57.0","uglify-js":"^3.15.3","uglifycss":"^0.0.29"},"frontendDependencies":{"root":"web/static/assets/lib","modules":["@loadingio/bootstrap.ext","@loadingio/debounce.js","@loadingio/ldquery","dayjs","bootstrap","ldcover","ldview","proxise"]},"dependencies":{"@loadingio/ldquery":"^3.0.3"}}
+{
+  "_args": [
+    [
+      "lddatetimepicker@0.0.6",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "lddatetimepicker@0.0.6",
+  "_id": "lddatetimepicker@0.0.6",
+  "_inBundle": false,
+  "_integrity": "sha512-pK8CWN+73UPLQXPijz44dEtrCUeRJrhrzyB4sr5MD38KnnQoDkc8l5pcYVWsPiBzClReuxj27shGnvSSNUR7jg==",
+  "_location": "/lddatetimepicker",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "lddatetimepicker@0.0.6",
+    "name": "lddatetimepicker",
+    "escapedName": "lddatetimepicker",
+    "rawSpec": "0.0.6",
+    "saveSpec": null,
+    "fetchSpec": "0.0.6"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/lddatetimepicker/-/lddatetimepicker-0.0.6.tgz",
+  "_spec": "0.0.6",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/loadingio/lddatetimepicker/issues"
+  },
+  "dependencies": {
+    "@loadingio/ldquery": "^3.0.3"
+  },
+  "description": "vanilla date/time picker",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.6",
+    "@loadingio/debounce.js": "^1.0.1",
+    "@zbryikt/template": "^2.3.34",
+    "bootstrap": "^4.6.1",
+    "dayjs": "^1.11.0",
+    "fedep": "^1.1.7",
+    "ldcover": "^3.0.1",
+    "ldview": "^1.1.1",
+    "livescript": "^1.6.0",
+    "proxise": "^1.0.1",
+    "stylus": "^0.57.0",
+    "uglify-js": "^3.15.3",
+    "uglifycss": "^0.0.29"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "@loadingio/bootstrap.ext",
+      "@loadingio/debounce.js",
+      "@loadingio/ldquery",
+      "dayjs",
+      "bootstrap",
+      "ldcover",
+      "ldview",
+      "proxise"
+    ]
+  },
+  "homepage": "https://github.com/loadingio/lddatetimepicker",
+  "keywords": [
+    "date",
+    "time",
+    "datetime",
+    "datepicker",
+    "datetimepicker"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "lddatetimepicker",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loadingio/lddatetimepicker.git"
+  },
+  "scripts": {
+    "start": "npx server -r web -o true"
+  },
+  "version": "0.0.6"
+}

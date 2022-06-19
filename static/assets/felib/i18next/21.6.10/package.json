@@ -1,27 +1,32 @@
 {
-  "_from": "i18next@^21.6.0",
+  "_args": [
+    [
+      "i18next@21.6.10",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "i18next@21.6.10",
   "_id": "i18next@21.6.10",
   "_inBundle": false,
   "_integrity": "sha512-Xw+tEGQ61BF6SXtBlFffhM/YhJKHZf2cyDrcNK/l2dE6yVbkPkSasC3VhkAsHXX30vUJ0yG04WIUtf7UvwjOxg==",
   "_location": "/i18next",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "i18next@^21.6.0",
+    "raw": "i18next@21.6.10",
     "name": "i18next",
     "escapedName": "i18next",
-    "rawSpec": "^21.6.0",
+    "rawSpec": "21.6.10",
     "saveSpec": null,
-    "fetchSpec": "^21.6.0"
+    "fetchSpec": "21.6.10"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/i18next/-/i18next-21.6.10.tgz",
-  "_shasum": "aa503831d42213ae2f05eaede29ca07c2d6fbb6f",
-  "_spec": "i18next@^21.6.0",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "21.6.10",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "Jan Mühlemann",
     "email": "jan.muehlemann@gmail.com",
@@ -30,11 +35,9 @@
   "bugs": {
     "url": "https://github.com/i18next/i18next/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "@babel/runtime": "^7.12.0"
   },
-  "deprecated": false,
   "description": "i18next internationalization framework",
   "devDependencies": {
     "@babel/core": "^7.16.0",

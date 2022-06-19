@@ -1,4 +1,10 @@
 {
+  "_args": [
+    [
+      "ldnotify@0.0.5",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
   "_from": "ldnotify@0.0.5",
   "_id": "ldnotify@0.0.5",
   "_inBundle": false,
@@ -19,9 +25,8 @@
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/ldnotify/-/ldnotify-0.0.5.tgz",
-  "_shasum": "6efbd27a702104c2cc1aff01237f9cdb5a1c9310",
-  "_spec": "ldnotify@0.0.5",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "0.0.5",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
@@ -29,8 +34,6 @@
   "bugs": {
     "url": "https://github.com/loadingio/ldnotify/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "simple notification widget",
   "devDependencies": {
     "@loadingio/bootstrap.ext": "^0.0.4",

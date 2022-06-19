@@ -1,27 +1,32 @@
 {
-  "_from": "bootstrap.native@^3.0.15",
+  "_args": [
+    [
+      "bootstrap.native@3.0.15",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "bootstrap.native@3.0.15",
   "_id": "bootstrap.native@3.0.15",
   "_inBundle": false,
   "_integrity": "sha512-9sHHLo0QFhUkGcQg9cLJBN1g8MKuOdAUR7BJuI3WJch9GvThCgl0UZ8grY4CrmJC9qh5I+G/ENc2t50Zpls3xQ==",
   "_location": "/bootstrap.native",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "bootstrap.native@^3.0.15",
+    "raw": "bootstrap.native@3.0.15",
     "name": "bootstrap.native",
     "escapedName": "bootstrap.native",
-    "rawSpec": "^3.0.15",
+    "rawSpec": "3.0.15",
     "saveSpec": null,
-    "fetchSpec": "^3.0.15"
+    "fetchSpec": "3.0.15"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/bootstrap.native/-/bootstrap.native-3.0.15.tgz",
-  "_shasum": "d30f13a89b0177b68ab2285789d11e2407c4ea9b",
-  "_spec": "bootstrap.native@^3.0.15",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "3.0.15",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "dnp_theme"
   },
@@ -33,12 +38,10 @@
   "bugs": {
     "url": "https://github.com/thednp/bootstrap.native/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "minifill": "^0.0.16",
     "shorter-js": "^0.2.0-alpha4"
   },
-  "deprecated": false,
   "description": "Native JavaScript for Bootstrap, the sweetest JavaScript library without jQuery.",
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.3",

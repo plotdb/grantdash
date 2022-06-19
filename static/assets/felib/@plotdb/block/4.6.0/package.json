@@ -1,22 +1,26 @@
 {
-  "_from": "@plotdb/block@^4.6.0",
+  "_args": [
+    [
+      "@plotdb/block@4.6.0",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "@plotdb/block@4.6.0",
   "_id": "@plotdb/block@4.6.0",
   "_inBundle": false,
   "_integrity": "sha512-StNe+okBq51QjjbWlx75y57QbeuOIGnhTcb5a8c+yJzDtdgnqd33VVlmR06vPmc0BmHFLCkKDt1p4asXJzL4PA==",
   "_location": "/@plotdb/block",
-  "_phantomChildren": {
-    "whatwg-url": "5.0.0"
-  },
+  "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "@plotdb/block@^4.6.0",
+    "raw": "@plotdb/block@4.6.0",
     "name": "@plotdb/block",
     "escapedName": "@plotdb%2fblock",
     "scope": "@plotdb",
-    "rawSpec": "^4.6.0",
+    "rawSpec": "4.6.0",
     "saveSpec": null,
-    "fetchSpec": "^4.6.0"
+    "fetchSpec": "4.6.0"
   },
   "_requiredBy": [
     "/",
@@ -24,9 +28,8 @@
     "/@plotdb/konfig"
   ],
   "_resolved": "https://registry.npmjs.org/@plotdb/block/-/block-4.6.0.tgz",
-  "_shasum": "1840928279fa5adebbfbf45d20f2d640bca2d460",
-  "_spec": "@plotdb/block@^4.6.0",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "4.6.0",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
@@ -34,12 +37,10 @@
   "bugs": {
     "url": "https://github.com/plotdb/block/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "@plotdb/semver": "^0.0.2",
     "node-fetch": "^2.6.7"
   },
-  "deprecated": false,
   "description": "block",
   "devDependencies": {
     "@loadingio/bootstrap.ext": "^0.0.4",

@@ -1,0 +1,95 @@
+{
+  "_from": "@plotdb/httputil",
+  "_id": "@plotdb/httputil@0.0.2",
+  "_inBundle": false,
+  "_integrity": "sha512-Ts3wB+DgjzihV03MTrUmDAIjtiLt7j+B3vPRT0Cq+cy9R6mgbCy4fDSamcRAEXfIOWEAVHAVGvAer2ZVWymGGQ==",
+  "_location": "/@plotdb/httputil",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@plotdb/httputil",
+    "name": "@plotdb/httputil",
+    "escapedName": "@plotdb%2fhttputil",
+    "scope": "@plotdb",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@plotdb/httputil/-/httputil-0.0.2.tgz",
+  "_shasum": "b8115a90f2892ba861425a1a16f26f0116602db2",
+  "_spec": "@plotdb/httputil",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
+  "author": {
+    "name": "zbryikt"
+  },
+  "browser": "index.min.js",
+  "bugs": {
+    "url": "https://github.com/plotdb/httputil/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "util functions for http",
+  "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/debounce.js": "^1.0.1",
+    "@loadingio/ldquery": "^3.0.2",
+    "@zbryikt/template": "^2.3.33",
+    "bootstrap": "^4.5.2",
+    "bootstrap.native": "^3.0.13",
+    "browserify": "^17.0.0",
+    "fedep": "^1.1.2",
+    "ldcover": "^3.0.1",
+    "ldiconfont": "^0.1.10",
+    "ldview": "^1.0.0",
+    "livescript": ">=1.6.0",
+    "mocha": "^8.2.1",
+    "nyc": "^15.1.0",
+    "uglify-js": "^3.13.1"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "bootstrap.native",
+      "@loadingio/bootstrap.ext",
+      "@loadingio/ldquery",
+      "@loadingio/debounce.js",
+      "ldview",
+      "ldcover",
+      "ldiconfont"
+    ]
+  },
+  "homepage": "https://github.com/plotdb/httputil",
+  "license": "MIT",
+  "main": "index.min.js",
+  "name": "@plotdb/httputil",
+  "nyc": {
+    "all": true,
+    "extension": ".ls",
+    "require": [
+      "livescript"
+    ],
+    "include": [
+      "src/**/*"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plotdb/httputil.git"
+  },
+  "scripts": {
+    "coverage": "npx nyc --reporter=text npm run test",
+    "start": "npx server -r web",
+    "test": "npx mocha --require livescript ./test/index.ls"
+  },
+  "version": "0.0.2"
+}

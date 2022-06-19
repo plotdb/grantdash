@@ -1,28 +1,34 @@
 {
-  "_from": "@loadingio/debounce.js@^1.0.1",
+  "_args": [
+    [
+      "@loadingio/debounce.js@1.0.1",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "@loadingio/debounce.js@1.0.1",
   "_id": "@loadingio/debounce.js@1.0.1",
   "_inBundle": false,
   "_integrity": "sha512-pIpzj8WSO431iL8m0Rph7oKOzY0ngMT6ztJUk9PbWqkFuWFqHvg3UYCmgO5Ih9zW4rfrjmD4W4+qNipS3tydeA==",
   "_location": "/@loadingio/debounce.js",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "@loadingio/debounce.js@^1.0.1",
+    "raw": "@loadingio/debounce.js@1.0.1",
     "name": "@loadingio/debounce.js",
     "escapedName": "@loadingio%2fdebounce.js",
     "scope": "@loadingio",
-    "rawSpec": "^1.0.1",
+    "rawSpec": "1.0.1",
     "saveSpec": null,
-    "fetchSpec": "^1.0.1"
+    "fetchSpec": "1.0.1"
   },
   "_requiredBy": [
-    "/"
+    "/",
+    "/@plotdb/srcbuild"
   ],
   "_resolved": "https://registry.npmjs.org/@loadingio/debounce.js/-/debounce.js-1.0.1.tgz",
-  "_shasum": "805e106a896ed27fbfa5a08a071d99498037776f",
-  "_spec": "@loadingio/debounce.js@^1.0.1",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "1.0.1",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
@@ -30,8 +36,6 @@
   "bugs": {
     "url": "https://github.com/loadingio/debounce.js/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "Debouncing Function",
   "devDependencies": {
     "fedep": "^1.1.0",

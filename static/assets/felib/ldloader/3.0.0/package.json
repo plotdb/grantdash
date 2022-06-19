@@ -1,27 +1,33 @@
 {
-  "_from": "ldloader@^3.0.0",
+  "_args": [
+    [
+      "ldloader@3.0.0",
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
+    ]
+  ],
+  "_from": "ldloader@3.0.0",
   "_id": "ldloader@3.0.0",
   "_inBundle": false,
   "_integrity": "sha512-GiCUn9Y20PPp02vEzBcaVuofVMGF66uCIqwL7szVAkaXDwQ68uP8X7Eu7OAy1bx8thvZKm5TCMb3wjVfusKPKg==",
   "_location": "/ldloader",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "ldloader@^3.0.0",
+    "raw": "ldloader@3.0.0",
     "name": "ldloader",
     "escapedName": "ldloader",
-    "rawSpec": "^3.0.0",
+    "rawSpec": "3.0.0",
     "saveSpec": null,
-    "fetchSpec": "^3.0.0"
+    "fetchSpec": "3.0.0"
   },
   "_requiredBy": [
-    "/"
+    "/",
+    "/ldpalettepicker"
   ],
   "_resolved": "https://registry.npmjs.org/ldloader/-/ldloader-3.0.0.tgz",
-  "_shasum": "4b383d206746c82c157369d9ef5b7f346d6bf23e",
-  "_spec": "ldloader@^3.0.0",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_spec": "3.0.0",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
@@ -29,8 +35,6 @@
   "bugs": {
     "url": "https://github.com/loadingio/ldloader/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "loader manipulation library",
   "devDependencies": {
     "@loadingio/bootstrap.ext": "^0.0.4",

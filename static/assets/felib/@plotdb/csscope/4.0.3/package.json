@@ -2,7 +2,7 @@
   "_args": [
     [
       "@plotdb/csscope@4.0.3",
-      "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend"
+      "/Users/tkirby/workspace/grantdash/server/module/frontend"
     ]
   ],
   "_from": "@plotdb/csscope@4.0.3",
@@ -10,9 +10,7 @@
   "_inBundle": false,
   "_integrity": "sha512-vcROPt1zrO6960wxY+bNEdQsXaR49umgLWF0tjLpo6n863TZw4fDuUpulov/SjnppN574zlg7aoJWXCIDlkugA==",
   "_location": "/@plotdb/csscope",
-  "_phantomChildren": {
-    "whatwg-url": "5.0.0"
-  },
+  "_phantomChildren": {},
   "_requested": {
     "type": "version",
     "registry": true,
@@ -26,12 +24,11 @@
   },
   "_requiredBy": [
     "/",
-    "/@plotdb/form",
-    "/@plotdb/konfig"
+    "/@plotdb/form"
   ],
   "_resolved": "https://registry.npmjs.org/@plotdb/csscope/-/csscope-4.0.3.tgz",
   "_spec": "4.0.3",
-  "_where": "/Users/tkirby/workspace/zbryikt/grantdash/server/module/frontend",
+  "_where": "/Users/tkirby/workspace/grantdash/server/module/frontend",
   "author": {
     "name": "zbryikt"
   },
