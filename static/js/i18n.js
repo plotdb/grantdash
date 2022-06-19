@@ -2,12 +2,37 @@
 (function(it){
   return it();
 })(function(){
-  var win, doc, cookie, engine;
+  var win, doc, qsLocal, qs, cookie, engine;
   if (!(typeof i18next != 'undefined' && i18next !== null)) {
     return;
   }
   win = window;
   doc = document;
+  qsLocal = {};
+  qs = function(key){
+    var k, v, hash;
+    if (typeof key === 'object') {
+      return "?" + (function(){
+        var ref$, results$ = [];
+        for (k in ref$ = key) {
+          v = ref$[k];
+          results$.push([k, v]);
+        }
+        return results$;
+      }()).map(function(it){
+        return encodeURIComponent(it[0]) + "=" + encodeURIComponent(it[1]);
+      }).join('&');
+    }
+    if (!(hash = qsLocal.querystring)) {
+      qsLocal.querystring = hash = {};
+      (window.location.search || "").replace(/^\?/, '').split('&').map(function(it){
+        return decodeURIComponent(it).split('=');
+      }).map(function(it){
+        return hash[it[0]] = it[1];
+      });
+    }
+    return key ? hash[key] : hash;
+  };
   cookie = function(k, v, expire){
     var hash;
     if (v) {
@@ -76,8 +101,8 @@
     return i18next.use(i18nextBrowserLanguageDetector);
   }).then(function(){
     var lng, k, ref$, v, view;
-    lng = cookie('use-language') || navigator.language || navigator.userLanguage;
-    console.log("use language: ", lng);
+    lng = qs('lng') || cookie('lng') || navigator.language || navigator.userLanguage;
+    console.log("[i18n] use language: ", lng);
     i18next.changeLanguage(lng);
     for (k in ref$ = i18nData.en) {
       v = ref$[k];
@@ -97,7 +122,7 @@
             var node, lng;
             node = arg$.node;
             lng = node.getAttribute('data-name');
-            cookie('use-language', lng);
+            cookie('lng', lng);
             return window.location.reload();
           }
         }

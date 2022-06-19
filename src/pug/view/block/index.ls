@@ -79,8 +79,9 @@ ldc.register "blockbase",
     i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \en, fallbackNS: '', defaultNS: ''
       .then -> i18next.use i18nextBrowserLanguageDetector
       .then ->
-        console.log "use language: ", navigator.language or navigator.userLanguage
-        i18next.changeLanguage navigator.language or navigator.userLanguage
+        lng = httputil.qs("lng") or navigator.language or navigator.userLanguage
+        console.log "[block] use language: ", lng
+        i18next.changeLanguage lng
       .then -> block.i18n.use i18next
       .then ~>
         lc.manager = mgr = new block.manager registry: ({name,version,path,type}) ->

@@ -5,8 +5,12 @@
       i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \en, fallbackNS: '', defaultNS: ''
         .then -> i18next.use i18nextBrowserLanguageDetector
         .then ->
-          lng = util.cookie(\use-language) or navigator.language or navigator.userLanguage
-          console.log "use language: ", lng
+          lng = (
+            util.parseQuerystring("lng") or
+            util.cookie(\lng) or
+            navigator.language or navigator.userLanguage
+          )
+          console.log "[site] use language: ", lng
           i18next.changeLanguage lng
           res = {en: {}, "zh-TW": {}}
           for k,v of res.en => res["zh-TW"][k] = k
@@ -33,7 +37,7 @@
           root: document.body
           action: click: "set-lng": ({node}) ->
             lng = node.getAttribute \data-name
-            util.cookie \use-language, lng
+            util.cookie \lng, lng
             window.location.reload!
           handler:
             "brand-org": ({node}) ->

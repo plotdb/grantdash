@@ -4,6 +4,24 @@ if !(i18next?) => return
 win = window
 doc = document
 
+qs-local = {}
+
+qs = (key) ->
+  if typeof(key) == \object =>
+    return "?" + ([[k,v] for k,v of key]
+      .map -> "#{encodeURIComponent(it.0)}=#{encodeURIComponent(it.1)}"
+      .join(\\&)
+    )
+  if !(hash = qs-local.querystring) =>
+    qs-local.querystring = hash = {}
+    (window.location.search or "")
+      .replace(/^\?/,'')
+      .split(\&)
+      .map -> decodeURIComponent(it).split('=')
+      .map -> hash[it.0] = it.1
+  return if key => hash[key] else hash
+
+
 cookie = (k,v,expire) ->
   if v => return document.cookie = "#k=#v;path=/" + (if expire => ";expires=#expire" else "")
   hash = {}
@@ -38,8 +56,13 @@ window.i18n-engine = engine =
 i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \en, fallbackNS: '', defaultNS: ''
   .then -> i18next.use i18nextBrowserLanguageDetector
   .then ->
-    lng = cookie(\use-language) or navigator.language or navigator.userLanguage
-    console.log "use language: ", lng
+
+    lng = (
+      qs(\lng) or
+      cookie(\lng) or
+      navigator.language or navigator.userLanguage
+    )
+    console.log "[i18n] use language: ", lng
     i18next.changeLanguage lng
     for k,v of i18n-data.en => i18n-data{}["zh-TW"][k] = k
     for k,v of i18n-data => i18next.add-resource-bundle k, '', v, true, true
@@ -50,5 +73,5 @@ i18next.init supportedLng: <[en zh-TW]>, fallbackLng: \en, fallbackNS: '', defau
       root: document.body
       action: click: "set-lng": ({node}) ->
         lng = node.getAttribute \data-name
-        cookie \use-language, lng
+        cookie \lng, lng
         window.location.reload!

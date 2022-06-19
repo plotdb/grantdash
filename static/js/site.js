@@ -14,8 +14,8 @@
         return i18next.use(i18nextBrowserLanguageDetector);
       }).then(function(){
         var lng, res, k, ref$, v;
-        lng = util.cookie('use-language') || navigator.language || navigator.userLanguage;
-        console.log("use language: ", lng);
+        lng = util.parseQuerystring("lng") || util.cookie('lng') || navigator.language || navigator.userLanguage;
+        console.log("[site] use language: ", lng);
         i18next.changeLanguage(lng);
         res = {
           en: {},
@@ -69,7 +69,7 @@
               var node, lng;
               node = arg$.node;
               lng = node.getAttribute('data-name');
-              util.cookie('use-language', lng);
+              util.cookie('lng', lng);
               return window.location.reload();
             }
           }
