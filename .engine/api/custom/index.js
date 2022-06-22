@@ -134,7 +134,7 @@
         return res.status(302).redirect(it);
       })['catch'](aux.errorHandler(res));
     });
-    api.post('/custom/prj/', grecaptcha, function(req, res){
+    api.post('/custom/prj/', function(req, res){
       var lc, ref$, name, description, custom, submit, slug, brd, detail, p;
       if (!(req.user && req.user.key)) {
         return aux.r403(res);

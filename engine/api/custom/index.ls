@@ -74,7 +74,8 @@ app.get \/gcs/upload/:brd/:id, aux.signed, (req, res) ->
     .catch aux.error-handler res
 
 # update project for customized board
-api.post \/custom/prj/, grecaptcha, (req, res) ->
+#api.post \/custom/prj/, grecaptcha, (req, res) ->
+api.post \/custom/prj/, (req, res) ->
   if !(req.user and req.user.key) => return aux.r403 res
   lc = {}
   {name,description,custom,submit,slug,brd} = req.body
