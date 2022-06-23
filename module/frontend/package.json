@@ -13,7 +13,7 @@
   "dependencies": {
     "@loadingio/bootstrap.ext": "^0.0.6",
     "@loadingio/debounce.js": "^1.0.1",
-    "@loadingio/ldquery": "^3.0.2",
+    "@loadingio/ldquery": "^3.0.4",
     "@loadingio/loading.css": "^3.0.0",
     "@plotdb/block": "^4.6.0",
     "@plotdb/csscope": "^4.0.3",
