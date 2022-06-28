@@ -81,7 +81,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
             }, {
               type: 'json'
             }).then(function(prjs){
-              var customView, head, rows, keys, traverse, result, i$, len$, prj, ret, ref$, wrap, res$, k, to$, i, prefix, r, body, blob, name;
+              var customView, head, rows, keys, traverse, result, badges, i$, len$, prj, ret, ref$, wrap, res$, k, to$, i, prefix, r, body, blob, name;
               prjs == null && (prjs = {});
               console.log(prjs);
               if (type && type !== 'all') {
@@ -228,14 +228,15 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                       } else {
                         key = n.join('-');
                         keys[key] = true;
-                        console.log(typeof obj, obj);
                         return ret[key] = obj != null ? obj : '';
                       }
                     };
                     result = [];
+                    badges = [];
                     for (i$ = 0, len$ = prjs.length; i$ < len$; ++i$) {
                       prj = prjs[i$];
                       result.push(ret = []);
+                      badges.push([prj.system.idx != null ? prj.system.idx : ''].concat(['criteria', 'shortlist', 'winner', 'special'].map(fn$)));
                       traverse((ref$ = prj.detail || (prj.detail = {})).custom || (ref$.custom = {}), [], ret);
                     }
                     wrap = function(it){
@@ -254,18 +255,18 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                     for (i$ = 0, to$ = head[0].length; i$ < to$; ++i$) {
                       i = i$;
                       prefix = head[0].substring(0, i);
-                      console.log(prefix);
-                      if (keys.filter(fn$).length) {
-                        head = head.map(fn1$);
+                      if (keys.filter(fn1$).length) {
+                        head = head.map(fn2$);
                         break;
                       }
                     }
-                    rows.push(head);
-                    for (i$ = 0, len$ = result.length; i$ < len$; ++i$) {
-                      r = result[i$];
-                      body = keys.map(fn2$);
+                    for (i$ = 0, to$ = result.length; i$ < to$; ++i$) {
+                      i = i$;
+                      r = result[i];
+                      body = badges[i].concat(keys.map(fn3$));
                       rows.push(body);
                     }
+                    head = ["idx", "資格審查", "通過初選", "獲獎", "特別獎"].concat(head);
                   }
                   blob = csv4xls.toBlob([head].concat(rows));
                   name = this$.toc.brd.name + "-" + this$.grp.info.name + ".csv";
@@ -293,13 +294,20 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                 }
               }
               function fn$(it){
-                return !it.startsWith(prefix);
+                if (prj.system.badge[it]) {
+                  return "O";
+                } else {
+                  return '';
+                }
               }
               function fn1$(it){
+                return !it.startsWith(prefix);
+              }
+              function fn2$(it){
                 var ref$;
                 return it.substring((ref$ = i - 1) > 0 ? ref$ : 0);
               }
-              function fn2$(k){
+              function fn3$(k){
                 if (r[k] != null) {
                   return r[k];
                 } else {

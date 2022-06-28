@@ -122,12 +122,18 @@ Ctrl = (opt) ->
                       else
                         key = n.join(\-)
                         keys[key] = true
-                        console.log typeof(obj), obj
                         ret[key] = if obj? => obj else ''
 
                     result = []
+                    badges = []
                     for prj in prjs =>
                       result.push (ret = [])
+                      badges.push(
+                        [if prj.system.idx? => prj.system.idx else ''] ++ (
+                          <[criteria shortlist winner special]>.map ->
+                            if prj.system.badge[it] => "O" else ''
+                        )
+                      )
                       traverse prj.{}detail.{}custom, [], ret
                     wrap = ->
                       if !(it?) => return '""'
@@ -137,16 +143,14 @@ Ctrl = (opt) ->
                     head = keys
                     for i from 0 til head.0.length =>
                       prefix = head.0.substring(0,i)
-                      console.log prefix
                       if keys.filter(->!it.startsWith(prefix)).length =>
                         head = head.map -> it.substring(i - 1 >? 0)
                         break
-                    rows.push head
-                    for r in result =>
-                      body = keys.map (k) -> if r[k]? => r[k] else ''
+                    for i from 0 til result.length =>
+                      r = result[i]
+                      body = badges[i] ++ keys.map((k) -> if r[k]? => r[k] else '')
                       rows.push body
-
-
+                    head = ["idx", "資格審查", "通過初選", "獲獎", "特別獎"] ++ head 
 
                   blob = csv4xls.to-blob([head] ++ rows)
                   name = "#{@toc.brd.name}-#{@grp.info.name}.csv"
