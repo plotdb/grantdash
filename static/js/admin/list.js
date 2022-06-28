@@ -81,7 +81,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
             }, {
               type: 'json'
             }).then(function(prjs){
-              var customView, head, rows, blob, name;
+              var customView, head, rows, keys, traverse, result, i$, len$, prj, ret, ref$, wrap, res$, k, to$, i, prefix, r, body, blob, name;
               prjs == null && (prjs = {});
               console.log(prjs);
               if (type && type !== 'all') {
@@ -182,31 +182,91 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                 });
               } else {
                 if (n === 'csv') {
-                  head = this$.grp.form.list.filter(function(f){
-                    return !in$(f.name, ['form-file']);
-                  }).map(function(it){
-                    return it.title;
-                  });
-                  rows = prjs.map(function(p){
-                    return this$.grp.form.list.filter(function(f){
+                  if (this$.grp.form) {
+                    head = this$.grp.form.list.filter(function(f){
                       return !in$(f.name, ['form-file']);
-                    }).map(function(f, i){
-                      var answer;
-                      answer = p.detail.answer[f.key];
-                      if (!answer) {
-                        return '';
-                      }
-                      if (answer.content) {
-                        return answer.content;
-                      }
-                      if (answer.list) {
-                        return ((answer.list || []).concat(answer.other
-                          ? [answer.otherValue]
-                          : [])).join(',');
-                      }
-                      return '';
+                    }).map(function(it){
+                      return it.title;
                     });
-                  });
+                    rows = prjs.map(function(p){
+                      return this$.grp.form.list.filter(function(f){
+                        return !in$(f.name, ['form-file']);
+                      }).map(function(f, i){
+                        var answer;
+                        answer = p.detail.answer[f.key];
+                        if (!answer) {
+                          return '';
+                        }
+                        if (answer.content) {
+                          return answer.content;
+                        }
+                        if (answer.list) {
+                          return ((answer.list || []).concat(answer.other
+                            ? [answer.otherValue]
+                            : [])).join(',');
+                        }
+                        return '';
+                      });
+                    });
+                  } else {
+                    keys = {};
+                    traverse = function(obj, n, ret){
+                      var i$, to$, i, k, v, key, results$ = [];
+                      ret == null && (ret = {});
+                      if (Array.isArray(obj)) {
+                        for (i$ = 0, to$ = obj.length; i$ < to$; ++i$) {
+                          i = i$;
+                          results$.push(traverse(obj[i], n.concat([i + 1]), ret));
+                        }
+                        return results$;
+                      } else if (typeof obj === 'object') {
+                        for (k in obj) {
+                          v = obj[k];
+                          results$.push(traverse(v, n.concat([k]), ret));
+                        }
+                        return results$;
+                      } else {
+                        key = n.join('-');
+                        keys[key] = true;
+                        console.log(typeof obj, obj);
+                        return ret[key] = obj != null ? obj : '';
+                      }
+                    };
+                    result = [];
+                    for (i$ = 0, len$ = prjs.length; i$ < len$; ++i$) {
+                      prj = prjs[i$];
+                      result.push(ret = []);
+                      traverse((ref$ = prj.detail || (prj.detail = {})).custom || (ref$.custom = {}), [], ret);
+                    }
+                    wrap = function(it){
+                      if (!(it != null)) {
+                        return '""';
+                      }
+                      return ['"', ('' + it).replace('"', '""'), '"'].join('');
+                    };
+                    res$ = [];
+                    for (k in keys) {
+                      res$.push(k);
+                    }
+                    keys = res$;
+                    rows = [];
+                    head = keys;
+                    for (i$ = 0, to$ = head[0].length; i$ < to$; ++i$) {
+                      i = i$;
+                      prefix = head[0].substring(0, i);
+                      console.log(prefix);
+                      if (keys.filter(fn$).length) {
+                        head = head.map(fn1$);
+                        break;
+                      }
+                    }
+                    rows.push(head);
+                    for (i$ = 0, len$ = result.length; i$ < len$; ++i$) {
+                      r = result[i$];
+                      body = keys.map(fn2$);
+                      rows.push(body);
+                    }
+                  }
                   blob = csv4xls.toBlob([head].concat(rows));
                   name = this$.toc.brd.name + "-" + this$.grp.info.name + ".csv";
                   return {
@@ -230,6 +290,20 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                     blob: blob,
                     name: name
                   };
+                }
+              }
+              function fn$(it){
+                return !it.startsWith(prefix);
+              }
+              function fn1$(it){
+                var ref$;
+                return it.substring((ref$ = i - 1) > 0 ? ref$ : 0);
+              }
+              function fn2$(k){
+                if (r[k] != null) {
+                  return r[k];
+                } else {
+                  return '';
                 }
               }
             }).then(function(arg$){

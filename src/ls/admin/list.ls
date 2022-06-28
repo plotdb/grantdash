@@ -96,20 +96,57 @@ Ctrl = (opt) ->
                   document.body.appendChild script
               else
                 if n == \csv =>
-                  head = @grp.form.list
-                    .filter (f) -> !(f.name in <[form-file]>)
-                    .map -> it.title
-                  # we need a form-block toString function, instead of manually construct its content here.
-                  rows = prjs.map (p) ~>
-                    @grp.form.list
+                  if @grp.form =>
+                    head = @grp.form.list
                       .filter (f) -> !(f.name in <[form-file]>)
-                      .map (f,i) ->
-                        answer = p.detail.answer[f.key]
-                        if !answer => return ''
-                        if answer.content => return answer.content
-                        if answer.list =>
-                          return ((answer.list or []) ++ (if answer.other => [answer.other-value] else [])).join(',')
-                        return ''
+                      .map -> it.title
+                    # we need a form-block toString function, instead of manually construct its content here.
+                    rows = prjs.map (p) ~>
+                      @grp.form.list
+                        .filter (f) -> !(f.name in <[form-file]>)
+                        .map (f,i) ->
+                          answer = p.detail.answer[f.key]
+                          if !answer => return ''
+                          if answer.content => return answer.content
+                          if answer.list =>
+                            return ((answer.list or []) ++ (if answer.other => [answer.other-value] else [])).join(',')
+                          return ''
+                  else
+                    
+                    keys = {}
+                    traverse = (obj, n, ret = {}) ->
+                      if Array.isArray(obj) =>
+                        for i from 0 til obj.length => traverse obj[i], (n ++ [i+1]), ret
+                      else if typeof(obj) == \object =>
+                        for k,v of obj => traverse v, (n ++ [k]), ret
+                      else
+                        key = n.join(\-)
+                        keys[key] = true
+                        console.log typeof(obj), obj
+                        ret[key] = if obj? => obj else ''
+
+                    result = []
+                    for prj in prjs =>
+                      result.push (ret = [])
+                      traverse prj.{}detail.{}custom, [], ret
+                    wrap = ->
+                      if !(it?) => return '""'
+                      [ '"', ('' + it).replace('"','""'), '"' ].join('')
+                    keys = [k for k of keys]
+                    rows = []
+                    head = keys
+                    for i from 0 til head.0.length =>
+                      prefix = head.0.substring(0,i)
+                      console.log prefix
+                      if keys.filter(->!it.startsWith(prefix)).length =>
+                        head = head.map -> it.substring(i - 1 >? 0)
+                        break
+                    rows.push head
+                    for r in result =>
+                      body = keys.map (k) -> if r[k]? => r[k] else ''
+                      rows.push body
+
+
 
                   blob = csv4xls.to-blob([head] ++ rows)
                   name = "#{@toc.brd.name}-#{@grp.info.name}.csv"
