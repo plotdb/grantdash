@@ -138,12 +138,14 @@ Ctrl = (opt) ->
                     wrap = ->
                       if !(it?) => return '""'
                       [ '"', ('' + it).replace('"','""'), '"' ].join('')
-                    keys = [k for k of keys]
+                    keys = [("#k" or '') for k of keys]
                     rows = []
                     head = keys
-                    for i from 0 til head.0.length =>
-                      prefix = head.0.substring(0,i)
-                      if keys.filter(->!it.startsWith(prefix)).length =>
+                    _head = keys.filter(->"#it".trim!)
+                    maxlen = Math.max.apply Math, _head.map(-> ("#it" or '').length)
+                    for i from 0 til maxlen =>
+                      prefix = _head.0.substring(0,i)
+                      if _head.filter(->!it.startsWith(prefix)).length =>
                         head = head.map -> it.substring(i - 1 >? 0)
                         break
                     for i from 0 til result.length =>

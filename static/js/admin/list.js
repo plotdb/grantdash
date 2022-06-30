@@ -81,7 +81,7 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
             }, {
               type: 'json'
             }).then(function(prjs){
-              var customView, head, rows, keys, traverse, result, badges, i$, len$, prj, ret, ref$, wrap, res$, k, to$, i, prefix, r, body, blob, name;
+              var customView, head, rows, keys, traverse, result, badges, i$, len$, prj, ret, ref$, wrap, res$, k, _head, maxlen, i, prefix, to$, r, body, blob, name;
               prjs == null && (prjs = {});
               console.log(prjs);
               if (type && type !== 'all') {
@@ -247,15 +247,21 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                     };
                     res$ = [];
                     for (k in keys) {
-                      res$.push(k);
+                      res$.push(k + "" || '');
                     }
                     keys = res$;
                     rows = [];
                     head = keys;
-                    for (i$ = 0, to$ = head[0].length; i$ < to$; ++i$) {
+                    _head = keys.filter(function(it){
+                      return (it + "").trim();
+                    });
+                    maxlen = Math.max.apply(Math, _head.map(function(it){
+                      return (it + "" || '').length;
+                    }));
+                    for (i$ = 0; i$ < maxlen; ++i$) {
                       i = i$;
-                      prefix = head[0].substring(0, i);
-                      if (keys.filter(fn1$).length) {
+                      prefix = _head[0].substring(0, i);
+                      if (_head.filter(fn1$).length) {
                         head = head.map(fn2$);
                         break;
                       }
