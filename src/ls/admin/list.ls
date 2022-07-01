@@ -18,11 +18,19 @@ Ctrl = (opt) ->
   render-debounced = debounce ~> @view.render \prj
 
   get-filtered-prj = ~>
-    @data.filter ~>
+    ret = @data.filter ~>
       (!@filter.badge or (it.{}system.badge and it.system.badge[@filter.badge])) and
       it.slug and ( !lc.keyword or ~(
         [it.name,it.{}info.teamname,it.username,it.ownername].filter(->it).join(' ').indexOf(lc.keyword)
       ))
+    ret.sort (a,b) ->
+      aidx = a.{}system.idx
+      bidx = b.{}system.idx
+      if !(aidx? and bidx?) => return b.key - a.key
+      if !(aidx?) => return 1
+      if !(bidx?) => return -1
+      return aidx - bidx
+    return ret
 
   @view = view = new ldView do
     root: opt.root
@@ -126,6 +134,13 @@ Ctrl = (opt) ->
 
                     result = []
                     badges = []
+                    prjs.sort (a,b) ->
+                      aidx = a.{}system.idx
+                      bidx = b.{}system.idx
+                      if !(aidx? and bidx?) => return b.key - a.key
+                      if !(aidx?) => return 1
+                      if !(bidx?) => return -1
+                      return aidx - bidx
                     for prj in prjs =>
                       result.push (ret = [])
                       badges.push(
@@ -246,10 +261,11 @@ Ctrl = (opt) ->
               "badge-chooser": ({node}) -> new Dropdown(node.parentNode)
             text: do
               name: ({context}) -> context.name or '(未命名的提案)'
-              index: ({context}) -> context.key
               state: ({context}) -> if context.state == 'active' => "已送件" else "編輯中"
               ownername: ({context}) -> context.{}info.teamname or context.ownername or ''
               username: ({context}) -> context.ownername or ''
+              index: ({node, context}) -> idx = context.{}system.idx or '-'
+              key: ({node, context}) -> idx = context.key
             handler: do
               edit: ({node, context}) ~> node.setAttribute \href, "/dash/prj/#{context.slug}/edit"
               "badge-state": ({node, context}) ->

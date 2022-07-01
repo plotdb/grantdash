@@ -36,11 +36,28 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
       return this$.view.render('prj');
     });
     getFilteredPrj = function(){
-      return this$.data.filter(function(it){
+      var ret;
+      ret = this$.data.filter(function(it){
         return (!this$.filter.badge || ((it.system || (it.system = {})).badge && it.system.badge[this$.filter.badge])) && it.slug && (!lc.keyword || ~[it.name, (it.info || (it.info = {})).teamname, it.username, it.ownername].filter(function(it){
           return it;
         }).join(' ').indexOf(lc.keyword));
       });
+      ret.sort(function(a, b){
+        var aidx, bidx;
+        aidx = (a.system || (a.system = {})).idx;
+        bidx = (b.system || (b.system = {})).idx;
+        if (!(aidx != null && bidx != null)) {
+          return b.key - a.key;
+        }
+        if (!(aidx != null)) {
+          return 1;
+        }
+        if (!(bidx != null)) {
+          return -1;
+        }
+        return aidx - bidx;
+      });
+      return ret;
     };
     this.view = view = new ldView({
       root: opt.root,
@@ -233,6 +250,21 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                     };
                     result = [];
                     badges = [];
+                    prjs.sort(function(a, b){
+                      var aidx, bidx;
+                      aidx = (a.system || (a.system = {})).idx;
+                      bidx = (b.system || (b.system = {})).idx;
+                      if (!(aidx != null && bidx != null)) {
+                        return b.key - a.key;
+                      }
+                      if (!(aidx != null)) {
+                        return 1;
+                      }
+                      if (!(bidx != null)) {
+                        return -1;
+                      }
+                      return aidx - bidx;
+                    });
                     for (i$ = 0, len$ = prjs.length; i$ < len$; ++i$) {
                       prj = prjs[i$];
                       result.push(ret = []);
@@ -496,11 +528,6 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                   context = arg$.context;
                   return context.name || '(未命名的提案)';
                 },
-                index: function(arg$){
-                  var context;
-                  context = arg$.context;
-                  return context.key;
-                },
                 state: function(arg$){
                   var context;
                   context = arg$.context;
@@ -519,6 +546,16 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                   var context;
                   context = arg$.context;
                   return context.ownername || '';
+                },
+                index: function(arg$){
+                  var node, context, idx;
+                  node = arg$.node, context = arg$.context;
+                  return idx = (context.system || (context.system = {})).idx || '-';
+                },
+                key: function(arg$){
+                  var node, context, idx;
+                  node = arg$.node, context = arg$.context;
+                  return idx = context.key;
                 }
               },
               handler: {

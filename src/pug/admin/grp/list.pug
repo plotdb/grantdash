@@ -35,7 +35,8 @@
             .dropdown-item(ld="download",data-name="custom",data-type="special") 特別獎
     .w-100
       .d-flex.border-bottom.border-top.p-2
-        .px-1(style="width:48px") 編號
+        .px-1.d-flex.align-items-center.justify-content-center(style="width:3em") 編號
+        .px-1.d-flex.align-items-center.justify-content-center(style="width:4em") 內碼
         .px-1.mr-3(style="width:4em") 入選
         .px-1.mr-3(style="width:4em") 狀態
         div(style="flex:1000 0 0") 專案名稱 / 單位
@@ -46,7 +47,8 @@
       div(ld="prjs")
         .p-4.text-center.text-muted(ld="empty") 目前尚沒有任何提案。
         .d-flex.border-bottom.align-items-center.p-2(ld-each="prj")
-          .px-1(ld="index",style="width:48px")
+          .px-1.d-flex.align-items-center.justify-content-center.font-weight-bold(ld="index",style="width:3em")
+          .px-1.d-flex.align-items-center.justify-content-center.text-muted(ld="key",style="width:4em")
           .px-1.mr-3(style="width:4em")
             .dropdown.no-select.clickable
               .dropdown-toggle.admin-badge-state(data-toggle="dropdown",ld="badge-chooser")
