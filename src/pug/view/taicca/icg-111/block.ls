@@ -1,7 +1,7 @@
 (o) <- ldc.register <[blockbase viewLocals auth ldNotify error notify viewmode]>, _
 {blockbase, viewLocals, auth, error, notify, viewmode} = o
 if /judge/.exec(document.referrer or '') =>
-  blockdef = name: '@taiccadash/icg-111', version: 'main' # temporarily disable, path: 'judge-view.html'
+  blockdef = name: '@taiccadash/icg-111', version: 'main', path: 'judge-view.html'
 else
   blockdef = name: '@taiccadash/icg-111', version: 'main'
 brd = "icg-111"
