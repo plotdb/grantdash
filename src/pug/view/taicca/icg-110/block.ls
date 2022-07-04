@@ -4,7 +4,7 @@ if /judge/.exec(document.referrer or '') =>
   blockdef = name: '@taiccadash/icg-110', version: 'main'
 else
   blockdef = name: '@taiccadash/icg-110', version: 'main'
-brd = "icg-111"
+brd = "icg-110"
 data = {mode: viewmode, is-embedded: if viewmode == \view => true else false}
 blockbase.init {blockdef, brd, data}
   .catch ->
