@@ -202,9 +202,15 @@ ldc.register('judgePrimaryUser', ['notify', 'judgeBase', 'error', 'loader', 'aut
                   return context.name || '(未命名)';
                 },
                 ownername: function(arg$){
-                  var context;
+                  var context, form, ref$, ret;
                   context = arg$.context;
-                  return (context.info || (context.info = {})).teamname || context.ownername || '';
+                  form = (ref$ = context.detail || (context.detail = {})).custom || (ref$.custom = {});
+                  form = form.open || form.basic || {};
+                  ret = form["applicant-zh"] || form["單位名稱"];
+                  if (ret && typeof ret === 'object') {
+                    ret = ret.v;
+                  }
+                  return ret = ret || (context.info || (context.info = {})).teamname || context.ownername || '';
                 },
                 key: function(arg$){
                   var context;

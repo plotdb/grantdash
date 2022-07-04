@@ -94,7 +94,12 @@ Ctrl = (opt) ->
                 @active-node.classList.add \active
             text: do
               name: ({context}) -> context.name or '(未命名)'
-              ownername: ({context}) -> context.{}info.teamname or context.ownername or ''
+              ownername: ({context}) ->
+                form = context.{}detail.{}custom
+                form = form.open or form.basic or {}
+                ret = form["applicant-zh"] or form["單位名稱"]
+                if ret and typeof(ret) == \object => ret = ret.v
+                ret = ret or context.{}info.teamname or context.ownername or ''
               key: ({context}) -> context.key or ''
               budget: ({context}) ->
                 if !(b = context.{}info.budget) => return ''
