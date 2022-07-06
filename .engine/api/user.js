@@ -19,20 +19,17 @@
     clearUserCookie = function(req, res){
       res.clearCookie('connect.sid', {
         path: '/',
-        domain: "." + engine.config.domain
+        domain: engine.config.domain + ""
+      });
+      res.clearCookie('global', {
+        path: '/',
+        domain: engine.config.domain + ""
       });
       res.clearCookie('connect.sid', {
         path: '/'
       });
-      ['localhost', 'loading.io', '.loading.io'].map(function(it){
-        return res.clearCookie('connect.sid', {
-          path: '/',
-          domain: it
-        });
-      });
       return res.clearCookie('global', {
-        path: '/',
-        domain: "." + engine.config.domain
+        path: '/'
       });
     };
     api.post('/me/sync/', aux.signed, function(req, res){

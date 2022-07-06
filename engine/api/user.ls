@@ -9,12 +9,11 @@ app = engine.app
 # sometimes for some unknown reason, users' cookie might corrupted.
 # these two routes help users reset their cookie, and redirect to original page.
 clear-user-cookie = (req, res) ->
-  res.clearCookie \connect.sid, {path:'/', domain: ".#{engine.config.domain}" }
   # clear all possible cookies that might be used in the past.
+  res.clearCookie \connect.sid, {path:'/', domain: "#{engine.config.domain}" }
+  res.clearCookie \global, {path:'/', domain: "#{engine.config.domain}"}
   res.clearCookie \connect.sid, {path:'/'}
-  <[localhost loading.io .loading.io]>.map ->
-    res.clearCookie \connect.sid, {path:'/', domain: it}
-  res.clearCookie \global, {path:'/', domain: ".#{engine.config.domain}"}
+  res.clearCookie \global, {path:'/'}
 
 api.post \/me/sync/, aux.signed, (req, res) -> res.send req.user
 
