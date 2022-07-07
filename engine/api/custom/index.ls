@@ -23,7 +23,7 @@ file-url = ({id, req, res}) ->
     .then (r={}) ->
       if !(lc.ret = ret = r.[]rows.0) => return aux.reject 404
       if ret.owner == req.user.key => return true
-      cache.perm.check {io, type: \brd, slug: ret.brd, user: req.user, action: <[judge owner]>}
+      cache.perm.check {io, type: \brd, slug: ret.brd, user: req.user, action: <[judge owner reviewer viewer]>}
         .catch ->
           io.query """
           select owner from perm_judge where brd = $1 and owner = $2

@@ -54,7 +54,7 @@
           type: 'brd',
           slug: ret.brd,
           user: req.user,
-          action: ['judge', 'owner']
+          action: ['judge', 'owner', 'reviewer', 'viewer']
         })['catch'](function(){
           return io.query("select owner from perm_judge where brd = $1 and owner = $2", [lc.ret.brd, req.user.key]).then(function(r){
             r == null && (r = {});
