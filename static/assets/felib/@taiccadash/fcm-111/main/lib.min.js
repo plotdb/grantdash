@@ -3,6 +3,11 @@ window.lib = function(arg$){
   var def;
   def = arg$.def;
   return {
+    idx: function(arg$){
+      var idx;
+      idx = arg$.idx;
+      return "111-" + (idx + "").padStart(3, "0");
+    },
     info: function(arg$){
       var prj, _, form, data;
       prj = arg$.prj;
