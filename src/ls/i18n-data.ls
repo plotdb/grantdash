@@ -1,5 +1,10 @@
 i18n-data =
   "en":
+    "文化內容策進院": "Taicca"
+    "若您碰到登入上的問題，": "If you have issues about login, "
+    "您亦可嘗試透過": "you can try again with"
+    "此連結": "this link"
+    "重設您的使用階段，或者使用無痕模式試試。": "to reset your session, or try again with incognito mode."
     "評選表": "Judging Form"
     "您可點擊以下連結進入您所擔任評審的活動之評選表：": "click one of the following link(s) to open your judging form:"
     "回首頁": "Back"

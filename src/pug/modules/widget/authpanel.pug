@@ -24,6 +24,7 @@ mixin authpanel
             li(t) 切換至註冊模式後再試一次
             li #[a(href="/dash/auth/reset/",style="color:#0ff",target="_blank",rel="noopener noreferrer",t) 重設密碼]
             li #[a(href="#",onclick="lda.ldcvmgr.toggle('contact');",style="color:#0ff",t) 與我們聯絡]
+            li #[span(t) 您亦可嘗試透過] #[a(t,href="/dash/me/reauth/",style="color:#0ff") 此連結] #[span(t) 重設您的使用階段，或者使用無痕模式試試。]
 
         .d-none(data-info="token")
           h2.mb-4.font-weight-bold(t) 歡迎您！
@@ -36,6 +37,7 @@ mixin authpanel
             h3.mb-3.font-weight-bold(style="line-height:1em",t) 登入系統
             p(t) 電子郵件即為您的帳號。若您代表您的團隊註冊，建議您使用一個團隊可共用的電子郵件。
             p(t) 登入之後即可進行提案、系統管理或評選工作。
+            p #[span(t) 若您碰到登入上的問題，]#[span(t) 您亦可嘗試透過] #[a(t,href="/dash/me/reauth/",style="color:#0ff") 此連結] #[span(t) 重設您的使用階段，或者使用無痕模式試試。]
 
       .position-absolute.text-sm(style="bottom:20px;right:20px")
         span Powered by Grant Dash
