@@ -17,14 +17,20 @@
     api = engine.router.api;
     app = engine.app;
     clearUserCookie = function(req, res){
-      res.clearCookie('connect.sid', {
-        path: '/',
-        domain: engine.config.domain + ""
-      });
-      res.clearCookie('global', {
-        path: '/',
-        domain: engine.config.domain + ""
-      });
+      var domain, i$, to$, i, d;
+      domain = ("." + engine.config.domain).split('.');
+      for (i$ = 0, to$ = domain.length - 1; i$ < to$; ++i$) {
+        i = i$;
+        d = domain.slice(i).join('.');
+        res.clearCookie('connect.sid', {
+          path: '/',
+          domain: d
+        });
+        res.clearCookie('global', {
+          path: '/',
+          domain: d
+        });
+      }
       res.clearCookie('connect.sid', {
         path: '/'
       });

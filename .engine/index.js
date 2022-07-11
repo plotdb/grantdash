@@ -166,6 +166,23 @@
           return import$(this, authio.session);
         };
         sessionStore.prototype = expressSession.Store.prototype;
+        app.use(function(req, res, next){
+          var c, cs;
+          c = (req.headers || {}).cookie || '';
+          cs = c.split(/;/).filter(function(it){
+            return /^connect.sid=/.exec(it.trim());
+          });
+          if (cs.length > 1) {
+            console.log("[Dup Session ID Detected] ");
+            cs.map(function(it){
+              return console.log(" - " + decodeURIComponent(it));
+            });
+            next({
+              code: 'DUPSESSIONID'
+            });
+          }
+          return next();
+        });
         app.use(session = expressSession({
           secret: config.session.secret,
           resave: true,
@@ -396,8 +413,31 @@
         });
         if (!config.debug) {
           this$.app.use(function(err, req, res, next){
+            var domain, i$, to$, i, d;
             if (!err) {
               return next();
+            }
+            if (err.code === 'DUPSESSIONID') {
+              domain = ("." + config.domain).split('.');
+              for (i$ = 0, to$ = domain.length - 1; i$ < to$; ++i$) {
+                i = i$;
+                d = domain.slice(i).join('.');
+                res.clearCookie('connect.sid', {
+                  path: '/',
+                  domain: d
+                });
+                res.clearCookie('global', {
+                  path: '/',
+                  domain: d
+                });
+              }
+              res.clearCookie('connect.sid', {
+                path: '/'
+              });
+              res.clearCookie('global', {
+                path: '/'
+              });
+              return res.redirect('/dash/me/reauth/');
             }
             if (err.code === 'EBADCSRFTOKEN') {
               res.status(403);

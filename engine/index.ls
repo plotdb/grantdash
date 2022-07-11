@@ -123,6 +123,14 @@ backend = do
 
     session-store = -> @ <<< authio.session
     session-store.prototype = express-session.Store.prototype
+    app.use (req, res, next) ->
+      c = ((req.headers or {}).cookie or '')
+      cs = c.split /;/ .filter -> /^connect.sid=/.exec(it.trim!)
+      if cs.length > 1 =>
+        console.log "[Dup Session ID Detected] "
+        cs.map(-> console.log " - #{decodeURIComponent(it)}")
+        next {code: 'DUPSESSIONID'}
+      next!
     app.use session = express-session do
       secret: config.session.secret
       resave: true
@@ -262,6 +270,16 @@ backend = do
     if !config.debug =>
       (err, req, res, next) <- @app.use
       if !err => return next!
+      if err.code == \DUPSESSIONID =>
+        domain = ".#{config.domain}".split('.')
+        for i from 0 til domain.length - 1 =>
+          d = domain.slice i .join('.')
+          res.clearCookie \connect.sid, {path:'/', domain: d }
+          res.clearCookie \global, {path:'/', domain: d}
+        res.clearCookie \connect.sid, {path:'/'}
+        res.clearCookie \global, {path:'/'}
+        return res.redirect \/dash/me/reauth/
+
       if err.code == \EBADCSRFTOKEN =>
         # it might be that connect.sid ( for express sessions ) that are tainted.
         # clear both connect.sid and global can help

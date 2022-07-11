@@ -10,8 +10,11 @@ app = engine.app
 # these two routes help users reset their cookie, and redirect to original page.
 clear-user-cookie = (req, res) ->
   # clear all possible cookies that might be used in the past.
-  res.clearCookie \connect.sid, {path:'/', domain: "#{engine.config.domain}" }
-  res.clearCookie \global, {path:'/', domain: "#{engine.config.domain}"}
+  domain = ".#{engine.config.domain}".split('.')
+  for i from 0 til domain.length - 1 =>
+    d = domain.slice i .join('.')
+    res.clearCookie \connect.sid, {path:'/', domain: d }
+    res.clearCookie \global, {path:'/', domain: d}
   res.clearCookie \connect.sid, {path:'/'}
   res.clearCookie \global, {path:'/'}
 
