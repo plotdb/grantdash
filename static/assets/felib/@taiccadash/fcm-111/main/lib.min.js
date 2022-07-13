@@ -29,6 +29,10 @@ window.lib = function(arg$){
           mobile: _(form["聯絡人手機"]),
           title: _(form["聯絡人職稱"]),
           addr: _(form["聯絡地址"])
+        },
+        budget: {
+          total: +_(form["計畫總經費"]),
+          "expected-subsidy": +_(form["支持金申請金額"])
         }
       };
       return data;
