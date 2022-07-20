@@ -2,14 +2,14 @@
 - if(!ctrl.navtop) { ctrl.navtop = {placeholder: true, shown: true}; }
 - if(!ctrl.navtop.className) { ctrl.navtop.className = "navbar-light bg-semi-light" };
 if ctrl.navtop.shown
-  #nav-top: nav.navbar.navbar-expand-lg.fixed-top(
+  #nav-top: nav.navbar.navbar-expand-lg.fixed-top.align-items-start(
   class=ctrl.navtop.className,
   data-transition=ctrl.navtop.transition,
   data-transition-target=ctrl.navtop.transitionTarget)
     //-a.navbar-brand.text-dark(href="/") Battle Dash
-    .navbar-brand
+    .navbar-brand(style="max-width:50%")
       a(pd="brand-org",href="/")
-      a.ml-2(pd="brand-brd",href="#")
+      a.ml-2(pd="brand-brd",href="#",style="white-space:normal")
     button.navbar-toggler(type="button",data-toggle="collapse",
     data-target="#nav-top-content"): span.navbar-toggler-icon
     block navtop-item
