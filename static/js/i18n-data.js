@@ -2,6 +2,8 @@
 var i18nData;
 i18nData = {
   "en": {
+    "存取被拒": "Access Denied",
+    "很抱歉 - 因為權限不足，您無法存取指定的資源": "Sorry but you don't have necessary permission to access this resource.",
     "文化內容策進院": "Taicca",
     "若您碰到登入上的問題，": "If you have issues about login, ",
     "您亦可嘗試透過": "you can try again with",

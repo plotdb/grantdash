@@ -1,9 +1,16 @@
 extends base.pug
 block content
   .text-center
-    h1.display-4.font-weight-bolder 存取被拒
-    p.text-muted HTTP 403 很抱歉 - 因為權限不足，您無法存取指定的資源
+    h1.display-4.font-weight-bolder(t) 存取被拒
+    p.text-muted HTTP 403 #[span(t) 很抱歉 - 因為權限不足，您無法存取指定的資源]
     br
+    .btn.btn-lg.btn-outline-secondary.ml-2(t,pd="not-authed",onclick="lda.auth.show('login')") 登入
     .sep.my-4
     br
-    a(href="/") 回首頁
+    a(t, href="/") 回首頁
+block script
+  script(type="module"): :lsc
+    ldc.register <[general auth]>, ({auth}) ->
+      auth.get!
+        .then (g) ->
+          if !g.user.key => lda.auth.show('login')
