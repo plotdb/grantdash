@@ -11,6 +11,7 @@ block content
 block script
   script(type="module"): :lsc
     ldc.register <[general auth]>, ({auth}) ->
+      auth.on \auth.signin, -> window.location.reload!
       auth.get!
         .then (g) ->
           if !g.user.key => lda.auth.show('login')
