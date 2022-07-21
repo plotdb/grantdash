@@ -114,13 +114,13 @@ perm = do
         if e and e.id != 1012 => console.log "[sharedb access error]", e
         return Promise.reject(e or (new lderror 1012))
 
-  check-judge: ({io, brd, grp, user}) ->
-    v = @cache-judge.{}brd{}[brd].{}[grp][user.key]
-    if v? => return (if v => Promise.resolve(true) else Promise.reject(new lderror(1012)))
+  check-judge: ({io, brd, grp, user, slug}) ->
+    #v = @cache-judge.{}brd{}[brd].{}[grp][user.key]
+    #if v? => return (if v => Promise.resolve(true) else Promise.reject(new lderror(1012)))
     io.query "select key from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, user.key]
       .then (r={}) ~>
         if !(r.[]rows.length) =>
-          @cache-judge.brd{}[brd].{}[grp][user.key] = false
+          #@cache-judge.brd{}[brd].{}[grp][user.key] = false
           return Promise.reject(new lderror(1012))
         io.query """select detail->'group' as group from brd where slug = $1""", [brd]
       .then (r={}) ~>
@@ -128,7 +128,11 @@ perm = do
         if !(g = ret.group.filter(-> it.key == grp).0) => return Promise.reject(new lderror(1012))
         if !(g.{}judgePerm.[]list.filter(-> user.username == it.email).length) =>
           return Promise.reject(new lderror(1012))
-        @cache-judge.brd{}[brd].{}[grp][user.key] = true
+        j = g.{}judge.{}custom.[]entries.filter(-> it.slug == slug).0
+        #@cache-judge.brd{}[brd].{}[grp][user.key] = true
+        if !j.{}config.enabled or j.config.staff => return Promise.reject(new lderror(1012))
+        return true
+        #@cache-judge.brd{}[brd].{}[grp][user.key] = true
 
 
   sharedb: ({io, user, id, data, type, action}) ->
@@ -159,7 +163,7 @@ perm = do
 
         if !(type == \brd and ids.2 == \grp and ids.4 == \judge) => return Promise.reject it
         if ids.5 == \criteria => @check({io, user, type, slug, action: \reviewer})
-        else @check-judge {io, brd: ids.1, grp: ids.3, user}
+        else @check-judge {io, brd: ids.1, grp: ids.3, user, slug: ids.7}
 
 
 stage = do
