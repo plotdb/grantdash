@@ -197,24 +197,16 @@
       });
     },
     checkJudge: function(arg$){
-      var io, brd, grp, user, v, ref$, ref1$, ref2$, this$ = this;
-      io = arg$.io, brd = arg$.brd, grp = arg$.grp, user = arg$.user;
-      v = ((ref$ = (ref1$ = (ref2$ = this.cacheJudge).brd || (ref2$.brd = {}))[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key];
-      if (v != null) {
-        return v
-          ? Promise.resolve(true)
-          : Promise.reject(new lderror(1012));
-      }
+      var io, brd, grp, user, slug, this$ = this;
+      io = arg$.io, brd = arg$.brd, grp = arg$.grp, user = arg$.user, slug = arg$.slug;
       return io.query("select key from perm_judge where brd = $1 and grp = $2 and owner = $3", [brd, grp, user.key]).then(function(r){
-        var ref$, ref1$;
         r == null && (r = {});
         if (!(r.rows || (r.rows = [])).length) {
-          ((ref$ = (ref1$ = this$.cacheJudge.brd)[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key] = false;
           return Promise.reject(new lderror(1012));
         }
         return io.query("select detail->'group' as group from brd where slug = $1", [brd]);
       }).then(function(r){
-        var ret, g, ref$, ref1$;
+        var ret, g, ref$, j, ref1$;
         r == null && (r = {});
         if (!(ret = (r.rows || (r.rows = []))[0])) {
           return Promise.reject(new lderror(1012));
@@ -229,7 +221,13 @@
         }).length) {
           return Promise.reject(new lderror(1012));
         }
-        return ((ref$ = (ref1$ = this$.cacheJudge.brd)[brd] || (ref1$[brd] = {}))[grp] || (ref$[grp] = {}))[user.key] = true;
+        j = ((ref$ = (ref1$ = g.judge || (g.judge = {})).custom || (ref1$.custom = {})).entries || (ref$.entries = [])).filter(function(it){
+          return it.slug === slug;
+        })[0];
+        if (!(j.config || (j.config = {})).enabled || j.config.staff) {
+          return Promise.reject(new lderror(1012));
+        }
+        return true;
       });
     },
     sharedb: function(arg$){
@@ -306,7 +304,8 @@
             io: io,
             brd: ids[1],
             grp: ids[3],
-            user: user
+            user: user,
+            slug: ids[7]
           });
         }
       });
