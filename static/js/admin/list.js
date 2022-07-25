@@ -332,7 +332,8 @@ ldc.register('adminPrjList', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 's
                 }
               }
               function fn$(it){
-                if (prj.system.badge[it]) {
+                var ref$;
+                if (((ref$ = prj.system || (prj.system = {})).badge || (ref$.badge = {}))[it]) {
                   return "O";
                 } else {
                   return '';

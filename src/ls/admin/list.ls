@@ -146,7 +146,7 @@ Ctrl = (opt) ->
                       badges.push(
                         [if prj.system.idx? => prj.system.idx else ''] ++ (
                           <[criteria shortlist winner special]>.map ->
-                            if prj.system.badge[it] => "O" else ''
+                            if prj.{}system.{}badge[it] => "O" else ''
                         )
                       )
                       traverse prj.{}detail.{}custom, [], ret
