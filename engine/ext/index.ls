@@ -1,4 +1,4 @@
-require! <[express crypto path ../api/common]>
+require! <[express crypto path ../api/common ./moc]>
 
 {slugs, deploy} = common
 
@@ -16,6 +16,8 @@ hmac-digest = (sig, content, key) ->
   return false
 
 module.exports = (engine, io) ->
+  moc engine, io
+
   engine.router.ext.post \/deploy, (req, res) ->
     url = req.{}body.{}repository.html_url
     branch = (/^refs\/heads\/(.+)$/.exec(req.body.ref or '') or []).1
