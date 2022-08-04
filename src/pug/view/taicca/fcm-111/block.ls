@@ -1,6 +1,9 @@
 (o) <- ldc.register <[blockbase viewLocals auth ldNotify error notify viewmode]>, _
 {blockbase, viewLocals, auth, error, notify, viewmode} = o
-blockdef = name: '@taiccadash/fcm-111', version: 'main'
+if /judge/.exec(document.referrer or '') =>
+  blockdef = name: '@taiccadash/fcm-111', version: 'main', path: 'judge-view.html'
+else
+  blockdef = name: '@taiccadash/fcm-111', version: 'main'
 brd = "fcm-111"
 data = {mode: viewmode, is-embedded: if viewmode == \view => true else false}
 blockbase.init {blockdef, brd, data}
