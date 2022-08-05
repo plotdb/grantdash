@@ -430,6 +430,22 @@
                   path: '/',
                   domain: d
                 });
+                res.clearCookie('connect.sid', {
+                  path: '/',
+                  domain: "." + d
+                });
+                res.clearCookie('global', {
+                  path: '/',
+                  domain: "." + d
+                });
+                res.clearCookie('connect.sid', {
+                  path: '/',
+                  domain: "www." + d
+                });
+                res.clearCookie('global', {
+                  path: '/',
+                  domain: "www." + d
+                });
               }
               res.clearCookie('connect.sid', {
                 path: '/'

@@ -276,6 +276,10 @@ backend = do
           d = domain.slice i .join('.')
           res.clearCookie \connect.sid, {path:'/', domain: d }
           res.clearCookie \global, {path:'/', domain: d}
+          res.clearCookie \connect.sid, {path:'/', domain: ".#d" }
+          res.clearCookie \global, {path:'/', domain: ".#d" }
+          res.clearCookie \connect.sid, {path:'/', domain: "www.#d" }
+          res.clearCookie \global, {path:'/', domain: "www.#d" }
         res.clearCookie \connect.sid, {path:'/'}
         res.clearCookie \global, {path:'/'}
         return res.redirect \/dash/me/reauth/
