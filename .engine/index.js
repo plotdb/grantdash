@@ -177,7 +177,7 @@
             cs.map(function(it){
               return console.log(" - " + decodeURIComponent(it));
             });
-            next({
+            return next({
               code: 'DUPSESSIONID'
             });
           }

@@ -129,7 +129,7 @@ backend = do
       if cs.length > 1 =>
         console.log "[Dup Session ID Detected] "
         cs.map(-> console.log " - #{decodeURIComponent(it)}")
-        next {code: 'DUPSESSIONID'}
+        return next {code: 'DUPSESSIONID'}
       next!
     app.use session = express-session do
       secret: config.session.secret
