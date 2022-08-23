@@ -1,12 +1,12 @@
 ldc.register \adminGuard,
 <[navtop ldcvmgr auth loader sdbAdapter error
 adminMenu adminPanel adminInfo adminStage adminPerm adminNavbar
-adminPrjList prjForm adminEntry adminWelcome adminPage
+adminPrjList prjForm adminEntry adminWelcome adminPage adminBrdExport
 adminPrjDetail adminPostList adminJudgePerm adminJudgeCriteria adminJudgePrimary adminJudgeFinal adminDev
 adminJudgeCustom]>,
 ({navtop, ldcvmgr, auth, loader, sdbAdapter, error,
 admin-menu, admin-panel, admin-info, admin-stage, admin-perm, admin-navbar,
-admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-prj-detail,
+admin-prj-list, prj-form, admin-entry, admin-welcome, admin-page, admin-brd-export, admin-prj-detail,
 admin-post-list, admin-judge-perm, admin-judge-criteria, admin-judge-primary, admin-judge-final,
 adminDev, adminJudgeCustom}) ->
 
@@ -129,6 +129,7 @@ adminDev, adminJudgeCustom}) ->
         ..perm.adapt   {hub: brd, path: <[perm]>}
         ..navbar.adapt {hub: brd, path: <[page navbar]>}
         ..page.adapt {hub: brd, path: <[page info]>}
+        ..export.adapt {hub: brd, path: <[export]> }
       @ctrl.grp.list.set-hub {brd}
       if @grp => @set-group that, true
 
@@ -158,6 +159,7 @@ adminDev, adminJudgeCustom}) ->
         ..perm = new admin-perm {toc, root: '[data-nav=brd-config] [ld-scope=perm-panel]', brd: toc.brd}
         ..navbar = new admin-navbar {toc, root: '[data-name=brd-navbar] [ld-scope=navbar-editor]'}
         ..page = new admin-page {toc, type: \brd, root: '[data-name=brd-page-info] [ld-scope=page-info]'}
+        ..export = new admin-brd-export {root: '[ld-scope=brd-export]', toc}
 
       @ctrl.grp
         ..form = new prj-form {toc, root: '[ld-scope=grp-form]', view-mode: false}

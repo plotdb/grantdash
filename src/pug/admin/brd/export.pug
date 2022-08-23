@@ -1,0 +1,45 @@
+//- module
++scope("brd-export")
+  style(type="text/css"): :stylus
+    [ld-scope=brd-export] .form-group
+      margin-bottom: 0
+      .form-control
+        border-radius: 4px
+        border-width: 1px
+      label
+        margin-bottom: 0
+        font-size: .9em
+  h2 匯出資料
+  hr
+  .row
+    .col.mb-4
+      .form-group
+        label 計劃年度
+        input.form-control(ld="field",data-name="year")
+    .col.mb-4
+      .form-group
+        label 計劃承辦人
+        input.form-control(ld="field",data-name="pic")
+  .row
+    .col.mb-4
+      .form-group
+        label 承辦人電話
+        input.form-control(ld="field",data-name="phone")
+    .col.mb-4
+      .form-group
+        label 承辦人email
+        input.form-control(ld="field",data-name="email")
+  hr
+  .d-flex.justify-content-between.align-items-center.mb-1.bg-light.py-2.px-3(ld-each="prj")
+    .flex-grow-1
+      div(ld="name")
+      div(ld="team")
+    .mx-2(style="flex:0 0 auto")
+      .form-group
+        label 補助金額
+        input.form-control(ld="amount")
+    div(style="flex:0 0 auto")
+      .form-group
+        label 狀態
+        input.form-control(ld="state")
+

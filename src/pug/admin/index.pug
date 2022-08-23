@@ -90,6 +90,7 @@ block script
                 .flex-grow-1 頁面編輯器
                 div: i.i-link
           //-.folder-item 建立複本
+          .folder-item(ld="nav-tab",data-name="brd-export") 匯出資訊
           .border-bottom.border-secondary.my-2
           div
             .folder(ld-each="grp-entry")
@@ -121,6 +122,9 @@ block script
 
             .p-4.d-none(ld="nav-panel",data-nav="main",data-name="brd-config")
               include brd/config.pug
+
+            .p-4.d-none(ld="nav-panel",data-nav="main",data-name="brd-export")
+              include brd/export.pug
 
             .p-4.d-none(ld="nav-panel",data-nav="main",data-name="org-page-info")
               include page.pug
@@ -183,6 +187,7 @@ block script
   +script("/dash/js/admin/navbar.js")
   +script("/dash/js/admin/entry.js")
   +script("/dash/js/admin/list.js")
+  +script("/dash/js/admin/export.js")
   +script("/dash/js/admin/welcome.js")
   +script("/dash/js/admin/page.js")
   +script("/dash/js/admin/prj.js")
