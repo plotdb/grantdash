@@ -14,13 +14,22 @@
   .row
     .col.mb-4
       .form-group
+        label &nbsp;
+        .config-switch.d-flex.align-items-center(style="line-height:1.2em")
+          .flex-grow-1
+            label.mb-0 啟用匯出
+            .text-sm.text-muted 開啟後即會透過 API 向外部提供資料
+          .ml-2: .switch.switch-lg(ld="switch",data-name="enabled")
+    .col.mb-4
+      .form-group
         label 計劃年度
         input.form-control(ld="field",data-name="year")
+
+  .row
     .col.mb-4
       .form-group
         label 計劃承辦人
         input.form-control(ld="field",data-name="pic")
-  .row
     .col.mb-4
       .form-group
         label 承辦人電話

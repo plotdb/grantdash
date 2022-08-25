@@ -39,22 +39,38 @@ ldc.register('adminBrdExport', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 
     this.view = view = new ldView({
       root: opt.root,
       action: {
-        input: {
-          field: function(arg$){
-            var node, name;
+        click: {
+          'switch': function(arg$){
+            var node, name, ref$;
             node = arg$.node;
             name = node.getAttribute('data-name');
-            this$.data[name] = node.value;
+            node.classList.toggle('on');
+            ((ref$ = this$.data).cfg || (ref$.cfg = {}))[name] = !!node.classList.contains('on');
+            return this$.update();
+          }
+        },
+        input: {
+          field: function(arg$){
+            var node, name, ref$;
+            node = arg$.node;
+            name = node.getAttribute('data-name');
+            ((ref$ = this$.data).cfg || (ref$.cfg = {}))[name] = node.value;
             return this$.update();
           }
         }
       },
       handler: {
-        field: function(arg$){
-          var node, name;
+        'switch': function(arg$){
+          var node, name, ref$;
           node = arg$.node;
           name = node.getAttribute('data-name');
-          return node.value = this$.data[name] || '';
+          return node.classList.toggle('on', !!((ref$ = this$.data).cfg || (ref$.cfg = {}))[name]);
+        },
+        field: function(arg$){
+          var node, name, ref$;
+          node = arg$.node;
+          name = node.getAttribute('data-name');
+          return node.value = ((ref$ = this$.data).cfg || (ref$.cfg = {}))[name] || '';
         },
         prj: {
           list: function(){
@@ -75,15 +91,15 @@ ldc.register('adminBrdExport', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 
               action: {
                 input: {
                   amount: function(arg$){
-                    var node, context, ref$, key$;
+                    var node, context, ref$, key$, ref1$;
                     node = arg$.node, context = arg$.context;
-                    ((ref$ = this$.data)[key$ = context.key] || (ref$[key$] = {})).amount = node.value || 0;
+                    ((ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.key] || (ref$[key$] = {})).amount = node.value || 0;
                     return this$.update();
                   },
                   state: function(arg$){
-                    var node, context, ref$, key$;
+                    var node, context, ref$, key$, ref1$;
                     node = arg$.node, context = arg$.context;
-                    ((ref$ = this$.data)[key$ = context.key] || (ref$[key$] = {})).state = node.value || '';
+                    ((ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.key] || (ref$[key$] = {})).state = node.value || '';
                     return this$.update();
                   }
                 }
@@ -97,14 +113,14 @@ ldc.register('adminBrdExport', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 
               },
               handler: {
                 amount: function(arg$){
-                  var node, context, ref$, key$;
+                  var node, context, ref$, key$, ref1$;
                   node = arg$.node, context = arg$.context;
-                  return node.value = ((ref$ = this$.data)[key$ = context.key] || (ref$[key$] = {})).amount || 0;
+                  return node.value = ((ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.key] || (ref$[key$] = {})).amount || 0;
                 },
                 state: function(arg$){
-                  var node, context, ref$, key$;
+                  var node, context, ref$, key$, ref1$;
                   node = arg$.node, context = arg$.context;
-                  return node.value = ((ref$ = this$.data)[key$ = context.key] || (ref$[key$] = {})).state || '';
+                  return node.value = ((ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.key] || (ref$[key$] = {})).state || '';
                 }
               }
             });

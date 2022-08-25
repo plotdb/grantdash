@@ -17,15 +17,25 @@ Ctrl = (opt) ->
   @update = ~> @ops-out ~> @data
   @view = view = new ldView do
     root: opt.root
-    action: input:
-      field: ({node}) ~>
-        name = node.getAttribute \data-name
-        @data[name] = node.value
-        @update!
+    action:
+      click:
+        switch: ({node}) ~>
+          name = node.getAttribute \data-name
+          node.classList.toggle \on
+          @data.{}cfg[name] = !!(node.classList.contains \on)
+          @update!
+      input:
+        field: ({node}) ~>
+          name = node.getAttribute \data-name
+          @data.{}cfg[name] = node.value
+          @update!
     handler:
+      switch: ({node}) ~>
+        name = node.getAttribute \data-name
+        node.classList.toggle \on, !!@data.{}cfg[name]
       field: ({node}) ~>
         name = node.getAttribute \data-name
-        node.value = (@data[name] or '')
+        node.value = (@data.{}cfg[name] or '')
       prj:
         list: ~> @prjs
         handler: ({node, local, data}) ->
@@ -37,18 +47,18 @@ Ctrl = (opt) ->
             root: node
             action: input:
               amount: ({node, context}) ~>
-                @data{}[context.key].amount = node.value or 0
+                @data.{}prj.{}[context.key].amount = node.value or 0
                 @update!
               state: ({node, context}) ~>
-                @data{}[context.key].state = node.value or ''
+                @data.{}prj.{}[context.key].state = node.value or ''
                 @update!
             text:
               name: ({context}) -> context.name
             handler:
               amount: ({node, context}) ~>
-                node.value = @data{}[context.key].amount or 0
+                node.value = @data.{}prj.{}[context.key].amount or 0
               state: ({node, context}) ~>
-                node.value = @data{}[context.key].state or ''
+                node.value = @data.{}prj.{}[context.key].state or ''
   return @
 
 Ctrl.prototype = Object.create(Object.prototype) <<< sdbAdapter.interface <<< do

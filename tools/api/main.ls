@@ -89,6 +89,10 @@ select * from brd where slug = ANY($1)
 """, [list]
   .then (r = {}) ->
     ps = r.[]rows.map (brd) ->
+      meta = brd.detail.export or {}
+      meta.{}cfg
+      meta.{}prj
+      if !meta.cfg.enabled => return Promise.resolve!
       io.query """
       select key,brd,detail,system from prj where
         (system->'badge'->'winner')::bool = true
@@ -99,11 +103,12 @@ select * from brd where slug = ANY($1)
           prjs.map (prj) ->
             ret = parser {brd, prj}
             map = ret <<<
-              "年度": brd.detail.info.year or 'n/a'
-              "承辦人": brd.detail.info.pic or 'n/a'
-              "承辦人電話": brd.detail.info.phone or 'n/a'
-              "承辦人email": brd.detail.info.email or 'n/a'
-              "補助金額": prj.system.{}budget.subsidy or 'n/a'
+              "年度": meta.cfg.year or 'n/a'
+              "承辦人": meta.cfg.pic or 'n/a'
+              "承辦人電話": meta.cfg.phone or 'n/a'
+              "承辦人email": meta.cfg.email or 'n/a'
+              "補助金額": meta.prj{}[prj.key].amount or 'n/a'
+              "案件狀態": meta.prj{}[prj.key].state or 'n/a'
             result.push map
     Promise.all ps
   .then -> fs.write-file-sync "output.json", JSON.stringify(result)
