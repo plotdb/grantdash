@@ -49,7 +49,7 @@
     "marked": "^0.7.0",
     "mime-types": "^2.1.27",
     "moment": "=2.19.3",
-    "moment-timezone": "=0.5.13",
+    "moment-timezone": "=0.5.35",
     "nodegit": "^0.26.5",
     "nodemailer": "^6.7.2",
     "nodemailer-mailgun-transport": "^2.1.3",
