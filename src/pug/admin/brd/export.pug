@@ -22,7 +22,7 @@
           .ml-2: .switch.switch-lg(ld="switch",data-name="enabled")
     .col.mb-4
       .form-group
-        label 計劃年度
+        label 計劃年度 (請用民國年)
         input.form-control(ld="field",data-name="year")
 
   .row
@@ -50,5 +50,14 @@
     div(style="flex:0 0 auto")
       .form-group
         label 狀態
-        input.form-control(ld="state")
-
+        .input-group
+          input.form-control(ld="state")
+          .input-group-append
+            .btn.btn-outline-secondary.dropdown-toggle(ld="dropdown",data-toggle="dropdown")
+            .dropdown-menu.dropdown-menu-right.shadow-sm
+              .dropdown-item(ld="set-state",data-name="委員審查中") 委員審查中
+              .dropdown-item(ld="set-state",data-name="已核定") 已核定
+              .dropdown-item(ld="set-state",data-name="已結案核銷") 已結案核銷
+              .dropdown-item(ld="set-state",data-name="已撤銷") 已撤銷
+              .dropdown-item(ld="set-state",data-name="") (清空欄位)
+  +nbr(5)

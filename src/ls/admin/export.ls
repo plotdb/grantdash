@@ -45,13 +45,21 @@ Ctrl = (opt) ->
           local.view = new ldView do
             context: data
             root: node
-            action: input:
-              amount: ({node, context}) ~>
-                @data.{}prj.{}[context.key].amount = node.value or 0
-                @update!
-              state: ({node, context}) ~>
-                @data.{}prj.{}[context.key].state = node.value or ''
-                @update!
+            action:
+              click:
+                "set-state": ({node, context, views, view}) ~>
+                  name = node.getAttribute \data-name
+                  @data.{}prj.{}[context.key].state = local.view.get(\state).value = name or ''
+                  @update!
+              input:
+                amount: ({node, context}) ~>
+                  @data.{}prj.{}[context.key].amount = node.value or 0
+                  @update!
+                state: ({node, context}) ~>
+                  @data.{}prj.{}[context.key].state = node.value or ''
+                  @update!
+            init:
+              dropdown: ({node, context}) -> new Dropdown(node)
             text:
               name: ({context}) -> context.name
             handler:

@@ -89,6 +89,15 @@ ldc.register('adminBrdExport', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 
               context: data,
               root: node,
               action: {
+                click: {
+                  "set-state": function(arg$){
+                    var node, context, views, view, name, ref$, key$, ref1$;
+                    node = arg$.node, context = arg$.context, views = arg$.views, view = arg$.view;
+                    name = node.getAttribute('data-name');
+                    ((ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.key] || (ref$[key$] = {})).state = local.view.get('state').value = name || '';
+                    return this$.update();
+                  }
+                },
                 input: {
                   amount: function(arg$){
                     var node, context, ref$, key$, ref1$;
@@ -102,6 +111,13 @@ ldc.register('adminBrdExport', ['error', 'loader', 'notify', 'ldcvmgr', 'auth', 
                     ((ref$ = (ref1$ = this$.data).prj || (ref1$.prj = {}))[key$ = context.key] || (ref$[key$] = {})).state = node.value || '';
                     return this$.update();
                   }
+                }
+              },
+              init: {
+                dropdown: function(arg$){
+                  var node, context;
+                  node = arg$.node, context = arg$.context;
+                  return new Dropdown(node);
                 }
               },
               text: {
