@@ -15,7 +15,7 @@ function pug_style(r){if(!r)return"";if("object"==typeof r){var t="";for(var e i
       ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fadmin\u002Fbase.pug";
 pug_html = pug_html + "\u003C!DOCTYPE html\u003E";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fversion.pug";
-var version = "ae117781";
+var version = "90349a84";
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fgrantdash\u002Fserver\u002Fsrc\u002Fpug\u002Fmodules\u002Fcommon.pug";
 if ((!blockLoader || !blockLoader["common"])) {
 ;pug_debug_line = 2;pug_debug_filename = "\u002FUsers\u002Ftkirby\u002Fworkspace\u002Fgrantdash\u002Fserver\u002Fstatic\u002Fassets\u002Flib\u002Fldui\u002Fpug\u002Fldui.pug";
@@ -3468,7 +3468,7 @@ pug_html = pug_html + "\u003Cdiv class=\"form-group\"\u003E";
 ;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Fexport.pug";
 pug_html = pug_html + "\u003Clabel\u003E";
 ;pug_debug_line = 48;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Fexport.pug";
-pug_html = pug_html + "補助金額\u003C\u002Flabel\u003E";
+pug_html = pug_html + "核定金額\u003C\u002Flabel\u003E";
 ;pug_debug_line = 49;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Fexport.pug";
 pug_html = pug_html + "\u003Cinput class=\"form-control\" ld=\"amount\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
 ;pug_debug_line = 50;pug_debug_filename = "src\u002Fpug\u002Fadmin\u002Fbrd\u002Fexport.pug";
