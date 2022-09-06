@@ -3,7 +3,7 @@ secret = require "../../secret"
 
 elapsed = new Date!getTime!
 (e,r,b) <- request {
-  url: "https://v1.gda.sh/dash/ext/moc-portal?id=#elapsed"
+  url: "https://v1.gda.sh/dash/moc-portal?id=#elapsed"
   method: \GET
   rejectUnauthorized: false
   requestCert: true
