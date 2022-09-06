@@ -79,7 +79,7 @@ parser = ({prj,brd}) ->
     return {}
   _parser[brd.slug]({prj,brd})
 
-fetch = ->
+fetch = ({id, all}) ->
   try
     date = new Date!
     name = (
@@ -135,7 +135,7 @@ fetch = ->
           return [result, d1-json]
     .then (ret) ->
       d2 = {}
-      (ret.1 or []).map -> d2[it["案件編號"]]= it
+      if !all => (ret.1 or []).map -> d2[it["案件編號"]]= it
       payload = []
       for prj in (ret.0 or []) =>
         key = prj["案件編號"]
@@ -159,7 +159,7 @@ engine.router.ext.get \/moc-portal, (req, res) ->
   [id, all] = [req.query.id, req.query.all]
   if !(moc = engine.config.moc) => return res.send!
   key = "#id#{moc.token}"
-  fetch!
+  fetch {id, all}
     .then (payload) ->
       ret = encode json: payload, key: key, iv: moc.iv
       res.send ret

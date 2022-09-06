@@ -121,8 +121,9 @@
         brd: brd
       });
     };
-    fetch = function(){
-      var date, name, jsons, d1Name, d2Name, d1Json, d2Json, e;
+    fetch = function(arg$){
+      var id, all, date, name, jsons, d1Name, d2Name, d1Json, d2Json, e;
+      id = arg$.id, all = arg$.all;
       try {
         date = new Date();
         name = "_moc/" + ((date.getYear() + 1900) + "").padStart(4, '0') + "-" + ((date.getMonth() + 1) + "").padStart(2, '0') + "-" + (date.getDate() + "").padStart(2, '0') + ".json";
@@ -194,9 +195,11 @@
       }).then(function(ret){
         var d2, payload, i$, ref$, len$, prj, key;
         d2 = {};
-        (ret[1] || []).map(function(it){
-          return d2[it["案件編號"]] = it;
-        });
+        if (!all) {
+          (ret[1] || []).map(function(it){
+            return d2[it["案件編號"]] = it;
+          });
+        }
         payload = [];
         for (i$ = 0, len$ = (ref$ = ret[0] || []).length; i$ < len$; ++i$) {
           prj = ref$[i$];
@@ -232,7 +235,10 @@
         return res.send();
       }
       key = id + "" + moc.token;
-      return fetch().then(function(payload){
+      return fetch({
+        id: id,
+        all: all
+      }).then(function(payload){
         var ret;
         ret = encode({
           json: payload,
