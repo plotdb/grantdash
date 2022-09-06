@@ -116,3 +116,4 @@ select * from brd where slug = ANY($1)
   .then -> fs.write-file-sync "output.json", JSON.stringify(result)
   .then -> process.exit!
   .catch -> console.log it
+
