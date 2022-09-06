@@ -132,10 +132,8 @@ fetch = ->
           Promise.all ps
         .then -> 
           fs.write-file-sync name, JSON.stringify(result)
-          return result
           return [result, d1-json]
     .then (ret) ->
-      console.log typeof(ret.0), typeof(ret.1)
       d2 = {}
       (ret.1 or []).map -> d2[it["案件編號"]]= it
       payload = []
@@ -167,4 +165,4 @@ engine.router.ext.get \/moc-portal, (req, res) ->
       res.send ret
     .catch ->
       res.status 500 .send!
-      consoe.log "[MOC ERROR]", it
+      console.log "[MOC ERROR]", it

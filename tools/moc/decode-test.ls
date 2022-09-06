@@ -19,6 +19,10 @@ decode = (code) ->
     decipher.update(Buffer.from(code, "base64")),
     decipher.final()
   ]).toString!
-  console.log JSON.parse(ret)
+  ret = JSON.parse(ret)
+  console.log ret
+  console.log ret.map -> it["案件編號"]
+  console.log "total #{ret.length} prjs fetched."
+
 
 decode b
