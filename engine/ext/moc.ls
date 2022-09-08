@@ -57,7 +57,7 @@ _parser =
   "fcm-111": ({prj,brd}) ->
     form = prj.detail.custom.open
     "案件編號": prj.key
-    "申請者": form{}['提案單位'].v
+    "申請者": form{}['單位名稱'].v
     "計畫聯絡人": form{}['聯絡人姓名'].v
     "團體負責人": form{}['負責人'].v
     "統一編號": form{}['統一編號'].v
