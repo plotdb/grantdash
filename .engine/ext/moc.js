@@ -172,7 +172,7 @@
             if (!meta.cfg.enabled) {
               return Promise.resolve();
             }
-            return io.query("select key,brd,detail,system from prj where\n  (system->'badge'->'winner')::bool = true\n  and brd = $1", [brd.slug]).then(function(r){
+            return io.query("select key,brd,detail,system from prj where\n  (system->'badge'->>'winner')::bool = true\n  and brd = $1", [brd.slug]).then(function(r){
               var prjs;
               r == null && (r = {});
               prjs = r.rows || (r.rows = []);

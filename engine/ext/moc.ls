@@ -114,7 +114,7 @@ fetch = ({id, all}) ->
             if !meta.cfg.enabled => return Promise.resolve!
             io.query """
             select key,brd,detail,system from prj where
-              (system->'badge'->'winner')::bool = true
+              (system->'badge'->>'winner')::bool = true
               and brd = $1
             """, [brd.slug]
               .then (r={}) ->
