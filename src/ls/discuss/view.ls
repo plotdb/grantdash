@@ -1,4 +1,4 @@
-({discuss-edit, error}) <- ldc.register \discussView, <[discussEdit error]>,  _
+({discuss-edit, auth, error}) <- ldc.register \discussView, <[discussEdit auth error]>,  _
 Ctrl = (opt) ->
   loader = new ldLoader className: "full ldld"
   @opt = opt
