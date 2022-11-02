@@ -22,10 +22,11 @@ Ctrl = (opt) ->
         node.innerText = title or '未命名的討論串'
       comment: do
         list: ~> @comments.filter -> !it.delete
-        init: ({node, data, idx}) ~>
+        handler: ({local}) ~> local.view.render!
+        init: ({local, node, data, idx}) ~>
           node.classList.add \ld, \ld-float-ltr-in, \xp35
           node.style.animationDelay = "#{idx * 0.1}s"
-          view = new ldView do
+          local.view = view = new ldView do
             root: node
             action: click: delete: ({node}) ~>
               loader.on!
@@ -47,6 +48,7 @@ Ctrl = (opt) ->
               date: ({node}) ->
                 node.innerText = moment(data.createdtime).tz("Asia/Taipei").format("YYYY/MM/DD hh:mm:ss")
               content: ({node}) ->
+                if n = ld$.parent(node, '.comment') => n.classList.toggle \d-none, data.deleted
                 if data.content.{}config.use-markdown =>
                   node.innerHTML = marked(data.content.body)
                 else

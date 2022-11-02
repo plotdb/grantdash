@@ -47,12 +47,17 @@ ldc.register('discussView', ['discussEdit', 'auth', 'error'], function(arg$){
               return !it['delete'];
             });
           },
+          handler: function(arg$){
+            var local;
+            local = arg$.local;
+            return local.view.render();
+          },
           init: function(arg$){
-            var node, data, idx, view;
-            node = arg$.node, data = arg$.data, idx = arg$.idx;
+            var local, node, data, idx, view;
+            local = arg$.local, node = arg$.node, data = arg$.data, idx = arg$.idx;
             node.classList.add('ld', 'ld-float-ltr-in', 'xp35');
             node.style.animationDelay = idx * 0.1 + "s";
-            return view = new ldView({
+            return local.view = view = new ldView({
               root: node,
               action: {
                 click: {
@@ -101,8 +106,11 @@ ldc.register('discussView', ['discussEdit', 'auth', 'error'], function(arg$){
                   return node.innerText = moment(data.createdtime).tz("Asia/Taipei").format("YYYY/MM/DD hh:mm:ss");
                 },
                 content: function(arg$){
-                  var node, ref$;
+                  var node, n, ref$;
                   node = arg$.node;
+                  if (n = ld$.parent(node, '.comment')) {
+                    n.classList.toggle('d-none', data.deleted);
+                  }
                   if (((ref$ = data.content).config || (ref$.config = {})).useMarkdown) {
                     return node.innerHTML = marked(data.content.body);
                   } else {
