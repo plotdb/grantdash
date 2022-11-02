@@ -98,11 +98,11 @@ api.put \/discuss, (req, res) ->
       io.query "update comment set (content) = ($1)", [lc.content]
     .then -> res.send!
     .catch aux.error-handler res
+*/
 
-api.delete \/discuss/:id, (req, res) ->
+api.delete \/discuss/:id, aux.signed, (req, res) ->
   if !req.user => return aux.r404 res
   if isNaN(key = +req.params.id) => return aux.r404 res
   io.query "update comment set deleted = true where key = $1 and owner = $2", [key, req.user.key]
     .then -> res.send!
     .catch aux.error-handler res
-*/

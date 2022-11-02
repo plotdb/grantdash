@@ -61,7 +61,7 @@
         });
       })['catch'](aux.errorHandler(res));
     });
-    return api.post('/discuss/', aux.signed, throttle.count.user, grecaptcha, function(req, res){
+    api.post('/discuss/', aux.signed, throttle.count.user, grecaptcha, function(req, res){
       var lc;
       lc = {};
       return Promise.resolve().then(function(){
@@ -118,6 +118,29 @@
         return io.query("update discuss set modifiedtime = now()");
       }).then(function(){
         return res.send(lc.ret);
+      })['catch'](aux.errorHandler(res));
+    });
+    /*
+    api.put \/discuss, (req, res) ->
+      if !req.user => return aux.r404 res
+      lc = {}
+      Promise.resolve!
+        .then ->
+          lc.content = req.body.content{body, config}
+          io.query "update comment set (content) = ($1)", [lc.content]
+        .then -> res.send!
+        .catch aux.error-handler res
+    */
+    return api['delete']('/discuss/:id', aux.signed, function(req, res){
+      var key;
+      if (!req.user) {
+        return aux.r404(res);
+      }
+      if (isNaN(key = +req.params.id)) {
+        return aux.r404(res);
+      }
+      return io.query("update comment set deleted = true where key = $1 and owner = $2", [key, req.user.key]).then(function(){
+        return res.send();
       })['catch'](aux.errorHandler(res));
     });
   });
