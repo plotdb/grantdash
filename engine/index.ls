@@ -8,7 +8,8 @@ require! <[sharedb-wrapper lderror]>
 require! <[./io/postgresql ./api ./ext ./util/view ./api/cache]>
 require! <[./aux ./util/throttle ./util/grecaptcha ./util/action ./watch ../secret ./watch/build/mod]>
 require! 'uglify-js': uglify-js, LiveScript: lsc
-colors = require \colors/safe
+#colors = require \colors/safe
+colors = require \@plotdb/colors
 mod-builder = require "./watch/build/mod"
 custom-builder = require "./watch/custom/"
 

@@ -1,5 +1,6 @@
 ({discuss-edit}) <- ldc.register \discussView, <[discussEdit]>,  _
 Ctrl = (opt) ->
+  loader = new ldLoader className: "full ldld"
   @opt = opt
   @marked-options = opt.marked or {}
   @root = root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
@@ -26,6 +27,12 @@ Ctrl = (opt) ->
           node.style.animationDelay = "#{idx * 0.1}s"
           view = new ldView do
             root: node
+            action: click: delete: ({node}) ->
+              loader.on!
+              ld$.fetch "/api/discuss/#{data.key}", {method: \DELETE}
+                .finally -> loader.off!
+                .catch error!
+
             handler: do
               avatar: ({node}) -> node.style.backgroundImage = "url(/dash/s/avatar/#{data.owner}.png)"
               author: ({node}) -> node.innerText = data.displayname

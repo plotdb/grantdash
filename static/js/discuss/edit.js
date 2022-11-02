@@ -64,9 +64,6 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
             if (node.classList.contains('disabled')) {
               return;
             }
-            if (!this$.isReady()) {
-              return;
-            }
             payload = {
               url: (ref$ = this$.data).url,
               reply: ref$.reply,
@@ -75,8 +72,13 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
               key: ref$.key,
               title: ref$.title
             };
-            this$.ldld.on();
-            return debounce(1000).then(function(){
+            return auth.ensure().then(function(){
+              if (!this$.isReady()) {
+                return;
+              }
+              this$.ldld.on();
+              return debounce(1000);
+            }).then(function(){
               return auth.recaptcha.get();
             }).then(function(recaptcha){
               payload.recaptcha = recaptcha;
@@ -124,6 +126,15 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
           state = !(ref$ = !(this$.preview && this$.useMarkdown)) !== !revert && (ref$ || revert);
           return node.classList.toggle('d-none', state);
         },
+        input: function(arg$){
+          var node;
+          node = arg$.node;
+          if (this$.global.user.key) {
+            return node.removeAttribute('disabled');
+          } else {
+            return node.setAttribute('disabled', '');
+          }
+        },
         panel: function(arg$){
           var node;
           node = arg$.node;
@@ -134,7 +145,8 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
         post: function(arg$){
           var node;
           node = arg$.node;
-          return node.classList.toggle('disabled', !this$.isReady());
+          node.classList.toggle('disabled', !(this$.isReady() && this$.global.user.key));
+          return node.innerText = this$.global.user.key ? '送出留言' : '請先登入';
         },
         "edit-panel": function(arg$){
           var node;

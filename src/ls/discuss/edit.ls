@@ -33,10 +33,12 @@ Ctrl = (opt) ->
         post: ({node}) ~>
           if node.classList.contains \running => return
           if node.classList.contains \disabled => return
-          if !@is-ready! => return
           payload = @data{url, reply, content, slug, key, title}
-          @ldld.on!
-          debounce 1000
+          auth.ensure!
+            .then ~>
+              if !@is-ready! => return
+              @ldld.on!
+              debounce 1000
             .then -> auth.recaptcha.get!
             .then (recaptcha) ->
               payload.recaptcha = recaptcha
@@ -63,10 +65,14 @@ Ctrl = (opt) ->
         revert = ("off" in node.getAttribute(\ld).split(" "))
         state = !(@preview and @use-markdown) xor revert
         node.classList.toggle \d-none, state
+      input: ({node}) ~>
+        if @global.user.key => node.removeAttribute \disabled
+        else node.setAttribute \disabled, ''
       panel: ({node}) ~>
         if @preview => node.innerHTML = marked((@data.content.body or ''), @marked-options)
       post: ({node}) ~>
-        node.classList.toggle \disabled, !@is-ready!
+        node.classList.toggle \disabled, !(@is-ready! and @global.user.key)
+        node.innerText = if @global.user.key => \送出留言 else '請先登入'
       "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
       "if-markdown": ({node}) ~> node.classList.toggle \d-none, !@use-markdown
 

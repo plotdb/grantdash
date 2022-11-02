@@ -6,7 +6,7 @@
   LiveScript = require('LiveScript');
   stylus = require('stylus');
   path = require('path');
-  colors = require('colors');
+  colors = require('@plotdb/colors');
   uglifyJs = require('uglify-js');
   uglifycss = require('uglifycss');
   aux = require('./aux');

@@ -3,7 +3,10 @@ ldc.register('discussView', ['discussEdit'], function(arg$){
   var discussEdit, Ctrl;
   discussEdit = arg$.discussEdit;
   Ctrl = function(opt){
-    var root, view, this$ = this;
+    var loader, root, view, this$ = this;
+    loader = new ldLoader({
+      className: "full ldld"
+    });
     this.opt = opt;
     this.markedOptions = opt.marked || {};
     this.root = root = typeof opt.root === 'string'
@@ -49,6 +52,20 @@ ldc.register('discussView', ['discussEdit'], function(arg$){
             node.style.animationDelay = idx * 0.1 + "s";
             return view = new ldView({
               root: node,
+              action: {
+                click: {
+                  'delete': function(arg$){
+                    var node;
+                    node = arg$.node;
+                    loader.on();
+                    return ld$.fetch("/api/discuss/" + data.key, {
+                      method: 'DELETE'
+                    })['finally'](function(){
+                      return loader.off();
+                    })['catch'](error());
+                  }
+                }
+              },
               handler: {
                 avatar: function(arg$){
                   var node;

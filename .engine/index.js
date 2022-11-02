@@ -36,7 +36,7 @@
   mod = require('./watch/build/mod');
   uglifyJs = require('uglify-js');
   lsc = require('LiveScript');
-  colors = require('colors/safe');
+  colors = require('@plotdb/colors');
   modBuilder = require("./watch/build/mod");
   customBuilder = require("./watch/custom/");
   backend = {
