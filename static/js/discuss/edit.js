@@ -148,7 +148,6 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
         post: function(arg$){
           var node;
           node = arg$.node;
-          console.log('here', this$.global);
           node.classList.toggle('disabled', !(this$.isReady() && this$.global.user.key));
           return node.innerText = this$.global.user.key ? '送出留言' : '請先登入';
         },

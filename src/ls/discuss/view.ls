@@ -1,4 +1,4 @@
-({discuss-edit}) <- ldc.register \discussView, <[discussEdit]>,  _
+({discuss-edit, error}) <- ldc.register \discussView, <[discussEdit error]>,  _
 Ctrl = (opt) ->
   loader = new ldLoader className: "full ldld"
   @opt = opt
@@ -29,11 +29,13 @@ Ctrl = (opt) ->
             root: node
             action: click: delete: ({node}) ->
               loader.on!
-              ld$.fetch "/api/discuss/#{data.key}", {method: \DELETE}
+              debounce 500
+                .then ~> ld$.fetch "/api/discuss/#{data.key}", {method: \DELETE}
                 .finally -> loader.off!
                 .catch error!
-
             handler: do
+              delete: ({node}) ~>
+                node.classList.toggle \d-none, !(data.owner == @global.user.key or @global.user.staff)
               avatar: ({node}) -> node.style.backgroundImage = "url(/dash/s/avatar/#{data.owner}.png)"
               author: ({node}) -> node.innerText = data.displayname
               role: ({node}) ->
