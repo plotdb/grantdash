@@ -168,8 +168,12 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
   Ctrl.prototype = import$(Object.create(Object.prototype), {
     init: function(){
       var this$ = this;
-      return auth.get().then(function(g){
+      auth.get().then(function(g){
         this$.global = g;
+        return this$.view.render();
+      });
+      return auth.on('auth.change', function(it){
+        this$.global = it;
         return this$.view.render();
       });
     },

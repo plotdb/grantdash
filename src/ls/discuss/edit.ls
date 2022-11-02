@@ -84,6 +84,9 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     auth.get!then (g) ~>
       @global = g
       @view.render!
+    auth.on \auth.change, ~>
+      @global = it
+      @view.render!
   edit: (cfg = {}) ->
     @data <<< cfg
     @view.render!
