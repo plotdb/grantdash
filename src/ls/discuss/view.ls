@@ -22,7 +22,7 @@ Ctrl = (opt) ->
         node.innerText = title or '未命名的討論串'
       comment: do
         list: ~> @comments
-        init: ({node, data, idx}) ->
+        init: ({node, data, idx}) ~>
           node.classList.add \ld, \ld-float-ltr-in, \xp35
           node.style.animationDelay = "#{idx * 0.1}s"
           view = new ldView do

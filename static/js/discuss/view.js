@@ -46,7 +46,7 @@ ldc.register('discussView', ['discussEdit', 'auth', 'error'], function(arg$){
             return this$.comments;
           },
           init: function(arg$){
-            var node, data, idx, view, this$ = this;
+            var node, data, idx, view;
             node = arg$.node, data = arg$.data, idx = arg$.idx;
             node.classList.add('ld', 'ld-float-ltr-in', 'xp35');
             node.style.animationDelay = idx * 0.1 + "s";
