@@ -54,6 +54,10 @@ Ctrl = (opt) ->
 
 Ctrl.prototype = Object.create(Object.prototype) <<< do
   init: ->
+    @global = {user: {}}
+    auth.get!then (g) ~>
+      @global = g
+      @view.render!
     @loading = true
     payload = if @data.slug => @data{slug} else @data{url}
     ld$.fetch \/dash/api/discuss, {method: \GET}, {params: payload, type: \json}

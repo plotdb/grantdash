@@ -115,6 +115,13 @@ ldc.register('discussView', ['discussEdit', 'error'], function(arg$){
   Ctrl.prototype = import$(Object.create(Object.prototype), {
     init: function(){
       var payload, this$ = this;
+      this.global = {
+        user: {}
+      };
+      auth.get().then(function(g){
+        this$.global = g;
+        return this$.view.render();
+      });
       this.loading = true;
       payload = this.data.slug
         ? {
