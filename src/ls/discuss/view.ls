@@ -21,17 +21,20 @@ Ctrl = (opt) ->
         title = if @discuss => @discuss.title else ''
         node.innerText = title or '未命名的討論串'
       comment: do
-        list: ~> @comments
+        list: ~> @comments.filter -> !it.delete
         init: ({node, data, idx}) ~>
           node.classList.add \ld, \ld-float-ltr-in, \xp35
           node.style.animationDelay = "#{idx * 0.1}s"
           view = new ldView do
             root: node
-            action: click: delete: ({node}) ->
+            action: click: delete: ({node}) ~>
               loader.on!
               debounce 500
-                .then ~> ld$.fetch "/api/discuss/#{data.key}", {method: \DELETE}
+                .then ~> ld$.fetch "/dash/api/discuss/#{data.key}", {method: \DELETE}
                 .finally -> loader.off!
+                .then ~>
+                  data.deleted = true
+                  @view.render!
                 .catch error!
             handler: do
               delete: ({node}) ~>

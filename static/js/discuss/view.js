@@ -43,7 +43,9 @@ ldc.register('discussView', ['discussEdit', 'auth', 'error'], function(arg$){
         },
         comment: {
           list: function(){
-            return this$.comments;
+            return this$.comments.filter(function(it){
+              return !it['delete'];
+            });
           },
           init: function(arg$){
             var node, data, idx, view;
@@ -55,15 +57,18 @@ ldc.register('discussView', ['discussEdit', 'auth', 'error'], function(arg$){
               action: {
                 click: {
                   'delete': function(arg$){
-                    var node, this$ = this;
+                    var node;
                     node = arg$.node;
                     loader.on();
                     return debounce(500).then(function(){
-                      return ld$.fetch("/api/discuss/" + data.key, {
+                      return ld$.fetch("/dash/api/discuss/" + data.key, {
                         method: 'DELETE'
                       });
                     })['finally'](function(){
                       return loader.off();
+                    }).then(function(){
+                      data.deleted = true;
+                      return this$.view.render();
                     })['catch'](error());
                   }
                 }
