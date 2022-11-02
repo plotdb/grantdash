@@ -148,6 +148,7 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
         post: function(arg$){
           var node;
           node = arg$.node;
+          console.log('here', this$.global);
           node.classList.toggle('disabled', !(this$.isReady() && this$.global.user.key));
           return node.innerText = this$.global.user.key ? '送出留言' : '請先登入';
         },
@@ -172,9 +173,11 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
         this$.global = g;
         return this$.view.render();
       });
-      return auth.on('auth.change', function(it){
-        this$.global = it;
-        return this$.view.render();
+      return auth.on('auth.signin', function(){
+        return auth.get().then(function(g){
+          this$.global = g;
+          return this$.view.render();
+        });
       });
     },
     edit: function(cfg){

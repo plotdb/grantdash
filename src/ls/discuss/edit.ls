@@ -72,6 +72,7 @@ Ctrl = (opt) ->
       panel: ({node}) ~>
         if @preview => node.innerHTML = marked((@data.content.body or ''), @marked-options)
       post: ({node}) ~>
+        console.log \here, @global
         node.classList.toggle \disabled, !(@is-ready! and @global.user.key)
         node.innerText = if @global.user.key => \送出留言 else '請先登入'
       "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
@@ -84,9 +85,10 @@ Ctrl.prototype = Object.create(Object.prototype) <<< do
     auth.get!then (g) ~>
       @global = g
       @view.render!
-    auth.on \auth.change, ~>
-      @global = it
-      @view.render!
+    auth.on \auth.signin, ~>
+      auth.get!then (g) ~>
+        @global = g
+        @view.render!
   edit: (cfg = {}) ->
     @data <<< cfg
     @view.render!
