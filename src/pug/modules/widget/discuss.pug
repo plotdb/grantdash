@@ -15,7 +15,7 @@
         .text-sm.text-muted.ml-1(ld="role") ． #[span]
         .text-sm.text-muted.ml-1 ． #[span(ld="date")]
         .flex-grow-1
-        .text-sm.text-muted.ml-1(ld="delete") 刪除
+        .text-sm.text-muted.ml-1.clickable.text-danger(ld="delete") 刪除
       .content.my-1(ld="content")
 
 .d-none(pd="stage-ctrl",data-name="comment-new"): +scope("edit")

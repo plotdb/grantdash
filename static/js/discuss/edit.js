@@ -61,6 +61,9 @@ ldc.register('discussEdit', ['auth', 'error'], function(arg$){
             if (node.classList.contains('running')) {
               return;
             }
+            if (!this$.global.user.key) {
+              return auth.ensure();
+            }
             if (node.classList.contains('disabled')) {
               return;
             }

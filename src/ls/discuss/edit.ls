@@ -32,6 +32,7 @@ Ctrl = (opt) ->
       click: do
         post: ({node}) ~>
           if node.classList.contains \running => return
+          if !@global.user.key => return auth.ensure!
           if node.classList.contains \disabled => return
           payload = @data{url, reply, content, slug, key, title}
           auth.ensure!
