@@ -413,11 +413,11 @@
               } else if (err instanceof URIError && (err.stack + "").startsWith('URIError: Failed to decode param')) {
                 return res.status(400).send();
               } else if (err.message.startsWith('TokenError')) {
-                console.error(colors.red.underline("[" + moment().format('YY/MM/DD HH:mm:ss') + "]"), colors.yellow(err.message), "[", color.yellow(req.originalUrl.substring(0, 15)), "]");
+                console.error(colors.red("[" + moment().format('YY/MM/DD HH:mm:ss') + "]"), colors.yellow(err.message), "[", color.yellow(req.originalUrl.substring(0, 15)), "]");
               } else if (err.message.startsWith('Failed to lookup view')) {
-                console.error(colors.red.underline("[" + moment().format('YY/MM/DD HH:mm:ss') + "]"), colors.yellow(err.message));
+                console.error(colors.red("[" + moment().format('YY/MM/DD HH:mm:ss') + "]"), colors.yellow(err.message));
               } else {
-                console.error(colors.red.underline("[" + moment().format('YY/MM/DD HH:mm:ss') + "]"), colors.yellow(err.toString()), "[", colors.yellow(err.path || ''), "][", colors.yellow(req.originalUrl), "]");
+                console.error(colors.red("[" + moment().format('YY/MM/DD HH:mm:ss') + "]"), colors.yellow(err.toString()), "[", colors.yellow(err.path || ''), "][", colors.yellow(req.originalUrl), "]");
                 console.error(colors.grey(err.stack));
               }
               return res.status(500).send();
