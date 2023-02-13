@@ -309,7 +309,7 @@ get-prj-list = (req, res) ->
         where p.detail is not null and u.key = p.owner and p.brd = $3 and p.deleted is not true
         """,
         "and grp = $#idx3" if grp
-        "and tag ? $4" if tag
+        "and ((tag ? $4) or (p.detail->'info'->'tag')::text ~ $4)" if tag
         "and category = $#idx1" if category
         "and name ~ $#idx2" if keyword
         "and (system->'badge'->>'shortlist')::bool = true" if \shortlist in badge

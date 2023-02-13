@@ -17,10 +17,6 @@
       org: "grantdash-dev",
       orgname: "Grant Dash Dev"
     },
-    "v1.gda.sh": {
-      org: "taicca-tw",
-      orgname: "文化內容策進院"
-    },
     "grantdash.io": {
       orgname: "Grant Dash"
     },
@@ -30,6 +26,10 @@
       orgname: "Taicca Dash"
     },
     "sch001.g0v.tw": {
+      org: "g0v-jothon",
+      orgname: "零時小學校"
+    },
+    "v1.gda.sh": {
       org: "g0v-jothon",
       orgname: "零時小學校"
     },
