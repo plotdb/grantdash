@@ -190,7 +190,7 @@
         }
         return io.query("select name,slug,org,detail from brd where slug = $1 and deleted is not true", [lc.prj.brd]);
       }).then(function(r){
-        var brd, grp, ref$, ref1$, ref2$, view;
+        var brd, grp, ref$, ref1$, ref2$;
         r == null && (r = {});
         if (!(lc.brd = brd = (r.rows || (r.rows = []))[0])) {
           return aux.reject(400);
@@ -212,14 +212,36 @@
           info: grp.info
         };
         if (!(brd.detail.info && brd.detail.info.view)) {
-          view = (req.query || (req.query = {})).simple != null ? 'view/default/prj-view-simple.pug' : 'view/default/prj-view.pug';
+          lc.view = (req.query || (req.query = {})).simple != null ? 'view/default/prj-view-simple.pug' : 'view/default/prj-view.pug';
         } else {
-          view = (req.query || (req.query = {})).simple != null
+          lc.view = (req.query || (req.query = {})).simple != null
             ? "view/" + brd.detail.info.view + "/prj-view-simple.pug"
             : "view/" + brd.detail.info.view + "/prj-view.pug";
         }
         delete brd.detail;
-        return res.render(view, (ref$ = (ref1$ = {
+        return cache.perm.check({
+          io: io,
+          user: req.user,
+          type: 'brd',
+          slug: req.scope.brd,
+          action: ['owner', 'judge', 'reviewer', 'viewer']
+        })['catch'](function(){
+          var privateFields, answerFields, i$, len$, f;
+          privateFields = lc.grp.form.list.filter(function(it){
+            return !(it.config || {})['public'];
+          });
+          answerFields = lc.prj.detail.answer || {};
+          for (i$ = 0, len$ = privateFields.length; i$ < len$; ++i$) {
+            f = privateFields[i$];
+            delete answerFields[f.key];
+          }
+          return lc.grp.form.list = lc.grp.form.list.filter(function(it){
+            return (it.config || {})['public'];
+          });
+        });
+      }).then(function(){
+        var ref$, ref1$;
+        return res.render(lc.view, (ref$ = (ref1$ = {
           prj: lc.prj,
           grp: lc.grp,
           brd: lc.brd,
