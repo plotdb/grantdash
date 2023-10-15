@@ -82,13 +82,26 @@ app.get \/prj/:slug, (req, res) ->
       if !lc.grp => return aux.reject 400
       lc.grp = grp = grp{form,info}
       if !(brd.detail.custom and brd.detail.custom.view) =>
-        view = if (req.{}query.simple)? => \view/default/prj-view-simple.pug
+        lc.view = if (req.{}query.simple)? => \view/default/prj-view-simple.pug
         else \view/default/prj-view.pug
       else
-        view = if (req.{}query.simple)? => "view/#{brd.detail.custom.view}/prj-view-simple.pug"
+        lc.view = if (req.{}query.simple)? => "view/#{brd.detail.custom.view}/prj-view-simple.pug"
         else "view/#{brd.detail.custom.view}/prj-view.pug"
       delete brd.detail
-      res.render view, lc{prj, grp, brd, page-info} <<< {exports: lc{prj, brd, grp}, simple: (req.{}query.simple)?} <<< req.scope{domain}
+
+      cache.perm.check {io, user: req.user, type: \brd, slug: req.scope.brd, action: <[owner judge reviewer viewer]>}
+        .catch ->
+          private-fields = lc.grp.form.list.filter -> !(it.config or {}).public
+          answer-fields = (lc.prj.detail.answer or {})
+          for f in private-fields => delete answer-fields[f.key]
+          lc.grp.form.list = lc.grp.form.list.filter -> (it.config or {}).public
+    .then ->
+      res.render(
+        lc.view,
+        lc{prj, grp, brd, page-info} <<< {
+          exports: lc{prj, brd, grp}, simple: (req.{}query.simple)?
+        } <<< req.scope{domain}
+      )
     .catch aux.error-handler res
 
 api.put \/prj/:slug/state, aux.signed, (req, res) ->
